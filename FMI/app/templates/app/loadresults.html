@@ -1,0 +1,184 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>
+        Map Survey {{ title }} <small></small></>
+    </h1>
+</div>
+
+<form action="" method="post" class="container">
+    {% csrf_token %}
+    <div class="row">
+        {{ form.ci_filename_field.label_tag }} {{ form.ci_filename_field }}
+        {{ form.cimap_filename_field.label_tag }} {{ form.cimap_filename_field }}
+        <button type="submit" name="load_survey" class="btn btn-primary">Load Survey
+            <span class="glyphicon glyphicon-asterisk glyphicon-circle-arrow-up" aria-hidden="true"></span>
+        </button>
+        <button type="submit" name="return_survey" class="btn btn-primary">Return Survey
+            <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#header">Survey Header</a></li>
+              <li><a data-toggle="tab" href="#columns">Columns -> Q&A</a></li>
+              <li><a data-toggle="tab" href="#questions">Q&A -> Columns</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="header" class="tab-pane fade in active">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table id="map_header_table" class="tablesorter-blue">
+                                <thead>
+                                    <tr>
+                                        <th> Field </th>
+                                        <th> Question </th>
+                                        <th> Answer </th>
+                                        <th> Columns </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for field, header in header_map.items %}
+                                        {% if header.0 %}
+                                            {% for map in header.0 %}
+                                                <tr>
+                                                    <td><strong>{{ field }}</strong></td>
+                                                    <td>{{ map.0 }}</td>
+                                                    <td>{{ map.1 }}</td>
+                                                    <td>{{ map.2 }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td><strong>{{ field }}</strong></td>
+                                                <td colspan="3">
+                                                    <select class="form-control" id="{{field}}_hdr" name="{{field}}_hdr">
+                                                        {% for option in header.1 %}
+                                                            {% if option == "selected" %}
+                                                                <option selected="selected">{{option}}</option>
+                                                            {% else %}
+                                                                <option>{{option}}</option>
+                                                            {% endif %}>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="columns" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table id="map_column_table" class="tablesorter-blue">
+                                <thead>
+                                    <tr>
+                                        <th> Columns </th>
+                                        <th> Question </th>
+                                        <th> Answer </th>
+                                        <th> Field </th>
+                                        <th> Select Question </th>
+                                        <th> Select Answer </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for col, map in col_map.items %}
+                                        <tr>
+                                            <td>{{ col }}</td>
+                                            <td>{{ map.1 }}</td>
+                                            <td>{{ map.2 }}</td>
+                                            <td>{{ map.0 }}</td>
+                                            <td>
+                                                <select class="form-control" id="{{col}}_qst" name="{{col}}_qst" onchange="qst_onchange('{{col}}')">
+                                                    <option>Select Question</option>
+                                                {% for qst in qa.keys %}
+                                                    {% if qst == map.1 %}
+                                                    <option selected="selected">{{qst}}</option>
+                                                    {% else %}
+                                                    <option>{{qst}}</option>
+                                                    {% endif %}>
+                                                {% endfor %}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" id="{{col}}_ans" name="{{col}}_ans">
+                                                    {% if map.2 %}
+                                                        <option>{{ map.2 }}</option>
+                                                    {% else %}
+                                                        <option>Select Answer</option>
+                                                    {% endif %}>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="questions" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table id="map_question_table" class="tablesorter-blue">
+                            <thead>
+                                <tr>
+                                    <th> Questions </th>
+                                    <th> Answers </th>
+                                    <th> Columns </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for qst, answers in qa.items %}
+                                    {% for ans, columns in answers.items %}
+                                        <tr>
+                                            <td>{{ qst }}</td>
+                                            <td>{{ ans }}</td>
+                                            <td>{{ columns.0 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}
+{% block scripts %}
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'app/scripts/crossfilter.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/loadresults.js' %}"></script>
+
+<script>
+function opentab(tab_name) {
+    var i;
+    var x = document.getElementsByClassName("tabs");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";  
+    }
+    document.getElementById(tab_name).style.display = "block";
+}
+
+survey_qa( {{ qa|safe }});
+
+</script>
+
+{% endblock %}
+

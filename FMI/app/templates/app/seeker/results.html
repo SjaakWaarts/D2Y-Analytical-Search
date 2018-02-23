@@ -1,0 +1,200 @@
+{% load seeker %}
+{% load i18n %}
+
+<script type="text/javascript">
+function summary_line(sentence, ngram) {
+    var n = sentence.search(ngram)
+    if (n > 0) {
+        document.write(sentence.substring(0, n));
+        document.write('<b>' + sentence.substring(n, n+ngram.length) + '</b>');
+        document.write(sentence.substring(n+ngram.length, sentence.length));
+    } else {
+        document.write(sentence);
+    }
+}
+
+</script>
+
+{% block header %}
+    {% include header_template %}
+{% endblock header %}
+
+<ul class="nav nav-tabs" id="tabs">
+    <li class="{{ tabs.results_tab }}"><a href="#results_tab" data-toggle="tab">Results</a></li>
+    {% if tabs.summary_tab != 'hide' %}
+        <li class="{{ tabs.summary_tab }}"><a href="#summary_tab" data-toggle="tab">Auto Summary</a></li>
+    {% endif %}
+    <li class="{{ tabs.storyboard_tab }}"><a href="#storyboard_tab" data-toggle="tab">Storyboard</a></li>
+    {% if tabs.insights_tab != 'hide' %}
+        <li class="{{ tabs.insights_tab }}"><a href="#insights_tab" data-toggle="tab">Insights/Norms</a></li>
+    {% endif %}
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane {{ tabs.results_tab }}" id="results_tab">
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-seeker">
+                <thead>
+                    <tr>
+                        {% block pre-headers %}{% endblock pre-headers %}
+                        {% block headers %}
+                            {% if show_rank and keywords_q %}
+                                <th class="sort{% if not sort %} desc{% endif %}">
+                                    {% if sort %}
+                                        <a href="?{{ reset_querystring }}">{% trans "Rank" %}</a>
+                                    {% else %}
+                                        {% trans "Rank" %}
+                                    {% endif %}
+                                </th>
+                            {% endif %}
+                            {% for col in display_columns %}
+                                {{ col.header }}
+                            {% endfor %}
+                        {% endblock headers %}
+                        {% block post-headers %}{% endblock post-headers %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% block results %}
+                        {% for result in results %}
+                            <tr>
+                                {% block pre-columns %}{% endblock pre-columns %}
+                                {% if show_rank and keywords_q %}
+                                    <td>{% seeker_score result results.hits.max_score %}</td>
+                                {% endif %}
+                                {% for col in display_columns %}
+                                    {% seeker_column col result facets %}
+                                {% endfor %}
+                                {% block post-columns %}{% endblock post-columns %}
+                            </tr>
+                        {% endfor %}
+                    {% endblock results %}
+                </tbody>
+            </table>
+        </div>
+    {% include footer_template %}
+    </div>
+    {% if tabs.summary_tab != 'hide' %}
+        <div class="tab-pane {{ tabs.summary_tab }}" id="summary_tab">
+            <table class="table table-striped table-condensed table-seeker">
+                <thead>
+                    {% for summary in summary_list %}
+                        <tr>
+                            <td>
+                                <ul class="list-group">
+                                    <b>Summary for: </b>"
+                                    <a class="seeker" href={{summary.url }} target="_blank">{{summary.header }}</a>
+                                    {% for sentence in summary.sentences %}
+                                        <li class="list-group-item">
+                                            <script type="text/javascript">
+                                                summary_line("{{ sentence.0 }}", "{{ sentence.1 }}");
+                                            </script>
+                                            <span class="badge"> {{ sentence.2 }}</span></li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </thead>
+            </table>
+        {% include footer_template %}
+        </div>
+    {% endif %}
+    <div class="tab-pane {{ tabs.storyboard_tab }}" id="storyboard_tab">
+        <p></p>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sel1">Select Dashboard:</label>
+                        <select name="storyboard" class="form-control" id="dashboard_select">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sel1">Select Benchmark:</label>
+                        <select name="benchmark_select" class="form-control" id="benchmark_select">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sel1">Select Tile-Facet:</label>
+                        <select name="tile_facet_select" class="form-control" id="tile_facet_select">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sel1">Select Tile-Value:</label>
+                        <select name="tile_value_select" class="form-control" id="tile_value_select">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="container-fluid iff-padding-0" id="dashboard_images_div"></div>
+                    <div class="container-fluid iff-padding-0" id="dashboard_div"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if tabs.insights_tab != 'hide' %}
+        <div class="tab-pane {{ tabs.insights_tab }}" id="insights_tab">
+            <div class="container">
+                <div class="panel">
+                    <div class="row">
+                        <div class="col-md-12">
+                            Select the question for which you want to see statistics and inter- and intra-covariances.
+                            These Facts and Norms will be save to a FACTS database, which can be queries on its own.<br />
+                            Statics are shown for the next dimensions: <b id="stats_facets_b"></b><br />
+                            Select Question <div id="question_selecion_div"></div> and correlation Question <div id="correlation_selecion_div">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table tablesorter-blue" id="stats_table">
+                                <thead>
+                                    <tr>
+                                        <td>Answer</td>
+                                        <td>Option</td>
+                                        <td>Count</td>
+                                        <td>Mean</td>
+                                        <td>Stddev</td>
+                                        <td>Min</td>
+                                        <td>Max</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                       <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="corr_df_div">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+</div>
+
+{% block footer %}
+
+{% endblock footer %}
+
+
+
+

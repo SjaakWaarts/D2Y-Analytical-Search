@@ -1,0 +1,149 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Platform Admin {{ title }} <small>Crawl web sites and Maintain Platform {{ es_hosts.0.host }}</small></h1>
+</div>
+
+<form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9">
+                            External inforation is obtained by web scraping. Selected web sites are read and the useful data is presented, merged with internal data and analyzed.
+                            For social media data sentimental analysis are performed.
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="scrape"  class="btn btn-primary">Scrape
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9">
+                            Crawl a site to scrape pages and index the scraped data. An Indexed Site can be explored using Analytical Search.
+                            A web site is crawled to find the pages that construct a site. Each found page is scraped in search of the
+                            facet values that have been identied for that site. The facet values in combination with the page body is indexed.
+                        </div>
+                        <div class="col-md-3">
+                            <p><a class="btn btn-primary" href="{% url 'crawl' %}">Crawl &raquo;</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9">
+                            Load data from an external source. This can be an excel file, but also anotehr database.
+                        </div>
+                        <div class="col-md-3">
+                            <p><a class="btn btn-primary" href="{% url 'load' %}">Load &raquo;</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9">
+                            Add the facts of a Survey to the Study. A study will also be populated with the decoder file and project data.
+                            This information on the products and projet will be loaded from a file. Later it will be replaced with integrating
+                            PUMA and CI data.
+                        </div>
+                        <div class="col-md-3">
+                            <p><a class="btn btn-primary" href="{% url 'facts' %}">Facts &raquo;</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9">
+                            Elastic Search trial version
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="elastic"  class="btn btn-primary">Elastic Product
+                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9">
+                            Re-create a Index for certain web-site(s). Re-creating an index on the Elastic Search Engine means that the existing index,
+                            with all of its content, is first deleted. Next the Index is created with a field for each facet that is defined for the
+                            connected site(s).
+                        </div>
+                        <div class="col-md-3">
+                            <p><a class="btn btn-primary" href="{% url 'fmi_admin' %}">ElasticSearch Admin &raquo;</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% if form.errors %}
+            <p class="validation-summary-errors">Errors detected.</p>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error">
+                <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</form>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+
+{% endblock %}
+

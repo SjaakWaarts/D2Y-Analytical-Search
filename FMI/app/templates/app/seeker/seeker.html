@@ -1,0 +1,70 @@
+{% extends "app/layout.html" %}
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+<style>
+    .table-responsive { overflow: auto; }
+    th { white-space: nowrap; }
+    th.sort.asc, th.sort.desc { background-color: #ffe; }
+    th.sort.asc:before { padding-right: 5px; content: '\25B3'; }
+    th.sort.desc:before { padding-right: 5px; content: '\25BD'; }
+    .table-seeker em { background-color: #ffd; padding: 1px 3px; border-radius: 4px; border: 1px solid #eee; }
+    #criteria { padding-top: 10px; }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3" style="padding-bottom:10px; padding-top:10px;">
+            {% include "app/seeker/form.html" %}
+        </div>
+        <div class="col-md-9" style="padding-bottom:10px; padding-top:10px;">
+            {% include results_template %}
+        </div>
+        <div id="configuration_editor_div" class="iff-pane-border collapse"
+             style="flex: 0 0 auto; min-width:100px; margin-right: 5px; padding: 5px;
+             resize: horizontal; overflow: auto;">
+            <div class="panel panel-default">
+                <div class="panel-heading">Configuration Editor</div>
+                <div class="panel-body">
+                    <div id="conf_card_div">
+                        <label></label><br />
+                    </div>
+                    <table class="table table-bordered table-condensed" id="card_configuration_table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/radarchart.js' %}"></script>
+        <script src="{% static 'app/scripts/charts.js' %}"></script>
+        <script src="{% static 'app/scripts/card.js' %}"></script>
+        <script src="{% static 'app/scripts/storyboard.js' %}"></script>
+        <script src="{% static 'app/scripts/seeker.js' %}"></script>
+
+<script>
+
+    fill_tiles({{ facets_data|safe }}, {{ tiles_select|safe }}, {{ tiles_d|safe }} );
+    draw_storyboard({{ storyboard|safe }}, "{{dashboard_name}}", {{ dashboard|safe }}, {{ tiles_select|safe }});
+    facts_norms( {{ stats_df|safe}}  );
+
+</script>
+
+{% endblock %}
+

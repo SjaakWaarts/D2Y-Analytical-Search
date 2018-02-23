@@ -1,0 +1,9 @@
+{% load seeker %}
+
+<label for="{{ facet.name }}_select">{{ facet.label|capfirst }}</label>
+<input type="range" min="0" max="100" step="10" name="{{ facet.nestedfield }}_range" id="{{ facet.nestedfield }}_range" />
+<select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
+    {% for b in data.val.buckets %}
+        <option value="{{ b.key }}" data-data='{"key": "{{ b.key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if b.key in selected %} selected="selected"{% endif %}>{{ b.key }} ({{ b.doc_count }})</option>
+    {% endfor %}
+</select>

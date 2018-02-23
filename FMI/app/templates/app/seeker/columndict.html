@@ -1,0 +1,8 @@
+{% load seeker %}
+<td class="{{ result.meta.doc_type }}_{{ field }}">
+    <ul>
+    {% for k, v in value.items %}
+        <li>{{ k }} : {{ v }}</li>
+    {% endfor %}
+    </ul>
+</td>

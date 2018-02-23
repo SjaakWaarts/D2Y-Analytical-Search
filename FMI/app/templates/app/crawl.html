@@ -1,0 +1,141 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Crawl Web Sites {{ title }} <small>Page content is scraped and indexed on {{ es_hosts.0.host }}</small></h1>
+</div>
+
+<form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ form.nrpages_field.label_tag }} {{ form.nrpages_field }}
+        </div>
+        <div class="col-md-4">
+            {{ form.from_date.label_tag }} {{ form.from_date }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Crawl Site <a href="https://iffconnect.iff.com/Fragrances/marketintelligence/default.aspx"  target="_blank">Market Intelligence site</a></h4>
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.username.label_tag }} {{ form.username }}
+                            {{ form.password.label_tag }} {{ form.password }}
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="crawl_mi" class="btn btn-primary">Crawl Market Intelligence
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-5">
+                            {{ form.site_choices_field.label_tag }} {{ form.site_choices_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.scrape_choices_field.label_tag }} {{ form.scrape_choices_field }}
+                         </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="crawl_si_sites" class="btn btn-primary">Crawl SI Sites
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Crawl Site <a href="http://www.fragrantica.com/"  target="_blank">Fragrantica</a></h4> Enter the product for which you want to retrieve
+                            the fragrances.
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.product_field.label_tag }} {{ form.product_field }}
+                        </div>
+                        <div class="col-md-3 ">
+                            <button type="submit" name="crawl_pi" class="btn btn-primary">Crawl Product Intelligence
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                            </button>
+                            <button type="submit" name="index_pi" class="btn btn-primary">Retrieve Product Intelligence
+                                <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Crawl Site <a href="https://feedly.com/i/discover"  target="_blank">Feedly RSS News Feed</a></h4>
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.rss_field.label_tag }} {{ form.rss_field }}
+                        </div>
+                        <div class="col-md-3 ">
+                            <button type="submit" name="crawl_feedly" class="btn btn-primary">Crawl Feedly
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% if form.errors %}
+            <p class="validation-summary-errors">Errors detected.</p>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error">
+                <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</form>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+
+{% endblock %}
+

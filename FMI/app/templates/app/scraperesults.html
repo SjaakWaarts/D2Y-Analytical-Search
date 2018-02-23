@@ -1,0 +1,141 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.css" media="screen" /> 
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.css" media="screen" /> 
+
+<h2>{{ title }}</h2>
+
+<div class="page-header">
+  <h1>Exploring Brand {{ title }} <small>{{ brand }}</small></h1>
+</div>
+
+<div class='row'>
+    <div class="col-md-3" id="perfume-list">
+        <div id="perfume_checkbox"></div>
+    </div>
+    <div class="col-md-9" id="dashboards">
+        <div class="container">
+            <div class='row'>
+                <div class="col-md-8">
+                    <h4>Accords / Perfumes</h4>
+                    <div id="accords_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:accords_barchart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Perfumes / Accord </h4>
+                    <div id="perfaccord_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:perfaccord_piechart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-8">
+                    <h4>Votes / Perfumes</h4>
+                    <div id="votes_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:votes_barchart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Perfumes / Vote </h4>
+                    <div id="perfvote_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:perfvote_piechart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-8">
+                    <h4>Notes / Perfumes</h4>
+                    <div id="notes_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:notes_barchart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Perfumes / Vote </h4>
+                    <div id="perfnote_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:perfnote_piechart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <h4>Sentiment Analysis</h4>
+                    <div id="sentiment_chart"> 
+                        <div class="reset" style="visibility: visible;">selected: <span class="filter"></span> 
+                            <a href="javascript:sentiment_linechart.filterAll();dc.redrawAll();">reset</a> 
+                        </div> 
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <h4>Reviews</h4>
+                    <input id="perfreview_search" class="search" type="search" placeholder="Perfume" data-column="0" size="100"><br>
+                    <button class="reset" type="button">Reset</button> <!-- targeted by the "filter_reset" option -->
+                    <table id="perfreview_table" class="tablesorter-blue">
+                        <thead>
+                            <tr>
+                                <th> Perfume</th>
+                                <th> Date </th>
+                                <th> Review </th>
+                                <th> Sentiment </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for perfume in scrape_li %}
+                                {% for review in perfume.1.4 %}
+                                    <tr>
+                                        <td>{{ perfume.0 }}</td>
+                                        <td>{{ review.0 }}</td>
+                                        <td>{{ review.1 }}</td>
+                                        <td>
+                                            {{ review.2 }}
+                                            {% if review.2 == "pos" %}
+                                                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                            {% elif review.2 == "neg" %}
+                                                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'app/scripts/crossfilter.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/scraperesults.js' %}"></script>
+{% endblock %}
+

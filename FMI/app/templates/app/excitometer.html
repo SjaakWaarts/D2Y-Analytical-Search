@@ -1,0 +1,192 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Excito-Meter {{ title }} <small>predict uptake and usage of new ingredients</small></h1>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <form action="" method="post" class="form-horizontal">
+                {% csrf_token %}
+                <input type="hidden" name="workbook_name" value="">
+                <input type="hidden" name="dashboard_name" value="">
+                <input type="hidden" name="benchmark" value="">
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.IPC_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.IPC_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.correlations_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.correlations_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.FITTE_norm_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.FITTE_norm_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.CIU_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.CIU_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.regions_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.regions_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.type_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.type_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">{{ form.regulator_field.label_tag }}</label>
+                  <div class="col-md-8">
+                    {{ form.regulator_field }}
+                  </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="retrieve_ingredients"  class="btn btn-primary">Retrieve Ingredients Data
+                        <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="uptake" class="btn btn-primary">Uptake
+                        <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                    </button>
+                </div>
+                {% if form.errors %}
+                    <p class="validation-summary-errors">Errors detected.</p>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-error">
+                            <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-error">
+                        <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </form>
+        </div>
+        <div class="col-md-8">
+            <ul class="nav nav-tabs" id="tabs">
+                <li class=""><a href="#correlation_tab" data-toggle="tab">Correlation</a></li>
+                <li class="active"><a href="#storyboard_tab" data-toggle="tab">Storyboard</a></li>
+            </ul>
+            <div class="tab-content" >
+                <div class="tab-pane" id="correlation_tab" style="min-height: 500px">
+                    <div class="container-fluid">
+                        <div class="panel panel-primary" style="min-height: 500px">
+                            <div class="panel-body" id="view_style_div">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th> IPC </th>
+                                            <th> Name </th>
+                                            <th> Year </th>
+                                            <th> Total </th>
+                                            <th> Bucket </th>
+                                            <th> CIU </th>
+                                            <th> FITTE </th>
+                                            <th> Regions </th>
+                                            <th> Natural </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for correlation in correlation_li %}
+                                        <tr>
+                                            <td>{{ correlation.0 }}</td>
+                                            <td>{{ correlation.1 }}</td>
+                                            <td>{{ correlation.2 }}</td>
+                                            <td>{{ correlation.3 }}</td>
+                                            <td>{{ correlation.4 }}</td>
+                                            <td>{{ correlation.5 }}</td>
+                                            <td>{{ correlation.6 }}</td>
+                                            <td>{{ correlation.7 }}</td>
+                                            <td>{{ correlation.8 }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane active" id="storyboard_tab">
+                    <p></p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Dashboard:</label>
+                                    <select name="storyboard" class="form-control" id="dashboard_select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Benchmark:</label>
+                                    <select name="benchmark_select" class="form-control" id="benchmark_select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Tile-Facet:</label>
+                                    <select name="tile_facet_select" class="form-control" id="tile_facet_select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Tile-Value:</label>
+                                    <select name="tile_value_select" class="form-control" id="tile_value_select">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="container-fluid iff-padding-0" id="dashboard_images_div"></div>
+                                <div class="container-fluid iff-padding-0" id="dashboard_div"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/charts.js' %}"></script>
+        <script src="{% static 'app/scripts/card.js' %}"></script>
+        <script src="{% static 'app/scripts/storyboard.js' %}"></script>
+        <script src="{% static 'app/scripts/guide.js' %}"></script>
+<script>
+    fill_tiles({{ facets_data|safe }}, {{ tiles_select|safe }}, {{ tiles_d|safe }} );
+    draw_storyboard({{ storyboard|safe }}, "{{dashboard_name}}", {{ dashboard|safe }}, {{ tiles_select|safe }});
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Research & Development {{ title }} <small>IPC Models</small></h1>
+    <p>
+        Read the R&D models for the selected IPC.
+    </p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <form action="" method="post" class="form-horizontal">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-md-4">
+                    {{ form.ipc_field.label_tag }} {{ form.ipc_field }}
+                    <span onmouseover="Enter IPC"></span>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" name="r_and_d" class="btn btn-primary">R & D
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            {% if form.errors %}
+                <p class="validation-summary-errors">Errors detected.</p>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-error">
+                        <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+{% endblock %}

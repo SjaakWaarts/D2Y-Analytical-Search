@@ -1,0 +1,181 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Market Insights {{ title }} <small>Market Intelligence, News/RSS Feeds, Web Sites {{ es_hosts.0.host }}</small></h1>
+</div>
+
+{% load staticfiles %}
+<form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <input type="hidden" id="workbook_name" name="workbook_name" value="test">
+    <input type="hidden" id="storyboard_name" name="storyboard_name" value="initial">
+    <input type="hidden" id="dashboard_name" name="dashboard_name" value="initial">
+    <div class="row">
+        <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				                <div class="info-card-front">
+					                <img class="card-image" src="{% static "app/media/mi.jpg" %}">
+				                </div>
+			                <div class="info-card-back">
+				                <h3>Market<br />Intelligence</h3>
+				                <p>
+                                    Analyze the Market Intelligence site.
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Analyze the <a href="https://iffconnect.iff.com/Fragrances/marketintelligence/default.aspx" target="_blank">Market Intelligence site</a>. This site contains 
+                            hot off the press articles on IFF customers, competitors and general industry to keep you up-to-date on the latest  market developments.
+                        </p>
+                        <p>
+                            <button type="submit" name="search_mi"  class="btn btn-primary">Search Market Intelligence
+                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				                <div class="info-card-front">
+					                <img class="card-image" src="{% static "app/media/Feedly2.jpg" %}">
+				                </div>
+			                <div class="info-card-back">
+				                <h3>Feedly</h3>
+				                <p>
+                                    Analyze the Feedly newsfeed site.
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Analyze the <a href="https://feedly.com/" target="_blank">Feedly newsfeed site</a>. Feeldy is a new and RSS reader. For the subscribed
+                            sites and RSS feeds the latest news postings are obtained. These postings are indexed and rated on relevance.
+                        </p>
+                        <p>
+                            <button type="submit" name="search_feedly"  class="btn btn-primary">Search Feedly
+                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				            <div class="info-card-front">
+					            <img class="card-image" src="{% static "app/media/si_sites.jpg" %}">
+				            </div>
+			                <div class="info-card-back">
+				                <h3>SI Sites</h3>
+				                <p>
+                                    Strategic Insights sites.
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Analyze the SI Sites:
+                            <ul class="list-group">
+                              <li class="list-group-item"> <a href="www.cosmeticsdesign.com" target="_blank">Cosmetics Design</a></li>
+                              <li class="list-group-item"> <a href="www.apf.org" target="_blank">APF Association of Professional Futurists</a></li>
+                              <li class="list-group-item"> <a href="www.contagious.com" target="_blank">Contagious</a></li>
+                            </ul>
+                        </p>
+                        <p>
+                            <button type="submit" name="search_si_sites"  class="btn btn-primary">Search SI Sites
+                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				            <div class="info-card-front">
+					            <img class="card-image" src="{% static "app/media/ecosystem.jpg" %}">
+				            </div>
+			                <div class="info-card-back">
+				                <h3>Excel</h3>
+				                <p>
+                                    Search in Excel Uploads
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Sensorial Ecosystem Stakeholders. Key Stakeholders,Contributors & Particpants.
+                        </p>
+                        <p>
+                            <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=ecosystem&storyboard_name=initial&dashboard_name=initial">
+                                Search Ecosystem <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                        <p>
+                            Brugger.
+                        </p>
+                        <p>
+                            <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=brugger_xinumber&storyboard_name=initial&dashboard_name=initial">
+                                Brugger <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% if form.errors %}
+            <p class="validation-summary-errors">Errors detected.</p>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error">
+                <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-md-12" id="scrape_progress"></>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/insight.js' %}"></script>
+
+{% endblock %}
+

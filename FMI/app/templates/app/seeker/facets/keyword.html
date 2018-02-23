@@ -1,0 +1,21 @@
+{% load seeker %}
+<label for="{{ facet.name }}_select">{{ facet.label|capfirst }}</label>
+<div class="input-group">
+    <input type="text" class="form-control" placeholder="{{ facet.label }}" name="{{ facet.keywords_input }}" id="{{ facet.keywords_input }}" value="{{ facet.keywords_text }}"  />
+    <div class="input-group-btn">
+        <button type="button" class="btn btn-default" name="{{ facet.name}}_read" data-toggle="tooltip" title="Read Keywords from File"
+                onclick='keyword_button_submit("{{ facet.name}}_read")'>
+            <i class="glyphicon glyphicon-upload"></i>
+        </button>
+        <button type="button" class="btn btn-default" name="{{ facet.name}}_search" data-toggle="tooltip" title="Copy Keywords to Search"
+                onclick='keyword_button_submit("{{ facet.name}}_search")'>
+            <i class="glyphicon glyphicon-search"></i>
+        </button>
+    </div>
+</div>
+<select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
+    {% for key, b in data.buckets.items %}
+        <option value="{{ key }}" data-data='{"key": "{{ key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if key in selected %} selected="selected"{% endif %}>{{ key }} ({{ b.doc_count }})</option>
+    {% endfor %}
+</select>
+

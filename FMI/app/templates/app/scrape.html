@@ -1,0 +1,102 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Web Scraping {{ title }} <small>the scraped data is indexed (saved)</small></h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <form action="" method="post" class="form-horizontal">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-md-4">
+                    {{ form.site_choices_field.label_tag }} {{ form.site_choices_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.scrape_choices_field.label_tag }} {{ form.scrape_choices_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.brand_field.label_tag }} {{ form.brand_field }}
+                    <span onmouseover="Enter-your-brand"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-md-3 col-md-9">
+                    <button type="submit" name="scrape" class="btn btn-primary">Web Scraping
+                        <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                    </button>
+                    <button type="submit" name="retrieve" class="btn btn-primary">Retrieve Scraping
+                        <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                    </button>
+                    <button type="submit" name="explore"  class="btn btn-primary">Explore Scraping
+                        <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                    </button>
+                    <button type="submit" name="sentiment" class="btn btn-primary">Sentiment Analysis
+                        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            {% if form.errors %}
+                <p class="validation-summary-errors">Errors detected.</p>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-error">
+                        <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="scrape_progress"></>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th> Perfume </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for perfume in scrape_li %}
+                    <tr>
+                        <td><a link href="{{ perfume.1.0 }}" target="_blank">{{ perfume.0 }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+ </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'app/scripts/crossfilter.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/scrape.js' %}"></script>
+{% endblock %}

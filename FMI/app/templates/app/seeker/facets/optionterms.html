@@ -1,0 +1,10 @@
+{% load seeker %}
+
+<label for="{{ facet.name }}_select">{{ facet.label|capfirst }}</label>
+<select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
+    {% for bq in data.question.buckets %}
+        {% for ba in bq.answer.buckets %}
+            <option value="{{bq.key}}^{{ba.key}}" data-data='{"key": "{{ bq.key|escapejs }}^{{ ba.key|escapejs }}","doc_count": {{ ba.doc_count }}}'{% if bq.key|add:"^"|add:ba.key in selected %} selected="selected"{% endif %}>{{ bq.key }}/{{ ba.key }} ({{bq.doc_count}}/{{ba.doc_count }})</option>
+        {% endfor %}
+    {% endfor %}
+</select>

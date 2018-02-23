@@ -1,0 +1,69 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Facts and Norms {{ title }} <small>From a CI Studie to Scent Emotion</small></h1>
+    <p>
+        The Survey which are conducted on behalf of a CI Studie and used to generate a Scent Emotion dataset.
+        From the different questions asked in a survey the facts are generated. A fact being the percentile score
+        of the possible answers within a question. These facts are determined for different norms, this are the
+        different users groups that participate in the survey (country, age, gender)
+    </p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <form action="" method="post" class="form-horizontal">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-md-4">
+                    {{ form.facts_choices_field.label_tag }} {{ form.facts_choices_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.norms_choices_field.label_tag }} {{ form.norms_choices_field }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    {{ form.survey_field.label_tag }} {{ form.survey_field }}
+                    <span onmouseover="Enter Survey name"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-md-3 col-md-9">
+                    <button type="submit" name="facts" class="btn btn-primary">Facts
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                    </button>
+                    <button type="submit" name="norms" class="btn btn-primary">Norms
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            {% if form.errors %}
+                <p class="validation-summary-errors">Errors detected.</p>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-error">
+                        <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+{% endblock %}

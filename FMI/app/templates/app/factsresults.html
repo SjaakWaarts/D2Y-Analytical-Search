@@ -1,0 +1,63 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.css" media="screen" /> 
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.css" media="screen" /> 
+
+<h2>{{ title }}</h2>
+
+<div class="page-header">
+  <h1>Generated Facts and Norms {{ title }} </h1>
+</div>
+
+
+<div class='row'>
+    <div class="col-md-9">
+        <div class="container">
+            <div class='row'>
+                <div class="col-md-12">
+                    <h4>Facts</h4>
+                    <table id="facts_table" class="tablesorter-blue">
+                        <thead>
+                            <tr>
+                                <th> Facet</th>
+                                <th> Question </th>
+                                <th> Answer </th>
+                                <th> Percentile </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fact, perc in facts_d.items %}
+                                <tr>
+                                    <td>{{ fact.0 }}</td>
+                                    <td>{{ fact.1 }}</td>
+                                    <td>{{ fact.2 }}</td>
+                                    <td>{{ perc|floatformat:3 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'app/scripts/crossfilter.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.js"></script>
+
+{% endblock %}
+

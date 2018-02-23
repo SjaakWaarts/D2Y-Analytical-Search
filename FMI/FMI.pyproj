@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Name>FMI</Name>
+    <RootNamespace>FMI</RootNamespace>
+    <PythonRunWebServerCommandArguments>runserver --settings $(DjangoSettingsModule) %SERVER_PORT% $(CommandLineArguments)</PythonRunWebServerCommandArguments>
+    <InterpreterId>Global|PythonCore|3.5</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>1ff17db8-25ea-4eb4-ae77-d565d65fbfaf</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectTypeGuids>{5F0BE9CA-D677-4A4D-8806-6076C0FAAD37};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>manage.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <LaunchProvider>Web launcher</LaunchProvider>
+    <OutputPath>.</OutputPath>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="app\api.py" />
+    <Compile Include="app\apps.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\pandora.py" />
+    <Compile Include="app\conf.py" />
+    <Compile Include="app\load.py" />
+    <Compile Include="app\r_and_d.py" />
+    <Compile Include="app\guide.py" />
+    <Compile Include="app\fmi_admin.py" />
+    <Compile Include="app\crawl.py" />
+    <Compile Include="app\azure.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\excitometer.py" />
+    <Compile Include="app\wb_excel.py" />
+    <Compile Include="app\workbooks.py" />
+    <Compile Include="app\product.py" />
+    <Compile Include="app\market.py" />
+    <Compile Include="app\elastic.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\forms.py" />
+    <Compile Include="app\models.py" />
+    <Compile Include="app\scrape_ds.py" />
+    <Compile Include="app\sentiment.py" />
+    <Compile Include="app\facts.py" />
+    <Compile Include="app\survey.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="seeker\admin.py" />
+    <Compile Include="seeker\apps.py" />
+    <Compile Include="seeker\cards.py" />
+    <Compile Include="seeker\compiler.py" />
+    <Compile Include="seeker\facets.py" />
+    <Compile Include="seeker\management\commands\dumpindex.py" />
+    <Compile Include="seeker\management\commands\loadindex.py" />
+    <Compile Include="seeker\management\commands\reindex.py" />
+    <Compile Include="seeker\management\commands\__init__.py" />
+    <Compile Include="seeker\management\__init__.py" />
+    <Compile Include="seeker\mapping.py" />
+    <Compile Include="seeker\middleware.py" />
+    <Compile Include="seeker\migrations\0001_initial.py" />
+    <Compile Include="seeker\migrations\0002_auto_20150507_0134.py" />
+    <Compile Include="seeker\migrations\__init__.py" />
+    <Compile Include="seeker\models.py" />
+    <Compile Include="seeker\registry.py" />
+    <Compile Include="app\templatetags\seeker.py" />
+    <Compile Include="app\templatetags\__init__.py" />
+    <Compile Include="seeker\dashboard.py" />
+    <Compile Include="seeker\summary.py" />
+    <Compile Include="seeker\utils.py" />
+    <Compile Include="seeker\seekerview.py" />
+    <Compile Include="seeker\__init__.py" />
+    <Compile Include="app\tests.py" />
+    <Compile Include="app\views.py" />
+    <Compile Include="app\__init__.py" />
+    <Compile Include="manage.py" />
+    <Compile Include="FMI\__init__.py" />
+    <Compile Include="FMI\settings.py" />
+    <Compile Include="FMI\urls.py" />
+    <Compile Include="FMI\wsgi.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="app\" />
+    <Folder Include="app\migrations\" />
+    <Folder Include="app\static\app\media\" />
+    <Folder Include="app\templates\registration\" />
+    <Folder Include="seeker\" />
+    <Folder Include="seeker\management\" />
+    <Folder Include="seeker\management\commands\" />
+    <Folder Include="seeker\management\commands\__pycache__\" />
+    <Folder Include="seeker\management\__pycache__\" />
+    <Folder Include="seeker\migrations\" />
+    <Folder Include="seeker\migrations\__pycache__\" />
+    <Folder Include="app\templates\app\seeker\" />
+    <Folder Include="app\templates\app\seeker\facets\" />
+    <Folder Include="app\templatetags\" />
+    <Folder Include="app\templatetags\__pycache__\" />
+    <Folder Include="seeker\__pycache__\" />
+    <Folder Include="app\static\" />
+    <Folder Include="app\static\app\" />
+    <Folder Include="app\static\app\content\" />
+    <Folder Include="app\static\app\fonts\" />
+    <Folder Include="app\static\app\scripts\" />
+    <Folder Include="app\templates\" />
+    <Folder Include="app\templates\app\" />
+    <Folder Include="FMI\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\static\app\content\bootstrap-theme.min.css" />
+    <Content Include="app\static\app\content\dashboard.css" />
+    <Content Include="app\static\app\content\jquery-3.2.1.js" />
+    <Content Include="app\static\app\content\jquery-3.2.1.min.js" />
+    <Content Include="app\static\app\content\jquery-ui.css" />
+    <Content Include="app\static\app\content\jquery-ui.min.css" />
+    <Content Include="app\static\app\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="app\static\app\media\CFT_CI.jpg" />
+    <Content Include="app\static\app\media\CFT_Ingr.jpg" />
+    <Content Include="app\static\app\media\CI2.jpg" />
+    <Content Include="app\static\app\media\cosmetics.jpg" />
+    <Content Include="app\static\app\media\excitometer.jpg" />
+    <Content Include="app\static\app\media\Feedly2.jpg" />
+    <Content Include="app\static\app\media\female.jpg" />
+    <Content Include="app\static\app\media\fragrantica.png" />
+    <Content Include="app\static\app\media\guide.jpg" />
+    <Content Include="app\static\app\media\lavender.jpg" />
+    <Content Include="app\static\app\media\male.jpg" />
+    <Content Include="app\static\app\media\malefemale.jpg" />
+    <Content Include="app\static\app\media\mi.jpg" />
+    <Content Include="app\static\app\media\r_and_d.jpg" />
+    <Content Include="app\static\app\media\SDM.jpg" />
+    <Content Include="app\static\app\scripts\card.js" />
+    <Content Include="app\static\app\scripts\d3.layout.cloud.js" />
+    <Content Include="app\static\app\scripts\insight.js" />
+    <Content Include="app\static\app\scripts\platformsearch.js" />
+    <Content Include="app\static\app\scripts\guide.js" />
+    <Content Include="app\static\app\scripts\loadresults.js" />
+    <Content Include="app\static\app\scripts\crossfilter.js" />
+    <Content Include="app\static\app\scripts\crossfilter.min.js" />
+    <Content Include="app\static\app\scripts\jquery-ui.min.js" />
+    <Content Include="app\static\app\scripts\jquery.min.js" />
+    <Content Include="app\static\app\scripts\radarchart.js" />
+    <Content Include="app\static\app\scripts\scrape.js" />
+    <Content Include="app\static\app\scripts\scraperesults.js" />
+    <Content Include="app\static\app\scripts\charts.js" />
+    <Content Include="app\static\app\scripts\storyboard.js" />
+    <Content Include="app\static\app\scripts\seeker.js" />
+    <Content Include="app\static\app\scripts\product.js" />
+    <Content Include="app\templates\app\base.html" />
+    <Content Include="app\templates\app\api_csrftoken.html" />
+    <Content Include="app\templates\app\load.html" />
+    <Content Include="app\templates\app\r_and_dresults.html" />
+    <Content Include="app\templates\app\r_and_d.html" />
+    <Content Include="app\templates\app\guide.html" />
+    <Content Include="app\templates\app\fmi_admin.html" />
+    <Content Include="app\templates\app\crawl.html" />
+    <Content Include="app\templates\app\loadresults.html" />
+    <Content Include="app\templates\app\facts.html" />
+    <Content Include="app\templates\app\factsresults.html" />
+    <Content Include="app\templates\app\platform_admin.html" />
+    <Content Include="app\templates\app\scent_emotion.html" />
+    <Content Include="app\templates\app\excitometer.html" />
+    <Content Include="app\templates\app\scraperesults.html" />
+    <Content Include="app\templates\app\market_insight.html" />
+    <Content Include="app\templates\app\consumer_insight.html" />
+    <Content Include="app\templates\app\product_elastic.html" />
+    <Content Include="app\templates\app\scrape.html" />
+    <Content Include="app\templates\app\product_insight.html" />
+    <Content Include="app\templates\app\seeker\columnimg.html" />
+    <Content Include="app\templates\app\seeker\columndict.html" />
+    <Content Include="app\templates\app\seeker\columnlist.html" />
+    <Content Include="app\templates\app\seeker\facets\keyword.html" />
+    <Content Include="app\templates\app\seeker\facets\optionterms.html" />
+    <Content Include="app\templates\app\seeker\facets\nestedterms.html" />
+    <Content Include="app\templates\registration\login.html" />
+    <Content Include="app\templates\registration\register.html" />
+    <Content Include="app\templates\registration\register_complete.html" />
+    <Content Include="seeker\.spyderproject" />
+    <Content Include="seeker\management\commands\__pycache__\reindex.cpython-35.pyc" />
+    <Content Include="seeker\management\commands\__pycache__\__init__.cpython-35.pyc" />
+    <Content Include="seeker\management\__pycache__\__init__.cpython-35.pyc" />
+    <Content Include="seeker\migrations\__pycache__\0001_initial.cpython-35.pyc" />
+    <Content Include="seeker\migrations\__pycache__\0002_auto_20150507_0134.cpython-35.pyc" />
+    <Content Include="seeker\migrations\__pycache__\__init__.cpython-35.pyc" />
+    <Content Include="app\templates\app\seeker\column.html" />
+    <Content Include="app\templates\app\seeker\facets\range.html" />
+    <Content Include="app\templates\app\seeker\facets\terms.html" />
+    <Content Include="app\templates\app\seeker\facets\year_histogram.html" />
+    <Content Include="app\templates\app\seeker\footer.html" />
+    <Content Include="app\templates\app\seeker\form.html" />
+    <Content Include="app\templates\app\seeker\header.html" />
+    <Content Include="app\templates\app\seeker\pager.html" />
+    <Content Include="app\templates\app\seeker\results.html" />
+    <Content Include="app\templates\app\seeker\save.html" />
+    <Content Include="app\templates\app\seeker\score.html" />
+    <Content Include="app\templates\app\seeker\seeker.html" />
+    <Content Include="app\templatetags\__pycache__\seeker.cpython-35.pyc" />
+    <Content Include="app\templatetags\__pycache__\__init__.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\apps.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\facets.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\mapping.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\models.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\registry.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\utils.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\views.cpython-35.pyc" />
+    <Content Include="seeker\__pycache__\__init__.cpython-35.pyc" />
+    <Content Include="requirements.txt" />
+    <Content Include="db.sqlite3" />
+    <Content Include="app\static\app\content\bootstrap.css" />
+    <Content Include="app\static\app\content\bootstrap.min.css" />
+    <Content Include="app\static\app\content\site.css" />
+    <Content Include="app\static\app\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="app\static\app\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="app\static\app\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="app\static\app\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="app\static\app\scripts\bootstrap.js" />
+    <Content Include="app\static\app\scripts\bootstrap.min.js" />
+    <Content Include="app\static\app\scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="app\static\app\scripts\jquery-1.10.2.js" />
+    <Content Include="app\static\app\scripts\jquery-1.10.2.min.js" />
+    <Content Include="app\static\app\scripts\jquery-1.10.2.min.map" />
+    <Content Include="app\static\app\scripts\jquery.validate-vsdoc.js" />
+    <Content Include="app\static\app\scripts\jquery.validate.js" />
+    <Content Include="app\static\app\scripts\jquery.validate.min.js" />
+    <Content Include="app\static\app\scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="app\static\app\scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="app\static\app\scripts\modernizr-2.6.2.js" />
+    <Content Include="app\static\app\scripts\respond.js" />
+    <Content Include="app\static\app\scripts\respond.min.js" />
+    <Content Include="app\static\app\scripts\_references.js" />
+    <Content Include="app\templates\app\about.html" />
+    <Content Include="app\templates\app\contact.html" />
+    <Content Include="app\templates\app\index.html" />
+    <Content Include="app\templates\app\layout.html" />
+    <Content Include="app\templates\app\loginpartial.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.mht">
+      <SubType>WebBrowser</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.5" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

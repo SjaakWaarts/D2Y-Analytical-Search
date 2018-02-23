@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>{{ title }} - IFF - Insight Platform</title>
+    </head>
+    <body>
+        <form action="" method="post">
+        {% csrf_token %}
+        </form>
+        <table>
+            {% for key, value in params.items %}
+            <tr>
+                <td>{{key}}</td>
+                <td>{{value}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {{ context }}
+    </body>
+</html>

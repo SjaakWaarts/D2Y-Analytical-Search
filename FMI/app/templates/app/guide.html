@@ -1,0 +1,188 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+{% load seeker %}
+
+<form action="" method="get" class="form-horizontal" id="guide_form">
+    <!-- only for post {% csrf_token %} -->
+    <div style="display: flex">
+        <div class="iff-pane-border" style="flex: 0 0 auto; min-width:100px; margin-right: 5px;
+             resize: horizontal; overflow: auto;">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <label for="sel2">Select your Site:</label>
+                    <select name="site_select" class="form-control" id="site_select" style="margin-bottom:10px">
+                    </select>
+                    <input type="hidden" name="menu_name" value="">
+                    <input type="hidden" name="view_name" value="">
+                    <input type="hidden" name="workbook_name" value="">
+                    <input type="hidden" name="storyboard_name" value="">
+                    <input type="hidden" name="dashboard_name" value="">
+                    <input type="hidden" name="benchmark" value="">
+                    <input type="hidden" name="tile_facet_field" value="">
+                    <input type="hidden" name="tile_facet_value" value="">
+                    <div class="vertical-menu" id="site_menu"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="iff-pane-border" style="flex: 5 5 100%; padding-bottom:10px; padding-top:10px; min-width:800px">
+            <ul id="breadcrumb_div" class="breadcrumb"></ul>
+            <ul class="nav nav-tabs" id="tabs">
+                <li class="active"><a href="#site_menu_views_tab" data-toggle="tab">Views</a></li>
+                <li class=""><a href="#filters_tab" data-toggle="tab">Filters</a></li>
+                <li class=""><a href="#results_tab" data-toggle="tab">Results</a></li>
+                <li class=""><a href="#storyboard_tab" data-toggle="tab">Storyboard</a></li>
+            </ul>
+
+            <div class="tab-content" >
+                <div class="tab-pane active" id="site_menu_views_tab" style="min-height: 500px">
+                    <div class="container-fluid">
+                        <div class="panel panel-primary" >
+                            <div class="panel-body" id="view_style_div" style="min-height: 500px">
+                                <div id="site_menu_views_div" style="display: flex; flex-wrap: wrap;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="filters_tab" style="min-height: 500px">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary" style="min-height: 500px; padding: 5px">
+                                    <div class="panel-body">
+                                        <div id="gallery_div"></div>
+                                        <div id="facet_div"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="results_tab" style="min-height: 500px">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                               <div class="panel panel-primary" style="min-height: 500px">
+                                    <div class="panel-body" id="results_style_div">
+                                        <div class="row">
+                                            <div id="images_div"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div id="carousel_names_div"></div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div id="carousel_div" class="carousel slide" data-ride="carousel">
+                                                    <div class="container-fluid"><div class="row"><div class="col-md-12" style="min-height: 30px; background-color: #f5f3f3">
+                                                        <div class="carousel-controls">
+                                                            <ol id="carousel_ol" class="carousel-indicators"></ol>
+                                                            <!-- Left and right controls -->
+                                                            <a class="left carousel-control" href="#carousel_div" data-slide="prev">
+                                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                                <span class="sr-only">Previous</span>
+                                                            </a>
+                                                            <a class="right carousel-control" href="#carousel_div" data-slide="next">
+                                                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                                                <span class="sr-only">Next</span>
+                                                            </a>
+                                                        </div>
+                                                    </div></div></div>
+                                                    <div class="container-fluid"><div class="row"><div class="col-md-12">
+                                                        <div id="carousel_slides_div" class="carousel-inner"></div>
+                                                    </div></div></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="storyboard_tab">
+                    <p></p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Dashboard:</label>
+                                    <select name="storyboard" class="form-control" id="dashboard_select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Benchmark:</label>
+                                    <select name="benchmark_select" class="form-control" id="benchmark_select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Tile-Facet:</label>
+                                    <select name="tile_facet_select" class="form-control" id="tile_facet_select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sel1">Select Tile-Value:</label>
+                                    <select name="tile_value_select" class="form-control" id="tile_value_select">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="container-fluid iff-padding-0" id="dashboard_images_div"></div>
+                                <div class="container-fluid iff-padding-0" id="dashboard_div"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="configuration_editor_div" class="iff-pane-border collapse"
+             style="flex: 0 0 auto; min-width:100px; margin-right: 5px; padding: 5px;
+             resize: horizontal; overflow: auto;">
+            <div class="panel panel-default">
+                <div class="panel-heading">Configuration Editor</div>
+                <div class="panel-body">
+                    <div id="conf_card_div">
+                        <label></label><br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/radarchart.js' %}"></script>
+        <script src="{% static 'app/scripts/d3.layout.cloud.js' %}"></script>
+        <script src="{% static 'app/scripts/charts.js' %}"></script>
+        <script src="{% static 'app/scripts/card.js' %}"></script>
+        <script src="{% static 'app/scripts/storyboard.js' %}"></script>
+        <script src="{% static 'app/scripts/guide.js' %}"></script>
+
+<script>
+    //var csrftoken = '{{ csrf_token }}';
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    var insight_api = '{{ insight_api }}';
+    set_hidden_param("benchmark", "{{benchmark}}");
+    get_workbook_dashboard_names();
+    guided_menu("{{site_name}}", "{{menu_name}}", "{{view_name}}", {{ sites|safe }}, {{ site_views|safe }});
+</script>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>IFF Insight Platform</h1>
+    <p class="lead">Discover meaningful, creative and actionable Insights</p>
+</div>
+<div class="iff-box-content">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Product Insights</h2>
+            <p>
+                Find all you need to know about both IFF and market products from IFF applications such as 
+                ScentEmotions. Combine these data with articles and reviews on industry websites to reveal 
+                hidden insights and inspiration.</p>
+            <p><a class="btn btn-primary" href="{% url 'product_insight' %}">Product Insights &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Consumer Insights</h2>
+            <p>
+                Explore the central repository of IFF's CI results. Search norms, facts and past analyses 
+                with Keywords and Facets and see your results in graph-form and ranked lists.
+            </p>
+            <p><a class="btn btn-primary" href="{% url 'consumer_insight' %}">Consumer Insights &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Market Insights</h2>
+            <p>Define the subjects you want to follow and results from different news feed sites and the 
+               Market Intelligence site will automatically appear.</p>
+            <p><a class="btn btn-primary" href="{% url 'market_insight' %}">Market Insights &raquo;</a></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Scent Emotion</h2>
+            <p>
+                Use Scent Emotion for both the Creative and Marketing response to a fragrance brief. It helps you in
+                finding the right Ingredients and Fragrances to meet consumer demand. It does this by expressing
+                the sensorial associations of fragrances in terms of emotion, mood, color, texture.
+            </p>
+            <p>
+            <p><a class="btn btn-primary" href="{% url 'scent_emotion' %}">Scent Emotion &raquo;</a></p>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>sub-Platform - Site-Menu</h2>
+            <p>
+                Within the Insight Platform own dedicated Platforms can be configured. These sub-Platforms act as web sites with
+                a Menu on the left and a Result area on the right. The content of the result area depends on the choosen menu item and
+                can vary from a list to a dashboard.
+            </p>
+            <p><a class="btn btn-primary" href="{% url 'guide' %}">Platform &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Platform Search</h2>
+            <input type="text" class="form-control" placeholder="Platform Search" name="platform_search_q" id="platform_search_q" value="{{ keywords_q }}" />
+            <div class="controls form-inline">
+            <label for="platform_search_select">Platform Search Results</label>
+            </div>
+            <select name="platform_search_select" class="form-control facet-select" id="platform_search_select" multiple="multiple" onchange="platform_search_onchange(this)">
+                <option value="dataset"></option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'app/scripts/platformsearch.js' %}"></script>
+
+<script>
+
+</script>
+
+{% endblock %}
+
+

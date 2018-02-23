@@ -1,0 +1,110 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Crawl Web Sites {{ title }} <small>Page content is scraped and indexed on {{ es_hosts.0.host }}</small></h1>
+</div>
+
+<form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Load and Index an Excel (xlsx) file</h4>
+                            {{ form.excel_choices_field.label_tag }} {{ form.excel_choices_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.excel_filename_field.label_tag }} {{ form.excel_filename_field }}<br />
+                            {{ form.excelmap_filename_field.label_tag }} {{ form.excelmap_filename_field }}<br />
+                            {{ form.indexname_field.label_tag }}<br /> {{ form.indexname_field }}
+                         </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="load_excel" class="btn btn-primary">Load and Index an Excel File
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Load Scent Emotion <a href="http://apps.iff.com/CFT" target="_blank">Scent Emotion site</a></h4>
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.cft_filename_field.label_tag }} {{ form.cft_filename_field }}
+                         </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="load_scentemotion" class="btn btn-primary">Load Scent Emontion
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Load Survey <a href="https://teamsites.iff.com/fragrances/ods" target="_blank">CI Surveys</a></h4>
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.ci_filename_field.label_tag }} {{ form.ci_filename_field }}
+                            {{ form.cimap_filename_field.label_tag }} {{ form.cimap_filename_field }}
+                         </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="map_survey" class="btn btn-primary">Map and Crawl CI Survey
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% if form.errors %}
+            <p class="validation-summary-errors">Errors detected.</p>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error">
+                <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</form>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+
+{% endblock %}
+
