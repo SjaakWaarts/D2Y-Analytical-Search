@@ -418,7 +418,7 @@ def crawl_feedly(from_date, rss_field):
     newerthan = "{:.0f}".format(ms)
     headers = {
         #sjaak.waarts@gmail.com (expires on 2018-feb-02)
-        "Authorization" : "A1j2bsImQdCENT7FyWxSWABu7_KwSQOKNvAySLwJQlQT3QoRlpur6iG56Xju8owoOfMF7byi1ApQUIHbUpsEBoFH-CijTCUi72hl1U1MG7eaY07ctFiEbL-e9D17yUdq3OT3iRoE04F0_1h-JcUBP513gnObI0JxD0LQk4bagAv3b22ot3jbXLoLoQgBPbBf4eKS97oyGntWM_3GMa66m1ElrAeP5R42V25WPqXZmmEwAouivQp31kDLxqFLIA:feedlydev"
+        "Authorization" : "A3lajsSnIJ0uxZvzxFGmFwWxhaZaxf0oLsGiGAtcKA2lkp4ZglRPuICG5zZf0Kp69GEU4KvunaUfZ923CTJq1FarMQWtzXA2EwIXarXtpdyFhRoR4lIODIVOPmwnwpct__hlmlrkjIW_OTcrb_SS9BjhgqUuVzuo6nIFu2K4Xi8x3vdGF6Y6S8hY2xNDhBOnuRKmFKljyMHXJSQj1XKGorGoaNWqtz29AWeEu1Wlyenv5WTmyddByN-4aFII:feedlydev"
         }
 
     params_streams = {

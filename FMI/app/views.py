@@ -127,6 +127,7 @@ def excitometer_view(request):
     if request.method == 'POST':
         form = excitometer_form(request.POST)
         if form.is_valid():
+            uptake_field = form.cleaned_data['uptake_field']
             IPC_field = form.cleaned_data['IPC_field']
             correlations_field = form.cleaned_data['correlations_field']
             FITTE_norm_field = form.cleaned_data['FITTE_norm_field']
@@ -135,7 +136,8 @@ def excitometer_view(request):
             type_field = form.cleaned_data['type_field']
             regulator_field = form.cleaned_data['regulator_field']
             if 'uptake' in form.data:
-                correlation_li = excitometer.correlate(IPC_field, correlations_field, FITTE_norm_field, CIU_field, regions_field, type_field, regulator_field)
+                correlation_li = excitometer.correlate(uptake_field, IPC_field, correlations_field, FITTE_norm_field,
+                                                       CIU_field, regions_field, type_field, regulator_field)
                 tiles_d = excitometer.uptake(correlations_field)
                 if correlation_li is None or tiles_d is None:
                     form.add_form_error("Uptake failed, first retrieve ingr molecules data")

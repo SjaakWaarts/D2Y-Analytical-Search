@@ -64,7 +64,7 @@ storyboard = [
     },
     ]
 
-def correlate(IPC_field, correlations_field, FITTE_norm_field, CIU_field, regions_field, type_field, regulator_field):
+def correlate(uptake_field, IPC_field, correlations_field, FITTE_norm_field, CIU_field, regions_field, type_field, regulator_field):
     global em_df
 
     # use is to compare with None
@@ -97,6 +97,9 @@ def correlate(IPC_field, correlations_field, FITTE_norm_field, CIU_field, region
         em_df.loc[ix,'cor_regions'] = cor_regions
         em_df.loc[ix,'cor_natural'] = cor_natural
         em_df.loc[ix,'cor_total'] = cor_bucket + cor_ciu + cor_fitte + cor_regions + cor_natural
+        if uptake_field != '':
+            if row['uptake'] != uptake_field:
+                em_df.loc[ix,'cor_total'] = 0
 
     em_df.sort_values(by=['cor_total'], ascending=False, inplace=True)
     em_df.reset_index(drop=True, inplace=True)
@@ -188,7 +191,7 @@ def retrieve_ingredients():
         })
     r = requests.get(url + "/" + doc_type + "/_search", headers=headers, data=query)
     results = json.loads(r.text)
-    em_df = pd.DataFrame(columns=('IPC', 'name', 'year', 'nr_of_IPCs', 'nr_of_IPCs_SC', 'selling_IPCs', 'FITTE_score',
+    em_df = pd.DataFrame(columns=('IPC', 'name', 'uptake', 'year', 'nr_of_IPCs', 'nr_of_IPCs_SC', 'selling_IPCs', 'FITTE_score',
                                   'FITTE_norm', 'regions', 'flavor_classes', 'sales_val', 'sales_vol', 'tech_vol',
                                   'bucket', 'cost', 'use_level', 'low_medium_high', 'CIU', 'regulator', 'yearxx'))
     rownr = 0
@@ -198,7 +201,8 @@ def retrieve_ingredients():
         for field in em_df.columns:
             #s[field] = hit['_source'][field]
             row.append(hit['_source'][field])
-        em_df.loc[hit['_source']['IPC']] = row
+        #em_df.loc[hit['_source']['IPC']] = row, IPC is no longer unique with the different uptake sets
+        em_df.loc[hit['_source']['id']] = row
         rownr = rownr + 1
     return True
 

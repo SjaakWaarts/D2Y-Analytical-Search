@@ -57,8 +57,8 @@ CORS_ALLOW_HEADERS = default_headers + (
 
 #ES_HOSTS = [{'host': '108.61.167.27'}]
 #ES_HOSTS = [{'host': '10.20.33.33'}]
-ES_HOSTS = [{'host': '10.20.33.102'}]
-#ES_HOSTS = [{'host': 'localhost'}]
+#ES_HOSTS = [{'host': '10.20.33.102'}]
+ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
 

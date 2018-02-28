@@ -618,6 +618,7 @@ es_indicis = {
         'properties' : {
             'IPC'           : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
             'name'          : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'uptake'        : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
             'year'          : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
             'nr_of_IPCs'    : {'type' : 'integer'},
             'nr_of_IPCs_SC' : {'type' : 'integer'},
@@ -641,6 +642,7 @@ es_indicis = {
         'facets'        : [
             seeker.TermsFacet("IPC.keyword", label = "IPC", visible_pos=0),
             seeker.TermsFacet("name.keyword", label = "Name", visible_pos=0),
+            seeker.TermsFacet("uptake.keyword", label = "Uptake", visible_pos=0),
             seeker.TermsFacet("year.keyword", label = "Year", visible_pos=0, order={"_term":"asc"}),
             seeker.TermsFacet("bucket.keyword", label = "Bucket", visible_pos=0),
             seeker.TermsFacet("flavor_classes.keyword", label = "Flavor Classes", visible_pos=0),
@@ -936,8 +938,8 @@ workbooks = {
     'ingr_molecules' : {
         'es_index'      : es_indicis['ingr_molecules'],
         'url'           : '/search_workbook?',
-        'display'       : ["IPC", "name", "year", "bucket", "FITTE_norm", "CIU", "regulator"],
-        'facets'        : ["IPC.keyword", "name.keyword", "year.keyword", "bucket.keyword", "flavor_classes.keyword", "regulator.keyword"],
+        'display'       : ["IPC", "name", "uptake", "year", "bucket", "FITTE_norm", "CIU", "regulator"],
+        'facets'        : ["IPC.keyword", "name.keyword", "uptake.keyword", "year.keyword", "bucket.keyword", "flavor_classes.keyword", "regulator.keyword"],
         'tiles'         : ["year.keyword", "regulator.keyword", "bucket.keyword", "flavor_classes.keyword"],
         'charts'        : ingr_molecules_dashboard,
         'dashboard_data': 'pull',

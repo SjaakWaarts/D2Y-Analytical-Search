@@ -24,6 +24,7 @@ class BootstrapAuthenticationForm(AuthenticationForm):
                                    'placeholder':'Password'}))
 
 class excitometer_form(forms.Form):
+    uptake_field = forms.CharField(label='Uptake', max_length=18, required = False, initial = 'one')
     IPC_field = forms.CharField(label='new IPC', max_length=18, required = True, initial = '')
     correlations_field = forms.IntegerField(label='Nr of Top Correlations', initial = 3)
     FITTE_norm_field = forms.FloatField(label='FITTE', initial = 0)
