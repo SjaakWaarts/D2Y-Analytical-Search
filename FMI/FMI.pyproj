@@ -72,8 +72,6 @@
     <Compile Include="seeker\management\__init__.py" />
     <Compile Include="seeker\mapping.py" />
     <Compile Include="seeker\middleware.py" />
-    <Compile Include="seeker\migrations\0001_initial.py" />
-    <Compile Include="seeker\migrations\0002_auto_20150507_0134.py" />
     <Compile Include="seeker\migrations\__init__.py" />
     <Compile Include="seeker\models.py" />
     <Compile Include="seeker\registry.py" />
@@ -254,6 +252,7 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.5" />
+    <InterpreterReference Include="Global|PythonCore|3.6" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 

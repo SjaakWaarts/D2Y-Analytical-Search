@@ -231,7 +231,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
 
     # create mapping in excel index
     properties = {
-        'subset' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+        'subset' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
         }
     converters={}
     for map_key, map_s in mapping_df.iterrows():
@@ -250,7 +250,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
         format = map_s['format']
         type = map_s['type']
         if type == 'string':
-            properties[field] = {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            properties[field] = {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
             converters[column] = str
         elif type == 'date':
             properties[field] = {'type' : 'date'}
@@ -269,12 +269,12 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
         elif type == 'nested':
             properties[field] =  {'type' : 'nested', 
                                     'properties' : 
-                                    {'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                                    {'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                                         'prc' : {'type' : 'float'}}}
             pass
-            #properties[field] = {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            #properties[field] = {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
             #properties[field] = { 'properties' :
-            #                     { field : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}}
+            #                     { field : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}}
             #                    }
 
     mapping = json.dumps({'properties' : properties})
@@ -391,7 +391,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
                     elif type == 'date':
                         doc[field] = datetime.strptime(cell, format).strftime('%Y-%m-%d')
                         #doc[field] = datetime.strptime(cell, format).date()
-                    elif type == 'string':
+                    elif type == 'text':
                         cell = decode_cell(cell, decoder)
                         cell = str(cell)
                         if field not in doc:
@@ -494,7 +494,7 @@ def load_survey1(request, survey_filename, map_filename):
     field_map , col_map, header_map = survey.map_columns(survey_name, survey_df.columns)
     converters={}
     for col, map in col_map.items():
-        if map[3] == 'string':
+        if map[3] == 'text':
             converters[col] = str
     survey_df = pd.read_csv(ml_file, sep=';', encoding='ISO-8859-1', low_memory=False, converters=converters)
     survey_df.fillna(0, inplace=True)

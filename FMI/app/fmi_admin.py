@@ -158,12 +158,12 @@ def create_index_survey():
                     es_mapping['properties'][field] = {}
                     es_mapping['properties'][field]['type'] = 'nested'
                     es_mapping['properties'][field]['properties'] = {}
-                    es_mapping['properties'][field]['properties']['question'] = {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
-                    es_mapping['properties'][field]['properties']['answer'] = {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+                    es_mapping['properties'][field]['properties']['question'] = {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+                    es_mapping['properties'][field]['properties']['answer'] = {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
                         #'type'       : 'nested',
                         #'properties' : {
-                        #    'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        #    'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        #    'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        #    'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         #    }
                         #},
     indices_client.put_mapping(

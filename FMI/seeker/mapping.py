@@ -1,7 +1,7 @@
 ﻿from django.conf import settings
 from django.db import models
 from elasticsearch_dsl.connections import connections
-from elasticsearch_dsl.field import InnerObject
+#from elasticsearch_dsl.field import InnerObject
 from elasticsearch.helpers import bulk, scan
 import elasticsearch_dsl as dsl
 import logging
@@ -47,10 +47,10 @@ def serialize_object(obj, mapping, prepare=None):
             field = mapping[name]
             value = follow(obj, name)
             if value is not None:
-                if isinstance(value, models.Model):
-                    data[name] = serialize_object(value, field.properties) if isinstance(field, InnerObject) else six.text_type(value)
-                elif isinstance(value, models.Manager):
-                    if isinstance(field, InnerObject):
+                #if isinstance(value, models.Model):
+                #    data[name] = serialize_object(value, field.properties) if isinstance(field, InnerObject) else six.text_type(value)
+                if isinstance(value, models.Manager):
+                    if False: #isinstance(field, InnerObject):
                         data[name] = [serialize_object(v, field.properties) for v in value.all()]
                     else:
                         data[name] = [six.text_type(v) for v in value.all()]

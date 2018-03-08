@@ -57,7 +57,10 @@ CORS_ALLOW_HEADERS = default_headers + (
 
 #ES_HOSTS = [{'host': '108.61.167.27'}]
 #ES_HOSTS = [{'host': '10.20.33.33'}]
+# AWS SUSE 12.2, Python 3.4, ElasticSearch 5.2.2
 #ES_HOSTS = [{'host': '10.20.33.102'}]
+# AWS OpenSUSE Leap 43.3, Python 3.6, ElasticSearch 6.2.2
+#ES_HOSTS = [{'host': '18.196.255.228'}]
 ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
@@ -111,7 +114,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Put texts here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -152,7 +155,7 @@ WSGI_APPLICATION = 'FMI.wsgi.application'
 #)
 
 #TEMPLATE_DIRS = (
-#    # Put strings here, like "/home/html/django_templates" or
+#    # Put texts here, like "/home/html/django_templates" or
 #    # "C:/www/django/templates".
 #    # Always use forward slashes, even on Windows.
 #    # Don't forget to use absolute paths, not relative paths.

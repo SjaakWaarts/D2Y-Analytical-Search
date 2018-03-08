@@ -157,7 +157,7 @@ class Column (object):
             'highlight': highlight,
             'url': url,
             'view': self.view,
-            'user': self.view.request.user,
+            #'user': self.view.request.user,
             'query': self.view.get_keywords_q(),
         }
         params.update(self.context(result, **kwargs))

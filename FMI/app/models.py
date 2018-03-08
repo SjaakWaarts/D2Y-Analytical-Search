@@ -138,13 +138,13 @@ class Review(models.Model):
         es_type_name = 'perfume'
         es_mapping = {
             'properties' : {
-                'perfume'       : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'perfume'       : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'review_date'   : {'type' : 'date'},
                 'review'        : {'type' : 'text'},
-                'label'         : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'label'         : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'accords'       : {
                     'properties' : {
-                        'accord' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'accord' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'votes'  : {'type' : 'integer'},
                         }
                     },
@@ -299,12 +299,12 @@ class PostMap(models.Model):
         es_type_name = 'post'
         es_mapping = {
             'properties' : {
-                'editor_id'         : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'editor_id'         : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'published_date'    : {'type' : 'date'},
-                'post_category_id'  : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'title'             : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'post_category_id'  : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'title'             : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'relevance'         : {'type' : 'text'},
-                'subject'           : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'subject'           : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'topline'           : {'type' : 'text'},
                 'source'            : {'type' : 'text'},
                 'article'           : {'type' : 'text'},
@@ -413,9 +413,9 @@ class PageMap(models.Model):
         es_mapping = {
             'properties' : {
                 'posted_date'   : {'type' : 'date'},
-                'site'          : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'sub_site'      : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'section'       : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'site'          : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'sub_site'      : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'section'       : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'title'         : {'type' : 'text'},
                 'url'           : {'type' : 'text'},
                 'page'          : {'type' : 'text'},
@@ -528,11 +528,11 @@ class FeedlyMap(models.Model):
         es_mapping = {
             'properties' : {
                 'published_date'    : {'type' : 'date'},
-                'subset'            : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'category'          : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'feed'              : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'feed_topics'       : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                'body_topics'       : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'subset'            : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'category'          : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'feed'              : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'feed_topics'       : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'body_topics'       : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'title'             : {'type' : 'text'},
                 'url'               : {'type' : 'text'},
                 'body'              : {'type' : 'text'},
@@ -735,77 +735,77 @@ class ScentemotionMap(models.Model):
         es_type_name = 'scentemotion'
         es_mapping = {
             "properties" : {
-                "dataset"           : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "ingr_name"         : {"type" : "string", "fields" : {"raw" : {"type" : "string", "index" : "not_analyzed"}}},
-                "IPC"               : {"type" : "string", "fields" : {
+                "dataset"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "ingr_name"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "IPC"               : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "supplier"          : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "olfactive"         : {"type" : "string", "fields" : {
+                "supplier"          : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "olfactive"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "region"            : {"type" : "string", "fields" : {
+                "region"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
                 "review"            : {"type" : "text"},
-                "dilution"          : {"type" : "string", "fields" : {"raw" : {"type" : "string", "index" : "not_analyzed"}}},
-                "intensity"         : {"type" : "string", "fields" : {"raw" : {"type" : "string", "index" : "not_analyzed"}}},
+                "dilution"          : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "intensity"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
                 'mood'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'smell'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'negative'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'descriptor'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'color'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'texture'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'emotion'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'hedonics'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
@@ -1002,76 +1002,76 @@ class StudiesMap(models.Model):
         es_type_name = 'studies'
         es_mapping = {
             "properties" : {
-                "survey"            : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "blindcode"         : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "fragr_name"        : {"type" : "string", "fields" : {"raw" : {"type" : "string", "index" : "not_analyzed"}}},
-                "IPC"               : {"type" : "string", "fields" : {
+                "survey"            : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "blindcode"         : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "fragr_name"        : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "IPC"               : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "CRP"               : {"type" : "string"},
-                "olfactive"         : {"type" : "string", "fields" : {
+                "CRP"               : {"type" : "text"},
+                "olfactive"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "region"            : {"type" : "string", "fields" : {
+                "region"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "intensity"         : {"type" : "string", "fields" : {"raw" : {"type" : "string", "index" : "not_analyzed"}}},
+                "intensity"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
                 'perception'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'method'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'product_form'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'freshness'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'cleanliness'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'lastingness'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'intensity'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'liking'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
@@ -1079,56 +1079,56 @@ class StudiesMap(models.Model):
                 'concept'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'emotion'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'fragrattr'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'mood'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'smell'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'suitable_product'         : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'suitable_stage'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
                 'hedonics'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'val' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         'prc' : {'type' : 'float'},
                         }
                     },
@@ -1397,183 +1397,183 @@ class SurveyMap(models.Model):
         es_type_name = 'survey'
         es_mapping = {
             "properties" : {
-                "survey"            : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "survey"            : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 'published_date'    : {'type' : 'date'},
-                #"category"          : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                #"category"          : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 'category'          : {
                     'properties' : {
-                        'cat' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'subcat'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'cat' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'subcat'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
-                "stage"             : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "resp_id"           : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "country"           : {"type" : "string", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "cluster"           : {"type" : "string", "fields" : {
+                "stage"             : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "resp_id"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "country"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "cluster"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "gender"            : {"type" : "string", "fields" : {
+                "gender"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "age"               : {"type" : "string", "fields" : {
+                "age"               : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "ethnics"           : {"type" : "string", "fields" : {
+                "ethnics"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "city"              : {"type" : "string", "fields" : {
+                "city"              : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "regions"           : {"type" : "string", "fields" : {
+                "regions"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "education"         : {"type" : "string", "fields" : {
+                "education"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "income"            : {"type" : "string", "fields" : {
+                "income"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "blindcode"            : {"type" : "string", "fields" : {
+                "blindcode"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "brand"             : {"type" : "string", "fields" : {
+                "brand"             : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "variant"           : {"type" : "string", "fields" : {
+                "variant"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "olfactive"         : {"type" : "string", "fields" : {
+                "olfactive"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "perception"        : {"type" : "string", "fields" : {
+                "perception"        : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "method"            : {"type" : "string", "fields" : {
+                "method"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
-                "product_form"      : {"type" : "string", "fields" : {
+                "product_form"      : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
                 'freshness'         : {'type' : 'integer'},
                 'cleanliness'       : {'type' : 'integer'},
                 'lastingness'       : {'type' : 'integer'},
                 'intensity'         : {'type' : 'integer'},
-                "liking"            : {"type" : "string", "fields" : {
+                "liking"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "string", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
                                        }},
 
                 'affective'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'ballot'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'behavioral'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'children'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'concept'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'descriptors'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'emotion'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'fragrattr'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'hedonics'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'mood'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'physical'              : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'smell'          : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'suitable_product'       : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 'suitable_stage'       : {
                     'type'       : 'nested',
                     'properties' : {
-                        'question' : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'answer'   : {'type' : 'string', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
                 }
