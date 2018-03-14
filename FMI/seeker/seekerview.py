@@ -514,7 +514,7 @@ class SeekerView (View):
     def get_field_sort(self, field_name):
         """
         Given a field name, returns the field name that should be used for sorting. If a mapping defines
-        a .raw sub-field, that is used, otherwise the field name itself is used if index=not_analyzed.
+        a .raw sub-field, that is used, otherwise the field name itself is used if index=false.
         """
         if field_name.endswith('.raw'):
             return field_name
@@ -529,7 +529,7 @@ class SeekerView (View):
                 return field_name
             if 'raw' in dsl_field.fields:
                 return '%s.raw' % field_name
-            elif getattr(dsl_field, 'index', None) == 'not_analyzed':
+            elif getattr(dsl_field, 'index', None) == 'false':
                 return field_name
         return None
 

@@ -15,9 +15,9 @@ from FMI.settings import BASE_DIR, ES_HOSTS
 #from elasticsearch_dsl import DocType, String, Date, Double, Long, Integer
 
 #class Account(DocType):
-#    title = String(analyzer='snowball', fields={'raw': String(index='not_analyzed')})
+#    title = String(analyzer='snowball', fields={'raw': String(index='false')})
 #    body = String(analyzer='snowball')
-#    tags = String(index='not_analyzed')
+#    tags = String(index='false')
 #    published_from = Date()
 #    account_number = Long()
 #    address = String()
@@ -197,9 +197,9 @@ def elastic_dsl():
 #connections.create_connection(hosts=['localhost'])
 
 #class Article(DocType):
-#    title = String(analyzer='snowball', fields={'raw': String(index='not_analyzed')})
+#    title = String(analyzer='snowball', fields={'raw': String(index='false')})
 #    body = String(analyzer='snowball')
-#    tags = String(index='not_analyzed')
+#    tags = String(index='false')
 #    published_from = Date()
 #    lines = Integer()
 

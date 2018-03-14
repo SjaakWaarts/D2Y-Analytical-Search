@@ -175,10 +175,10 @@ class ModelIndex (Indexable):
         return self.queryset().get(pk=self.meta.id)
 
 #RawString = dsl.String(analyzer=DEFAULT_ANALYZER, fields={
-#    'raw': dsl.String(index='not_analyzed'),
+#    'raw': dsl.String(index='false'),
 #})
 RawString = dsl.Text(analyzer=DEFAULT_ANALYZER, fields={
-    'raw': dsl.Text(index='not_analyzed'),
+    'raw': dsl.Text(index='false'),
 })
 
 """
@@ -186,10 +186,10 @@ An ``elasticsearch_dsl.String`` instance (analyzed using ``SEEKER_DEFAULT_ANALYZ
 not analyzed, suitable for aggregations, sorting, etc.
 """
 #RawMultiString = dsl.String(analyzer=DEFAULT_ANALYZER, multi=True, fields={
-#    'raw': dsl.String(index='not_analyzed'),
+#    'raw': dsl.String(index='false'),
 #})
 RawMultiString = dsl.Text(analyzer=DEFAULT_ANALYZER, multi=True, fields={
-    'raw': dsl.Text(index='not_analyzed'),
+    'raw': dsl.Text(index='false'),
 })
 """
 The same as ``RawString``, but with ``multi=True`` specified, so lists are returned.
@@ -211,8 +211,8 @@ def document_field(field):
         models.PositiveIntegerField: dsl.Long(),
         models.BooleanField: dsl.Boolean(),
         models.NullBooleanField: dsl.Boolean(),
-#        models.SlugField: dsl.String(index='not_analyzed'),
-        models.SlugField: dsl.Text(index='not_analyzed'),
+#        models.SlugField: dsl.String(index='false'),
+        models.SlugField: dsl.Text(index='false'),
         models.DecimalField: dsl.Double(),
         models.FloatField: dsl.Float(),
     }

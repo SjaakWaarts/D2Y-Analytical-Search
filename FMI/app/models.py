@@ -736,23 +736,23 @@ class ScentemotionMap(models.Model):
         es_mapping = {
             "properties" : {
                 "dataset"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "ingr_name"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "ingr_name"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "false"}}},
                 "IPC"               : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "supplier"          : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 "olfactive"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "region"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "review"            : {"type" : "text"},
-                "dilution"          : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
-                "intensity"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "dilution"          : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "false"}}},
+                "intensity"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "false"}}},
                 'mood'         : {
                     'type'       : 'nested',
                     'properties' : {
@@ -1004,21 +1004,21 @@ class StudiesMap(models.Model):
             "properties" : {
                 "survey"            : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 "blindcode"         : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
-                "fragr_name"        : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "fragr_name"        : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "false"}}},
                 "IPC"               : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "CRP"               : {"type" : "text"},
                 "olfactive"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "region"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
-                "intensity"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "not_analyzed"}}},
+                "intensity"         : {"type" : "text", "fields" : {"raw" : {"type" : "text", "index" : "false"}}},
                 'perception'         : {
                     'type'       : 'nested',
                     'properties' : {
@@ -1411,63 +1411,63 @@ class SurveyMap(models.Model):
                 "country"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 "cluster"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "gender"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "age"               : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "ethnics"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "city"              : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "regions"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "education"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "income"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "blindcode"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "brand"             : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "variant"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "olfactive"         : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "perception"        : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "method"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 "product_form"      : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
                 'freshness'         : {'type' : 'integer'},
                 'cleanliness'       : {'type' : 'integer'},
@@ -1475,7 +1475,7 @@ class SurveyMap(models.Model):
                 'intensity'         : {'type' : 'integer'},
                 "liking"            : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
-                                            "raw" : {"type" : "text", "index" : "not_analyzed"}
+                                            "raw" : {"type" : "text", "index" : "false"}
                                        }},
 
                 'affective'          : {

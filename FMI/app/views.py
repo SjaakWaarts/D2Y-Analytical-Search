@@ -4,8 +4,9 @@ Definition of views.
 
 from django.shortcuts import render, redirect, render_to_response
 from django.template.context_processors import csrf
-from django.core.urlresolvers import reverse
-# django2.0 from django.urls import reverse
+#from django.core.urlresolvers import reverse
+# django2.0
+from django.urls import reverse
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template import RequestContext
 from django.views.generic.base import TemplateView
