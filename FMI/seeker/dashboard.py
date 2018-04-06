@@ -1136,8 +1136,10 @@ def bind_chart(seekerview, chart_name, chart, hits, aggregations, facet_tile_val
     return chart_data, meta_data
 
 def bind_tile(seekerview, tiles_select, tiles_d, facets_tile, results, benchmark):
-    hits = getattr(results, 'hits', AttrList([]))
-    aggregations = getattr(results, 'aggregations', AttrDict([]))
+    #hits = getattr(results, 'hits', AttrList([]))
+    #aggregations = getattr(results, 'aggregations', AttrDict([]))
+    hits = results.get('hits', {}).get('hits', [])
+    aggregations = results.get('aggregations', {})
 
     if facets_tile == None:
         tiles_select['All'] = ['All']

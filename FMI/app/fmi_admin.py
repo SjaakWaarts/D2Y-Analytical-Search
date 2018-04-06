@@ -115,6 +115,18 @@ def create_index_mi_feedly():
         index=index_name
     )
 
+def create_index_mail():
+    indices_client = IndicesClient(models.client)
+    index_name = models.MailMap._meta.es_index_name
+    if indices_client.exists(index_name):
+        indices_client.delete(index=index_name)
+    indices_client.create(index=index_name)
+    indices_client.put_mapping(
+        doc_type=models.MailMap._meta.es_type_name,
+        body=models.MailMap._meta.es_mapping,
+        index=index_name
+    )
+
 def create_index_scentemotion():
     indices_client = IndicesClient(models.client)
     index_name = models.ScentemotionMap._meta.es_index_name
@@ -188,6 +200,8 @@ def create_index_elastic(index_choices, excel_filename):
             create_index_si_sites()
         elif index_choice == 'feedly':
             create_index_mi_feedly()
+        elif index_choice == 'mail':
+            create_index_mail()
         elif index_choice == 'scentemotion':
             create_index_scentemotion()
         elif index_choice == 'studies':

@@ -145,6 +145,38 @@
         </div>
     </div>
     <div class="row">
+       <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				                <div class="info-card-front">
+					                <img class="card-image" src="{% static "app/media/Feedly2.jpg" %}">
+				                </div>
+			                <div class="info-card-back">
+				                <h3>Feedly</h3>
+				                <p>
+                                    Analyze the Mailbox.
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Analyze the public mails. The mail you want to share can be forwarded to a dedicated mailbox. All the mails
+                            with such a mailbox are indexed and can be used for Analytical Search.
+                        </p>
+                        <p>
+                            <button type="submit" name="search_mail"  class="btn btn-primary">Search Mail
+                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         {% if form.errors %}
             <p class="validation-summary-errors">Errors detected.</p>
             {% for field in form %}

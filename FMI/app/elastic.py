@@ -231,25 +231,25 @@ def elastic_dsl():
 
 def elastic_get(index, endpoint, params):
     es_host = ES_HOSTS[0]
-    headers = {}
+    headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
     url = "http://" + host + ":9200/" + index
     data = json.dumps(params)
-    r = requests.get(url + "/" + endpoint + "/" + index, headers=headers, data=data)
+    r = requests.get(url + "/" + endpoint, headers=headers, data=data)
     results = json.loads(r.text)
     return results
 
 def elastic_put(index, endpoint, params):
     es_host = ES_HOSTS[0]
-    headers = {}
+    headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
     url = "http://" + host + ":9200/" + index
     data = json.dumps(params)
-    r = requests.put(url + "/" + endpoint + "/" + index, headers=headers, data=data)
+    r = requests.put(url + "/" + endpoint, headers=headers, data=data)
 
 def add_to_bulk(index, doc_type, data, action=None):
     if action == 'create':

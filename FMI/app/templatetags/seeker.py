@@ -59,9 +59,11 @@ def seeker_column(column, result, facets, **kwargs):
 
 @register.simple_tag
 def seeker_score(result, max_score=None, template='app/seeker/score.html'):
-    pct = result.meta.score / max_score if max_score else 0.0
+    #pct = result.meta.score / max_score if max_score else 0.0
+    score = result['_score']
+    pct = score / max_score if max_score else 0.0
     return loader.render_to_string(template, {
-        'score': result.meta.score,
+        'score': score,
         'max_score': max_score,
         'percentile': pct * 100.0,
     })

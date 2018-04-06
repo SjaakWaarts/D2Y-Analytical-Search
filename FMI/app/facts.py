@@ -98,7 +98,8 @@ def facts_survey(survey_field, facts_choices, norms_choices):
     search_tile = survey.get_aggr(search_tile, dashboard=facts_dashboard)
 
     body = search_tile.to_dict()
-    results_tile = search_tile.execute(ignore_cache=True)
+    #results_tile = search_tile.execute(ignore_cache=True)
+    results_tile = seeker.elastic_get(self.index, '_search', search_tile.to_dict())
     tiles_select = OrderedDict()
     tiles_d = {chart_name : {} for chart_name in survey.dashboard.keys()}
     seeker.dashboard.bind_tile(survey, tiles_select, tiles_d, None, results_tile, "")

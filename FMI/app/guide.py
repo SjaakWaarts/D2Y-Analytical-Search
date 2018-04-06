@@ -976,9 +976,9 @@ def site_menu_search(request, site_name):
     search = seekerview.document.search().index(index).using(using).extra(track_scores=True)
     search, keywords_q = seekerview.get_search(keywords_q=None, facets=facets, facets_keyword=None, dashboard=None, aggregate=True)
     #search = self.get_aggr(search, self.dashboard)
-    results = search.execute(ignore_cache=True)
-    aggregations = getattr(results, 'aggregations', AttrDict([]))
-    aggregations = aggregations.to_dict()
+    #results = search.execute(ignore_cache=True)
+    results = seeker.elastic_get(seekerview.index, '_search', search.to_dict())
+    aggregations = results.get('aggregations', {})
 
     #copy to list because facets is changed
     for facet in list(facets):

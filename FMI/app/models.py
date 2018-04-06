@@ -684,6 +684,161 @@ class FeedlySeekerView (seeker.SeekerView):
          }
     ]       
 
+###
+### MAIL
+###
+
+class Mail(models.Model):
+    post_id = models.IntegerField()
+    to_addr = models.TextField()
+    from_addr = models.TextField()
+    published_date = models.DateField()
+    subject = models.TextField()
+    links = models.TextField()
+    url = models.TextField()
+    body = models.TextField()
+
+class MailMap(models.Model):
+    post_id = models.IntegerField()
+    to_addr = models.TextField()
+    from_addr = models.TextField()
+    published_date = models.DateField()
+    subject = models.TextField()
+    links = models.TextField()
+    url = models.TextField()
+    body = models.TextField()
+
+    class Meta:
+        es_index_name = 'mail'
+        es_type_name = 'mail'
+        es_mapping = {
+            'properties' : {
+                'to_addr'           : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'from_addr'         : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'published_date'    : {'type' : 'date'},
+                'subject'           : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'body'              : {'type' : 'text'},
+                'links'             : {
+                                        'type'       : 'nested',
+                                        'properties' : {
+                                            'name' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                                            'url'  : {'type' : 'text', 'index': 'false'},
+                                            'body' : {'type' : 'text'},
+                                            }
+                    },
+                }
+            }
+    def es_repr(self):
+        data = {}
+        mapping = self._meta.es_mapping
+        data['_id'] = self.post_id
+        for field_name in mapping['properties'].keys():
+            data[field_name] = self.field_es_repr(field_name)
+        return data
+    def field_es_repr(self, field_name):
+        config = self._meta.es_mapping['properties'][field_name]
+        if hasattr(self, 'get_es_%s' % field_name):
+            field_es_value = getattr(self, 'get_es_%s' % field_name)(field_name)
+        else:
+            if config['type'] == 'object':
+                related_object = getattr(self, field_name)
+                field_es_value = {}
+                field_es_value['_id'] = related_object.pk
+                for prop in config['properties'].keys():
+                    field_es_value[prop] = getattr(related_object, prop)
+            else:
+                field_es_value = getattr(self, field_name)
+        return field_es_value
+    def get_es_links(self, field_name):
+        return [{'name': link[0], 'url': link[1], 'body': link[2]} for link in self.links]
+
+
+class MailSeekerView (seeker.SeekerView):
+    document = None
+    using = client
+    index = "mail"
+    page_size = 30
+    field_column_types = {'links': 'LinksColumn'}
+    facets = [
+        seeker.TermsFacet("to_addr.keyword", label = "To"),
+        seeker.TermsFacet("from_addr.keyword", label = "From"),
+        seeker.TermsFacet("subject.keyword", label = "Subject"),
+        seeker.DayHistogram("published_date", label = "Published")
+        ]
+    facets_keyword = [
+        seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k"),
+        ];
+    display = [
+        "published_date",
+        "from_addr",
+        "subject",
+        ]
+    search_children = ['links.body']
+    summary = [
+        "body"
+        ]
+    sumheader = [
+        "subject"
+        ]
+    urlfields = {
+        "subject" : ""
+        }
+    SUMMARY_URL="{}"
+
+    tabs = {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': 'hide'}
+
+    # A dashboard layout is a dictionary of tables. Each table is a list of rows and each row is a list of charts
+    # in the template this is translated into HTML tables, rows, cells and div elements
+    dashboard = {
+        'from_keyword_table' : {
+            'chart_type'  : "Table",
+            'chart_title' : "From / Keyword Doc Count",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'X_facet'     : {
+                'field'   : "from_addr.keyword",
+                'label'   : "From" },
+            'Y_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            },
+        "keyword_pie" : {
+            'chart_type': "PieChart",
+            'chart_title' : "Keyword Doc Count",
+            'data_type'  : "facet",
+            'X_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            },
+        "published_keyword_line" : {
+            'chart_type'  : "LineChart",
+            'chart_title' : "Published Year Doc Count",
+            'data_type'  : "aggr",
+            'controls'    : ['ChartRangeFilter'],
+            'X_facet'     : {
+                'field'   : "published_date",
+                'label'   : "Published",
+                'key'     : 'key_as_string',
+                'total'   : False,
+                'type'    : 'date'},
+            'Y_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            'options'     : {
+                "hAxis"   : {'format': 'yy/MMM/d'},
+                },
+            },
+        }
+    dashboard_layout = collections.OrderedDict()
+    dashboard_layout['rows1'] = [["published_keyword_line"], ["from_keyword_table", "keyword_pie"]]
+
+    storyboard = [
+        {'name' : 'initial',
+         'layout'   : dashboard_layout,
+         #'active'   : True,
+         }
+    ]       
+
 
 ###
 ### Scent Emotion (CFT - Ingredients)

@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ALLOWED_HOSTS = (
-    'localhost','108.61.167.27','172.22.66.5','naazedssv1'
+    'localhost','108.61.167.27','172.22.66.5','naazedssv1', '10.20.33.102'
 )
 
 ADMINS = (

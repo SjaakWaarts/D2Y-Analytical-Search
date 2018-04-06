@@ -120,6 +120,10 @@ class load_form(forms.Form):
     excel_choices_field = forms.MultipleChoiceField(label='Load Mode', choices=excel_choices, required=False)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'patents.xlsx')
     excelmap_filename_field = forms.CharField(label='Excel Map file', max_length=80, required = False, initial = '')
+    email_choices = (('imap', 'IMAP'), ('pop3', 'POP3'), ('smtp', 'SMTP'))
+    email_choices_field = forms.ChoiceField(label='Mail protocol', choices=email_choices, required=False)
+    email_address_field = forms.CharField(label='Your e-mail address', max_length=80, required = False, initial = '')
+    email_password_field = forms.CharField(label="Your e-main password", widget=forms.PasswordInput({'class': 'form-control','placeholder':'Password'}), required=False)
     indexname_field = forms.CharField(label='Index name', max_length=80, required = False, initial = '')
     #ci_filename_field = forms.CharField(label='CI file', max_length=40, required = False, initial = 'ChoiceModel FF USA.csv')
     def add_form_error(self, message):
@@ -131,7 +135,7 @@ class load_form(forms.Form):
 
 class fmi_admin_form(forms.Form):
     index_choices = (('conf', 'Configuration'), ('excel', 'Excel Files'), ('pi', 'Product Intelligence'), ('mi', 'MI - Market Intelligence'), ('si_sites', 'SI - Sites'),
-                     ('feedly', 'Feedly'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'))
+                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'))
     index_choices_field = forms.MultipleChoiceField(label='Web Site', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=True)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'ecosystem.xlsx')
     opml_filename_field = forms.CharField(label='OPML file', max_length=40, required = False, initial = '')

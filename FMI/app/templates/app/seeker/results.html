@@ -56,7 +56,7 @@ function summary_line(sentence, ngram) {
                 </thead>
                 <tbody>
                     {% block results %}
-                        {% for result in results %}
+                        {% for result in results.hits.hits %}
                             <tr>
                                 {% block pre-columns %}{% endblock pre-columns %}
                                 {% if show_rank and keywords_q %}

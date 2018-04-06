@@ -93,15 +93,16 @@ class Crawler:
 
     # get all the links that point outside this site
     def get_external_links(self, url, bs):
-        include_url = urlparse(url).scheme+"://"+urlparse(url).netloc
+        exclude_url = urlparse(url).scheme+"://"+urlparse(url).netloc
         links = set()
-        for link_tag in bs.findAll("a", href=re.compile("^(/|.*"+include_url+")")):
-            if link_tag.attrs['href'] is not None:
-                if link_tag.attrs['href'] not in links:
-                    if link_tag.attrs['href'].startswith('/'):
-                        links.append(include_url+link_tag.attrs['href'])
-                    else:
-                        link_tag.append(link.attrs['href'])
+        # get all the links that do not start with http
+        for link_tag in bs.findAll("a", href=re.compile("^http.+")) and link_count < self.nrpages:
+            link = link_tag.attrs['href']
+            if len(exclude_url) > 3: # ://
+                if not link_tag.attrs['href'].startswith(eclude_url):
+                    links.add(link)
+            else:
+                links.add(link)
         return links
 
     # for this page (url) scrape its context and map this to the elasticsearch record (pagemap)

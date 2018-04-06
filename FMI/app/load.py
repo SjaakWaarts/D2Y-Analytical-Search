@@ -15,13 +15,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from imapclient import IMAPClient
+import html2text
+import email
 import re
 from requests_ntlm import HttpNtlmAuth
 from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
-
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 from elasticsearch_dsl.connections import connections
@@ -30,6 +32,7 @@ from elasticsearch.helpers import bulk
 import app.models as models
 import app.elastic as elastic
 import app.survey as survey
+import app.mail as mail
 from FMI.settings import BASE_DIR, ES_HOSTS
 
 driver = None
@@ -195,7 +198,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
     global driver
 
     es_host = ES_HOSTS[0]
-    headers = {}
+    headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
@@ -414,6 +417,76 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
 
     #if driver != None:
     #    driver.quit()
+    return True
+
+def load_mail(email_choices, email_address, email_password):
+    #server = IMAPClient('imap.kpnmail.nl', use_uid=True)
+    server = IMAPClient('imap.deheerlijkekeuken.nl', use_uid=True, ssl=False)
+    resp = server.login(email_address, email_password)
+    resp = resp.decode()
+    if resp != "LOGIN Ok.":
+        return False
+    select_info = server.select_folder('INBOX')
+    print('%d messages in INBOX' % select_info[b'EXISTS'])
+    messages = server.search(['ALL'])
+    response = server.fetch(messages, ['ENVELOPE', 'RFC822', 'BODY[TEXT]'])
+    server.logout()
+
+    text_maker = html2text.HTML2Text()
+    text_maker.ignore_links = True
+    text_maker.bypass_tables = False
+    bulk_data = []
+    count = 0
+    total_count = 0
+    for msgid, raw_email in response.items():
+        envelope = raw_email[b'ENVELOPE']
+        post_id = envelope.message_id.decode()
+        subject = envelope.subject.decode()
+        from_addr = envelope.from_[0].mailbox.decode() + '@' + envelope.from_[0].host.decode()
+        to_addr = envelope.to[0].mailbox.decode() + '@' + envelope.to[0].host.decode()
+        print('ID #%d: "%s" received %s' % (msgid, subject, envelope.date))
+        raw_email_string = raw_email[b'RFC822'].decode('utf-8')
+        email_message = email.message_from_string(raw_email_string)
+        body = ""
+        # this will loop through all the available multiparts in mail
+        for part in email_message.walk():
+            if part.get_content_type() == "text/plain": # ignore attachments
+                body = part.get_payload(decode=True)
+                body = body.decode('utf-8')
+                links = set()
+            if part.get_content_type() == "text/html": # ignore attachments
+                body = part.get_payload(decode=True)
+                body = body.decode('utf-8').strip()
+                bs = BeautifulSoup(body, "lxml")
+                links = mail.get_href_links(subject, bs)
+                link_bodies = mail.get_href_link_bodies(links)
+                #body = text_maker.handle(body)
+                break
+        body.replace("\r\n", " ")
+        body.replace("\n", " ")
+        body.replace("  ", " ")
+        mail_doc = models.MailMap()
+        mail_doc.post_id = msgid
+        mail_doc.to_addr = to_addr
+        mail_doc.from_addr = from_addr
+        mail_doc.published_date = envelope.date
+        #mail_doc.links = [link[0] for link in links]
+        mail_doc.links = link_bodies
+        mail_doc.subject = subject
+        mail_doc.url = ""
+        mail_doc.body = body
+        data = elastic.convert_for_bulk(mail_doc, 'update')
+        bulk_data.append(data)
+        count = count + 1
+        if count > 100:
+            bulk(models.client, actions=bulk_data, stats_only=True)
+            total_count = total_count + count
+            print("load_mail: written another batch, total written {0:d}".format(total_count))
+            bulk_data = []
+            count = 1
+
+    bulk(models.client, actions=bulk_data, stats_only=True)
+
     return True
 
 

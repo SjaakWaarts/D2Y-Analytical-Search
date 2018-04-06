@@ -69,11 +69,13 @@ class Facet (object):
         return search
 
     def data(self, response):
+        aggregations = response.get('aggregations', {})
         try:
             #print("Facet.data", self.name)
-            return response.aggregations[self.name].to_dict()
+            #return response.aggregations[self.name].to_dict()
+            return aggregations[self.name]
         except:
-            if self.name in response.aggregations:
+            if self.name in aggregations:
                 pass
                 #print("Facet.data failed", response.aggregations[self.name])
             else:
@@ -736,13 +738,14 @@ class KeywordFacet (TermsFacet):
         return search
 
     def data(self, response):
+        aggregations = response.get('aggregations', {})
         try:
             #print("KeywordFacet.data", self.name)
-            return response.aggregations[self.name].to_dict()
+            return aggregations[self.name]
         except:
-            if self.name in response.aggregations:
+            if self.name in aggregations:
                 pass
-                #print("KeywordFacet.data failed", response.aggregations[self.name])
+                #print("KeywordFacet.data failed", aggregations[self.name])
             else:
                 pass
                 #print("KeywordFacet.data failed, no aggregations")
@@ -750,8 +753,8 @@ class KeywordFacet (TermsFacet):
 
     def buckets(self, aggregations):
         buckets = OrderedDict()
-        if type(aggregations['buckets']) == AttrDict:
-            for keyword, bucket in aggregations['buckets'].to_dict().items():
+        if type(aggregations['buckets']) == AttrDict  or type(aggregations['buckets']) == dict:
+            for keyword, bucket in aggregations['buckets'].items():
                 bucket['key'] = keyword
                 buckets[keyword] = bucket
         else:
@@ -768,8 +771,9 @@ class GlobalTermsFacet (TermsFacet):
         return search
 
     def data(self, response):
+        aggregations = response.get('aggregations', {})
         print("GlobalTemrsFacet.data", self.name)
-        return response.aggregations[self.field][self.field].to_dict()
+        return aggregations[self.field][self.field]
 
 
 class YearHistogram (Facet):

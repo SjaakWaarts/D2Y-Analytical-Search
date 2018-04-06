@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>Crawl Web Sites {{ title }} <small>Page content is scraped and indexed on {{ es_hosts.0.host }}</small></h1>
+  <h1>Load Datasets {{ title }} <small>A dataset is loaded and indexed on {{ es_hosts.0.host }}</small></h1>
 </div>
 
 <form action="" method="post" class="form-horizontal">
@@ -24,6 +24,29 @@
                          </div>
                         <div class="col-md-3">
                             <button type="submit" name="load_excel" class="btn btn-primary">Load and Index an Excel File
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Load your mailbox/folder</h4>
+                            {{ form.email_choices_field.label_tag }} {{ form.email_choices_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.email_address_field.label_tag }} {{ form.email_address_field }}<br />
+                            {{ form.email_password_field.label_tag }} {{ form.email_password_field }}<br />
+                         </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="load_mail" class="btn btn-primary">Load and Index an Mailbox
                                 <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
                             </button>
                         </div>

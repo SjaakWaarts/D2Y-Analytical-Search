@@ -66,6 +66,7 @@ urlpatterns = [
     url(r'^search_workbook$', app.views.search_workbook, name='search_workbook'),
     url(r'^search_mi$', models.PostSeekerView.as_view(), name='search_mi'),
     url(r'^search_feedly$', models.FeedlySeekerView.as_view(), name='search_feedly'),
+    url(r'^search_mail$', models.MailSeekerView.as_view(), name='search_mail'),
     url(r'^search_si_sites/$', models.PageSeekerView.as_view(), name='search_si_sites'),
     url(r'^search_excel/$', models.ExcelSeekerView.as_view(), name='search_excel'),
     

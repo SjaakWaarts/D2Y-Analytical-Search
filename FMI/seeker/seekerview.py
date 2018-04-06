@@ -13,12 +13,13 @@ import glob, os
 from elasticsearch_dsl.utils import AttrList, AttrDict
 #from seeker.templatetags.seeker import seeker_format
 from app.templatetags.seeker import seeker_format
-from FMI.settings import BASE_DIR
+from FMI.settings import BASE_DIR, ES_HOSTS
 from seeker.summary import get_ngrams, clean_input
 import seeker.models
 import seeker.dashboard
 import seeker.cards
 import seeker.facets
+from seeker.seekercolumn import Column, NestedColumn, LinksColumn
 from .mapping import DEFAULT_ANALYZER
 import collections
 from collections import OrderedDict
@@ -26,6 +27,7 @@ import elasticsearch_dsl as dsl
 import inspect
 import six
 import urllib
+import requests
 import json
 import re
 import datetime
@@ -38,237 +40,27 @@ def date_value_format(value):
     else:
         return value
 
-class Column (object):
-    """
-    """
-
-    view = None
-    visible = False
-    summary = False
-    sumheader = False
-
-    def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None):
-        self.field = field
-        self.label = label if label is not None else field.replace('_', ' ').replace('.raw', '').capitalize()
-        self.sort = sort
-        self.template = template
-        self.value_format = value_format
-        self.header_html = escape(self.label) if header is None else header
-        self.export = export
-        self.highlight = highlight
-
-    def __str__(self):
-        return self.label
-
-    def __repr__(self):
-        return 'Column(%s)' % self.field
-
-    def bind(self, view, visible, summary, sumheader):
-        self.view = view
-        self.visible = visible
-        self.summary = summary
-        self.sumheader = sumheader
-        search_templates = []
-        if self.template:
-            search_templates.append(self.template)
-        for cls in inspect.getmro(view.document):
-            if issubclass(cls, dsl.DocType):
-                search_templates.append('app/seeker/%s/%s.html' % (cls._doc_type.name, self.field))
-        search_templates.append('app/seeker/column.html')
-        self.template = loader.select_template(search_templates)
-        return self
-
-    def header(self):
-        cls = '%s_%s' % (self.view.document._doc_type.name, self.field.replace('.', '_'))
-        if not self.sort:
-            return mark_safe('<th class="%s">%s</th>' % (cls, self.header_html))
-        q = self.view.request.GET.copy()
-        field = q.get('s', '')
-        sort = None
-        cls += ' sort'
-        if field.lstrip('-') == self.field:
-            # If the current sort field is this field, give it a class a change direction.
-            sort = 'Descending' if field.startswith('-') else 'Ascending'
-            cls += ' desc' if field.startswith('-') else ' asc'
-            d = '' if field.startswith('-') else '-'
-            q['s'] = '%s%s' % (d, self.field)
-        else:
-            q['s'] = self.field
-        next_sort = 'descending' if sort == 'Ascending' else 'ascending'
-        sr_label = (' <span class="sr-only">(%s)</span>' % sort) if sort else ''
-        html = '<th class="%s"><a href="?%s" title="Click to sort %s" data-sort="%s">%s%s</a></th>' % (cls, q.urlencode(), next_sort, q['s'], self.header_html, sr_label)
-        return mark_safe(html)
-
-    def context(self, result, **kwargs):
-        return kwargs
-
-    def render(self, result, facets, **kwargs):
-        value = getattr(result, self.field, None)
-        if self.value_format:
-            value = self.value_format(value)
-        try:
-            if '*' in self.highlight:
-                # If highlighting was requested for multiple fields, grab any matching fields as a dictionary.
-                r = self.highlight.replace('*', r'\w+').replace('.', r'\.')
-                highlight = {f: result.meta.highlight[f] for f in result.meta.highlight if re.match(r, f)}
-            else:
-                highlight = result.meta.highlight[self.highlight]
-        except:
-            highlight = []
-
-        # for each found hit, the url attribute is filled with the link pointing to the corresponding article
-        # it is possible to overwrite this url on field level (urlfields)
-        url = ""
-        if self.field in self.view.sumheader:
-            url = result.url
-        if self.field in self.view.urlfields:
-            if value:
-                url = self.view.urlfields[self.field].format(value.replace(' ', '-').lower())
-            if url == "":
-                url = result['url']
-
-        keys = []
-
-        template_name = 'app/seeker/column.html'
-        if type(value) == AttrList:
-            template_name = 'app/seeker/columnlist.html'
-        elif type(value) == AttrDict:
-            template_name = 'app/seeker/columndict.html'
-            keys = list(value)
-            value2 = {}
-            for key in keys:
-                newval = value[key]
-                if type(newval) == int:
-                    newval = "{0:d}".format(newval)
-                elif type(newval) == float:
-                    newval = "{0:.2f}".format(newval)
-                value2[key] = newval
-            value = value2
-            print("Column.render: AttrDict found {0} with value {1}".format(self.field, value))
-        elif type(value) == str:
-            if value[:4] == 'http':
-                template_name = 'app/seeker/columnimg.html'
-
-        params = {
-            'result': result,
-            'field': self.field,
-            'keys' : keys,
-            'value': value,
-            'highlight': highlight,
-            'url': url,
-            'view': self.view,
-            #'user': self.view.request.user,
-            'query': self.view.get_keywords_q(),
-        }
-        params.update(self.context(result, **kwargs))
-        return loader.render_to_string(template_name, params)
-        #return self.template.render(Context(params))
-
-    def sortcolumn(self, sortarg):
-        if self.sort == None:
-            return None
-        if sortarg.startswith('-'):
-            sortdsl = '-%s' % self.sort
-        else:
-            sortdsl = self.sort
-        return(sortdsl)
-
-
-    def export_value(self, result):
-        export_field = self.field if self.export is True else self.export
-        if export_field:
-            value = getattr(result, export_field, '')
-            export_val = ', '.join(force_text(v.to_dict() if hasattr(v, 'to_dict') else v) for v in value) if isinstance(value, AttrList) else seeker_format(value)
-        else:
-            export_val = ''
-        return export_val
-
-
-class NestedColumn (Column):
-    nestedfacet = None
-
-    def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None, nestedfacet=None):
-        self.nestedfacet = nestedfacet
-        # overwrite get_field_sort()
-        sort = {nestedfacet.nestedfield+".prc" : {"order" : "desc", "mode" : "max"}}
-        super(NestedColumn, self).__init__(field, label, sort, value_format, template, header, export, highlight)
-
-    def render(self, result, facets, **kwargs):
-        value = getattr(result, self.field, None)
-        if self.value_format:
-            value = self.value_format(value)
-        try:
-            if '*' in self.highlight:
-                # If highlighting was requested for multiple fields, grab any matching fields as a dictionary.
-                r = self.highlight.replace('*', r'\w+').replace('.', r'\.')
-                highlight = {f: result.meta.highlight[f] for f in result.meta.highlight if re.match(r, f)}
-            else:
-                highlight = result.meta.highlight[self.highlight]
-        except:
-            highlight = []
-        if self.field in self.view.sumheader:
-            url = result.url
-        else:
-            url = ""
-
-        value2 = AttrList([])
-        selval = facets[self.nestedfacet]
-        if value:
-            for v in value:
-                # NestedFacet
-                if 'val' in v:
-                    newval = v['val']+": {0:4.2f}".format(v['prc'])
-                    if len(selval) > 0:
-                        if v['val'] in selval:
-                            value2.append(newval)
-                # OptionFacet
-                if 'question' in v:
-                    answer_value = v['answer']
-                    if type(answer_value) == int or type(answer_value) == float:
-                        answer_value = int(float(answer_value))
-                    option_value = v['question']+'^'+answer_value
-                    if len(selval) > 0:
-                        if option_value in selval:
-                            value2.append(v['question']+': '+answer_value)
-                #else:
-                #    value2.append(newval)
-        value = value2
-
-        params = {
-            'result': result,
-            'field': self.field,
-            'value': value,
-            'highlight': highlight,
-            'url': url,
-            'view': self.view,
-            'user': self.view.request.user,
-            'query': self.view.get_keywords_q(),
-        }
-
-        params.update(self.context(result, **kwargs))
-        template_name = 'app/seeker/columnlist.html'
-
-        return loader.render_to_string(template_name, params)
-
-    def sortcolumn(self, sortarg):
-        if self.sort == None:
-            return None
-        field_prc = self.nestedfacet.nestedfield+".prc"
-        sortdsl = {field_prc : {"nested_path": self.nestedfacet.nestedfield, "mode": "max"}}
-        nested_filter = self.nestedfacet.sort()
-        if nested_filter:
-            sortdsl[field_prc]["nested_filter"] = nested_filter
-        if sortarg.startswith('-'):
-            sortdsl[field_prc]["order"] = "desc"
-        else:
-            sortdsl[field_prc]["order"] = "asc"
-        return(sortdsl)
+def elastic_get(index, endpoint, params):
+    es_host = ES_HOSTS[0]
+    headers = {'Content-Type': 'application/json'}
+    if 'http_auth' in es_host:
+        headers['http_auth'] = es_host['http_auth']
+    host = es_host['host']
+    url = "http://" + host + ":9200/" + index
+    data = json.dumps(params)
+    r = requests.get(url + "/" + endpoint, headers=headers, data=data)
+    results = json.loads(r.text)
+    return results
 
 
 class SeekerView (View):
     document = None
     """
     A :class:`elasticsearch_dsl.DocType` class to present a view for.
+    """
+    es_mapping = None
+    """
+    A : class to present a view for.
     """
 
     using = None
@@ -342,6 +134,10 @@ class SeekerView (View):
     """
     A list of field names to search. By default, will included all fields defined on the document mapping.
     """
+    search_children = []
+    """
+    A list of child field names to search. By default empty.
+    """
 
     highlight = True
     """
@@ -399,7 +195,10 @@ class SeekerView (View):
     """
     A dictionary of field column overrides.
     """
-
+    field_column_types = {}
+    """
+    A dictionary of field column-types overrides.
+    """
     field_labels = {}
     """
     A dictionary of field label overrides.
@@ -567,6 +366,10 @@ class SeekerView (View):
             if type(facet) == seeker.OptionFacet:
                 if facet.nestedfield == field_name:
                     return NestedColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=facet)
+        if field_name in self.field_column_types:
+            column_type = self.field_column_types[field_name]
+            if column_type == 'LinksColumn':
+                return LinksColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
         return Column(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
 
     def get_columns(self):
@@ -660,14 +463,15 @@ class SeekerView (View):
         return facets
 
     def get_facets_data(self, results, tiles_select, benchmark):
+        aggregations = results.get('aggregations', {})
         facets_data = OrderedDict()
         for f in self.get_facets():
-            if type(f) == seeker.facets.TermsFacet and f.visible_pos > 0 and f.field in results.aggregations and f.field in self.tiles:
+            if type(f) == seeker.facets.TermsFacet and f.visible_pos > 0 and f.field in aggregations and f.field in self.tiles:
                 if f.label in tiles_select:
                     selected = True
                 else:
                     selected = False
-                keys = [key for key in f.buckets(results.aggregations[f.field])]
+                keys = [key for key in f.buckets(aggregations[f.field])]
                 facets_data[f.field] = {'label': f.label, 'selected': selected, 'benchmark': benchmark, 'values': keys}
         return facets_data
 
@@ -750,13 +554,39 @@ class SeekerView (View):
             return self.get_search_fields(mapping=self.document._doc_type.mapping)
 
     def get_search_query_type(self, search, keywords_q, analyzer=DEFAULT_ANALYZER):
-        kwargs = {'query': keywords_q,
+        fields = self.get_search_fields()
+        q1args = {'query': keywords_q,
                   'analyzer': analyzer,
-                  'fields': self.get_search_fields(),
                   'default_operator': self.operator}
         if self.query_type == 'simple_query':
-            kwargs['auto_generate_phrase_queries'] = True
-        return search.query(self.query_type, **kwargs)
+            q1args['auto_generate_phrase_queries'] = True
+
+        nested = False
+        for field in fields:
+            if field in self.es_mapping['properties']:
+                properties = self.es_mapping['properties'][field]
+                if properties.get('type', '') == 'nested':
+                    for child_field in properties['properties']:
+                        if field+'.'+child_field in self.search_children:
+                            nested = True
+                    if nested:
+                        child_args = {
+                            'nested': {
+                                'path': field,
+                                'query': {self.query_type: q1args},
+                                'inner_hits' : {}
+                                }
+                            }
+
+
+        parent_args = {k:v for k,v in q1args.items()}
+        parent_args['fields'] = fields
+        if not nested:
+            return search.query(self.query_type, **parent_args)
+        else:
+            q2args = {'should' : [ {self.query_type :parent_args}, child_args] }
+            return search.query('bool', **q2args)
+
 
     def get_empty_search(self):
         using = self.using or self.document._doc_type.using or 'default'
@@ -1161,10 +991,32 @@ class SeekerView (View):
             offset = 0
 
         # Finally, grab the results.
-        results = search.sort(*sort_fields)[offset:offset + self.page_size].execute()
+        #results = search.sort(*sort_fields)[offset:offset + self.page_size].execute()
+        search = search.sort(*sort_fields)[offset:offset + self.page_size]
+        #results = search.execute()
+        # use the elastic get call instead of the execute because of the "inner_hits" problem
+        results = elastic_get(self.index, '_search', search.to_dict())
+        hits = results.get('hits', {}).get('hits', [])
+
+        # Innerhits
+        for hit in hits:
+            if 'inner_hits' not in hit:
+                continue
+            for field_name, inner_hits in hit['inner_hits'].items():
+                for child in hit['_source'][field_name]:
+                    for inner_hit in inner_hits['hits']['hits']:
+                        child_found = True
+                        for k,v in inner_hit['_source'].items():
+                            if child[k] != v:
+                                child_found = False
+                                break
+                        if child_found:
+                            break
+                    child['child_found'] = child_found
+
 
         #if self.summary != None:, also fill url in results
-        self.summary_tab(results, columns)
+        self.summary_tab(hits, columns)
 
         benchmark = self.get_benchmark()
         tiles_select = OrderedDict()
@@ -1178,7 +1030,8 @@ class SeekerView (View):
             for facet_tile in facets_tile:
                 search_tile = self.get_tile_search(search_tile, facet_tile, keywords_q, facets, facets_keyword, self.dashboard)
                 search_tile = self.get_tile_aggr(search_tile, facet_tile, self.dashboard)
-            results_tile = search_tile.execute(ignore_cache=True)
+            #results_tile = search_tile.execute(ignore_cache=True)
+            results_tile = elastic_get(self.index, '_search', search_tile.to_dict())
             seeker.dashboard.bind_tile(self, tiles_select, tiles_d, facets_tile, results_tile, benchmark)
 
         seeker.models.stats_df = pd.DataFrame()
@@ -1192,7 +1045,8 @@ class SeekerView (View):
                 self.aggs_stack = None
                 self.aggs_stack = {}
                 search_hits, keywords_q = self.get_search(keywords_q, facets, facets_keyword, dashboard=None)
-                results_hits = search_hits[0:10000].execute(ignore_cache=True)
+                #results_hits = search_hits[0:10000].execute(ignore_cache=True)
+                results_hits = elastic_get(self.index, '_search', search_hits[0:10000].to_dict())
                 chart_data, meta_data = seeker.cards.ttest(self, chart_name, chart, results_hits.hits, results_hits.aggregations, 'All', benchmark)
                 tiles_d[chart_name]['All'] = {'chart_data' : chart_data, 'meta_data' : meta_data}
             if data_type == 'join':
@@ -1334,14 +1188,6 @@ class SeekerView (View):
         A helper method called when ``_summary`` is present in ``request.GET``.
         It will prepare a summary list of key sentences of the queried items on the selected summary fields
         """
-
-        #keywords_q = self.get_keywords_q()
-        #keywords_k = self.get_keywords_k()
-        #facets = self.get_facet_selected_data()
-        #facets_keyword = self.get_facets_keyword_selected_data()
-        #search = self.get_search(keywords_q, facets, keywords_k, facets_keyword, aggregate=False)
-        #columns = self.get_columns()
-        #results = search.execute()
 
         summary_count = 0
         self.summary_list = None

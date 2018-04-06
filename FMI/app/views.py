@@ -84,6 +84,8 @@ def set_workbook(workbook_name):
     es_index = workbook['es_index']
     models.ExcelDoc = seeker.mapping.document_from_index(es_index, using=models.client)
     models.ExcelSeekerView.document = models.ExcelDoc
+    mapping = {'properties' : es_index['properties']}
+    models.ExcelSeekerView.es_mapping = es_mapping
     models.ExcelSeekerView.index = es_index['index']
     models.ExcelSeekerView.facets = es_index['facets']
     models.ExcelSeekerView.facets_keyword = es_index['facets_keyword']
@@ -215,6 +217,8 @@ def market_insight_view(request):
             return redirect('search_mi')
         elif 'search_feedly' in request.POST:
             return redirect('search_feedly')
+        elif 'search_mail' in request.POST:
+            return redirect('search_mail')
         elif 'search_si_sites' in request.POST:
             return redirect('search_si_sites')
     return render(request, 'app/market_insight.html',
@@ -420,6 +424,9 @@ def load_view(request):
             excel_choices = form.cleaned_data['excel_choices_field']
             excel_filename = form.cleaned_data['excel_filename_field']
             excelmap_filename = form.cleaned_data['excelmap_filename_field']
+            email_choices = form.cleaned_data['email_choices_field']
+            email_address = form.cleaned_data['email_address_field']
+            email_password = form.cleaned_data['email_password_field']
             indexname = form.cleaned_data['indexname_field']
             ci_filename = form.cleaned_data['ci_filename_field']
             cimap_filename = form.cleaned_data['cimap_filename_field']
@@ -428,6 +435,9 @@ def load_view(request):
             if 'load_excel' in form.data:
                 if not load.load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
                     form.add_form_error("Could not retrieve or index excel file")
+            if 'load_mail' in form.data:
+                if not load.load_mail(email_choices, email_address, email_password):
+                    form.add_form_error("Could not retrieve mailbox")
             if 'map_survey' in form.data:
                 field_map, col_map, header_map = load.map_survey(ci_filename, cimap_filename)
                 qa = {}
@@ -444,7 +454,7 @@ def load_view(request):
                 pass
             return render(request, 'app/load.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS } )
     else:
-        form = load_form(initial={'excel_choices_field':['recreate']})
+        form = load_form(initial={'excel_choices_field':['recreate'], 'email_choices_field':['imap']})
 
     return render(request, 'app/load.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS,
                   'message':'IFF - Insight Platform', 'year':datetime.now().year})

@@ -5,7 +5,7 @@
     <Name>FMI</Name>
     <RootNamespace>FMI</RootNamespace>
     <PythonRunWebServerCommandArguments>runserver --settings $(DjangoSettingsModule) %SERVER_PORT% $(CommandLineArguments)</PythonRunWebServerCommandArguments>
-    <InterpreterId>Global|PythonCore|3.5</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.6</InterpreterId>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -34,6 +34,7 @@
     <Compile Include="app\apps.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="app\mail.py" />
     <Compile Include="app\pandora.py" />
     <Compile Include="app\conf.py" />
     <Compile Include="app\load.py" />
@@ -78,6 +79,7 @@
     <Compile Include="app\templatetags\seeker.py" />
     <Compile Include="app\templatetags\__init__.py" />
     <Compile Include="seeker\dashboard.py" />
+    <Compile Include="seeker\seekercolumn.py" />
     <Compile Include="seeker\summary.py" />
     <Compile Include="seeker\utils.py" />
     <Compile Include="seeker\seekerview.py" />
@@ -177,8 +179,10 @@
     <Content Include="app\templates\app\product_elastic.html" />
     <Content Include="app\templates\app\scrape.html" />
     <Content Include="app\templates\app\product_insight.html" />
+    <Content Include="app\templates\app\seeker\columntextarea.html" />
     <Content Include="app\templates\app\seeker\columnimg.html" />
     <Content Include="app\templates\app\seeker\columndict.html" />
+    <Content Include="app\templates\app\seeker\columnanchor.html" />
     <Content Include="app\templates\app\seeker\columnlist.html" />
     <Content Include="app\templates\app\seeker\facets\keyword.html" />
     <Content Include="app\templates\app\seeker\facets\optionterms.html" />
