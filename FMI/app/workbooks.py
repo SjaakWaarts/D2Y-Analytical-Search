@@ -2286,6 +2286,20 @@ class SurveyWorkbook:
                 "values"  : ["Yes", {'v-sum':'*'}],
                 'total'   : False },
             },
+        "imagine_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Imagine %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "imagine",
+                'label'   : "Imagine",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes"],
+                'total'   : False },
+            },
         "fit_descriptors1_perc_col" : {
             'chart_type': "ColumnChart",
             'chart_title' : "Fit Descriptors1 %",
@@ -2320,11 +2334,9 @@ class SurveyWorkbook:
             'controls'    : ['CategoryFilter', 'tile_layout_select'],
             'listener'    : {'select' : {'colsort': None}},
             'X_facet'     : {
-                'field'   : "hedonics",
+                'field'   : "intensity",
                 'label'   : "Intensity",
                 'calc'    : 'percentile',
-                "answers" : ['strength'],
-                "values"  : [{'layout': 'categories'}],
                 'order'   : { "_term" : "asc" },
                 'total'   : False },
             },
@@ -2357,7 +2369,7 @@ class SurveyWorkbook:
                 'label'   : "Candidate"
                 },
             },
-        "strength_blindcode_col" : {
+        "intensity_blindcode_col" : {
             'chart_type': "Table",
             'chart_title' : "Strength Candidate #",
             'data_type'  : "aggr",
@@ -2368,12 +2380,9 @@ class SurveyWorkbook:
                 'field'   : "blindcode.keyword",
                 'label'   : "Candidate" },
             'Y_facet'     : {
-                'field'   : "hedonics",
-                'question': "Strength",
-                "answers" : ["strength"],
-                "values"  : [],
-                "a-mean"  : True,
-                'label'   : "Strength",
+                'field'   : "intensity",
+                'label'   : "Intensity",
+                'answers' : [('=', '*'), ('!', [0,'','0'])],
                 'order'   : { "_term" : "asc" },
                 },
             },
@@ -2444,12 +2453,13 @@ class SurveyWorkbook:
     # Seeker Storyboard
     dashboard_invictus_hedonics = OrderedDict()
     dashboard_invictus_hedonics['rows'] = [["liking_perc_col", "intensity_perc_col"],
-                                         ["liking_blindcode_col", "strength_blindcode_col"],
+                                         ["liking_blindcode_col", "intensity_blindcode_col"],
                                          ["topline_liking_table"]]
     dashboard_invictus_topic = OrderedDict()
     dashboard_invictus_topic['rows'] = [["descriptors1_perc_col", "descriptors2_perc_col"],
                                       ["descriptors3_perc_col", "descriptors4_perc_col"],
-                                      ["color_perc_col", "fit_descriptors1_perc_col"]]
+                                      ["color_perc_col", "fit_descriptors1_perc_col"],
+                                      ["imagine_perc_col"]]
     dashboard_invictus_profile = OrderedDict()
     dashboard_invictus_profile['rows'] = [["topline_liking_table"], ["cand_descriptors1_radar", "cand_descriptors2_radar"]]
 
@@ -2547,6 +2557,7 @@ class SurveyWorkbook:
                 "descriptors3"      : (["descriptors3"], 'nested_qst_ans'),
                 "color"             : (["color"], 'nested_qst_ans'),
                 "descriptors4"      : (["descriptors4"], 'nested_qst_ans'),
+                "imagine"           : (["imagine"], 'nested_qst_ans'),
                 "fit_descriptors1"  : (["fit_descriptors1"], 'nested_qst_ans'),
                     }
             },

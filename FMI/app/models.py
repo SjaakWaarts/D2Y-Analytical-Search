@@ -1497,6 +1497,7 @@ class Survey(models.Model):
     emotion = models.TextField()
     fragrattr = models.TextField()
     hedonics = models.TextField()
+    imagine = models.TextField()
     mood = models.TextField()
     physical = models.TextField()
     smell = models.TextField()
@@ -1555,6 +1556,7 @@ class SurveyMap(models.Model):
     emotion = []
     fragrattr = []
     hedonics = []
+    imagine = []
     mood = []
     physical = []
     smell = []
@@ -1744,6 +1746,13 @@ class SurveyMap(models.Model):
                         'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
+                'imagine'          : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
                 'mood'              : {
                     'type'       : 'nested',
                     'properties' : {
@@ -1859,6 +1868,8 @@ class SurveyMap(models.Model):
         return [{'question': q, 'answer': a} for q, a in self.fragrattr.items()]
     def get_es_hedonics(self, field_name):
         return [{'question': q, 'answer': a} for q, a in self.hedonics.items()]
+    def get_es_imagine(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.imagine.items()]
     def get_es_mood(self, field_name):
         return [{'question': q, 'answer': a} for q, a in self.mood.items()]
     def get_es_physical(self, field_name):
@@ -1924,6 +1935,7 @@ class SurveySeekerView (seeker.SeekerView, workbooks.SurveyWorkbook):
         seeker.OptionFacet("emotion", label = "Emotion", nestedfield="emotion", visible_pos=0),
         seeker.OptionFacet("fragrattr", label = "Fragr Attr", nestedfield="fragrattr", visible_pos=0),
         seeker.OptionFacet("hedonics", label = "Hedonics", nestedfield="hedonics", visible_pos=0),
+        seeker.OptionFacet("imagine", label = "imagine", nestedfield="imagine", visible_pos=0),
         seeker.OptionFacet("mood", label = "Mood", nestedfield="mood", visible_pos=0),
         seeker.OptionFacet("physical", label = "Physical", nestedfield="physical", visible_pos=0),
         seeker.OptionFacet("smell", label = "Smell", nestedfield="smell", visible_pos=0),
