@@ -2533,10 +2533,10 @@ class SurveyWorkbook:
                     }
             },
         "invictus ul" : {
-            'display'       : ["gender", "age", 'brand', "blindcode", "freshness"],
-            'facets'        : ["survey.keyword", "category.cat.keyword", "country.keyword", "gender.keyword", "age.keyword", "brand.keyword", "product_form.keyword",
-                               "method.keyword", "blindcode.keyword", "liking.keyword"],
-            'tiles'         : ["country.keyword", "gender.keyword", "age.keyword", "product_form.keyword", "method.keyword", "blindcode.keyword"],
+            'display'       : ["group_id", "age", 'country', "blindcode", "liking"],
+            'facets'        : ["survey.keyword", "category.cat.keyword", "country.keyword", "age.keyword",
+                               "group_id.keyword", "blindcode.keyword", "liking.keyword"],
+            'tiles'         : ["country.keyword", "age.keyword", "group_id.keyword", "blindcode.keyword"],
             'charts'        : dashboard_invictus,
             'storyboards'   : {'initial' : storyboard_invictus},
             'dashboard_data': 'pull',

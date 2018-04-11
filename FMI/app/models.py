@@ -1887,6 +1887,7 @@ class SurveySeekerView (seeker.SeekerView, workbooks.SurveyWorkbook):
     facets = [
         seeker.TermsFacet("survey.keyword", label = "Survey"),
         seeker.YearHistogram("published_date", label = "Published"),
+        seeker.TermsFacet("group_id.keyword", label = "Group"),
         seeker.TermsFacet("category.cat.keyword", label = "Category"),
         seeker.TermsFacet("category.subcat.keyword", label = "Sub-Category"),
         seeker.TermsFacet("stage.keyword", label = "Stage"),
