@@ -655,3 +655,5 @@ def load_survey(request, survey_filename, map_filename):
          load_survey1(request, survey_filename, map_filename)
     elif survey_name == 'global panels':
          load_survey1(request, survey_filename, map_filename)
+    elif survey_name == 'invictus ul':
+         load_survey1(request, survey_filename, map_filename)

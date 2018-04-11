@@ -77,13 +77,13 @@ def ttest(seekerview, chart_name, chart, hits, aggregations, facet_tile_value, b
     benchmark_found = False
     X_key = ''
     for hit in hits:
-        resp_id = hit['resp_id']
-        X_key = hit[X_field]
+        resp_id = hit['_source']['resp_id']
+        X_key = hit['_source'][X_field]
         if len(benchmark) > 0:
             if X_key == benchmark[0]:
                 benchmark_found = True
-        if Y_field in hit:
-            Y_key = yfacet.get_answer_hit(hit[Y_field], Y_facet)
+        if Y_field in hit['_source']:
+            Y_key = yfacet.get_answer_hit(hit['_source'][Y_field], Y_facet)
             if Y_key is not None:
                 Y_value_code = seeker.answer_value_decode(Y_key)
                 ttest_dt.loc[resp_id, X_key] = Y_value_code

@@ -2095,6 +2095,376 @@ class SurveyWorkbook:
         },
         ]
 
+    dashboard_invictus = {
+        "descriptors1_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Descriptors 1 %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "descriptors1",
+                'label'   : "Descriptors1",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes"],
+                'total'   : False },
+            },
+        "cand_descriptors1_word" : {
+            'chart_type': "WordCloudChart",
+            'chart_title' : "Descriptors1",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "descriptors1",
+                'question': "Descriptors1",
+                "answers" : [],
+                "values"  : ["Yes", {'v-sum':'*'}],
+                'label'   : "Descriptors1"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "cand_descriptors1_radar" : {
+            'chart_type': "RadarChart",
+            'chart_title' : "Descriptors1",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "descriptors1",
+                'question': "Descriptors1",
+                "answers" : [],
+                "values"  : ["Yes", {'v-sum':'*'}],
+                'label'   : "Descriptors1"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "cand_descriptors1_table" : {
+            'chart_type': "Table",
+            'chart_title' : "Descriptors1",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'listener'    : {'select' : {'rowsort': None}},
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "descriptors1",
+                'question': "Descriptors1",
+                "answers" : [],
+                "values"  : ["Yes", {'v-sum':'*'}],
+                'label'   : "Descriptors1"
+                },
+            'options'     : {
+                #'sort'    : 'event',
+                'frozenColumns' : 2, # will be adjusted by bind_aggr
+                },
+            },
+        "cand_descriptors1_top_table" : {
+            'chart_type': "Table",
+            'chart_title' : "Descriptors1 Top-3",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : False,
+            'listener'    : {'select' : {'rowsort': None}},
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "descriptors1",
+                'question': "Descriptors1",
+                "answers" : [],
+                "values"  : ["Yes", {'v-sum':'*'}],
+                'label'   : "Descriptors1"
+                },
+            'result'      : {
+                'top'     : 3
+                },
+            'options'     : {
+                #'sort'    : 'event',
+                'frozenColumns' : 2, # will be adjusted by bind_aggr
+                },
+            },
+        "descriptors2_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Descriptors2 %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "descriptors2",
+                'label'   : "Descriptors2",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes"],
+                'total'   : False },
+            },
+        "cand_descriptors2_radar" : {
+            'chart_type': "RadarChart",
+            'chart_title' : "Descriptors2",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "descriptors2",
+                'question': "Descriptors2",
+                "answers" : [],
+                "values"  : ["Yes", {'v-sum':'*'}],
+                'label'   : "Descriptors 2"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "descriptors3_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Descriptors3 %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "descriptors3",
+                'label'   : "Descriptors3",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes"],
+                'total'   : False },
+            },
+        "descriptors4_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Descriptors4 %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "descriptors4",
+                'label'   : "Descriptors4",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes"],
+                'total'   : False },
+            },
+        "color_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Color %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "color",
+                'label'   : "Color",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes", {'v-sum':'*'}],
+                'total'   : False },
+            },
+        "fit_descriptors1_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Fit Descriptors1 %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "fit_descriptors1",
+                'label'   : "Fit Descriptors1",
+                'calc'    : 'percentile',
+                "answers" : [],
+                "values"  : ["Yes"],
+                'total'   : False },
+            },
+        "country_map" : {
+            'chart_type'  : "GeoChart",
+            #'data_type'  : 'aggr',
+            'data_type'   : 'facet',
+            'chart_title' : "Country Resp Count",
+            'listener'    : {'select' : {'select_event': 'panel_country_sel'}},
+            'X_facet'     : {
+                'field'   : "country.keyword",
+                'total'   : True,
+                'label'   : "Country",
+                'order'   : { "_term" : "asc" },
+                }
+            },
+        "intensity_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Intensity %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter', 'tile_layout_select'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "hedonics",
+                'label'   : "Intensity",
+                'calc'    : 'percentile',
+                "answers" : ['strength'],
+                "values"  : [{'layout': 'categories'}],
+                'order'   : { "_term" : "asc" },
+                'total'   : False },
+            },
+        "liking_perc_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Liking %",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter', 'tile_layout_select'],
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "liking.keyword",
+                'label'   : "Liking",
+                'calc'    : 'percentile',
+                'order'   : { "_term" : "asc" },
+                'total'   : False },
+            },
+        "liking_blindcode_col" : {
+            'chart_type': "Table",
+            'chart_title' : "Liking Candidate #",
+            'data_type'  : "aggr",
+            'listener'    : {'select' : {'rowsort': None}},
+            'X_facet'     : {
+                'field'   : "liking.keyword",
+                'label'   : "Liking/Hedonics",
+                'answers' : [('=', '*'), ('!', [0,'','0'])],
+                'order'   : { "_term" : "asc" },
+                },
+            'Y_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate"
+                },
+            },
+        "strength_blindcode_col" : {
+            'chart_type': "Table",
+            'chart_title' : "Strength Candidate #",
+            'data_type'  : "aggr",
+            'transpose'   : True,
+            'listener'    : {'select' : {'rowsort': None}},
+            # USE TRANSPOSE SINCE THE REVERSE_NESTING ON AGGR DOESN'T WORK
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate" },
+            'Y_facet'     : {
+                'field'   : "hedonics",
+                'question': "Strength",
+                "answers" : ["strength"],
+                "values"  : [],
+                "a-mean"  : True,
+                'label'   : "Strength",
+                'order'   : { "_term" : "asc" },
+                },
+            },
+        "topline_liking_table" : {
+            'chart_type'  : "Table",
+            'chart_title' : "Topline Liking - Candidate #",
+            'data_type'   : "aggr",
+            'base'        : "liking_blindcode_col",
+            'controls'    : ['CategoryFilter', 'tile_layout_select'],
+            'help'        : "Select Row for sorting, Select Column Header for filter",
+            'listener'    : {'sort' : ["cand_descriptors1_radar", "cand_descriptors1_radar", "cand_descriptors3_radar", "cand_descriptors4_radar", "cand_fit_descriptors1_radar"],
+                             'select' : {'rowsort': None}},
+            'X_facet'     : {
+                'field'   : "liking.keyword",
+                'label'   : "Hedonics_",
+                'lines'   : {"liking.keyword" : {'0-Mean':['mean'], '1-Excellent':[7], '2-Top2':[7,6], '3-Bottom2':[2,1]}},
+                },
+            'Y_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate"
+                },
+            'options'     : {
+                'sort'    : 'event',
+                "allowHtml" : True,
+                'frozenColumns' : 2,
+                },
+            'formatter'  : {
+                'setProperty'   : [],
+                },
+            },
+        "topline_strength_table" : {
+            'chart_type'  : "Table",
+            'chart_title' : "Topline Strength - Candidate #",
+            'data_type'   : "aggr",
+            #'base'        : "strength_blindcode_col",
+            'controls'    : ['CategoryFilter', 'tile_layout_select'],
+            'help'        : "Select Row for sorting, Select Column Header for filter",
+            'listener'    : {'sort' : ["cand_descriptors1_radar", "cand_descriptors1_radar", "cand_descriptors3_radar", "cand_descriptors4_radar", "cand_fit_descriptors1_radar"],
+                             'select' : {'rowsort': None}},
+            'transpose'   : False,
+            'X_facet'     : {
+                'field'   : "blindcode.keyword",
+                'label'   : "Candidate" },
+            'Y_facet'     : {
+                'field'   : "hedonics",
+                'question': "Strength",
+                "answers" : ["strength"],
+                "values"  : [],
+                "a-mean"  : True,
+                'label'   : "Strength",
+                'order'   : { "_term" : "asc" },
+                },
+            'result'      : {
+                'lines'   : OrderedDict([('0-Mean',['mean']), ('1-JAR',[3]), ('2-Weak',[1,2]), ('3-Strong',[4,5])]),
+                'transpose': True
+                },
+            'options'     : {
+                'sort'    : 'event',
+                "allowHtml" : True,
+                'frozenColumns' : 2,
+                },
+            'formatter'  : {
+                'setProperty'   : [],
+                },
+            },
+        }
+
+    # Seeker Storyboard
+    dashboard_invictus_hedonics = OrderedDict()
+    dashboard_invictus_hedonics['rows'] = [["liking_perc_col", "intensity_perc_col"],
+                                         ["liking_blindcode_col", "strength_blindcode_col"],
+                                         ["topline_liking_table"]]
+    dashboard_invictus_topic = OrderedDict()
+    dashboard_invictus_topic['rows'] = [["descriptors1_perc_col", "descriptors2_perc_col"],
+                                      ["descriptors3_perc_col", "descriptors4_perc_col"],
+                                      ["color_perc_col", "fit_descriptors1_perc_col"]]
+    dashboard_invictus_profile = OrderedDict()
+    dashboard_invictus_profile['rows'] = [["topline_liking_table"], ["cand_descriptors1_radar", "cand_descriptors2_radar"]]
+
+    storyboard_invictus = [
+        {'name'     : "Hedonics",
+         'layout'   : dashboard_invictus_hedonics,
+        },
+        {'name'     : "Topic",
+         'layout'   : dashboard_invictus_topic,
+        },
+        {'name'     : "Profile",
+         'layout'   : dashboard_invictus_profile,
+        },
+        ]
+
     workbooks = {
         "fresh and clean" : {
             'display'       : ["gender", "age", 'brand', "blindcode", "freshness"],
@@ -2160,6 +2530,24 @@ class SurveyWorkbook:
                 "product"           : (["product"], 'nested_qst_ans'),
                 "purpose"           : (["purpose"], 'nested_qst_ans'),
                 "olfactive_attr"    : (["olfactive_attr"], 'nested_qst_ans'),
+                    }
+            },
+        "invictus ul" : {
+            'display'       : ["gender", "age", 'brand', "blindcode", "freshness"],
+            'facets'        : ["survey.keyword", "category.cat.keyword", "country.keyword", "gender.keyword", "age.keyword", "brand.keyword", "product_form.keyword",
+                               "method.keyword", "blindcode.keyword", "liking.keyword"],
+            'tiles'         : ["country.keyword", "gender.keyword", "age.keyword", "product_form.keyword", "method.keyword", "blindcode.keyword"],
+            'charts'        : dashboard_invictus,
+            'storyboards'   : {'initial' : storyboard_invictus},
+            'dashboard_data': 'pull',
+            'filters'       : {'survey.keyword' : ["invictus ul"]},
+            'qst2fld'       : {
+                "descriptors1"      : (["descriptors1"], 'nested_qst_ans'),
+                "descriptors2"      : (["descriptors2"], 'nested_qst_ans'),
+                "descriptors3"      : (["descriptors3"], 'nested_qst_ans'),
+                "color"             : (["color"], 'nested_qst_ans'),
+                "descriptors4"      : (["descriptors4"], 'nested_qst_ans'),
+                "fit_descriptors1"  : (["fit_descriptors1"], 'nested_qst_ans'),
                     }
             },
     }

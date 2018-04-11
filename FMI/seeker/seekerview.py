@@ -1047,7 +1047,9 @@ class SeekerView (View):
                 search_hits, keywords_q = self.get_search(keywords_q, facets, facets_keyword, dashboard=None)
                 #results_hits = search_hits[0:10000].execute(ignore_cache=True)
                 results_hits = elastic_get(self.index, '_search', search_hits[0:10000].to_dict())
-                chart_data, meta_data = seeker.cards.ttest(self, chart_name, chart, results_hits.hits, results_hits.aggregations, 'All', benchmark)
+                hits = results_hits.get('hits', {}).get('hits', [])
+                aggregations = results_hits.get('aggregations', {})
+                chart_data, meta_data = seeker.cards.ttest(self, chart_name, chart, hits, aggregations, 'All', benchmark)
                 tiles_d[chart_name]['All'] = {'chart_data' : chart_data, 'meta_data' : meta_data}
             if data_type == 'join':
                 tiles_d[chart_name]['All'] =  {'chart_data' : [], 'meta_data' : {}}

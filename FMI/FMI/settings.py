@@ -57,7 +57,9 @@ CORS_ALLOW_HEADERS = default_headers + (
 
 #ES_HOSTS = [{'host': '108.61.167.27'}]
 #ES_HOSTS = [{'host': '10.20.33.33'}]
-# AWS SUSE 12.2, Python 3.4, ElasticSearch 5.2.2
+# iffdatalake AWS SUSE 12.3, Python 3.6, ElasticSearch 6.1.1c
+#ES_HOSTS = [{'host': '10-35-58-89'}]
+# iffcloud AWS SUSE 12.2, Python 3.4, ElasticSearch 5.2.2
 #ES_HOSTS = [{'host': '10.20.33.102'}]
 # AWS OpenSUSE Leap 43.3, Python 3.6, ElasticSearch 6.2.2
 #ES_HOSTS = [{'host': '18.196.255.228'}]

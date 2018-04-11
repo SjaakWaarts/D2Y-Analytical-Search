@@ -1458,6 +1458,7 @@ class Survey(models.Model):
     stage = models.TextField()
     # Respondent Attributes
     resp_id = models.TextField()
+    group_id = models.TextField()
     country = models.TextField()
     gender = models.TextField()
     age = models.TextField()
@@ -1489,6 +1490,10 @@ class Survey(models.Model):
     children = models.TextField()
     concept = models.TextField()
     descriptors = models.TextField()
+    descriptors1 = models.TextField()
+    descriptors2 = models.TextField()
+    descriptors3 = models.TextField()
+    descriptors4 = models.TextField()
     emotion = models.TextField()
     fragrattr = models.TextField()
     hedonics = models.TextField()
@@ -1497,8 +1502,12 @@ class Survey(models.Model):
     smell = models.TextField()
     suitable_product = models.TextField()
     suitable_stage = models.TextField()
+    # Fit Questions
+    fit_descriptors1 = models.TextField()
+    fit_descriptors2 = models.TextField()
+    fit_descriptors3 = models.TextField()
+    fit_descriptors4 = models.TextField()
 
- 
 class SurveyMap(models.Model):
     # Survey attributes
     survey = models.TextField()
@@ -1507,6 +1516,7 @@ class SurveyMap(models.Model):
     stage = models.TextField()
     # Respondent Attributes
     resp_id = models.TextField()
+    group_id = models.TextField()
     country = models.TextField()
     gender = models.TextField()
     age = models.TextField()
@@ -1538,6 +1548,10 @@ class SurveyMap(models.Model):
     children = []
     concept = []
     descriptors = []
+    descriptors1 = []
+    descriptors2 = []
+    descriptors3 = []
+    descriptors4 = []
     emotion = []
     fragrattr = []
     hedonics = []
@@ -1546,6 +1560,11 @@ class SurveyMap(models.Model):
     smell = []
     suitable_product = []
     suitable_stage = []
+    # Fit Questions
+    fit_descriptors1 = []
+    fit_descriptors2 = []
+    fit_descriptors3 = []
+    fit_descriptors4 = []
 
     class Meta:
         es_index_name = 'survey'
@@ -1563,6 +1582,7 @@ class SurveyMap(models.Model):
                     },
                 "stage"             : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 "resp_id"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
+                "group_id"          : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 "country"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
                 "cluster"           : {"type" : "text", "fields" : {
                                             "keyword" : {"type" : "keyword", "ignore_above" : 256},
@@ -1675,6 +1695,34 @@ class SurveyMap(models.Model):
                         'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
+                'descriptors1'              : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
+                'descriptors2'              : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
+                'descriptors3'              : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
+                'descriptors4'              : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
                 'emotion'              : {
                     'type'       : 'nested',
                     'properties' : {
@@ -1731,6 +1779,34 @@ class SurveyMap(models.Model):
                         'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                         }
                     },
+                'fit_descriptors1'      : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
+                'fit_descriptors2'      : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
+                'fit_descriptors3'      : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
+                'fit_descriptors4'      : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'question' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'answer'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
                 }
             }
 
@@ -1769,6 +1845,14 @@ class SurveyMap(models.Model):
         return [{'question': q, 'answer': a} for q, a in self.concept.items()]
     def get_es_descriptors(self, field_name):
         return [{'question': q, 'answer': a} for q, a in self.descriptors.items()]
+    def get_es_descriptors1(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.descriptors1.items()]
+    def get_es_descriptors2(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.descriptors2.items()]
+    def get_es_descriptors3(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.descriptors3.items()]
+    def get_es_descriptors4(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.descriptors4.items()]
     def get_es_emotion(self, field_name):
         return [{'question': q, 'answer': a} for q, a in self.emotion.items()]
     def get_es_fragrattr(self, field_name):
@@ -1785,6 +1869,14 @@ class SurveyMap(models.Model):
         return [{'question': q, 'answer': a} for q, a in self.suitable_product.items()]
     def get_es_suitable_stage(self, field_name):
         return [{'question': q, 'answer': a} for q, a in self.suitable_stage.items()]
+    def get_es_fit_descriptors1(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.fit_descriptors1.items()]
+    def get_es_fit_descriptors2(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.fit_descriptors2.items()]
+    def get_es_fit_descriptors3(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.fit_descriptors3.items()]
+    def get_es_fit_descriptors4(self, field_name):
+        return [{'question': q, 'answer': a} for q, a in self.fit_descriptors4.items()]
 
 
 class SurveySeekerView (seeker.SeekerView, workbooks.SurveyWorkbook):
@@ -1824,6 +1916,10 @@ class SurveySeekerView (seeker.SeekerView, workbooks.SurveyWorkbook):
         seeker.OptionFacet("children", label = "Children", nestedfield="children", visible_pos=0),
         seeker.OptionFacet("concept", label = "Concept", nestedfield="concept", visible_pos=0),
         seeker.OptionFacet("descriptors", label = "Descriptors", nestedfield="descriptors", visible_pos=0),
+        seeker.OptionFacet("descriptors1", label = "Descriptors1", nestedfield="descriptors1", visible_pos=0),
+        seeker.OptionFacet("descriptors2", label = "Descriptors2", nestedfield="descriptors2", visible_pos=0),
+        seeker.OptionFacet("descriptors3", label = "Descriptors3", nestedfield="descriptors3", visible_pos=0),
+        seeker.OptionFacet("descriptors4", label = "Descriptors4", nestedfield="descriptors4", visible_pos=0),
         seeker.OptionFacet("emotion", label = "Emotion", nestedfield="emotion", visible_pos=0),
         seeker.OptionFacet("fragrattr", label = "Fragr Attr", nestedfield="fragrattr", visible_pos=0),
         seeker.OptionFacet("hedonics", label = "Hedonics", nestedfield="hedonics", visible_pos=0),
@@ -1832,6 +1928,10 @@ class SurveySeekerView (seeker.SeekerView, workbooks.SurveyWorkbook):
         seeker.OptionFacet("smell", label = "Smell", nestedfield="smell", visible_pos=0),
         seeker.OptionFacet("suitable_product", label = "Suitability Product", nestedfield="suitable_product", visible_pos=0),
         seeker.OptionFacet("suitable_stage", label = "Suitability Stage", nestedfield="suitable_stage", visible_pos=2),
+        seeker.OptionFacet("fit_descriptors1", label = "Fit Descriptors1", nestedfield="fit_descriptors1", visible_pos=0),
+        seeker.OptionFacet("fit_descriptors2", label = "Fit Descriptors2", nestedfield="fit_descriptors2", visible_pos=0),
+        seeker.OptionFacet("fit_descriptors3", label = "Fit Descriptors3", nestedfield="fit_descriptors3", visible_pos=0),
+        seeker.OptionFacet("fit_descriptors4", label = "Fit Descriptors4", nestedfield="fit_descriptors4", visible_pos=0),
         ]
     facets_keyword = [
         seeker.KeywordFacet("facet_keyword", label = "Benchmark", input="keywords_k"),

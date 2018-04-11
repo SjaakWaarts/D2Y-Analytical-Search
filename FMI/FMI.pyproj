@@ -136,7 +136,9 @@
     <Content Include="app\static\app\media\female.jpg" />
     <Content Include="app\static\app\media\fragrantica.png" />
     <Content Include="app\static\app\media\guide.jpg" />
+    <Content Include="app\static\app\media\invictus.jpg" />
     <Content Include="app\static\app\media\lavender.jpg" />
+    <Content Include="app\static\app\media\mail.jpg" />
     <Content Include="app\static\app\media\male.jpg" />
     <Content Include="app\static\app\media\malefemale.jpg" />
     <Content Include="app\static\app\media\mi.jpg" />

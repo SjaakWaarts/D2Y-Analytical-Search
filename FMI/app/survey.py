@@ -81,11 +81,12 @@ fld_encode = {
 # Direct mapping of a column to a ElasticSearch field
 # In case multiple columns are mapped to the same field, the one column with a value is loaded (variant for Fresh&Clean)
 col2fld = {
-    'resp_id'       : (["RESPID - RESPONDENT ID", "Resp No/ID", "Panelist_Code"], 'text'),
+    'resp_id'       : (["RESPID - RESPONDENT ID", "Resp No/ID", "Panelist_Code", "Consumer ID"], 'text'),
+    'group_id'      : (["Group n°"], 'text'),
     #'survey'       : (["Year"], 'text'), this is derived from the file name
     #'published_date': (["Year", "Test Quarter"], 'date'),
     'stage'         : (["Stage"], 'text'),
-    'country'       : (["COUNTRY - COUNTRY", "Country"], 'text'),
+    'country'       : (["COUNTRY - COUNTRY", "Country", "COUNTRY"], 'text'),
     'cluster'       : (["Cluster", "Choice model Cluster"], 'text'),
     'ethnics'       : (["Ethnies"], 'text'),
     'city'          : (["City", "Test City"], 'text'),
@@ -101,8 +102,8 @@ col2fld = {
     "freshness"     : (["h9_Freshness"], 'integer'),
     "cleanliness"   : (["h9_Cleanliness"], 'integer'),
     "lastingness"   : (["h9_Long lastingness"], 'integer'),
-    "intensity"     : (["j_JAR Strength"], 'integer'),
-    'age'           : (["Age cat", "Age group", "Q17_1__Age"], 'text'),
+    "intensity"     : (["j_JAR Strength", "j_Overall Strenght (5 points scale)"], 'integer'),
+    'age'           : (["Age cat", "Age group", "Q17_1__Age", "Age"], 'text'),
     "product_form"  : (["Detergent format"], 'text'),
     'gender'        : (["Woman/Man", "Gender", "Q16__Gender"], 'text'),
     "perception"    : (["would you say this fragrance is"], 'text'),
@@ -275,7 +276,7 @@ qa = {
 	    "aftertaste": (["Q9_1__aftertaste_strength_JAR"], strength5),
     },	
     "liking" : {
-        "_liking7": (["h7_overall_liking fragrance", "Fragrance Liking"], liking7),
+        "_liking7": (["h7_overall_liking fragrance", "Fragrance Liking", "h7_Overall Opinion ( 7 points scale)"], liking7),
         "_liking9": (["Q4_1__Overall_Liking_"], liking9),
     },
     "mood" : {	
@@ -340,7 +341,12 @@ qst2fld = {
     "children"          : (["children"], 'nested_qst_ans'),
     "concept"           : (["concept"], 'nested_qst_ans'),
     "descriptors"       : (["descriptors"], 'nested_qst_ans'),
+    "descriptors1"      : (["descriptors1"], 'nested_qst_ans'),
+    "descriptors2"      : (["descriptors2"], 'nested_qst_ans'),
+    "descriptors3"      : (["descriptors3"], 'nested_qst_ans'),
+    "descriptors4"      : (["descriptors4"], 'nested_qst_ans'),
     "emotion"           : (["emotion"], 'nested_qst_ans'),
+    "fit_descriptors1"  : (["fit_descriptors1"], 'nested_qst_ans'),
     "fragrattr"         : (["fragrattr"], 'nested_qst_ans'),
     "hedonics"          : (["hedonics"], 'nested_qst_ans'),
     "liking"            : (["liking"], 'text'),
@@ -432,6 +438,40 @@ surveys = {
                 ("Q6", "Olfative Attributes", "olfactive_attr"),
                 ("Q7", "Colors", "color"),
                 ("Q8", "Newness", "newness"),
+            ]
+        },
+    "invictus ul" : {
+        "header"    : ["survey", "category"],
+        "_id"       : ["resp_id", "blindcode"],
+        'questions' : [ # question in sequence of Questionnaire for mapping
+                    "descriptors1",
+                    "descriptors2",
+                    "descriptors3",
+                    "color",
+                    "descriptors4",
+                    "fit_descriptors1",
+                    "liking",
+                    ],
+        'screener_q': [
+                # (Qx, Question Descr, Question)
+                ("Q1", "Group", "group_id"),
+                ("Q2", "Age", "age"),
+                ],
+        'prod_eval_q': [
+                # (Qx, Question Descr, Question)
+                ("Q1A", "Descriptor 1", "descriptors1"),
+                ("Q1B", "Descriptor 2", "descriptors2"),
+                ("Q1C", "Descriptor 3", "descriptors3"),
+                ("Q2", "Colors", "color"),
+                ("Q3A", "Main territory board", ""),
+                ("Q3B", "Sub territory board", ""),
+                ("Q4", "Descriptor 4", "descriptors4"),
+                ("Q2", "Intensity JAR", "hedonics"),
+                ("Q3", "Attributes", "attributes"),
+                ("Q4", "Descriptor 4", "descriptors4"),
+                ("Q5", "Fit Descriptor 1", "fit_descriptors1"),
+                ("Q6", "Liking", "liking"),
+                ("Q6", "Intensity", "intensity"),
             ]
         },
     }
@@ -608,7 +648,7 @@ def map_columns(survey_name, columns):
             if field == 'survey':
                 options = [survey_name]
             if field == 'category':
-                options = [{"cat":"Personal Wash"}, {"cat":"Home Care"}, {"cat":"Fabric Care"}, {"cat":"Hair Care"}, {"cat":"Toiletries"}, {"cat":"Flavors"}]
+                options = [{"cat":"Personal Wash"}, {"cat":"Home Care"}, {"cat":"Fabric Care"}, {"cat":"Hair Care"}, {"cat":"Toiletries"}, {"cat":"Fine Fragr"}, {"cat":"Flavors"}]
             header_map[field] = (None, options)
     for field in surveys[survey_name]['_id']:
         if field in field_map.keys():
