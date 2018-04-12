@@ -1004,6 +1004,7 @@ class SeekerView (View):
                 continue
             for field_name, inner_hits in hit['inner_hits'].items():
                 for child in hit['_source'][field_name]:
+                    child_found = False
                     for inner_hit in inner_hits['hits']['hits']:
                         child_found = True
                         for k,v in inner_hit['_source'].items():

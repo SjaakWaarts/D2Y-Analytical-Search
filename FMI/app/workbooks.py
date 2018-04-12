@@ -45,7 +45,7 @@ import FMI.settings
 # <metric>              : <ElasticSearch metric>
 # <ElasticSearch metric>: 'doc_count', 'prc'
 # <order>               : <ElasticSearch order>
-# <ElasticSearch order> : '_count'|'_term' 'asc'|'desc'
+# <ElasticSearch order> : '_count'|'_key' 'asc'|'desc'
 #
 # <answers>             : [ <answer>* ]
 # <answer>              : <string> | <number> (<range>) | {<mapping>*}
@@ -590,7 +590,7 @@ class SurveyWorkbook:
                 'field'   : "liking.keyword",
                 'label'   : "Liking/Hedonics",
                 'answers' : [('=', '*'), ('!', [0,'','0'])],
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Y_facet'     : {
                 'field'   : "blindcode.keyword",
@@ -801,7 +801,7 @@ class SurveyWorkbook:
                 'label'   : "Hedonics_",
                 'lines'   : {"liking.keyword" : {'0-Mean':['mean']}},
                 "q-mean"  : True,
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Y_facet'     : {
                 'field'   : "blindcode.keyword",
@@ -871,7 +871,7 @@ class SurveyWorkbook:
                 'field'   : "liking.keyword",
                 'label'   : "Liking/Hedonics",
                 'answers' : [('!', [0,'','0']), {'a-wmean' : '**', 'q-mean' : '*'}],
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'options'     : {
                 "seriesType" : 'bars',
@@ -888,7 +888,7 @@ class SurveyWorkbook:
                 'label'   : "Liking/Hedonics",
                 'answers' : [('!', [0,'','0']), {'a-mean' : '+'}],
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Y_facet'     : {
                 'field'   : "blindcode.keyword",
@@ -920,7 +920,7 @@ class SurveyWorkbook:
             'Z_facet'     : {
                 'field'   : "product_form.keyword",
                 'label'   : "Product Form",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'tiles'   : 'grid-2x1',
                 },
             'options'     : {
@@ -968,12 +968,12 @@ class SurveyWorkbook:
                 #'answers' : [('=', '*'), ('!', [0,'','0']), {'a-mean' : '*'}, {'q-mean' : '+'}],
                 'answers' : [('!', [0,'','0']), {'a-mean' : '+'}],
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Z_facet'     : {
                 'field'   : "product_form.keyword",
                 'label'   : "Product Form",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'tiles'   : 'dropdown',
                 },
             },
@@ -989,12 +989,12 @@ class SurveyWorkbook:
                 'label'   : "Freshness with Mean ",
                 'answers' : [('!', [0,'','0']), {'a-mean' : '+'}],
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Z_facet'     : {
                 'field'   : "product_form.keyword",
                 'label'   : "Product Form",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'tiles'   : 'dropdown',
                 },
             },
@@ -1093,7 +1093,7 @@ class SurveyWorkbook:
             'X_facet'     : {
                 'field'   : "liking.keyword",
                 'label'   : "Liking/Hedonics",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Y_facet'     : {
                 'field'   : "blindcode.keyword",
@@ -1116,7 +1116,7 @@ class SurveyWorkbook:
                 "values"  : [],
                 "a-mean"  : True,
                 'label'   : "Strength",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             },
         "topline_liking_table" : {
@@ -1747,7 +1747,7 @@ class SurveyWorkbook:
                 'field'   : "country.keyword",
                 'total'   : True,
                 'label'   : "Country",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 }
             },
         "expected_benefits_perc_col" : {
@@ -1804,7 +1804,7 @@ class SurveyWorkbook:
                 'calc'    : 'percentile',
                 "answers" : ['strength'],
                 "values"  : [{'layout': 'categories'}],
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'total'   : False },
             },
         "liking_perc_col" : {
@@ -1817,7 +1817,7 @@ class SurveyWorkbook:
                 'field'   : "liking.keyword",
                 'label'   : "Liking",
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'total'   : False },
             },
         "olfactive_attr_perc_col" : {
@@ -1866,7 +1866,7 @@ class SurveyWorkbook:
                 'field'   : "liking.keyword",
                 'label'   : "Liking/Hedonics",
                 'answers' : [('=', '*'), ('!', [0,'','0'])],
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Y_facet'     : {
                 'field'   : "blindcode.keyword",
@@ -1890,7 +1890,7 @@ class SurveyWorkbook:
                 "values"  : [],
                 "a-mean"  : True,
                 'label'   : "Strength",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             },
         "topline_liking_table" : {
@@ -1939,7 +1939,7 @@ class SurveyWorkbook:
                 "values"  : [],
                 "a-mean"  : True,
                 'label'   : "Strength",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'result'      : {
                 'lines'   : OrderedDict([('0-Mean',['mean']), ('1-JAR',[3]), ('2-Weak',[1,2]), ('3-Strong',[4,5])]),
@@ -2324,7 +2324,7 @@ class SurveyWorkbook:
                 'field'   : "country.keyword",
                 'total'   : True,
                 'label'   : "Country",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 }
             },
         "intensity_perc_col" : {
@@ -2337,7 +2337,7 @@ class SurveyWorkbook:
                 'field'   : "intensity",
                 'label'   : "Intensity",
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'total'   : False },
             },
         "liking_perc_col" : {
@@ -2350,7 +2350,7 @@ class SurveyWorkbook:
                 'field'   : "liking.keyword",
                 'label'   : "Liking",
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 'total'   : False },
             },
         "liking_blindcode_col" : {
@@ -2362,7 +2362,7 @@ class SurveyWorkbook:
                 'field'   : "liking.keyword",
                 'label'   : "Liking/Hedonics",
                 'answers' : [('=', '*'), ('!', [0,'','0'])],
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'Y_facet'     : {
                 'field'   : "blindcode.keyword",
@@ -2383,7 +2383,7 @@ class SurveyWorkbook:
                 'field'   : "intensity",
                 'label'   : "Intensity",
                 'answers' : [('=', '*'), ('!', [0,'','0'])],
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             },
         "topline_liking_table" : {
@@ -2433,7 +2433,7 @@ class SurveyWorkbook:
                 "values"  : [],
                 "a-mean"  : True,
                 'label'   : "Strength",
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'result'      : {
                 'lines'   : OrderedDict([('0-Mean',['mean']), ('1-JAR',[3]), ('2-Weak',[1,2]), ('3-Strong',[4,5])]),

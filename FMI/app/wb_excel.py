@@ -643,7 +643,7 @@ es_indicis = {
             seeker.TermsFacet("IPC.keyword", label = "IPC", visible_pos=0),
             seeker.TermsFacet("name.keyword", label = "Name", visible_pos=0),
             seeker.TermsFacet("uptake.keyword", label = "Uptake", visible_pos=0),
-            seeker.TermsFacet("year.keyword", label = "Year", visible_pos=0, order={"_term":"asc"}),
+            seeker.TermsFacet("year.keyword", label = "Year", visible_pos=0, order={"_key":"asc"}),
             seeker.TermsFacet("bucket.keyword", label = "Bucket", visible_pos=0),
             seeker.TermsFacet("flavor_classes.keyword", label = "Flavor Classes", visible_pos=0),
             seeker.TermsFacet("regulator.keyword", label = "Regulator", visible_pos=0),
@@ -901,7 +901,7 @@ es_indicis = {
         'facets'        : [
             seeker.TermsFacet("XINUMBER.keyword", label = "XINUMBER", visible_pos=0),
             seeker.TermsFacet("BOOKNUMBER.keyword", label = "BOOKNUMBER", visible_pos=0),
-            seeker.TermsFacet("FRMLNAME.keyword", label = "FRMLNAME", visible_pos=0, order={"_term":"asc"}),
+            seeker.TermsFacet("FRMLNAME.keyword", label = "FRMLNAME", visible_pos=0, order={"_key":"asc"}),
             seeker.TermsFacet("FRML_TYPE.keyword", label = "FRML_TYPE", visible_pos=0),
             seeker.TermsFacet("OWNEDBY.keyword", label = "OWNEDBY ", visible_pos=0),
             seeker.TermsFacet("SEC_COST.keyword", label = "SEC_COST", visible_pos=0),

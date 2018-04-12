@@ -55,14 +55,17 @@ CORS_ALLOW_HEADERS = default_headers + (
     'csrftoken',
     )
 
-#ES_HOSTS = [{'host': '108.61.167.27'}]
-#ES_HOSTS = [{'host': '10.20.33.33'}]
-# iffdatalake AWS SUSE 12.3, Python 3.6, ElasticSearch 6.1.1c
-#ES_HOSTS = [{'host': '10-35-58-89'}]
-# iffcloud AWS SUSE 12.2, Python 3.4, ElasticSearch 5.2.2
+# iffcloud AWS SUSE 12.2, Python 3.4, ElasticSearch 6.2.2
 #ES_HOSTS = [{'host': '10.20.33.102'}]
+# iffcloud AWS SUSE 12.2, Python 3.5, ElasticSearch 6.2.2
+#ES_HOSTS = [{'host': '10.20.47.154'}]
+
+# iffdatalake AWS SUSE 12.3, Python 3.6, ElasticSearch 6.1.1c
+#ES_HOSTS = [{'host': '10.35.58.89'}]
+
 # AWS OpenSUSE Leap 43.3, Python 3.6, ElasticSearch 6.2.2
 #ES_HOSTS = [{'host': '18.196.255.228'}]
+
 ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]

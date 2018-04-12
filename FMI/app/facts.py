@@ -29,7 +29,7 @@ def facts_survey(survey_field, facts_choices, norms_choices):
                 'label'   : "Liking/Hedonics",
                 'answers' : [('!', [0,'','0'])],
                 'calc'    : 'percentile',
-                'order'   : { "_term" : "asc" },
+                'order'   : { "_key" : "asc" },
                 },
             'options'     : {
                 'sort'    : 'event',
