@@ -117,19 +117,25 @@ class ExcelSeekerView (seeker.SeekerView):
 
 # Class name has to match the name of the mapping in ES (doc_type)
 class Perfume(models.Model):
-    perfume = models.CharField(max_length=200)
+    site = models.TextField()
+    brand_name = models.TextField()
+    brand_variant = models.TextField()
+    perfume = models.TextField()
     review_date = models.DateField()
     review = models.TextField()
-    label = models.CharField(max_length=10)
+    label = models.TextField()
     accords = models.TextField()
     img_src = models.TextField()
 
 class Review(models.Model):
     reviewid = models.IntegerField()
-    perfume = models.CharField(max_length=200)
+    site = models.TextField()
+    brand_name = models.TextField()
+    brand_variant = models.TextField()
+    perfume = models.TextField()
     review_date = models.DateField()
     review = models.TextField()
-    label = models.CharField(max_length=10)
+    label = models.TextField()
     accords = []
     img_src = models.TextField()
 
@@ -138,6 +144,13 @@ class Review(models.Model):
         es_type_name = 'perfume'
         es_mapping = {
             'properties' : {
+                'site'           : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                'brand'          : {
+                    'properties' : {
+                        'name'      : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'variant'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        }
+                    },
                 'perfume'       : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'review_date'   : {'type' : 'date'},
                 'review'        : {'type' : 'text'},
@@ -173,8 +186,11 @@ class Review(models.Model):
             else:
                 field_es_value = getattr(self, field_name)
         return field_es_value
+    def get_es_brand(self):
+        return {'name': self.brand_name, 'variant': self.brand_variant}
     def get_es_accords(self):
         return [{'accord': accord, 'votes': votes} for accord, votes in self.accords.items()]
+
 
 class PerfumeSeekerView (seeker.SeekerView):
     document = None
@@ -182,6 +198,8 @@ class PerfumeSeekerView (seeker.SeekerView):
     index = "review"
     page_size = 30
     facets = [
+        seeker.TermsFacet("site.keyword", label = "Site"),
+        seeker.TermsFacet("brand.name.keyword", label = "Brand"),
         seeker.TermsFacet("perfume.keyword", label = "Perfume"),
         seeker.YearHistogram("review_date", label = "Reviewed"),
         seeker.TermsFacet("label.keyword", label = "Sentiment"),

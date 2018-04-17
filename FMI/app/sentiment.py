@@ -28,16 +28,16 @@ def sentiment(product):
     url = 'http://text-processing.com/api/sentiment/'
     try:
         for perfume in models.scrape_li:
-            perfume_b = perfume[0].encode("ascii", 'replace')
+            perfume_b = perfume['perfume'].encode("ascii", 'replace')
             print('sentiment analysing perfume: ', perfume_b)
-            for review in perfume[1][4]:
-                if review[2] == 'init':
-                    review_b = review[1].encode("ascii", 'replace')
+            for review in perfume['reviews']:
+                if review['label'] == 'init':
+                    review_b = review['body'].encode("ascii", 'replace')
                     data={'text':review_b}
                     r = requests.post(url, data)
                     if r.status_code == 200:
                         answer = r.json()
-                        review[2] = answer['label']
+                        review['label'] = answer['label']
     except:
         print('sentiment analysing failed')
             

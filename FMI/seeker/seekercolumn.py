@@ -124,8 +124,8 @@ class Column (object):
                 template_name = 'app/seeker/columnimg.html'
             elif value.startswith("<html"):
                 template_name = 'app/seeker/columntextarea.html'
-            elif len(value) > 80:
-                template_name = 'app/seeker/columntextarea.html'
+            #elif len(value) > 80:
+            #    template_name = 'app/seeker/columntextarea.html'
         params = {
             'result': result,
             'field': self.field,

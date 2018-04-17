@@ -64,21 +64,47 @@
             <div class="panel-body">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h4>Crawl Site <a href="http://www.fragrantica.com/"  target="_blank">Fragrantica</a></h4> Enter the product for which you want to retrieve
-                            the fragrances.
+                            the fragrances.<br />
+                            <h4>Crawl Site <a href="http://www.amazon.com/"  target="_blank">Amazon</a></h4> Enter the product for which you want to retrieve
+                            the reviews.
                         </div>
-                        <div class="col-md-3">
-                            {{ form.product_field.label_tag }} {{ form.product_field }}
+                        <div class="col-md-4">
+                            <p>
+                                {{ form.brand_name_field.label_tag }}
+                                <span style="float:right;"> {{ form.brand_name_field }} </span>
+                            </p>
+                            <p>
+                                {{ form.brand_variant_field.label_tag }}
+                                <span style="float:right;"> {{ form.brand_variant_field }} </span>
+                            </p>
+                            <p>
+                                {{ form.perfume_name_field.label_tag }}
+                                <span style="float:right;"> {{ form.perfume_name_field }} </span>
+                            </p>
+                            <p>
+                                {{ form.asin_field.label_tag }}
+                                <span style="float:right;">{{ form.asin_field }} </span>
+                            </p>
                         </div>
-                        <div class="col-md-3 ">
-                            <button type="submit" name="crawl_pi" class="btn btn-primary">Crawl Product Intelligence
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                            </button>
-                            <button type="submit" name="index_pi" class="btn btn-primary">Retrieve Product Intelligence
-                                <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                            </button>
+                        <div class="col-md-4 ">
+                            <div class="btn-group-vertical">
+                                <button type="submit" name="crawl_fragrantica" class="btn btn-primary">Crawl Fragrantica
+                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                                </button>
+                                <button type="submit" name="retrieve_fragrantica" class="btn btn-primary">Retrieve Fragrantica
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                                </button>
+                                <button type="submit" name="crawl_amazon" class="btn btn-primary">Crawl Amazon Reviews
+                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                                </button>
+                                <button type="submit" name="retrieve_amazon" class="btn btn-primary">Retrieve Amazon Reviews
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

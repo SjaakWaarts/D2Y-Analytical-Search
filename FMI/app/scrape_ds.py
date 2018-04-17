@@ -198,7 +198,7 @@ def scrape_fragrantica_product(product, purl, scrape_choices):
     return [purl, accords, votes, notes, reviews, img_src]
 
 
-def scrape_ds(site_choices, scrape_choices, brand_field):
+def scrape_ds(site_choices, scrape_choices, brand_name_field):
     global driver
 
     scrape_d = {}
@@ -207,7 +207,7 @@ def scrape_ds(site_choices, scrape_choices, brand_field):
     designers = {}
     scrape_clearresults()
     if 'fragrantica' in site_choices:
-        perfumes, designers = scrape_fragrantica_search_product(brand_field)
+        perfumes, designers = scrape_fragrantica_search_product(brand_name_field)
         for perfume, purl in perfumes.items():
             scrape_d[perfume] = scrape_fragrantica_product(perfume, purl, scrape_choices)
     return list(scrape_d.items())

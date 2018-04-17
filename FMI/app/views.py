@@ -186,24 +186,24 @@ def scrape_view(request):
         if form.is_valid():
             site_choices = form.cleaned_data['site_choices_field']
             scrape_choices = form.cleaned_data['scrape_choices_field']
-            brand_field = form.cleaned_data['brand_field']
+            brand_name_field = form.cleaned_data['brand_name_field']
             if 'scrape' in form.data:
-                models.scrape_li = scrape_ds.scrape_ds(site_choices, scrape_choices, brand_field)
-                if not product.scrape_save(brand_field):
+                models.scrape_li = scrape_ds.scrape_ds(site_choices, scrape_choices, brand_name_field)
+                if not product.scrape_save(brand_name_field):
                     form.add_form_error("Could not save scrape results")
             if 'retrieve' in form.data:
-                if not product.scrape_retrieve(brand_field):
+                if not product.scrape_retrieve(brand_name_field):
                     form.add_form_error("Could not retrieve scrape results")
             if len(models.scrape_li) == 0:
                 form.add_form_error("First retrieve or scrape the web for this brand")
             else:
                 if 'explore' in form.data:
-                    return render(request, 'app/scraperesults.html', {'brand': brand_field, 'scrape_li' : models.scrape_li } )
+                    return render(request, 'app/scraperesults.html', {'brand': brand_name_field, 'scrape_li' : models.scrape_li } )
                 if 'sentiment' in form.data:
-                    sentiment.sentiment(brand_field)
-                    if not product.scrape_save(brand_field):
+                    sentiment.sentiment(brand_name_field)
+                    if not product.scrape_save(brand_name_field):
                         form.add_form_error("Could not save scrape results")
-                    return render(request, 'app/scraperesults.html', {'brand': brand_field, 'scrape_li' : models.scrape_li } )
+                    return render(request, 'app/scraperesults.html', {'brand': brand_name_field, 'scrape_li' : models.scrape_li } )
             return render(request, 'app/scrape.html', {'form': form, 'scrape_li' : models.scrape_li } )
     else:
         form = scrape_form(initial={'site_choices_field':['fragrantica'],'scrape_choices_field':['accords','moods','notes']})
@@ -366,7 +366,10 @@ def crawl_view(request):
             site_choices = form.cleaned_data['site_choices_field']
             scrape_choices = form.cleaned_data['scrape_choices_field']
             rss_field = form.cleaned_data['rss_field']
-            product_field = form.cleaned_data['product_field']
+            brand_name = form.cleaned_data['brand_name_field']
+            brand_variant = form.cleaned_data['brand_variant_field']
+            perfume_name = form.cleaned_data['perfume_name_field']
+            asin = form.cleaned_data['asin_field']
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             if from_date == None:
@@ -383,18 +386,30 @@ def crawl_view(request):
             elif 'crawl_mi' in form.data:
                 if not market.index_posts(from_date, username, password):
                     form.add_form_error("Could not index category posts")
-            if 'crawl_pi' in form.data:
-                if product_field == '':
+            if 'crawl_fragrantica' in form.data:
+                if perfume_name == '':
                     form.add_form_error("Specify a product")
                 else:
-                    if not product.crawl_product(index_choices, product_field):
-                        form.add_form_error("Could not save product data")
-            if 'index_pi' in form.data:
-                if product_field == '':
+                    if not product.crawl_fragrantica(brand_name, brand_variant, perfume_name):
+                        form.add_form_error("Could not save Fragrantica product data")
+            if 'retrieve_fragrantica' in form.data:
+                if perfume_name == '':
                     form.add_form_error("Specify a product")
                 else:
-                    if not product.index_product(index_choices, product_field):
-                        form.add_form_error("Could not retrieve product data")
+                    if not product.retrieve_fragrantica(brand_name, brand_variant, perfume_name):
+                        form.add_form_error("Could not retrieve Fragrantica product data")
+            if 'crawl_amazon' in form.data:
+                if asin == '':
+                    form.add_form_error("Specify an ASIN")
+                else:
+                    if not product.crawl_amazon(brand_name, brand_variant, asin):
+                        form.add_form_error("Could not save Amazon product data")
+            if 'retrieve_amazon' in form.data:
+                if asin == '':
+                    form.add_form_error("Specify an ASIN")
+                else:
+                    if not product.retrieve_amazon(asin):
+                        form.add_form_error("Could not retrieve Amazon product data")
             if 'crawl_feedly' in form.data:
                 if not crawl.crawl_feedly(from_date, rss_field):
                      form.add_form_error("Could not retrieve feedly data, expired")

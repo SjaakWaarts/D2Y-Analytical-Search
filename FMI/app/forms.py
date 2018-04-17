@@ -49,7 +49,7 @@ class scrape_form(forms.Form):
     site_choices_field = forms.MultipleChoiceField(label='Web Site', choices=site_choices, widget=forms.CheckboxSelectMultiple, required=True)
     scrape_choices = (('accords', 'Accords'), ('moods', 'Moods'), ('notes', 'Notes'), ('reviews', 'Reviews'), ('longevity', 'Longevity'), ('sillage', 'Sillage'))
     scrape_choices_field = forms.MultipleChoiceField(label='Scrape', choices=scrape_choices, widget=forms.CheckboxSelectMultiple, required=True)
-    brand_field = forms.CharField(label='Brand', max_length=40, required = True, initial = '', help_text='Scrape for this brand')
+    brand_name_field = forms.CharField(label='Brand', max_length=40, required = True, initial = '', help_text='Scrape for this brand')
     def add_form_error(self, message):
         if not self._errors:
             self._errors = ErrorDict()
@@ -102,7 +102,10 @@ class crawl_form(forms.Form):
                       ('publications', 'Publications'), ('blog', 'Blog'))
     scrape_choices_field = forms.MultipleChoiceField(label='Scrape', choices=scrape_choices, widget=forms.CheckboxSelectMultiple, required=True)
     rss_field = forms.CharField(label='RSS Category', max_length=40, required = False, initial = '', help_text='Crawl this category')
-    product_field = forms.CharField(label='Product', max_length=40, required = False, initial = '', help_text='Index this product')
+    brand_name_field = forms.CharField(label='Brand Name', max_length=40, required = False, initial = '', help_text='Scrape for this brand')
+    brand_variant_field = forms.CharField(label='Brand Variant', max_length=40, required = False, initial = '', help_text='Scrape for this brand variant')
+    perfume_name_field = forms.CharField(label='Perfume (Fragr)', max_length=40, required = False, initial = '')
+    asin_field = forms.CharField(label='ASIN (Amazon)', max_length=40, required = False, initial = 'B000CR1WUI', help_text='Amazon Standard Identification Number')
     username = forms.CharField(label="User (domain\\user)", max_length=254, widget=forms.TextInput({'class': 'form-control','placeholder': 'User name'}), required=False)
     password = forms.CharField(label="Password", widget=forms.PasswordInput({'class': 'form-control','placeholder':'Password'}), required=False)
     def add_form_error(self, message):

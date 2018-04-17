@@ -861,7 +861,7 @@ def bind_hits(seekerview, chart, hits, benchmark=None):
         dt_columns.append("Total")
     dt = pd.DataFrame(0.0, columns=dt_columns, index=[0])
     rownr = 0
-    for hit in hits.hits:
+    for hit in hits:
         X_key = hit['_source'][X_field]
         #series = [0] * len(categories)
         #series[0] = X_key
@@ -1034,7 +1034,7 @@ def bind_topline(seekerview, chart, hits, benchmark=None):
     Y_field = Y_facet['field']
 
     topline_columns = []
-    for hit in hits.hits:
+    for hit in hits:
         blindcode = hit['_source'][Y_field]
         # benchmark will be the first column(s)
         if blindcode in benchmark:
@@ -1050,7 +1050,7 @@ def bind_topline(seekerview, chart, hits, benchmark=None):
     Y_benchmark = 0
     benchmark_count = 0
     cand_topline = {}
-    for hit in hits.hits:
+    for hit in hits:
         blindcode = hit['_source'][Y_field]
         if 'liking' in hit['_source']:
             hedonics = hit['_source']['liking']
