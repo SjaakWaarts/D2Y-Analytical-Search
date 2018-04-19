@@ -22,7 +22,8 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
-                            <h4>Crawl Site <a href="https://iffconnect.iff.com/Fragrances/marketintelligence/default.aspx"  target="_blank">Market Intelligence site</a></h4>
+                            <h4>Crawl Market Intelligence Site(s)</h4><br />
+                            <a href="https://iffconnect.iff.com/Fragrances/marketintelligence/default.aspx"  target="_blank">Market Intelligence site</a>
                         </div>
                         <div class="col-md-3">
                             {{ form.username.label_tag }} {{ form.username }}
@@ -32,79 +33,6 @@
                             <button type="submit" name="crawl_mi" class="btn btn-primary">Crawl Market Intelligence
                                 <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
                             </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-5">
-                            {{ form.site_choices_field.label_tag }} {{ form.site_choices_field }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form.scrape_choices_field.label_tag }} {{ form.scrape_choices_field }}
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="crawl_si_sites" class="btn btn-primary">Crawl SI Sites
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4>Crawl Site <a href="http://www.fragrantica.com/"  target="_blank">Fragrantica</a></h4> Enter the product for which you want to retrieve
-                            the fragrances.<br />
-                            <h4>Crawl Site <a href="http://www.amazon.com/"  target="_blank">Amazon</a></h4> Enter the product for which you want to retrieve
-                            the reviews.
-                        </div>
-                        <div class="col-md-4">
-                            <p>
-                                {{ form.brand_name_field.label_tag }}
-                                <span style="float:right;"> {{ form.brand_name_field }} </span>
-                            </p>
-                            <p>
-                                {{ form.brand_variant_field.label_tag }}
-                                <span style="float:right;"> {{ form.brand_variant_field }} </span>
-                            </p>
-                            <p>
-                                {{ form.perfume_name_field.label_tag }}
-                                <span style="float:right;"> {{ form.perfume_name_field }} </span>
-                            </p>
-                            <p>
-                                {{ form.asin_field.label_tag }}
-                                <span style="float:right;">{{ form.asin_field }} </span>
-                            </p>
-                        </div>
-                        <div class="col-md-4 ">
-                            <div class="btn-group-vertical">
-                                <button type="submit" name="crawl_fragrantica" class="btn btn-primary">Crawl Fragrantica
-                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                                </button>
-                                <button type="submit" name="retrieve_fragrantica" class="btn btn-primary">Retrieve Fragrantica
-                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                                </button>
-                                <button type="submit" name="crawl_amazon" class="btn btn-primary">Crawl Amazon Reviews
-                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                                </button>
-                                <button type="submit" name="retrieve_amazon" class="btn btn-primary">Retrieve Amazon Reviews
-                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -126,6 +54,89 @@
                             <button type="submit" name="crawl_feedly" class="btn btn-primary">Crawl Feedly
                                 <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h4>Crawl BLOG Site(s)</h4><br />
+                            {{ form.site_choices_field.label_tag }} {{ form.site_choices_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.scrape_choices_field.label_tag }} {{ form.scrape_choices_field }}
+                         </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="crawl_si_sites" class="btn btn-primary">Crawl SI Sites
+                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h4>Crawl Product Intelligence Site(s)</h4><br />
+                            <ul id="id_pi_site_choices_field">
+                                <li>
+                                    <label for="id_pi_site_choices_field_0">
+                                        <input type="radio" name="pi_site_choices_field" value="fragrantica" id="id_pi_site_choices_field_0" checked="checked">
+                                        <a href="http://www.fragrantica.com/"  target="_blank">Fragrantica</a>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="id_pi_site_choices_field_1">
+                                        <input type="radio" name="pi_site_choices_field" value="amazon" id="id_pi_site_choices_field_1">
+                                        <a href="http://www.amazon.com/"  target="_blank">Amazon</a>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="id_pi_site_choices_field_2">
+                                        <input type="radio" name="pi_site_choices_field" value="basenotes" id="id_pi_site_choices_field_2">
+                                        <a href="http://www.basenotes.com/"  target="_blank">Basenotes</a>
+                                    </label>
+                                </li>
+                            </ul>
+                            Enter the product for which you want to retrieve the reviews.
+                            For Fragrentica this is a perfume code (Aramis), for Amazon this is the ASIC code (B000CR1WUI) 
+                            and in case of Basenotes it is also a code (26120123)
+                        </div>
+                        <div class="col-md-4">
+                            <p>
+                                {{ form.brand_name_field.label_tag }}
+                                <span style="float:right;"> {{ form.brand_name_field }} </span>
+                            </p>
+                            <p>
+                                {{ form.brand_variant_field.label_tag }}
+                                <span style="float:right;"> {{ form.brand_variant_field }} </span>
+                            </p>
+                            <p>
+                                {{ form.perfume_code_field.label_tag }}
+                                <span style="float:right;"> {{ form.perfume_code_field }} </span>
+                            </p>
+                        </div>
+                        <div class="col-md-4 ">
+                            <div class="btn-group-vertical">
+                                <button type="submit" name="crawl_pi" class="btn btn-primary">Crawl Product Intelligence
+                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                                </button>
+                                <button type="submit" name="retrieve_pi" class="btn btn-primary">Retrieve Product Intelligence
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

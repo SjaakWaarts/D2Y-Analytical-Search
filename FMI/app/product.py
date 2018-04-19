@@ -143,6 +143,11 @@ def index_products_data():
             r.review = review['body']
             r.label = review['label']
             r.accords = product_data.get('accords', {})
+            r.moods = product_data.get('moods', {})
+            r.notes = product_data.get('notes', {})
+            r.longevity = product_data.get('longevity', {})
+            r.sillage = product_data.get('sillage', {})
+            r.ratings = product_data.get('ratings', {})
             r.img_src = product_data.get('img_src', "")
             if count < 100:
                 data.append(elastic.convert_for_bulk(r, 'update'))
@@ -179,10 +184,10 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
     global driver
 
     accords = {}
-    votes = {}
+    moods = {}
     notes = {}
-    longevity = []
-    sillage = []
+    longevity = {}
+    sillage = {}
     also_likes = []
     reviews = []
     reminds_me_of = []
@@ -195,6 +200,7 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
 
     try:
         driver.get(purl)
+        bs = BeautifulSoup(driver.page_source, "lxml")
         msg = "scraping page %s" % (purl)
         print (msg)
 #       models.scrape_q.put(msg)
@@ -216,21 +222,32 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
 
     # Accords
     try:
-        prettyPhotoGallery = driver.find_element_by_id("prettyPhotoGallery")    
-        accord_div_tags = prettyPhotoGallery.find_element_by_tag_name("div").find_elements_by_tag_name("div")
-        accord_span_tags = prettyPhotoGallery.find_element_by_tag_name("div").find_elements_by_tag_name("span")
-        if len(accord_span_tags) > 0:
-            for i in range(1, len(accord_span_tags)):
-                accord_span_tag = accord_span_tags[i]
-                accord_div_tag = accord_div_tags[i*3-1]
-                aname = accord_span_tag.text
-                width = accord_div_tag.size['width']
-                width2 = accord_div_tag.get_attribute('style').split(';')[0].split(':')[1]
-                accords[aname] = width
+        #prettyPhotoGallery = driver.find_element_by_id("prettyPhotoGallery")
+        #accord_div_tags = prettyPhotoGallery.find_element_by_tag_name("div").find_elements_by_tag_name("div")
+        #accord_span_tags = prettyPhotoGallery.find_element_by_tag_name("div").find_elements_by_tag_name("span")
+        prettyPhotoGallery = bs.find("div", id="prettyPhotoGallery")
+        accord_div_tags = prettyPhotoGallery.div.find_all('div', recursive=False)
+        for accord_div_tag in accord_div_tags[1:]:
+            accord_span_tag = accord_div_tag.find('span')
+            if accord_span_tag is not None:
+                style = accord_div_tag.attrs['style']
+                full_width = float(re.search("(width)(:.)([0-9]+)", style)[3])
+                aname = accord_div_tag.span.text
+                style = accord_div_tag.div.attrs['style']
+                width = float(re.search("(width)(:.)([0-9]+)", style)[3])
+                accords[aname] = width / full_width
+        #if len(accord_span_tags) > 0:
+        #    for i in range(1, len(accord_span_tags)):
+        #        accord_span_tag = accord_span_tags[i]
+        #        accord_div_tag = accord_div_tags[i*3-1]
+        #        aname = accord_span_tag.text
+        #        width = accord_div_tag.size['width']
+        #        full_width = accord_span_tag.parent.size['width']
+        #        width2 = accord_div_tag.get_attribute('style').split(';')[0].split(':')[1]
+        #        votes = width / full_width
+        #        accords[aname] = votes
     except:
         pass
-    if len(accords) == 0:
-        accords['NONE'] = 1
 
     # Moods
     try:
@@ -241,32 +258,61 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
         for i in range(0, len(vote_div_tags)):
             vname = vote_div_tags[i].text
             height = result_div_tags[i].size['height']
-            votes[vname] = height
+            moods[vname] = height / 100.0
 
     #       votes['total'] = int(driver.find_element_by_id("peopleD").text)
     #       votes['rating avg'] = float(driver.find_element_by_xpath("//span[@itemprop='ratingValue']").text)
     #       votes['rating best'] = float(driver.find_element_by_xpath("//span[@itemprop='bestRating']").text)
     except:
         pass
-    if len(votes) == 0:
-        votes['NONE'] = 1
 
     # Notes
     try:
         userMainNotes_tag = driver.find_element_by_id("userMainNotes")
         note_img_tags = userMainNotes_tag.find_elements_by_tag_name("img")
         note_span_tags = userMainNotes_tag.find_elements_by_tag_name("span")
-        total_note_votes = 0
+        total_votes = 0
         for i in range(0, len(note_img_tags)):
             nname = note_img_tags[i].get_attribute('title')
-            note_votes = int(note_span_tags[i].text)
-            notes[nname] = note_votes
-            total_note_votes = total_note_votes + note_votes
-#        notes['total'] = total_note_votes
+            votes = int(note_span_tags[i].text)
+            notes[nname] = votes
+            total_votes = total_votes + votes
+#        notes['total'] = total_votes
+        for nname, votes in notes.items():
+            notes[nname] = votes / total_votes
     except:
         pass
-    if len(notes) == 0:
-        notes['NONE'] = 1
+
+    # Longevity
+    try:
+        table_tag = bs.find("table", class_="voteLS long")
+        tr_tags = table_tag.find_all('tr')
+        total_votes = 0
+        for tr_tag in tr_tags:
+            td_tags = tr_tag.find_all('td')
+            name = td_tags[0].text
+            votes = int(td_tags[1].text)
+            longevity[name] = votes
+        for name, votes in longevity.items():
+            longevity[name] = votes / total_votes
+    except:
+        pass
+
+    # Sillage
+    try:
+        table_tag = bs.find("table", class_="voteLS sil")
+        tr_tags = table_tag.find_all('tr')
+        total_votes = 0
+        for tr_tag in tr_tags:
+            td_tags = tr_tag.find_all('td')
+            name = td_tags[0].text
+            votes = int(td_tags[1].text)
+            sillage[name] = votes
+        for name, votes in sillage.items():
+            sillage[name] = votes / total_votes
+    except:
+        pass
+
 
     # Reviews
     try:
@@ -289,14 +335,16 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
         'brand_name': brand_name,
         'brand_variant' : brand_variant,
         'perfume'   : perfume,
+        'url'       : purl,
         'img_src'   : img_src,
         'price'     : 0.0,
         'ratings'   : {},
         'accords'   : accords,
-        'votes'     : votes,
+        'moods'     : moods,
         'notes'     : notes,
+        'longevity' : longevity,
+        'sillage'   : sillage,
         'reviews'   : reviews,
-        'url'       : purl,
         }
     return product_data
 
@@ -358,9 +406,10 @@ def crawl_fragrantica(brand_name, brand_variant, perfume_name):
     models.scrape_li = crawl_fragrantica_data(brand_name, brand_variant, perfume_name)
     sentiment.sentiment(perfume_name)
     success = save_products_data(perfume_name)
+    return success
 
 
-def retrieve_fragrantica(brand_name, brand_variant, perfume_name):
+def retrieve_fragrantica(perfume_name):
     models.scrape_li = None
     success = False
     #if scrape_retrieve(brand_name, brand_variant, perfume_name):
@@ -369,19 +418,143 @@ def retrieve_fragrantica(brand_name, brand_variant, perfume_name):
         success = True
     return success
 
+
+###
+### Basenotes
+###
+
+def crawl_basenotes_data(brand_name, brand_variant, perfume_code):
+    #This script has only been tested with Amazon.com
+    url  = 'http://www.basenotes.net/fragrancereviews/fragrance/'+perfume_code
+    # Add some recent user agent to prevent amazon from blocking the request 
+    # Find some chrome user agent strings  here https://udger.com/resources/ua-list/browser-detail?browser=Chrome
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
+    page = requests.get(url, headers=headers)
+    if page.status_code != 200:
+        print("Could not read page: "+url)
+        return false
+    bs = BeautifulSoup(page.content, "lxml")
+    #html = urllib.request.urlopen(url)
+    #bs = BeautifulSoup(page.read(), "lxml")
+
+    reviews = []
+
+    # Perfume Name
+    try:
+        contentbn_tag = bs.find('div', id="contentbn")
+        perfume = contentbn_tag.text
+        perfume = re.search("(Reviews of )(.*)( by)", perfume)[2]
+    except:
+        perfume = perfume_code
+        pass
+
+    # Image
+    try:
+        fraginfoimage_tag = bs.find('div', class_="fraginfoimage")  
+        img_tag = fraginfoimage_tag.find('img')
+        img_src = img_tag.attrs['src']
+    except:
+        img_src = ''
+        pass
+
+    # Reviews
+    try:
+        review_tags = bs.find_all('div', class_="reviewmain")
+        for review_tag in review_tags:
+            reviewauthor_tag = review_tag.find('div', class_= "reviewauthor")
+            thumb_img = reviewauthor_tag('img')[-1].attrs['src']
+            thumb_img = thumb_img[-len("review?.png"):]
+            if thumb_img == "review1.png":
+                label = 'neg'
+            elif thumb_img == "review2.png":
+                label = 'neutral'
+            elif thumb_img == "review3.png":
+                label = 'pos'
+            else:
+                label = 'init'
+
+            reviewblurb_tag = review_tag.find('div', class_= "reviewblurb")
+            review_text = reviewblurb_tag.text
+
+            reviewdate_tag = review_tag.find('div', class_= "reviewdate")
+            reviewdate_tag.sup.decompose() # remove the th/nd/st in the date text
+            review_date = re.search("([0-9]+ [A-za-z]+, [0-9]+)", reviewdate_tag.text.strip())[0]
+            review_date = datetime.strptime(review_date, '%d %B, %Y').date()
+            review_date = review_date.strftime('%b %d %Y') # mmm dd YYYY normalized date format
+
+            reviews.append({
+                'date'      : review_date,
+                'body'      : review_text,
+                'label'     : label,
+                })
+    except:
+        pass
+
+
+    product_data = {
+        'site'      : "Basenotes",
+        'brand_name': brand_name,
+        'brand_variant' : brand_variant,
+        'perfume'   : perfume,
+        'url'       : url,
+        'img_src'   : img_src,
+        'reviews'   : reviews,
+        }
+    return product_data
+
+    product_data = {
+        'site'      : "Amazon",
+        'brand_name': brand_name,
+        'brand_variant' : brand_variant,
+        'perfume'   : product_name,
+        'url'       : amazon_url,
+        'img_src'   : product_image,
+        'price'     : product_price,
+        'ratings'   : ratings_dict,
+        'reviews'   : reviews_list,
+        }
+    #scrape_li = [(product_name, [amazon_url, {}, {}, {}, reviews_list, product_image])]
+    return product_data
+
+
+def crawl_basenotes(brand_name, brand_variant, perfume_code):
+    # perfume_code is basenotes Identification Number
+    models.scrape_li = None
+    success = False
+    print("Downloading and processing page http://www.basenotes.net/fragrancereviews/fragrance/"+perfume_code)
+    product_data = crawl_basenotes_data(brand_name, brand_variant, perfume_code)
+    models.scrape_li = [product_data]
+    success = save_products_data(perfume_code)
+    return success
+
+
+def retrieve_basenotes(perfume_code):
+    models.scrape_li = None
+    success = False
+    if retrieve_products_data(perfume_code):
+        index_products_data()
+        success = True
+    return success
+
+
 ###
 ### AMAZON
 ###
 
 def crawl_amazon_data(brand_name, brand_variant, asin):
     #This script has only been tested with Amazon.com
-    #amazon_url  = 'http://www.amazon.com/dp/'+asin
-    amazon_url = 'http://www.amazon.com/review/product/'+asin+'/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&filterByStar=all_stars&reviewerType=all_reviews&sortBy=recent&pageNumber=1'
+    #url  = 'http://www.amazon.com/dp/'+asin
+    url = 'http://www.amazon.com/review/product/'+asin+'/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&filterByStar=all_stars&reviewerType=all_reviews&sortBy=recent&pageNumber=1'
     # Add some recent user agent to prevent amazon from blocking the request 
     # Find some chrome user agent strings  here https://udger.com/resources/ua-list/browser-detail?browser=Chrome
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
-    page = requests.get(amazon_url,headers = headers)
-
+    page = requests.get(url, headers=headers)
+    if page.status_code != 200:
+        print("Could not read page: "+url)
+        return false
+    bs = BeautifulSoup(page.content, "lxml")
+    #html = urllib.request.urlopen(url)
+    #bs = BeautifulSoup(page.read(), "lxml")
     parser = html.fromstring(page.content)
     XPATH_AGGREGATE = '//span[@id="acrCustomerReviewText"]'
     XPATH_REVIEW_SECTION = '//div[@id="cm_cr-review_list"]/div[contains(@class,"review")]'
@@ -410,7 +583,7 @@ def crawl_amazon_data(brand_name, brand_variant, asin):
         if extracted_rating:
             rating_key = str(extracted_rating[0])
             raw_raing_value = str(extracted_rating[1])
-            rating_value = raw_raing_value
+            rating_value = float(raw_raing_value.replace('%', ''))/100.0
             if rating_key:
                 ratings_dict.update({rating_key:rating_value})
 
@@ -457,13 +630,12 @@ def crawl_amazon_data(brand_name, brand_variant, asin):
         'brand_name': brand_name,
         'brand_variant' : brand_variant,
         'perfume'   : product_name,
+        'url'       : url,
         'img_src'   : product_image,
         'price'     : product_price,
         'ratings'   : ratings_dict,
         'reviews'   : reviews_list,
-        'url'       : amazon_url,
         }
-    #scrape_li = [(product_name, [amazon_url, {}, {}, {}, reviews_list, product_image])]
     return product_data
 
 

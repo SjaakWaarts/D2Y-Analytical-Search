@@ -125,6 +125,11 @@ class Perfume(models.Model):
     review = models.TextField()
     label = models.TextField()
     accords = models.TextField()
+    moods = models.TextField()
+    notes = models.TextField()
+    longevity = models.TextField()
+    sillage = models.TextField()
+    ratings = models.TextField()
     img_src = models.TextField()
 
 class Review(models.Model):
@@ -137,6 +142,11 @@ class Review(models.Model):
     review = models.TextField()
     label = models.TextField()
     accords = []
+    moods = []
+    notes = []
+    longevity = []
+    sillage = []
+    ratings = []
     img_src = models.TextField()
 
     class Meta:
@@ -156,9 +166,45 @@ class Review(models.Model):
                 'review'        : {'type' : 'text'},
                 'label'         : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'accords'       : {
+                    'type'       : 'nested',
                     'properties' : {
-                        'accord' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-                        'votes'  : {'type' : 'integer'},
+                        'val'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'prc'   : {'type' : 'float'},
+                        }
+                    },
+                'moods'       : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'val'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'prc'   : {'type' : 'float'},
+                        }
+                    },
+                'notes'       : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'val'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'prc'   : {'type' : 'float'},
+                        }
+                    },
+                'longevity'       : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'val'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'prc'   : {'type' : 'float'},
+                        }
+                    },
+                'sillage'       : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'val'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'prc'   : {'type' : 'float'},
+                        }
+                    },
+                'ratings'       : {
+                    'type'       : 'nested',
+                    'properties' : {
+                        'val'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                        'prc'   : {'type' : 'float'},
                         }
                     },
                 'img_src'        : {'type' : 'text'},
@@ -189,7 +235,17 @@ class Review(models.Model):
     def get_es_brand(self):
         return {'name': self.brand_name, 'variant': self.brand_variant}
     def get_es_accords(self):
-        return [{'accord': accord, 'votes': votes} for accord, votes in self.accords.items()]
+        return [{'val': accord, 'prc': votes} for accord, votes in self.accords.items()]
+    def get_es_moods(self):
+        return [{'val': accord, 'prc': votes} for accord, votes in self.moods.items()]
+    def get_es_notes(self):
+        return [{'val': accord, 'prc': votes} for accord, votes in self.notes.items()]
+    def get_es_longevity(self):
+        return [{'val': accord, 'prc': votes} for accord, votes in self.longevity.items()]
+    def get_es_sillage(self):
+        return [{'val': accord, 'prc': votes} for accord, votes in self.sillage.items()]
+    def get_es_ratings(self):
+        return [{'val': accord, 'prc': votes} for accord, votes in self.ratings.items()]
 
 
 class PerfumeSeekerView (seeker.SeekerView):
@@ -203,7 +259,12 @@ class PerfumeSeekerView (seeker.SeekerView):
         seeker.TermsFacet("perfume.keyword", label = "Perfume"),
         seeker.YearHistogram("review_date", label = "Reviewed"),
         seeker.TermsFacet("label.keyword", label = "Sentiment"),
-        seeker.TermsFacet("accords.accord.keyword", label = "Accords"),
+        seeker.NestedFacet("accords.val.keyword", label = "Accords", nestedfield="accords"),
+        seeker.NestedFacet("moods.val.keyword", label = "Moods", nestedfield="moods"),
+        seeker.NestedFacet("notes.val.keyword", label = "Notes", nestedfield="notes"),
+        seeker.NestedFacet("longevity.val.keyword", label = "Longevity", nestedfield="longevity"),
+        seeker.NestedFacet("sillage.val.keyword", label = "Sillage", nestedfield="sillage"),
+        seeker.NestedFacet("ratings.val.keyword", label = "Ratings", nestedfield="ratings"),
         ]
     facets_keyword = [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")];
     display = [

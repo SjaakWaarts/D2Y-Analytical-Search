@@ -368,13 +368,13 @@ def crawl_view(request):
             rss_field = form.cleaned_data['rss_field']
             brand_name = form.cleaned_data['brand_name_field']
             brand_variant = form.cleaned_data['brand_variant_field']
-            perfume_name = form.cleaned_data['perfume_name_field']
-            asin = form.cleaned_data['asin_field']
+            perfume_code = form.cleaned_data['perfume_code_field'].lower()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             if from_date == None:
                 today = datetime.now()
                 from_date = datetime(today.year-1, 1, 1, 0, 0, 0)
+            # Crawl BLOG Sites
             if 'crawl_si_sites' in form.data:
                 for site_choice in site_choices:
                     if site_choice == 'apf':
@@ -383,9 +383,40 @@ def crawl_view(request):
                         crawl.crawl_cosmetic(scrape_choices, nrpages)
                     else:
                         crawl.si_site(site_choice, nrpages)
+            # Crawl Market Intelligence Sites
+            if 'crawl_feedly' in form.data:
+                if not crawl.crawl_feedly(from_date, rss_field):
+                     form.add_form_error("Could not retrieve feedly data, expired")
             elif 'crawl_mi' in form.data:
                 if not market.index_posts(from_date, username, password):
                     form.add_form_error("Could not index category posts")
+            # Crawl Product Intelligence Sites
+            if 'crawl_pi' in form.data:
+                pi_site_choices = request.POST['pi_site_choices_field']
+                if perfume_code == '':
+                    form.add_form_error("Specify a product code")
+                else:
+                    if pi_site_choices == 'fragrantica':
+                        success = product.crawl_fragrantica(brand_name, brand_variant, perfume_code)
+                    elif pi_site_choices == 'amazon':
+                        success = product.crawl_amazon(brand_name, brand_variant, perfume_code)
+                    elif pi_site_choices == 'basenotes':
+                        success = product.crawl_basenotes(brand_name, brand_variant, perfume_code)
+                    if not success:
+                        form.add_form_error("Could not save product data")
+            if 'retrieve_pi' in form.data:
+                pi_site_choices = request.POST['pi_site_choices_field']
+                if perfume_code == '':
+                    form.add_form_error("Specify a product code")
+                else:
+                    if pi_site_choices == 'fragrantica':
+                        success = product.retrieve_fragrantica(perfume_code)
+                    elif pi_site_choices == 'amazon':
+                        success = product.retrieve_amazon(perfume_code)
+                    if pi_site_choices == 'basenotes':
+                        success = product.retrieve_basenotes(perfume_code)
+                    if not success:
+                        form.add_form_error("Could not save product data")
             if 'crawl_fragrantica' in form.data:
                 if perfume_name == '':
                     form.add_form_error("Specify a product")
@@ -396,23 +427,8 @@ def crawl_view(request):
                 if perfume_name == '':
                     form.add_form_error("Specify a product")
                 else:
-                    if not product.retrieve_fragrantica(brand_name, brand_variant, perfume_name):
+                    if not product.retrieve_fragrantica(perfume_name):
                         form.add_form_error("Could not retrieve Fragrantica product data")
-            if 'crawl_amazon' in form.data:
-                if asin == '':
-                    form.add_form_error("Specify an ASIN")
-                else:
-                    if not product.crawl_amazon(brand_name, brand_variant, asin):
-                        form.add_form_error("Could not save Amazon product data")
-            if 'retrieve_amazon' in form.data:
-                if asin == '':
-                    form.add_form_error("Specify an ASIN")
-                else:
-                    if not product.retrieve_amazon(asin):
-                        form.add_form_error("Could not retrieve Amazon product data")
-            if 'crawl_feedly' in form.data:
-                if not crawl.crawl_feedly(from_date, rss_field):
-                     form.add_form_error("Could not retrieve feedly data, expired")
             if 'return_survey' in form.data:
                 pass
             return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'scrape_li' : models.scrape_li } )

@@ -1136,7 +1136,7 @@ class SeekerView (View):
 
         self.aggs_stack = None
         self.aggs_stack = {}
-        self.get_workbook()
+        #self.get_workbook()
 
         keywords_q = self.get_keywords_q()
         facets = self.get_facet_selected_data()
