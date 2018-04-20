@@ -271,8 +271,10 @@ class PerfumeSeekerView (seeker.SeekerView):
         "perfume",
         "review_date",
         "img_src",
+        "site",
         "review",
         "label",
+        "accords"
         ]
     sort = [
         "-review_date"

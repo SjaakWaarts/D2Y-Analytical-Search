@@ -347,7 +347,7 @@ class TermsFacet (Facet):
 class NestedFacet (TermsFacet):
     template = 'app/seeker/facets/nestedterms.html'
     rangeon = True
-    rangemin = 0.25
+    rangemin = 0.20
     rangemax = 0.0
     nestedfield = ''
     sort_nested_filter = None

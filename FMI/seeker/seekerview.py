@@ -460,6 +460,9 @@ class SeekerView (View):
                 facets[f] = self.request.GET.getlist(f.field) or initial.get(f.field, [])
                 if facets[f] == [''] or facets[f] == ['All']:  
                     facets[f] = []
+            if type(f) == seeker.facets.NestedFacet:
+                range_slider = self.request.GET.get(f.field.split('.')[0]+'_range', "0.20")
+                f.rangemin = float(range_slider)
         return facets
 
     def get_facets_data(self, results, tiles_select, benchmark):
