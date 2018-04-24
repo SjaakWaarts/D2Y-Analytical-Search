@@ -13,7 +13,7 @@
             {{ form.nrpages_field.label_tag }} {{ form.nrpages_field }}
         </div>
         <div class="col-md-4">
-            {{ form.from_date.label_tag }} {{ form.from_date }}
+            {{ form.from_dt.label_tag }} {{ form.from_dt }}
         </div>
     </div>
     <div class="row">
@@ -89,10 +89,10 @@
                     <div class="row">
                         <div class="col-md-4">
                             <h4>Crawl Product Intelligence Site(s)</h4><br />
-                            <ul id="id_pi_site_choices_field">
+                            <ol id="id_pi_site_choices_field">
                                 <li>
                                     <label for="id_pi_site_choices_field_0">
-                                        <input type="radio" name="pi_site_choices_field" value="fragrantica" id="id_pi_site_choices_field_0" checked="checked">
+                                        <input type="radio" name="pi_site_choices_field" value="fragrantica" id="id_pi_site_choices_field_0">
                                         <a href="http://www.fragrantica.com/"  target="_blank">Fragrantica</a>
                                     </label>
                                 </li>
@@ -108,7 +108,7 @@
                                         <a href="http://www.basenotes.com/"  target="_blank">Basenotes</a>
                                     </label>
                                 </li>
-                            </ul>
+                            </ol>
                             Enter the product for which you want to retrieve the reviews.
                             For Fragrentica this is a perfume code (Aramis), for Amazon this is the ASIC code (B000CR1WUI) 
                             and in case of Basenotes it is also a code (26120123)

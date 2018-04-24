@@ -1189,7 +1189,7 @@ class SeekerView (View):
         return True
 
 
-    def summary_tab(self, results, columns):
+    def summary_tab(self, hits, columns):
         """
         A helper method called when ``_summary`` is present in ``request.GET``.
         It will prepare a summary list of key sentences of the queried items on the selected summary fields
@@ -1199,21 +1199,21 @@ class SeekerView (View):
         self.summary_list = None
         self.summary_list = []
 
-        for result in results:
+        for hit in hits:
             header = ""
-            id = getattr(result, '_id', '')
+            id = getattr(hit, '_id', '')
             url = self.SUMMARY_URL.format(id)
-            if 'url' not in result:
-                result['url'] = url
+            if 'url' not in hit['_source']:
+                hit['_source']['url'] = url
             for c in columns:
                 if c.sumheader:
-                    header_field = getattr(result, c.field, '')
+                    header_field = hit['_source'].get(c.field, '')
                     if header_field:
                         header = header + header_field
             article = ""
             for c in columns:
                 if c.summary:
-                    article = article + getattr(result, c.field, '')
+                    article = article + hit['_source'].get(c.field, '')
             ngrams = get_ngrams(article, self.NGRAM_SIZE)
             nr_smry_sent = min(self.SUMMARY_SIZE, len(ngrams))
             sentence_list = []

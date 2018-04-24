@@ -73,7 +73,7 @@ class PostWorkbook:
     dashboard = {
         'category_keyword_table' : {
             'chart_type'  : "Table",
-            'chart_title' : "Category / Keyword Doc Count",
+            'chart_title' : "Category / Keyword Count",
             'data_type'  : "aggr",
             'controls'    : ['CategoryFilter'],
             'listener'    : {'select' : {'rowsort': None}},
@@ -86,7 +86,7 @@ class PostWorkbook:
             },
         "subject_keyword_table" : {
             'chart_type': "Table",
-            'chart_title' : "Subject / Keyword Doc Count",
+            'chart_title' : "Subject / Keyword Count",
             'data_type'  : "aggr",
             'controls'    : ['CategoryFilter'],
             'listener'    : {'select' : {'rowsort': None}},
@@ -99,7 +99,7 @@ class PostWorkbook:
             },
         "facet_keyword_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Keyword Doc Count",
+            'chart_title' : "Keyword Count",
             'data_type'  : "facet",
             'controls'    : ['CategoryFilter'],
             'X_facet'     : {
@@ -108,7 +108,7 @@ class PostWorkbook:
             },
         "facet_cust_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Customers Doc Count",
+            'chart_title' : "Customers Count",
             'data_type'  : "facet",
             'X_facet'     : {
                 'field'   : "facet_cust",
@@ -116,7 +116,7 @@ class PostWorkbook:
             },
         "facet_comp_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Competitors Doc Count",
+            'chart_title' : "Competitors Count",
             'data_type'  : "facet",
             'X_facet'     : {
                 'field'   : "facet_comp",
@@ -124,7 +124,7 @@ class PostWorkbook:
             },
         "published_keyword_line" : {
             'chart_type'  : "LineChart",
-            'chart_title' : "Published Month Doc Count",
+            'chart_title' : "Published Month Count",
             'data_type'  : "aggr",
             'controls'    : ['ChartRangeFilter'],
             'X_facet'     : {
@@ -145,6 +145,97 @@ class PostWorkbook:
     dashboard_layout['rows1'] = [["published_keyword_line"]]
     dashboard_layout['rows2'] = [["facet_cust_pie", "facet_comp_pie", "facet_keyword_pie"]]
     dashboard_layout['rows3'] = [["category_keyword_table", "subject_keyword_table"]]
+
+    storyboard = [
+        {'name' : 'initial',
+         'layout'   : dashboard_layout,
+         #'active'   : True,
+         }
+    ] 
+
+    workbooks = {
+        "initial" : {
+            'charts'        : dashboard,
+            'storyboards'   : {'initial' : storyboard},
+            }
+        }
+
+class PageWorkbook:
+    dashboard = {
+        'sub_site_keyword_table' : {
+            'chart_type'  : "Table",
+            'chart_title' : "SubSite / Keyword Count",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'rowsort': None}},
+            'X_facet'     : {
+                'field'   : "sub_site.keyword",
+                'label'   : "Category" },
+            'Y_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            },
+        "section_keyword_table" : {
+            'chart_type': "Table",
+            'chart_title' : "Section / Keyword Count",
+            'data_type'  : "aggr",
+            'controls'    : ['CategoryFilter'],
+            'listener'    : {'select' : {'rowsort': None}},
+            'X_facet'     : {
+                'field'   : "section.keyword",
+                'label'   : "Subject" },
+            'Y_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            },
+        "facet_keyword_pie" : {
+            'chart_type': "PieChart",
+            'chart_title' : "Keyword Count",
+            'data_type'  : "facet",
+            'controls'    : ['CategoryFilter'],
+            'X_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            },
+        "facet_cust_pie" : {
+            'chart_type': "PieChart",
+            'chart_title' : "Customers Count",
+            'data_type'  : "facet",
+            'X_facet'     : {
+                'field'   : "facet_cust",
+                'label'   : "Customers" },
+            },
+        "facet_comp_pie" : {
+            'chart_type': "PieChart",
+            'chart_title' : "Competitors Count",
+            'data_type'  : "facet",
+            'X_facet'     : {
+                'field'   : "facet_comp",
+                'label'   : "Competitors" },
+            },
+        "published_keyword_line" : {
+            'chart_type'  : "LineChart",
+            'chart_title' : "Published Month Count",
+            'data_type'  : "aggr",
+            'controls'    : ['ChartRangeFilter'],
+            'X_facet'     : {
+                'field'   : "published_date",
+                'label'   : "Published",
+                'total'   : False,
+                'type'    : 'date'},
+            'Y_facet'     : {
+                'field'   : "facet_keyword",
+                'label'   : "Keywords" },
+            'options'     : {
+                "hAxis"   : {'format': 'yy/MMM'},
+                },
+            },
+        }
+
+    dashboard_layout = OrderedDict()
+    dashboard_layout['rows1'] = [["published_keyword_line"]]
+    dashboard_layout['rows2'] = [["facet_cust_pie", "facet_comp_pie", "facet_keyword_pie"]]
+    dashboard_layout['rows3'] = [["sub_site_keyword_table", "section_keyword_table"]]
 
     storyboard = [
         {'name' : 'initial',
@@ -365,15 +456,12 @@ class ScentemotionWorkbook:
     storyboard = [
         {'name' : 'Olfactive',
          'layout'   : dashboard_olfactive,
-         #'active'   : False,
          },
         {'name' : 'Candidates',
          'layout'   : dashboard_candidates,
-         #'active'   : True,
          },
         {'name' : 'Profile',
          'layout'   : dashboard_profile,
-         #'active'   : False,
          },
     ]
 

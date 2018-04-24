@@ -447,24 +447,48 @@ def load_mail(email_choices, email_address, email_password):
         print('ID #%d: "%s" received %s' % (msgid, subject, envelope.date))
         raw_email_string = raw_email[b'RFC822'].decode('utf-8')
         email_message = email.message_from_string(raw_email_string)
-        body = ""
+        body_text = ""
         # this will loop through all the available multiparts in mail
         for part in email_message.walk():
             if part.get_content_type() == "text/plain": # ignore attachments
                 body = part.get_payload(decode=True)
-                body = body.decode('utf-8')
+                body_text = body.decode('utf-8')
                 links = set()
             if part.get_content_type() == "text/html": # ignore attachments
                 body = part.get_payload(decode=True)
                 body = body.decode('utf-8').strip()
                 bs = BeautifulSoup(body, "lxml")
+                body_tag = bs.find('body')
+                body_text = body_tag.text
                 links = mail.get_href_links(subject, bs)
                 link_bodies = mail.get_href_link_bodies(links)
                 #body = text_maker.handle(body)
                 break
-        body.replace("\r\n", " ")
-        body.replace("\n", " ")
-        body.replace("  ", " ")
+        from_index = body_text.find("From:")
+        if from_index > 0:
+            nl_index = body_text.find("\n", from_index)
+            txt = body_text[from_index+6:nl_index].replace('\r','')
+            from_addr = txt
+        sent_index = body_text.find("Sent:")
+        if sent_index > 0:
+            nl_index = body_text.find("\n", sent_index)
+            txt = body_text[sent_index+5:nl_index].strip().split(' ')
+            txt = ' '.join(txt[1:4])
+            #conversion fails because of month in local language
+            #published_date = datetime.strptime(txt, "%d %B %Y").date()
+        to_index = body_text.find("To:")
+        if to_index > 0:
+            nl_index = body_text.find("\n", to_index)
+            txt = body_text[to_index+3:nl_index]
+            to_addr = txt
+        subject_index = body_text.find("Subject:")
+        if subject_index > 0:
+            nl_index = body_text.find("\n", subject_index)
+            txt = body_text[subject_index+9:nl_index]
+            subject = txt
+        body_text.replace("\r\n", " ")
+        body_text.replace("\n", " ")
+        body_text.replace("  ", " ")
         mail_doc = models.MailMap()
         mail_doc.post_id = msgid
         mail_doc.to_addr = to_addr
@@ -474,7 +498,7 @@ def load_mail(email_choices, email_address, email_password):
         mail_doc.links = link_bodies
         mail_doc.subject = subject
         mail_doc.url = ""
-        mail_doc.body = body
+        mail_doc.body = body_text
         data = elastic.convert_for_bulk(mail_doc, 'update')
         bulk_data.append(data)
         count = count + 1

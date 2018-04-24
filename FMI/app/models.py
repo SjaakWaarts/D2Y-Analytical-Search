@@ -125,6 +125,7 @@ class Perfume(models.Model):
     review = models.TextField()
     label = models.TextField()
     accords = models.TextField()
+    notespyramid = models.TextField()
     moods = models.TextField()
     notes = models.TextField()
     longevity = models.TextField()
@@ -142,6 +143,7 @@ class Review(models.Model):
     review = models.TextField()
     label = models.TextField()
     accords = []
+    notespyramid = {}
     moods = []
     notes = []
     longevity = []
@@ -172,6 +174,7 @@ class Review(models.Model):
                         'prc'   : {'type' : 'float'},
                         }
                     },
+                'notespyramid' :  {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'moods'       : {
                     'type'       : 'nested',
                     'properties' : {
@@ -257,14 +260,16 @@ class PerfumeSeekerView (seeker.SeekerView):
         seeker.TermsFacet("site.keyword", label = "Site"),
         seeker.TermsFacet("brand.name.keyword", label = "Brand"),
         seeker.TermsFacet("perfume.keyword", label = "Perfume"),
-        seeker.YearHistogram("review_date", label = "Reviewed"),
+        #seeker.YearHistogram("review_date", label = "Reviewed"),
+        seeker.MonthHistogram("review_date", label = "Reviewed"),
         seeker.TermsFacet("label.keyword", label = "Sentiment"),
+        seeker.TermsFacet("notespyramid.keyword", label = "Top Notes Pyramid"),
         seeker.NestedFacet("accords.val.keyword", label = "Accords", nestedfield="accords"),
         seeker.NestedFacet("moods.val.keyword", label = "Moods", nestedfield="moods"),
         seeker.NestedFacet("notes.val.keyword", label = "Notes", nestedfield="notes"),
-        seeker.NestedFacet("longevity.val.keyword", label = "Longevity", nestedfield="longevity"),
-        seeker.NestedFacet("sillage.val.keyword", label = "Sillage", nestedfield="sillage"),
-        seeker.NestedFacet("ratings.val.keyword", label = "Ratings", nestedfield="ratings"),
+        seeker.NestedFacet("longevity.val.keyword", label = "Longevity", nestedfield="longevity", visible_pos=0),
+        seeker.NestedFacet("sillage.val.keyword", label = "Sillage", nestedfield="sillage", visible_pos=0),
+        seeker.NestedFacet("ratings.val.keyword", label = "Ratings", nestedfield="ratings", visible_pos=0),
         ]
     facets_keyword = [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")];
     display = [
@@ -276,6 +281,9 @@ class PerfumeSeekerView (seeker.SeekerView):
         "label",
         "accords"
         ]
+    field_labels = {
+        "notespyramid" : "Top Notes",
+        }
     sort = [
         "-review_date"
         ]
@@ -288,7 +296,7 @@ class PerfumeSeekerView (seeker.SeekerView):
     dashboard = {
         'perfume_keyword_table' : {
             'chart_type'  : "Table",
-            'chart_title' : "Perfume / Keyword Doc Count",
+            'chart_title' : "Perfume / Keyword Count",
             'data_type'  : "aggr",
             'X_facet'     : {
                 'field'   : "perfume.keyword",
@@ -299,7 +307,7 @@ class PerfumeSeekerView (seeker.SeekerView):
             },
         "keyword_label_table" : {
             'chart_type': "Table",
-            'chart_title' : "Keyword / Category Doc Count",
+            'chart_title' : "Keyword / Category Count",
             'data_type'  : "aggr",
             'X_facet'     : {
                 'field'   : "facet_keyword",
@@ -310,7 +318,7 @@ class PerfumeSeekerView (seeker.SeekerView):
             },
         "keyword_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Keyword Doc Count",
+            'chart_title' : "Keyword Count",
             'data_type'  : "facet",
             'X_facet'     : {
                 'field'   : "facet_keyword",
@@ -318,7 +326,7 @@ class PerfumeSeekerView (seeker.SeekerView):
             },
         "reviewed_keyword_line" : {
             'chart_type'  : "LineChart",
-            'chart_title' : "Reviewed Year Doc Count",
+            'chart_title' : "Reviewed Year-Month Count",
             'data_type'  : "aggr",
             'X_facet'     : {
                 'field'   : "review_date",
@@ -328,15 +336,191 @@ class PerfumeSeekerView (seeker.SeekerView):
                 'field'   : "facet_keyword",
                 'label'   : "Keywords" },
             },
+        "cand_moods_like_col" : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Moods-Like Perfumes",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'help'        : "Select Row for sorting, Select Column Header for filter",
+            'listener'    : {'select' : {'colsort': None, 'rowcolfilter': ["accords_cand_radar", "moods_cand_radar", "notes_cand_radar",
+                                                                           "longevity_cand_radar", "sillage_cand_radar", "ratings_cand_radar"]}},
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "moods",
+                'question': "moods",
+                "answers" : ['like'], # All
+                "metric"  : "prc",
+                #"a-mean"  : True,
+                'label'   : "Moods-Like",
+                }
+            },
+        "accords_cand_radar" : {
+            'chart_type'  : "RadarChart",
+            'chart_title' : "Accords",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "accords",
+                'question': "accords",
+                "answers" : [], # All
+                "metric"  : "prc",
+                "a-mean"  : True,
+                'label'   : "Accords"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "moods_cand_radar" : {
+            'chart_type'  : "RadarChart",
+            'chart_title' : "Moods",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "moods",
+                'question': "moods",
+                "answers" : [], # All
+                "metric"  : "prc",
+                "a-mean"  : True,
+                'label'   : "Moods"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "notes_cand_radar" : {
+            'chart_type'  : "RadarChart",
+            'chart_title' : "Notes",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "notes",
+                'question': "notes",
+                "answers" : [], # All
+                "metric"  : "prc",
+                "a-mean"  : True,
+                'label'   : "Notes"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "longevity_cand_radar" : {
+            'chart_type'  : "RadarChart",
+            'chart_title' : "Longevity",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "longevity",
+                'question': "longevity",
+                "answers" : [], # All
+                "metric"  : "prc",
+                "a-mean"  : True,
+                'label'   : "Longevity"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "sillage_cand_radar" : {
+            'chart_type'  : "RadarChart",
+            'chart_title' : "Sillage",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "sillage",
+                'question': "sillage",
+                "answers" : [], # All
+                "metric"  : "prc",
+                "a-mean"  : True,
+                'label'   : "Sillage"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
+        "ratings_cand_radar" : {
+            'chart_type'  : "RadarChart",
+            'chart_title' : "Ratings",
+            'data_type'  : "hits",
+            'controls'    : ['CategoryFilter'],
+            'transpose'   : True,
+            'X_facet'     : {
+                'field'   : "perfume",
+                'label'   : "Perfume",
+                'total'   : False
+                },
+            'Y_facet'     : {
+                'field'   : "ratings",
+                'question': "ratings",
+                "answers" : [], # All
+                "metric"  : "prc",
+                "a-mean"  : True,
+                'label'   : "Ratings"
+                },
+            'options'     : {
+                'width'   : 300,
+                'height'  : 300
+                },
+            },
         }
+
     dashboard_layout = collections.OrderedDict()
     dashboard_layout['table1'] = [["reviewed_keyword_line"], ["keyword_label_table"]]
     dashboard_layout['table2'] = [["perfume_keyword_table", "keyword_pie"]]
 
+    dashboard_profile = collections.OrderedDict()
+    dashboard_profile['table1'] = [["cand_moods_like_col"],
+                                   ["accords_cand_radar", "moods_cand_radar"],
+                                   ["longevity_cand_radar", "sillage_cand_radar"],
+                                   ["notes_cand_radar", "ratings_cand_radar"],
+                                   ]
+
     storyboard = [
         {'name' : 'initial',
          'layout'   : dashboard_layout,
-         #'active'   : True,
+         },
+        {'name' : 'profile',
+         'layout'   : dashboard_profile,
          }
     ]
 
@@ -470,22 +654,24 @@ class PostSeekerView (seeker.SeekerView, workbooks.PostWorkbook):
 
 class Page(models.Model):
     page_id = models.IntegerField()
-    posted_date = models.DateField()
+    published_date = models.DateField()
     site = models.TextField()
     sub_site = models.TextField()
     section = models.TextField()
     title = models.TextField()
     url = models.TextField()
+    img_src = models.TextField()
     page = models.TextField()
 
 class PageMap(models.Model):
     page_id = models.IntegerField()
-    posted_date = models.DateField()
+    published_date = models.DateField()
     site = models.TextField()
     sub_site = models.TextField()
     section = models.TextField()
     title = models.TextField()
     url = models.TextField()
+    img_src = models.TextField()
     page = models.TextField()
 
     class Meta:
@@ -493,12 +679,13 @@ class PageMap(models.Model):
         es_type_name = 'page'
         es_mapping = {
             'properties' : {
-                'posted_date'   : {'type' : 'date'},
+                'published_date': {'type' : 'date'},
                 'site'          : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'sub_site'      : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'section'       : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
                 'title'         : {'type' : 'text'},
                 'url'           : {'type' : 'text'},
+                'img_src'       : {'type' : 'text'},
                 'page'          : {'type' : 'text'},
                 }
             }
@@ -525,7 +712,7 @@ class PageMap(models.Model):
         return field_es_value
 
 
-class PageSeekerView (seeker.SeekerView):
+class PageSeekerView (seeker.SeekerView, workbooks.PageWorkbook):
     document = None
     using = client
     index = "page"
@@ -534,8 +721,8 @@ class PageSeekerView (seeker.SeekerView):
         seeker.TermsFacet("site.keyword", label = "Site"),
         seeker.TermsFacet("sub_site.keyword", label = "Sub Site"),
         seeker.TermsFacet("section.keyword", label = "Section"),
-        seeker.MonthHistogram("posted_date", label = "Posted Month"),
-        seeker.YearHistogram("posted_date", label = "Posted Year")
+        seeker.MonthHistogram("published_date", label = "Published Month"),
+        seeker.YearHistogram("published_date", label = "Published Year")
         ]
     facets_keyword = [
         seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k"),
@@ -545,7 +732,7 @@ class PageSeekerView (seeker.SeekerView):
                             initial="symrise, givaudan, firmenich, frutarom")
         ];
     display = [
-        "posted_date",
+        "published_date",
         "title",
         "site",
         "sub_site",
@@ -690,7 +877,7 @@ class FeedlySeekerView (seeker.SeekerView):
     dashboard = {
         'category_keyword_table' : {
             'chart_type'  : "Table",
-            'chart_title' : "Category / Keyword Doc Count",
+            'chart_title' : "Category / Keyword Count",
             'data_type'  : "aggr",
             'controls'    : ['CategoryFilter'],
             'X_facet'     : {
@@ -702,7 +889,7 @@ class FeedlySeekerView (seeker.SeekerView):
             },
         'feed_keyword_table' : {
             'chart_type'  : "Table",
-            'chart_title' : "Feed / Keyword Doc Count",
+            'chart_title' : "Feed / Keyword Count",
             'data_type'  : "aggr",
             'X_facet'     : {
                 'field'   : "feed.keyword",
@@ -713,7 +900,7 @@ class FeedlySeekerView (seeker.SeekerView):
             },
         "keyword_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Keyword Doc Count",
+            'chart_title' : "Keyword Count",
             'data_type'  : "facet",
             'X_facet'     : {
                 'field'   : "facet_keyword",
@@ -721,7 +908,7 @@ class FeedlySeekerView (seeker.SeekerView):
             },
         "customer_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Customer Doc Count",
+            'chart_title' : "Customer Count",
             'data_type'  : "facet",
             'X_facet'     : {
                 'field'   : "facet_cust",
@@ -729,7 +916,7 @@ class FeedlySeekerView (seeker.SeekerView):
             },
         "competitor_pie" : {
             'chart_type': "PieChart",
-            'chart_title' : "Competitor Doc Count",
+            'chart_title' : "Competitor Count",
             'data_type'  : "facet",
             'X_facet'     : {
                 'field'   : "facet_comp",
@@ -737,7 +924,7 @@ class FeedlySeekerView (seeker.SeekerView):
             },
         "published_keyword_line" : {
             'chart_type'  : "LineChart",
-            'chart_title' : "Published Year Doc Count",
+            'chart_title' : "Published Year Count",
             'data_type'  : "aggr",
             'controls'    : ['ChartRangeFilter'],
             'X_facet'     : {

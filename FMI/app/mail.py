@@ -82,7 +82,7 @@ def get_href_links(subject, bs):
     header_links = mail_conf.get('header_links', 0)
     footer_links = mail_conf.get('footer_links', 0)
     # get all the links that do not start with http
-    for link_tag in bs.findAll("a", href=re.compile("^http.+")):
+    for link_tag in bs.find_all("a", href=re.compile("^http.+")):
         link_href = link_tag.attrs['href']
         link_text = link_tag.text.replace("\r\n", " ").replace("\n", " ")
         if link_text == "":

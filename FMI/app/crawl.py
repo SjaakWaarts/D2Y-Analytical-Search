@@ -47,18 +47,26 @@ class Crawler:
     site_name = ''
     pages = set()
     bulk_data = []
-    nrpages = 50
+    nrpages = 5
 
     def __init__(self, site, nrpages):
         self.site = site
         self.nrpages = nrpages
+        # Add some recent user agent to prevent amazon from blocking the request 
+        # Find some chrome user agent strings  here https://udger.com/resources/ua-list/browser-detail?browser=Chrome
+        self.headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
 
     # read the content of a page into BeautifulSoup
     def read_page(self, url):
         try:
             print("read_page: scraping url ", url)
-            html = urllib.request.urlopen(url)
-            bs = BeautifulSoup(html.read(), "lxml")
+            #html = urllib.request.urlopen(url)
+            #bs = BeautifulSoup(html.read(), "lxml")
+            page = requests.get(url, headers=self.headers)
+            if page.status_code != 200:
+                print("Could not read page: "+url)
+                return false
+            bs = BeautifulSoup(page.content, "lxml")
             [script.decompose() for script in bs("script")]
         except:
             print("Scrape: could not open url ", url)
@@ -123,7 +131,7 @@ class Crawler:
 
         # get posted date
         try:
-            pagemap.posted_date = datetime.today()
+            pagemap.published_date = datetime.today()
         except:
             pass
 
@@ -208,19 +216,12 @@ class AFPCrawler(Crawler):
         # get posted date
         # <span class="entry-date">May 23, 2017</span>
         try:
-            pagemap.posted_date = datetime.today()
+            pagemap.published_date = datetime.today()
             entry_date_tag = bs.find("span", class_="entry-date")
             published = entry_date_tag.text
-            pagemap.posted_date = datetime.strptime(published, '%B %d, %Y')
+            pagemap.published_date = datetime.strptime(published, '%B %d, %Y').date()
         except:
             pass
-        #try:
-        #    box_1_tag = bs.find("div", class_="box_1")
-        #    product_info_bar_tag = box_1_tag.find("div", class_="product_info_bar")
-        #    published = re.search(r'([0-9]{2}-[a-z,A-Z]{3}-[0-9]{4})', product_info_bar.text, re.MULTILINE)
-        #    pagemap.posted_date = datetime.strptime(published.group(0), '%d-%b-%Y')
-        #except:
-        #    pass
 
         # get page
         # <section class="entry-content">
@@ -276,17 +277,53 @@ def crawl_apf(scrape_choices, nrpages):
 
 class CosmeticsCrawler(Crawler):
 
+    def __init__(self, site, nrpages):
+        global driver
+
+        if driver is None:
+            options = webdriver.ChromeOptions()
+            options.add_argument('headless')
+            driver = webdriver.Chrome(chrome_options=options)
+        super(CosmeticsCrawler, self).__init__(site, nrpages)
+
+    # read the content of a page using a driver into BeautifulSoup
+    def read_page(self, url):
+        global driver
+
+        bs = None
+        try:
+            print("read_page: scraping url ", url)
+            driver.get(url)
+            bs = BeautifulSoup(driver.page_source, "lxml")
+            [script.decompose() for script in bs("script")]
+        except:
+            print("Scrape: could not open url ", url)
+        return bs
+
     def get_pagination_links(self, sub_site):
+        global driver
+
         include_url = urlparse(sub_site).scheme+"://"+urlparse(sub_site).netloc
         links = set()
         url = sub_site
-        page_nr = 0
+        bs = self.read_page(url)
+        page_nr = 1
+        page_found = True
         page_size = 10
         link_count = 0
-        while url != None and link_count < self.nrpages:
-            bs = self.read_page(url)
-            box_1_tag = bs.find("div", class_="box_1")
-            for link_tag in box_1_tag.findAll("a", href=re.compile("^(/|.*"+include_url+")")):
+        while page_found and link_count < self.nrpages:
+            #box_1_tag = bs.find("div", class_="box_1")
+            #for link_tag in box_1_tag.findAll("a", href=re.compile("^(/|.*"+include_url+")")):
+            # for product catalog
+            products_search_results_tag = bs.find('div', {'data-content':"products_search_results"})
+            if products_search_results_tag:
+                articles_tag = products_search_results_tag
+            else:
+                # for market trends
+                layout_main_tag = bs.find('div', class_="Layout-main")
+                articles_tag = layout_main_tag
+            for article_tag in articles_tag.find_all('article'):
+                link_tag = article_tag.div.h3.a
                 if link_tag.attrs['href'] is not None:
                     if link_tag.attrs['href'] not in links:
                         if link_tag.attrs['href'].startswith('/'):
@@ -295,26 +332,37 @@ class CosmeticsCrawler(Crawler):
                             link = link_tag.attrs['href']
                         links.add(link)
                         link_count = link_count + 1
-            result_count_tag = bs.find("span", class_="result_count")
-            if result_count_tag != None:
-                result_count_list = result_count_tag.text.split()
-                result_count = int(float(result_count_list[4]))
+            #result_count_tag = bs.find("span", class_="result_count")
+            #if result_count_tag != None:
+            #    result_count_list = result_count_tag.text.split()
+            #    result_count = int(float(result_count_list[4]))
+            #else:
+            #    result_count = page_size
+            #navigation_tag = bs.find(id="navigation")
+            #if navigation_tag != None:
+            #    next_tag = navigation_tag.find("span", class_="next")
+            #    if next_tag != None:
+            #        next_url = include_url + next_tag.find("a").attrs['href']
+            #    else:
+            #        next_url = None
+            #else:
+            #    page_nr = page_nr + 1
+            #    if page_nr * page_size > result_count:
+            #        next_url = None
+            #    else:
+            #        next_url = sub_site + '/(offset)/{}'.format(page_nr)
+            page_nr = page_nr + 1
+            url = sub_site + '?page=' + str(page_nr)
+            products_search_results_tag = bs.find('div', {'data-content':"products_search_results"})
+            pagination_list_tag = bs.find('ul', class_="Pagination-list")
+            pagination_item_tag = pagination_list_tag.find('a', {'data-page-number':str(page_nr)})
+            pagination_item_elm = driver.find_element_by_xpath('//a[@data-page-number="'+str(page_nr)+'"]')
+            if pagination_item_elm:
+                #pagination_item_elm.click()
+                driver.execute_script("arguments[0].click();", pagination_item_elm)
+                bs = BeautifulSoup(driver.page_source, "lxml")
             else:
-                result_count = page_size
-            navigation_tag = bs.find(id="navigation")
-            if navigation_tag != None:
-                next_tag = navigation_tag.find("span", class_="next")
-                if next_tag != None:
-                    next_url = include_url + next_tag.find("a").attrs['href']
-                else:
-                    next_url = None
-            else:
-                page_nr = page_nr + 1
-                if page_nr * page_size > result_count:
-                    next_url = None
-                else:
-                    next_url = sub_site + '/(offset)/{}'.format(page_nr)
-            url = next_url
+                page_found = False
         return links
 
 
@@ -326,50 +374,35 @@ class CosmeticsCrawler(Crawler):
         pagemap.sub_site    = sub_site
         pagemap.url         = url
 
-        # get posted date
-        try:
-            pagemap.posted_date = datetime.today()
-            author_info_tag = bs.find("div", class_="author_info")
-            published = author_info_tag.find('p', class_='date').text
-            pagemap.posted_date = datetime.strptime(published, '%d-%b-%Y')
+        article_tag = bs.find('article')
+        try: # posted date
+            published = article_tag.find('time').text
+            pagemap.published_date = datetime.strptime(published, '%d-%b-%Y').date()
         except:
             pass
-        try:
-            box_1_tag = bs.find("div", class_="box_1")
-            product_info_bar_tag = box_1_tag.find("div", class_="product_info_bar")
-            published = re.search(r'([0-9]{2}-[a-z,A-Z]{3}-[0-9]{4})', product_info_bar.text, re.MULTILINE)
-            pagemap.posted_date = datetime.strptime(published.group(0), '%d-%b-%Y')
-        except:
-            pass
-        # get page
-        try:
-            pagemap.page        = bs.get_text()
-            box_1_tag = bs.find("div", class_="box_1")
-            pagemap.page = box_1_tag.text
-            product_main_text_tag = box_1_tag.find("div", class_="product_main_text")
-            if product_main_text_tag != None:
-                pagemap.page = product_main_text_tag.text
-            else:
-                story_tag = box_1_tag.find("div", class_="story")
-                pagemap.page = story_tag.text
-        except:
-            pass
-        # get title
-        try:
+        try: # title
             if bs.title != None:
-                pagemap.title   = bs.title.text
+                pagemap.title = bs.title.text
             else:
-                pagemap.title   = ''
-            box_1_tag = bs.find("div", class_="box_1")
-            pagemap.title = box_1_tag.find("h1").text
+                pagemap.title = article_tag.header.h1.text
         except:
             pass
-        # get section
-        try:
-            box_2_tag = bs.find("div", class_="box_2")
-            pagemap.section = box_2_tag.text.strip(' \t\n\r')
+        try: # section
+            if sub-site in ['Skin-care', 'Hair-care']:
+                pagemap.section = article_tag.header.p.text.strip()
+            else:
+                pagemap.section = 'blog'
         except:
             pass
+        try: # img_src
+            pagemap.img_src = article_tag.header.figure.img.attrs['src']
+        except:
+            pass
+        try: # page
+            pagemap.page = article_tag.find('div', class_='Detail-content').text
+        except:
+            pass
+
 
         data = elastic.convert_for_bulk(pagemap, 'update')
         return data
@@ -380,8 +413,8 @@ def crawl_cosmetic(scrape_choices, nrpages):
     sub_sites = {}
     if len(scrape_choices) == 0:
         sub_sites.add(site)
-#   for site in ['http://www.cosmeticsdesign.com/', 'http://www.cosmeticsdesign-europe.com/', 'http://www.cosmeticsdesign-asia.com/']:
-    for site_url in ['http://www.cosmeticsdesign.com/']:
+#   for site in ['http://www.cosmeticsdesign.com', 'http://www.cosmeticsdesign-europe.com', 'http://www.cosmeticsdesign-asia.com']:
+    for site_url in ['https://www.cosmeticsdesign.com']:
         for scrape_choice in scrape_choices:
             if scrape_choice == 'product':
                 sub_sites['Skin-care'] = site_url + '/Product-Categories/Skin-Care'
@@ -404,7 +437,7 @@ def crawl_cosmetic(scrape_choices, nrpages):
 # FEEDLY
 #
 
-def crawl_feedly(from_date, rss_field):
+def crawl_feedly(from_dt, rss_field):
     global headers
 
     today = datetime.now()
@@ -412,7 +445,7 @@ def crawl_feedly(from_date, rss_field):
     yesterday = today - days
     s = yesterday.timestamp()
     t = time(0, 0)
-    dt = datetime.combine(from_date, t)
+    dt = datetime.combine(from_dt, t)
     s = dt.timestamp()
     #datetime.datetime.fromtimestamp(s).strftime('%c')
     ms = s * 1000
@@ -460,6 +493,7 @@ def crawl_feedly(from_date, rss_field):
                 for entry in stream['items']:
                     feedlymap = models.FeedlyMap()
                     feedlymap.post_id = entry['id']
+                    feedlymap.url = ""
                     try:
                         feedlymap.published_date = datetime.fromtimestamp(entry['published']/1000)
                     except:
@@ -476,11 +510,13 @@ def crawl_feedly(from_date, rss_field):
                         feedlymap.title = entry['title']
                     if 'canonicalUrl' in entry:
                         feedlymap.url = entry['canonicalUrl']
-                    else:
+                    if len(feedlymap.url) == 0:
                         if 'originId' in entry:
                             n = entry['originId'].find('http')
-                            feedlymap.url = entry['originId'][n:]
-                        elif 'origin' in entry:
+                            if n > 0:
+                                feedlymap.url = entry['originId'][n:]
+                    if len(feedlymap.url) == 0:
+                        if 'origin' in entry:
                             origin = entry['origin']
                             feedlymap.url = origin['htmlUrl']
                     feedlymap.post_id = feedlymap.url

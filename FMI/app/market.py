@@ -132,9 +132,9 @@ def posts_retrieve(from_year, username, password):
 #    posts_df = posts_df.drop(['co-area', 'profit-ctr','fiscvarnt', 'country', 'prjown', 'plant', 'salesorg', 'ccrsc'], axis=    
     return True
 
-def index_posts(from_date, username, password):
+def index_posts(from_dt, username, password):
     to_year = datetime.now().year
-    from_year = from_date.year
+    from_year = from_dt.year
     success = True
     while from_year <= to_year and success:
         print("Market: retieving postings for year %d" % (from_year))

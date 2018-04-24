@@ -99,7 +99,7 @@ class Column (object):
             if value:
                 url = self.view.urlfields[self.field].format(value.replace(' ', '-').lower())
             if url == "":
-                url = result['url']
+                url = result['_source']['url']
 
         keys = []
 

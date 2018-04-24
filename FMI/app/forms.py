@@ -94,7 +94,7 @@ class product_form(forms.Form):
 class crawl_form(forms.Form):
     #index_choices = (('elastic', 'Elastic Index/Search'), ('azure', 'Azure Index/Search'))
     #index_choices_field = forms.MultipleChoiceField(label='Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=True)
-    from_date = forms.DateField(label='From Date (DD/MM/YYYY)', required=False)
+    from_dt = forms.DateField(label='From Date (DD/MM/YYYY)', required=False)
     nrpages_field = forms.IntegerField(label='Number of Pages to Scrape', initial = 50)
     site_choices = (('cosmetics', 'Cosmetics'), ('apf', 'APF'), ('contagious', 'Contagious'), ('mit', 'MIT Media Lab'), ('gci', 'GCI magazine'))
     site_choices_field = forms.MultipleChoiceField(label='Web Site', choices=site_choices, widget=forms.CheckboxSelectMultiple, required=False)

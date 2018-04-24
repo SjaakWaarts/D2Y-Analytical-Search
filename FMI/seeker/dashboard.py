@@ -863,8 +863,9 @@ def bind_hits(seekerview, chart, hits, benchmark=None):
     rownr = 0
     for hit in hits:
         X_key = hit['_source'][X_field]
-        #series = [0] * len(categories)
-        #series[0] = X_key
+        # only process new X keys
+        if X_key in dt_index:
+            continue
         dt.loc[rownr, X_label] = X_key
         dt_index.append(X_key)
         #if x_total:

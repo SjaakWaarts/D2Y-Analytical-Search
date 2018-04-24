@@ -68,62 +68,6 @@ def scrape_save(product):
     except:
         return False
 
-def scrape_retrieve(brand_name, brand_variant, product):
-    # Read old format
-    ml_file = 'data/' + product + '_scrape.pickle'
-    try:
-        file = open(ml_file, 'rb')
-        pyfile = File(file)
-        models.scrape_li = pickle.load(pyfile)
-        pyfile.close()
-        #return True
-    except:
-        return False
-    # Convert to the new format
-    products_data = []
-    for scrape_perfume in models.scrape_li:
-        review_count =1
-        reviews = []
-        scrape_reviews = scrape_perfume[1][4]
-        for scrape_review in scrape_reviews:
-            review = models.Review()
-            review.reviewid = scrape_perfume[1][0] + "?review=" + str(review_count)
-            review_count = review_count + 1
-            review.perfume = scrape_perfume[0]
-            review.review_date = scrape_review[0]
-            review.review = scrape_review[1]
-            review.label = scrape_review[2]
-            review.accords = scrape_perfume[1][1]
-            review.img_src = scrape_perfume[1][5]
-            reviews.append({
-                'date'      : review.review_date,
-                'body'      : review.review,
-                'label'     : review.label,
-                })
-        product_data = {
-            'site'      : "Fragrantica",
-            'brand_name': brand_name,
-            'brand_variant' : brand_variant,
-            'perfume'   : review.perfume,
-            'img_src'   : review.img_src,
-            'price'     : 0.0,
-            'ratings'   : {},
-            'accords'   : review.accords,
-            'reviews'   : reviews,
-            'url'       : scrape_perfume[1][0],
-            }
-        products_data.append(product_data)
-    models.scrape_li = products_data
-    # Write new format
-    json_file = 'data/' + product + '_products.json'
-    try:
-        file = open(json_file, 'w')
-        pyfile = File(file)
-        json.dump(models.scrape_li, pyfile)
-        pyfile.close()
-        return True
-    except:
-        return False
 
 def index_products_data():
     count = 1
@@ -143,15 +87,19 @@ def index_products_data():
             r.review = review['body']
             r.label = review['label']
             r.accords = product_data.get('accords', {})
+            notespyramid = product_data.get('notespyramid', {})
+            r.notespyramid = notespyramid.get('top', [])
             r.moods = product_data.get('moods', {})
             r.notes = product_data.get('notes', {})
             r.longevity = product_data.get('longevity', {})
             r.sillage = product_data.get('sillage', {})
             r.ratings = product_data.get('ratings', {})
             r.img_src = product_data.get('img_src', "")
-            if count < 100:
-                data.append(elastic.convert_for_bulk(r, 'update'))
+            data.append(elastic.convert_for_bulk(r, 'update'))
             count = count + 1
+            if count > 100:
+                bulk(models.client, actions=data, stats_only=True)
+                count = 1
     bulk(models.client, actions=data, stats_only=True)
 
 ###
@@ -180,7 +128,7 @@ def scrape_fragrantica_search_product(product, perfumes, designers):
         durl = designer_a_tag.get_attribute('href')
         designers[dname] = durl
 
-def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
+def scrape_fragrantica_product(from_dt, brand_name, brand_variant, perfume, purl):
     global driver
 
     accords = {}
@@ -246,6 +194,19 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
         #        width2 = accord_div_tag.get_attribute('style').split(';')[0].split(':')[1]
         #        votes = width / full_width
         #        accords[aname] = votes
+    except:
+        pass
+
+    # Notes Pyramid
+    notespyramid = {}
+    try:
+        pyramid_tag = bs.find('div', id="pyramid")
+        for p_tag in pyramid_tag.parent.find_all('p'):
+            pyramid = re.search('^\w+', p_tag.text)[0]
+            pyramid = {"Top": 'top', "Middle": 'middle', "Base": 'base'}.get(pyramid, 'base')
+            notespyramid[pyramid] = []
+            for span_tag in p_tag.find_all('span'):
+                notespyramid[pyramid].append(span_tag.img.attrs['alt'])
     except:
         pass
 
@@ -321,6 +282,9 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
         for i in range(0, len(revND_tags)):
             review_text = revND_tags[i].text
             review_date = dateND_tags[i].get_attribute('textContent').rstrip()
+            review_dt = datetime.strptime(review_date, '%b %d %Y').date()
+            if review_dt < from_dt:
+                break
             reviews.append({
                 'date'      : review_date,
                 'body'      : review_text,
@@ -340,6 +304,7 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
         'price'     : 0.0,
         'ratings'   : {},
         'accords'   : accords,
+        'notespyramid' : notespyramid,
         'moods'     : moods,
         'notes'     : notes,
         'longevity' : longevity,
@@ -348,7 +313,7 @@ def scrape_fragrantica_product(brand_name, brand_variant, perfume, purl):
         }
     return product_data
 
-def crawl_fragrantica_data(brand_name, brand_variant, perfume_name):
+def crawl_fragrantica_data(from_dt, brand_name, brand_variant, perfume_name):
     global driver
 
     products_data = []
@@ -361,6 +326,7 @@ def crawl_fragrantica_data(brand_name, brand_variant, perfume_name):
     # DRIVER APPROACH IS NEEDED SINCE CONTENT IS GENERATED BY JavaScript, SEARCH PAGE CAN BE USED DIRECTLY WITH BS (OR PARSER)
     # 1. DRIVER APPROACH
     #driver = webdriver.PhantomJS(executable_path='C:/Python34/phantomjs.exe')
+    #if driver is None:
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     driver = webdriver.Chrome(chrome_options=options)
@@ -394,16 +360,16 @@ def crawl_fragrantica_data(brand_name, brand_variant, perfume_name):
         purl = perfume_a_tag.attrs['href']
         perfumes[pname] = purl
     for perfume, purl in perfumes.items():  
-        products_data.append(scrape_fragrantica_product(brand_name, brand_variant, perfume, purl))
+        products_data.append(scrape_fragrantica_product(from_dt, brand_name, brand_variant, perfume, purl))
     return products_data
 
 
-def crawl_fragrantica(brand_name, brand_variant, perfume_name):
+def crawl_fragrantica(from_dt, brand_name, brand_variant, perfume_name):
     models.scrape_li = None
     success = False
     perfumes = {}
     designers = {}
-    models.scrape_li = crawl_fragrantica_data(brand_name, brand_variant, perfume_name)
+    models.scrape_li = crawl_fragrantica_data(from_dt, brand_name, brand_variant, perfume_name)
     sentiment.sentiment(perfume_name)
     success = save_products_data(perfume_name)
     return success
@@ -412,7 +378,6 @@ def crawl_fragrantica(brand_name, brand_variant, perfume_name):
 def retrieve_fragrantica(perfume_name):
     models.scrape_li = None
     success = False
-    #if scrape_retrieve(brand_name, brand_variant, perfume_name):
     if retrieve_products_data(perfume_name):
         index_products_data()
         success = True
@@ -423,27 +388,22 @@ def retrieve_fragrantica(perfume_name):
 ### Basenotes
 ###
 
-def crawl_basenotes_data(brand_name, brand_variant, perfume_code):
-    #This script has only been tested with Amazon.com
-    url  = 'http://www.basenotes.net/fragrancereviews/fragrance/'+perfume_code
+def crawl_basenotes_data(from_dt, brand_name, brand_variant, perfume_code):
     # Add some recent user agent to prevent amazon from blocking the request 
     # Find some chrome user agent strings  here https://udger.com/resources/ua-list/browser-detail?browser=Chrome
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
+    url = "http://www.basenotes.net/ID"+perfume_code+".html"
+    print("crawl_basenotes_data: page: "+url)
     page = requests.get(url, headers=headers)
     if page.status_code != 200:
         print("Could not read page: "+url)
         return false
+
     bs = BeautifulSoup(page.content, "lxml")
-    #html = urllib.request.urlopen(url)
-    #bs = BeautifulSoup(page.read(), "lxml")
-
-    reviews = []
-
     # Perfume Name
     try:
-        contentbn_tag = bs.find('div', id="contentbn")
-        perfume = contentbn_tag.text
-        perfume = re.search("(Reviews of )(.*)( by)", perfume)[2]
+        contentbn_tag = bs.find('h1', class_="fragranceheading")
+        perfume = contentbn_tag.span.text
     except:
         perfume = perfume_code
         pass
@@ -456,40 +416,93 @@ def crawl_basenotes_data(brand_name, brand_variant, perfume_code):
     except:
         img_src = ''
         pass
-
-    # Reviews
+    # Notes Pyramid
+    notespyramid = {}
     try:
-        review_tags = bs.find_all('div', class_="reviewmain")
-        for review_tag in review_tags:
-            reviewauthor_tag = review_tag.find('div', class_= "reviewauthor")
-            thumb_img = reviewauthor_tag('img')[-1].attrs['src']
-            thumb_img = thumb_img[-len("review?.png"):]
-            if thumb_img == "review1.png":
-                label = 'neg'
-            elif thumb_img == "review2.png":
-                label = 'neutral'
-            elif thumb_img == "review3.png":
-                label = 'pos'
-            else:
-                label = 'init'
-
-            reviewblurb_tag = review_tag.find('div', class_= "reviewblurb")
-            review_text = reviewblurb_tag.text
-
-            reviewdate_tag = review_tag.find('div', class_= "reviewdate")
-            reviewdate_tag.sup.decompose() # remove the th/nd/st in the date text
-            review_date = re.search("([0-9]+ [A-za-z]+, [0-9]+)", reviewdate_tag.text.strip())[0]
-            review_date = datetime.strptime(review_date, '%d %B, %Y').date()
-            review_date = review_date.strftime('%b %d %Y') # mmm dd YYYY normalized date format
-
-            reviews.append({
-                'date'      : review_date,
-                'body'      : review_text,
-                'label'     : label,
-                })
+        fraginfoimage_tag = bs.find('div', class_="notespyramid")
+        for li_tag in fraginfoimage_tag.ol.find_all('li', recursive=False):
+            pyramid = re.search('^\w+', li_tag.text)[0]
+            pyramid = {"Top": 'top', "Heart": 'middle', "Base": 'base'}.get(pyramid, 'base')
+            notespyramid[pyramid] = []
+            for note_li_tag in li_tag.div.ul.find_all('li'):
+                notespyramid[pyramid].append(note_li_tag.text)
     except:
         pass
 
+    page_nr = 1
+    url  = "http://www.basenotes.net/fragrancereviews/fragrance/"+perfume_code+"/page/"+str(page_nr)
+    print("crawl_basenotes_data: page: "+url)
+    page = requests.get(url, headers=headers)
+    if page.status_code != 200:
+        print("Could not read page: "+url)
+        return false
+    bs = BeautifulSoup(page.content, "lxml")
+    #html = urllib.request.urlopen(url)
+    #bs = BeautifulSoup(page.read(), "lxml")
+
+    ## Perfume Name
+    #try:
+    #    contentbn_tag = bs.find('div', id="contentbn")
+    #    perfume = contentbn_tag.text
+    #    perfume = re.search("(Reviews of )(.*)( by)", perfume)[2]
+    #except:
+    #    perfume = perfume_code
+    #    pass
+
+    ## Image
+    #try:
+    #    fraginfoimage_tag = bs.find('div', class_="fraginfoimage")  
+    #    img_tag = fraginfoimage_tag.find('img')
+    #    img_src = img_tag.attrs['src']
+    #except:
+    #    img_src = ''
+    #    pass
+
+    # Reviews
+    reviews = []
+    review_dt = datetime.now().date()
+    while review_dt >= from_dt and page_nr <= 100:
+        try:
+            review_tags = bs.find_all('div', class_="reviewmain")
+            for review_tag in review_tags:
+                reviewauthor_tag = review_tag.find('div', class_= "reviewauthor")
+                thumb_img = reviewauthor_tag('img')[-1].attrs['src']
+                thumb_img = thumb_img[-len("review?.png"):]
+                if thumb_img == "review1.png":
+                    label = 'neg'
+                elif thumb_img == "review2.png":
+                    label = 'neutral'
+                elif thumb_img == "review3.png":
+                    label = 'pos'
+                else:
+                    label = 'init'
+
+                reviewblurb_tag = review_tag.find('div', class_= "reviewblurb")
+                review_text = reviewblurb_tag.text
+
+                reviewdate_tag = review_tag.find('div', class_= "reviewdate")
+                reviewdate_tag.sup.decompose() # remove the th/nd/st in the date text
+                review_date = re.search("([0-9]+ [A-za-z]+, [0-9]+)", reviewdate_tag.text.strip())[0]
+                review_dt = datetime.strptime(review_date, '%d %B, %Y').date()
+                if review_dt < from_dt:
+                    break
+                review_date = review_dt.strftime('%b %d %Y') # mmm dd YYYY normalized date format
+
+                reviews.append({
+                    'date'      : review_date,
+                    'body'      : review_text,
+                    'label'     : label,
+                    })
+        except:
+            pass
+        page_nr = page_nr + 1
+        url  = "http://www.basenotes.net/fragrancereviews/fragrance/"+perfume_code+"/page/"+str(page_nr)
+        print("crawl_basenotes_data: page: "+url)
+        page = requests.get(url, headers=headers)
+        if page.status_code != 200:
+            print("Could not read page: "+url)
+            return false
+        bs = BeautifulSoup(page.content, "lxml")
 
     product_data = {
         'site'      : "Basenotes",
@@ -498,31 +511,17 @@ def crawl_basenotes_data(brand_name, brand_variant, perfume_code):
         'perfume'   : perfume,
         'url'       : url,
         'img_src'   : img_src,
+        'notespyramid' : notespyramid,
         'reviews'   : reviews,
         }
     return product_data
 
-    product_data = {
-        'site'      : "Amazon",
-        'brand_name': brand_name,
-        'brand_variant' : brand_variant,
-        'perfume'   : product_name,
-        'url'       : amazon_url,
-        'img_src'   : product_image,
-        'price'     : product_price,
-        'ratings'   : ratings_dict,
-        'reviews'   : reviews_list,
-        }
-    #scrape_li = [(product_name, [amazon_url, {}, {}, {}, reviews_list, product_image])]
-    return product_data
 
-
-def crawl_basenotes(brand_name, brand_variant, perfume_code):
+def crawl_basenotes(from_dt, brand_name, brand_variant, perfume_code):
     # perfume_code is basenotes Identification Number
     models.scrape_li = None
     success = False
-    print("Downloading and processing page http://www.basenotes.net/fragrancereviews/fragrance/"+perfume_code)
-    product_data = crawl_basenotes_data(brand_name, brand_variant, perfume_code)
+    product_data = crawl_basenotes_data(from_dt, brand_name, brand_variant, perfume_code)
     models.scrape_li = [product_data]
     success = save_products_data(perfume_code)
     return success
@@ -541,10 +540,12 @@ def retrieve_basenotes(perfume_code):
 ### AMAZON
 ###
 
-def crawl_amazon_data(brand_name, brand_variant, asin):
+def crawl_amazon_data(from_dt, brand_name, brand_variant, asin):
     #This script has only been tested with Amazon.com
     #url  = 'http://www.amazon.com/dp/'+asin
-    url = 'http://www.amazon.com/review/product/'+asin+'/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&filterByStar=all_stars&reviewerType=all_reviews&sortBy=recent&pageNumber=1'
+    page_nr = 1
+    url = 'http://www.amazon.com/review/product/'+asin+'/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&filterByStar=all_stars&reviewerType=all_reviews&sortBy=recent&pageNumber='+str(page_nr)
+    print("crawl_amazon_data: page: "+url)
     # Add some recent user agent to prevent amazon from blocking the request 
     # Find some chrome user agent strings  here https://udger.com/resources/ua-list/browser-detail?browser=Chrome
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
@@ -572,11 +573,8 @@ def crawl_amazon_data(brand_name, brand_variant, asin):
     raw_product_image = parser.xpath(XPATH_PRODUCT_IMAGE)
     product_image = ''.join(raw_product_image).strip()
     total_ratings  = parser.xpath(XPATH_AGGREGATE_RATING)
-    reviews = parser.xpath(XPATH_REVIEW_SECTION)
 
     ratings_dict = {}
-    reviews_list = []
-
     #grabing the rating  section in product page
     for ratings in total_ratings:
         extracted_rating = ratings.xpath('./td//a//text()')
@@ -587,43 +585,58 @@ def crawl_amazon_data(brand_name, brand_variant, asin):
             if rating_key:
                 ratings_dict.update({rating_key:rating_value})
 
-    #Parsing individual reviews
-    for review in reviews:
-        #XPATH_REVIEW_AUTHOR  = './/a[contains(@href,"/profile/")]/parent::span//text()'
-        #XPATH_RATING  ='./div//div//i//text()'
-        #XPATH_REVIEW_HEADER = './div//div//span[contains(@class,"text-bold")]//text()'
-        #XPATH_REVIEW_POSTED_DATE = './/a[contains(@href,"/profile/")]/parent::span/following-sibling::span/text()'
-        #XPATH_REVIEW_VOTES = './/a[contains(@class,"commentStripe")]/text()'
-        XPATH_REVIEW_AUTHOR  = './/a[contains(@class,"author")]//text()'
-        XPATH_REVIEW_RATING  = './/i[contains(@class,"review-rating")]//text()'
-        XPATH_REVIEW_TITLE = './/a[contains(@class,"review-title")]//text()'
-        XPATH_REVIEW_DATE = './/span[contains(@class,"review-date")]//text()'
-        XPATH_REVIEW_TEXT = './/div//span[contains(@class,"review-text")]//text()'
-        XPATH_REVIEW_VOTES = './/span[contains(@class,"review-votes")]/text()'
+    reviews_list = []
+    review_dt = datetime.now().date()
+    while review_dt >= from_dt and page_nr <= 100:
+        reviews = parser.xpath(XPATH_REVIEW_SECTION)
+        #Parsing individual reviews
+        for review in reviews:
+            #XPATH_REVIEW_AUTHOR  = './/a[contains(@href,"/profile/")]/parent::span//text()'
+            #XPATH_RATING  ='./div//div//i//text()'
+            #XPATH_REVIEW_HEADER = './div//div//span[contains(@class,"text-bold")]//text()'
+            #XPATH_REVIEW_POSTED_DATE = './/a[contains(@href,"/profile/")]/parent::span/following-sibling::span/text()'
+            #XPATH_REVIEW_VOTES = './/a[contains(@class,"commentStripe")]/text()'
+            XPATH_REVIEW_AUTHOR  = './/a[contains(@class,"author")]//text()'
+            XPATH_REVIEW_RATING  = './/i[contains(@class,"review-rating")]//text()'
+            XPATH_REVIEW_TITLE = './/a[contains(@class,"review-title")]//text()'
+            XPATH_REVIEW_DATE = './/span[contains(@class,"review-date")]//text()'
+            XPATH_REVIEW_TEXT = './/div//span[contains(@class,"review-text")]//text()'
+            XPATH_REVIEW_VOTES = './/span[contains(@class,"review-votes")]/text()'
 
-        raw_review_author = review.xpath(XPATH_REVIEW_AUTHOR)
-        raw_review_rating = review.xpath(XPATH_REVIEW_RATING)
-        raw_review_title = review.xpath(XPATH_REVIEW_TITLE)
-        raw_review_date = review.xpath(XPATH_REVIEW_DATE)
-        raw_review_text = review.xpath(XPATH_REVIEW_TEXT)
-        #cleaning data
-        review_author = str(raw_review_author[0])
-        review_rating = str(raw_review_rating[0]).replace('out of 5 stars','')
-        review_title = ' '.join(' '.join(raw_review_title).split())
-        review_date = ''.join(raw_review_date).replace('on ','')
-        review_date = datetime.strptime(review_date, '%B %d, %Y').date()
-        review_date = review_date.strftime('%b %d %Y') # mmm dd YYYY normalized date format
-        review_text = ' '.join(' '.join(raw_review_text).split())
+            raw_review_author = review.xpath(XPATH_REVIEW_AUTHOR)
+            raw_review_rating = review.xpath(XPATH_REVIEW_RATING)
+            raw_review_title = review.xpath(XPATH_REVIEW_TITLE)
+            raw_review_date = review.xpath(XPATH_REVIEW_DATE)
+            raw_review_text = review.xpath(XPATH_REVIEW_TEXT)
+            #cleaning data
+            review_author = str(raw_review_author[0])
+            review_rating = str(raw_review_rating[0]).replace('out of 5 stars','')
+            review_title = ' '.join(' '.join(raw_review_title).split())
+            review_date = ''.join(raw_review_date).replace('on ','')
+            review_dt = datetime.strptime(review_date, '%B %d, %Y').date()
+            if review_dt < from_dt:
+                break
+            review_date = review_dt.strftime('%b %d %Y') # mmm dd YYYY normalized date format
+            review_text = ' '.join(' '.join(raw_review_text).split())
 
-        raw_review_comments = review.xpath(XPATH_REVIEW_VOTES)
-        review_comments = ' '.join(raw_review_comments)
-        review_comments = re.sub('[A-Za-z]','',review_comments).strip()
-        review = {
-            'date'  : review_date,
-            'body'   : review_text,
-            'label'  : 'init'
-            }
-        reviews_list.append(review)
+            raw_review_comments = review.xpath(XPATH_REVIEW_VOTES)
+            review_comments = ' '.join(raw_review_comments)
+            review_comments = re.sub('[A-Za-z]','',review_comments).strip()
+            review = {
+                'date'  : review_date,
+                'body'   : review_text,
+                'label'  : 'init'
+                }
+            reviews_list.append(review)
+        page_nr = page_nr + 1
+        url = 'http://www.amazon.com/review/product/'+asin+'/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&filterByStar=all_stars&reviewerType=all_reviews&sortBy=recent&pageNumber='+str(page_nr)
+        print("crawl_amazon_data: page: "+url)
+        page = requests.get(url, headers=headers)
+        if page.status_code != 200:
+            print("Could not read page: "+url)
+            return false
+        bs = BeautifulSoup(page.content, "lxml")
+        parser = html.fromstring(page.content)
 
     product_data = {
         'site'      : "Amazon",
@@ -639,12 +652,11 @@ def crawl_amazon_data(brand_name, brand_variant, asin):
     return product_data
 
 
-def crawl_amazon(brand_name, brand_variant, asin):
+def crawl_amazon(from_dt, brand_name, brand_variant, asin):
     # ASIN is Amazon Standard Identification Number
     models.scrape_li = None
     success = False
-    print("Downloading and processing page http://www.amazon.com/review/product/"+asin)
-    product_data = crawl_amazon_data(brand_name, brand_variant, asin)
+    product_data = crawl_amazon_data(from_dt, brand_name, brand_variant, asin)
     models.scrape_li = [product_data]
     success = save_products_data(asin)
     return success
