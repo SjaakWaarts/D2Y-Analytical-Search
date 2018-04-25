@@ -1201,8 +1201,11 @@ class SeekerView (View):
 
         for hit in hits:
             header = ""
-            id = getattr(hit, '_id', '')
-            url = self.SUMMARY_URL.format(id)
+            id = hit.get('_id', '')
+            if self.SUMMARY_URL == "fragrantica":
+                url = id.split('?')[0]
+            else:
+                url = self.SUMMARY_URL.format(id)
             if 'url' not in hit['_source']:
                 hit['_source']['url'] = url
             for c in columns:

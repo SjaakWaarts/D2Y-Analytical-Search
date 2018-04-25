@@ -49,9 +49,10 @@ class Crawler:
     bulk_data = []
     nrpages = 5
 
-    def __init__(self, site, nrpages):
+    def __init__(self, from_dt, site, nrpages):
         self.site = site
         self.nrpages = nrpages
+        self.from_dt = from_dt
         # Add some recent user agent to prevent amazon from blocking the request 
         # Find some chrome user agent strings  here https://udger.com/resources/ua-list/browser-detail?browser=Chrome
         self.headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
@@ -129,20 +130,15 @@ class Crawler:
         pagemap.url         = url
         pagemap.section     = ''
 
-        # get posted date
-        try:
+        try: # get posted date
             pagemap.published_date = datetime.today()
         except:
             pass
-
-        # get page
-        try:
+        try: # get page
             pagemap.page        = bs.get_text()
         except:
             pass
-
-        # get title
-        try:
+        try: # get title
             if bs.title != None:
                 pagemap.title   = bs.title.text
             else:
@@ -153,8 +149,8 @@ class Crawler:
         data = elastic.convert_for_bulk(pagemap, 'update')
         return data
 
-def crawl_si_site(site_choice, nrpages):
-    crawler = Crawler (site_choice, nrpages)
+def crawl_si_site(from_dt, site_choice, nrpages):
+    crawler = Crawler (from_dt, site_choice, nrpages)
     si_site = si_sites[site_choice]
     sub_sites = si_site.sub_sites
     site_url = si_site.site_url
@@ -252,8 +248,8 @@ class AFPCrawler(Crawler):
         return data
 
 
-def crawl_apf(scrape_choices, nrpages):
-    apf = AFPCrawler ('APF', nrpages)
+def crawl_apf(from_dt, scrape_choices, nrpages):
+    apf = AFPCrawler (from_dt, 'APF', nrpages)
     sub_sites = {}
     site_url = 'https://apf.org/'
     for scrape_choice in scrape_choices:
@@ -277,14 +273,14 @@ def crawl_apf(scrape_choices, nrpages):
 
 class CosmeticsCrawler(Crawler):
 
-    def __init__(self, site, nrpages):
+    def __init__(self, from_dt,site, nrpages):
         global driver
 
         if driver is None:
             options = webdriver.ChromeOptions()
             options.add_argument('headless')
             driver = webdriver.Chrome(chrome_options=options)
-        super(CosmeticsCrawler, self).__init__(site, nrpages)
+        super(CosmeticsCrawler, self).__init__(from_dt, site, nrpages)
 
     # read the content of a page using a driver into BeautifulSoup
     def read_page(self, url):
@@ -388,7 +384,7 @@ class CosmeticsCrawler(Crawler):
         except:
             pass
         try: # section
-            if sub-site in ['Skin-care', 'Hair-care']:
+            if sub_site in ['Skin-care', 'Hair-care']:
                 pagemap.section = article_tag.header.p.text.strip()
             else:
                 pagemap.section = 'blog'
@@ -408,8 +404,8 @@ class CosmeticsCrawler(Crawler):
         return data
 
 
-def crawl_cosmetic(scrape_choices, nrpages):
-    cosmetic = CosmeticsCrawler('Cosmetics', nrpages)
+def crawl_cosmetic(from_dt, scrape_choices, nrpages):
+    cosmetic = CosmeticsCrawler(from_dt, 'Cosmetics', nrpages)
     sub_sites = {}
     if len(scrape_choices) == 0:
         sub_sites.add(site)

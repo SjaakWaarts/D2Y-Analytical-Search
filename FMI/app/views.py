@@ -85,7 +85,7 @@ def set_workbook(workbook_name):
     models.ExcelDoc = seeker.mapping.document_from_index(es_index, using=models.client)
     models.ExcelSeekerView.document = models.ExcelDoc
     mapping = {'properties' : es_index['properties']}
-    models.ExcelSeekerView.es_mapping = es_mapping
+    models.ExcelSeekerView.es_mapping = mapping
     models.ExcelSeekerView.index = es_index['index']
     models.ExcelSeekerView.facets = es_index['facets']
     models.ExcelSeekerView.facets_keyword = es_index['facets_keyword']
@@ -378,11 +378,11 @@ def crawl_view(request):
             if 'crawl_si_sites' in form.data:
                 for site_choice in site_choices:
                     if site_choice == 'apf':
-                        crawl.crawl_apf(scrape_choices, nrpages)
+                        crawl.crawl_apf(from_dt, scrape_choices, nrpages)
                     elif site_choice == 'cosmetics':
-                        crawl.crawl_cosmetic(scrape_choices, nrpages)
+                        crawl.crawl_cosmetic(from_dt, scrape_choices, nrpages)
                     else:
-                        crawl.si_site(site_choice, nrpages)
+                        crawl.crawl_si_site(from_dt, site_choice, nrpages)
             # Crawl Market Intelligence Sites
             if 'crawl_feedly' in form.data:
                 if not crawl.crawl_feedly(from_dt, rss_field):

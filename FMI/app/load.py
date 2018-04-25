@@ -392,7 +392,10 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
                             else:
                                 doc[field].append({'val': answer, 'prc': float(cell)})
                     elif type == 'date':
-                        doc[field] = datetime.strptime(cell, format).strftime('%Y-%m-%d')
+                        if len(format) > 0:
+                            doc[field] = datetime.strptime(cell, format).strftime('%Y-%m-%d')
+                        else:
+                            doc[field] = cell
                         #doc[field] = datetime.strptime(cell, format).date()
                     elif type == 'text':
                         cell = decode_cell(cell, decoder)

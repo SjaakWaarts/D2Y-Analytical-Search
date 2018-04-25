@@ -361,6 +361,7 @@ def crawl_fragrantica_data(from_dt, brand_name, brand_variant, perfume_name):
         perfumes[pname] = purl
     for perfume, purl in perfumes.items():  
         products_data.append(scrape_fragrantica_product(from_dt, brand_name, brand_variant, perfume, purl))
+    driver.close()
     return products_data
 
 

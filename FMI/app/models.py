@@ -289,7 +289,10 @@ class PerfumeSeekerView (seeker.SeekerView):
         ]
     summary = ['review']
     sumheader = ['perfume']
-    SUMMARY_URL="{}"
+    urlfields = {
+        "perfume" : ""
+        }
+    SUMMARY_URL="fragrantica"
 
     tabs = {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': 'hide'}
 
@@ -328,13 +331,19 @@ class PerfumeSeekerView (seeker.SeekerView):
             'chart_type'  : "LineChart",
             'chart_title' : "Reviewed Year-Month Count",
             'data_type'  : "aggr",
+            'controls'    : ['ChartRangeFilter'],
             'X_facet'     : {
                 'field'   : "review_date",
                 'label'   : "Reviewed",
-                'key'     : 'key_as_string'},
+                'key'     : 'key_as_string',
+                'total'   : False,
+                'type'    : 'date'},
             'Y_facet'     : {
                 'field'   : "facet_keyword",
                 'label'   : "Keywords" },
+            'options'     : {
+                "hAxis"   : {'format': 'yy/MMM'},
+                },
             },
         "cand_moods_like_col" : {
             'chart_type': "ColumnChart",
