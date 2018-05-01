@@ -496,7 +496,7 @@ def load_mail(email_choices, email_address, email_password):
         mail_doc.post_id = msgid
         mail_doc.to_addr = to_addr
         mail_doc.from_addr = from_addr
-        mail_doc.published_date = envelope.date
+        mail_doc.published_date = envelope.date.date()
         #mail_doc.links = [link[0] for link in links]
         mail_doc.links = link_bodies
         mail_doc.subject = subject

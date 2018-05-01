@@ -74,7 +74,7 @@
             {% endfor %}
         </div>
         <div role="tabpanel" class="tab-pane" id="display">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -104,15 +104,21 @@
             </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="dashboard_tab">
-            <div class="form-group">
-                <label>Dashboard Layout</label>
-                <div class="well" id="db_layout_div">
-                    <table class="table table-bordered table-condensed" id="db_layout_table"></table>
-                </div>
-                <label>Chart Definitions</label>
-                <div class="well" id="chart_definition_div">
-                    <div id="chart_selection_div"> </div>
-                    <table class="table table-bordered table-condensed" id="chart_definition_table"></table>
+            <div class="container-fluid">
+                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Dashboard Layout</label>
+                            <div class="well" id="db_layout_div">
+                                <table class="table table-bordered table-condensed" id="db_layout_table"></table>
+                            </div>
+                            <label>Chart Definitions</label>
+                            <div class="well" id="chart_definition_div">
+                                <div id="chart_selection_div"> </div>
+                                <table class="table table-bordered table-condensed" id="chart_definition_table"></table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

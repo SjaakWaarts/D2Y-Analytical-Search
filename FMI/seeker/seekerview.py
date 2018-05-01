@@ -19,7 +19,7 @@ import seeker.models
 import seeker.dashboard
 import seeker.cards
 import seeker.facets
-from seeker.seekercolumn import Column, NestedColumn, LinksColumn
+from seeker.seekercolumn import Column, NestedColumn, LinksColumn, JavaScriptColumn
 from .mapping import DEFAULT_ANALYZER
 import collections
 from collections import OrderedDict
@@ -359,17 +359,24 @@ class SeekerView (View):
         sort = self.get_field_sort(field_name)
         highlight = self.get_field_highlight(field_name)
         value_format = self.get_field_value_format(field_name)
+
+        column_type ='Column'
         for facet in self.facets:
             if type(facet) == seeker.NestedFacet:
                 if facet.nestedfield == field_name:
-                    return NestedColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=facet)
+                    column_type = 'NestedColumn'
             if type(facet) == seeker.OptionFacet:
                 if facet.nestedfield == field_name:
-                    return NestedColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=facet)
+                    column_type = 'NestedColumn'
         if field_name in self.field_column_types:
             column_type = self.field_column_types[field_name]
-            if column_type == 'LinksColumn':
-                return LinksColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
+
+        if column_type == 'NestedColumn':
+            return NestedColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=facet)
+        if column_type == 'LinksColumn':
+            return LinksColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
+        if column_type == 'JavaScriptColumn':
+            return JavaScriptColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
         return Column(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
 
     def get_columns(self):

@@ -298,5 +298,54 @@ class LinksColumn (Column):
             sortdsl[field_prc]["order"] = "asc"
         return(sortdsl)
 
+class JavaScriptColumn (Column):
+    nestedfacet = None
+
+    def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None):
+        sort = {field+".name" : {"order" : "asc"}}
+        super(JavaScriptColumn, self).__init__(field, label, sort, value_format, template, header, export, highlight)
+
+    def render(self, result, facets, **kwargs):
+        id = result['_id']
+        value = result['_source'].get(self.field, None)
+        if self.value_format:
+            value = self.value_format(value)
+        try:
+            if '*' in self.highlight:
+                # If highlighting was requested for multiple fields, grab any matching fields as a dictionary.
+                r = self.highlight.replace('*', r'\w+').replace('.', r'\.')
+                highlight = {f: result.meta.highlight[f] for f in result.meta.highlight if re.match(r, f)}
+            else:
+                highlight = result.meta.highlight[self.highlight]
+        except:
+            highlight = []
+
+        params = {
+            'id': id,
+            'result': result,
+            'field': self.field,
+            'value': value,
+            'highlight': highlight,
+        }
+
+        params.update(self.context(result, **kwargs))
+        template_name = 'app/seeker/columnjavascript.html'
+
+        return loader.render_to_string(template_name, params)
+
+    def sortcolumn(self, sortarg):
+        if self.sort == None:
+            return None
+        field_prc = self.nestedfacet.nestedfield+".prc"
+        sortdsl = {field_prc : {"nested_path": self.nestedfacet.nestedfield, "mode": "max"}}
+        nested_filter = self.nestedfacet.sort()
+        if nested_filter:
+            sortdsl[field_prc]["nested_filter"] = nested_filter
+        if sortarg.startswith('-'):
+            sortdsl[field_prc]["order"] = "desc"
+        else:
+            sortdsl[field_prc]["order"] = "asc"
+        return(sortdsl)
+
 
 

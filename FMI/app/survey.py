@@ -82,7 +82,7 @@ fld_encode = {
 # In case multiple columns are mapped to the same field, the one column with a value is loaded (variant for Fresh&Clean)
 col2fld = {
     'resp_id'       : (["RESPID - RESPONDENT ID", "Resp No/ID", "Panelist_Code", "Consumer ID"], 'text'),
-    'group_id'      : (["Group n°"], 'text'),
+    'group_id'      : (["Group n°", "Group no"], 'text'),
     #'survey'       : (["Year"], 'text'), this is derived from the file name
     #'published_date': (["Year", "Test Quarter"], 'date'),
     'stage'         : (["Stage"], 'text'),
@@ -102,7 +102,7 @@ col2fld = {
     "freshness"     : (["h9_Freshness"], 'integer'),
     "cleanliness"   : (["h9_Cleanliness"], 'integer'),
     "lastingness"   : (["h9_Long lastingness"], 'integer'),
-    "intensity"     : (["j_JAR Strength", "j_Overall Strenght (5 points scale)"], 'integer'),
+    "intensity"     : (["j_JAR Strength", "j_Overall Strenght (5 points scale)", "Overall Strenght (5 points scale)"], 'integer'),
     'age'           : (["Age cat", "Age group", "Q17_1__Age", "Age"], 'text'),
     "product_form"  : (["Detergent format"], 'text'),
     'gender'        : (["Woman/Man", "Gender", "Q16__Gender"], 'text'),
@@ -276,7 +276,8 @@ qa = {
 	    "aftertaste": (["Q9_1__aftertaste_strength_JAR"], strength5),
     },	
     "liking" : {
-        "_liking7": (["h7_overall_liking fragrance", "Fragrance Liking", "h7_Overall Opinion ( 7 points scale)"], liking7),
+        "_liking7": (["h7_overall_liking fragrance", "Fragrance Liking", "h7_Overall Opinion ( 7 points scale)",
+                      "Overall Opinion ( 7 points scale)"], liking7),
         "_liking9": (["Q4_1__Overall_Liking_"], liking9),
     },
     "mood" : {	

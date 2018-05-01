@@ -256,6 +256,7 @@ class PerfumeSeekerView (seeker.SeekerView):
     using = client
     index = "review"
     page_size = 30
+    field_column_types = {'moods': 'JavaScriptColumn'}
     facets = [
         seeker.TermsFacet("site.keyword", label = "Site"),
         seeker.TermsFacet("brand.name.keyword", label = "Brand"),
@@ -295,6 +296,20 @@ class PerfumeSeekerView (seeker.SeekerView):
     SUMMARY_URL="fragrantica"
 
     tabs = {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': 'hide'}
+
+    minicharts = {
+        'moods' : {
+            'chart_type': "ColumnChart",
+            'chart_title' : "Moods %",
+            'data_type'  : "aggr",
+            'listener'    : {'select' : {'colsort': None}},
+            'X_facet'     : {
+                'field'   : "moods",
+                "answers" : [],
+                'total'   : False,
+                'label'   : "Moods" },
+            },        
+        }
 
     dashboard = {
         'perfume_keyword_table' : {

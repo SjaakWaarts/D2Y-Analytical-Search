@@ -186,6 +186,7 @@
     <Content Include="app\templates\app\seeker\columndict.html" />
     <Content Include="app\templates\app\seeker\columnanchor.html" />
     <Content Include="app\templates\app\seeker\columnlist.html" />
+    <Content Include="app\templates\app\seeker\columnjavascript.html" />
     <Content Include="app\templates\app\seeker\facets\keyword.html" />
     <Content Include="app\templates\app\seeker\facets\optionterms.html" />
     <Content Include="app\templates\app\seeker\facets\nestedterms.html" />

@@ -15,33 +15,30 @@
     #criteria { padding-top: 10px; }
 </style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3" style="padding-bottom:10px; padding-top:10px;">
-            {% include "app/seeker/form.html" %}
-        </div>
-        <div class="col-md-9" style="padding-bottom:10px; padding-top:10px;">
-            {% include results_template %}
-        </div>
-        <div id="configuration_editor_div" class="iff-pane-border collapse"
-             style="flex: 0 0 auto; min-width:100px; margin-right: 5px; padding: 5px;
-             resize: horizontal; overflow: auto;">
-            <div class="panel panel-default">
-                <div class="panel-heading">Configuration Editor</div>
-                <div class="panel-body">
-                    <div id="conf_card_div">
-                        <label></label><br />
-                    </div>
-                    <table class="table table-bordered table-condensed" id="card_configuration_table"></table>
+<div style="display: flex">
+    <div class="iff-pane-border" style="flex: 0 0 auto; min-width:100px; margin-right: 5px; margin-top: 5px; width: 300px;
+            resize: horizontal; overflow: auto;">
+        {% include "app/seeker/form.html" %}
+    </div>
+    <div class="iff-pane-border" style="flex: 5 5 100%; padding-bottom:10px; padding-top:10px; min-width:800px; margin-top: 5px;">
+        {% include results_template %}
+    </div>
+    <div id="configuration_editor_div" class="iff-pane-border collapse"
+            style="flex: 0 0 auto; min-width:100px; margin-right: 5px; margin-top: 5px; padding: 5px;
+            resize: horizontal; overflow: auto;">
+        <div class="panel panel-default">
+            <div class="panel-heading">Configuration Editor</div>
+            <div class="panel-body">
+                <div id="conf_card_div">
+                    <label></label><br />
                 </div>
+                <table class="table table-bordered table-condensed" id="card_configuration_table"></table>
             </div>
         </div>
     </div>
 </div>
 
 {% endblock %}
-
-
 
 {% block scripts %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
