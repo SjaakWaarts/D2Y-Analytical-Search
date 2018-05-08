@@ -5,6 +5,7 @@
 // JQuery
 var g_baseurl;
 var g_charts;                       // populated by api_storyboard_def_callback and draw_storyboard
+var g_minicharts;
 var g_facets_data;
 var g_tiles_d;
 var g_tiles_select;
@@ -240,7 +241,7 @@ function card_header(elm, chart_name) {
     elm.appendChild(a_elm);
 }
 
-function draw_dashboard_layout(dashboard, chart_name, chart, facet_value, tiles_select) {
+function draw_dashboard_layout(chart_name, chart, facet_value) {
     var tiles = 'dropdown';
     if ('Z_facet' in chart) {
         tiles = chart['Z_facet']['tiles'];
@@ -250,6 +251,8 @@ function draw_dashboard_layout(dashboard, chart_name, chart, facet_value, tiles_
     } else {
         var div_name = chart_name + "_" + facet_value.split(' ').join('');
     }
+
+    var div_card = document.createElement("div");
     var div_card = document.createElement("div");
     div_card.setAttribute("class", "iff-card-6");
     var div_card_header = document.createElement("div");
@@ -257,7 +260,7 @@ function draw_dashboard_layout(dashboard, chart_name, chart, facet_value, tiles_
     div_card_header.setAttribute("id", div_name + "_title");
     div_card.appendChild(div_card_header);
     div_card_header.innerHTML = "<b>" + chart['chart_title'] + "</b>";
-    if (facet_value != 'All') {
+    if (facet_value != 'All' && tiles != 'minichart') {
         div_card_header.innerHTML = div_card_header.innerHTML +
             " / <font color='red'>" + facet_value + "</font>";
     }
@@ -344,7 +347,7 @@ function draw_dashboard(dashboard, charts, facet_value, tiles_select) {
                     tiles = chart['Z_facet']['tiles'];
                 }
                 if (tiles == 'dropdown') {
-                    var div_card = draw_dashboard_layout(dashboard, chart_name, chart, facet_value, tiles_select)
+                    var div_card = draw_dashboard_layout(chart_name, chart, facet_value)
                     div_col.appendChild(div_card);
                 } else {
                     var re = /(grid)(-?)([A-Za-z1-9]?)(x?)([1-9]?)/
@@ -370,7 +373,7 @@ function draw_dashboard(dashboard, charts, facet_value, tiles_select) {
                             var div_col_facet = document.createElement("div");
                             div_col_facet.setAttribute("class", "col-md-" + l_width);
                             div_row_facet.appendChild(div_col_facet);
-                            var div_card = draw_dashboard_layout(dashboard, chart_name, chart, facet_value, tiles_select)
+                            var div_card = draw_dashboard_layout(chart_name, chart, facet_value)
                             div_col_facet.appendChild(div_card);
                             colnr = colnr + 1;
                             if (colnr == nrcol) {

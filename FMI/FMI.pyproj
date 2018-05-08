@@ -158,6 +158,7 @@
     <Content Include="app\static\app\scripts\scrape.js" />
     <Content Include="app\static\app\scripts\scraperesults.js" />
     <Content Include="app\static\app\scripts\charts.js" />
+    <Content Include="app\static\app\scripts\minicharts.js" />
     <Content Include="app\static\app\scripts\storyboard.js" />
     <Content Include="app\static\app\scripts\seeker.js" />
     <Content Include="app\static\app\scripts\product.js" />

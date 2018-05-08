@@ -31,10 +31,10 @@ def uptake(seekerview, chart_name, chart, hits, aggregations, facet_tile_value, 
     # rows years
     rownr = 0
     for hit in hits:
-        ipc = hit['IPC']
-        name = hit['name']
-        year = hit['year']
-        yearxx = hit['yearxx']
+        ipc = hit['_source']['IPC']
+        name = hit['_source']['name']
+        year = hit['_source']['year']
+        yearxx = hit['_source']['yearxx']
         for yix in range(0, len(yearxx)):
             avg[yix] = avg[yix] + yearxx[yix]
         dt[ipc] = yearxx

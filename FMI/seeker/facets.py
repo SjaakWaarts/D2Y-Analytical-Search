@@ -6,6 +6,97 @@ import functools
 import operator
 from .mapping import DEFAULT_ANALYZER
 
+
+#
+# FACET FILTERS and AGGREGATES in case the mapping holds NESTED fields (parent - child)
+# A Query, Filter or Aggr only works on the root documents. To also include nested fields, then these have to be added.
+# This is applicable in case such a nested field is enabled for Search, Filter and Aggregation.
+#
+#
+#{
+#  "_source": [
+#    "subject"
+#  ],
+#  "query": {
+#    "bool": {
+#      "should": [
+#        {
+#          "query_string": {
+#            "query": "sullivan"
+#          }
+#        },
+#        {
+#          "nested": {
+#            "path": "links",
+#            "query": {
+#              "query_string": {
+#                "query": "sullivan"
+#              }
+#            },
+#            "inner_hits": {
+#              "_source": false,
+#              "docvalue_fields": [
+#                "links.name.keyword"
+#              ]
+#            }
+#          }
+#        }
+#      ]
+#    }
+#  },
+#  "aggs": {
+#    "from_addr": {
+#      "terms": {
+#        "field": "from_addr.keyword"
+#      }
+#    },
+#    "keyfig": {
+#      "filters": {
+#        "filters": {
+#          "Sullivan": {
+#            "bool": {
+#              "should": [
+#                {
+#                  "query_string": {
+#                    "analyzer": "standard",
+#                    "default_operator": "AND",
+#                    "fields": [
+#                      "to_addr",
+#                      "from_addr",
+#                      "subject",
+#                      "url",
+#                      "links",
+#                      "body"
+#                    ],
+#                    "query": "sullivan"
+#                  }
+#                },
+#                {
+#                  "nested": {
+#                    "path": "links",
+#                    "query": {
+#                      "query_string": {
+#                        "query": "sullivan"
+#                      }
+#                    },
+#                    "inner_hits": {
+#                      "_source": false,
+#                      "docvalue_fields": [
+#                        "links.name.keyword"
+#                      ]
+#                    }
+#                  }
+#                }
+#              ]
+#            }
+#          }
+#        }
+#      }
+#    }
+#  }
+#}
+
+
 class Facet (object):
     field = None
     label = None

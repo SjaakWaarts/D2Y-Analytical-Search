@@ -301,7 +301,8 @@ class LinksColumn (Column):
 class JavaScriptColumn (Column):
     nestedfacet = None
 
-    def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None):
+    def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None, nestedfacet=None):
+        self.nestedfacet = nestedfacet
         sort = {field+".name" : {"order" : "asc"}}
         super(JavaScriptColumn, self).__init__(field, label, sort, value_format, template, header, export, highlight)
 

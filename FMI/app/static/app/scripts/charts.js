@@ -532,7 +532,11 @@ function google_chart(chart_name, chart_def, facet_value) {
         //    axis = y_axis
         //}
 
-        var t1 = g_charts[chart_name].google_db;
+        if (tiles == 'minichart') {
+            var t1 = g_tiles_d[chart_name][facet_value].google_db;
+        } else {
+            var t1 = g_charts[chart_name].google_db;
+        }
         if (typeof t1 === 'undefined' || true) {
             var controls = ['StringFilter'];
             if ('controls' in chart_def) {
@@ -595,6 +599,7 @@ function google_chart(chart_name, chart_def, facet_value) {
                 options : options,
                 containerId: chdiv
             });
+
             chart_wrapper.setChartName(chart_name);
             var control_wrappers = [];
 

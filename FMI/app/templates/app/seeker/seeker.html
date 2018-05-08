@@ -53,12 +53,14 @@
         <script src="{% static 'app/scripts/charts.js' %}"></script>
         <script src="{% static 'app/scripts/card.js' %}"></script>
         <script src="{% static 'app/scripts/storyboard.js' %}"></script>
+        <script src="{% static 'app/scripts/minicharts.js' %}"></script>
         <script src="{% static 'app/scripts/seeker.js' %}"></script>
 
 <script>
 
     fill_tiles({{ facets_data|safe }}, {{ tiles_select|safe }}, {{ tiles_d|safe }} );
     draw_storyboard({{ storyboard|safe }}, "{{dashboard_name}}", {{ dashboard|safe }}, {{ tiles_select|safe }});
+    draw_minicharts({{ minicharts|safe }});
     facts_norms( {{ stats_df|safe}}  );
 
 </script>

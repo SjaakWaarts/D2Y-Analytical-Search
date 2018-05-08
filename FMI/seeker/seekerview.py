@@ -94,6 +94,7 @@ class SeekerView (View):
     """
 
     columns = None
+    extra_columns = {}
     """
     A list of Column objects, or strings representing mapping field names. If None, all mapping fields will be available.
     """
@@ -251,6 +252,7 @@ class SeekerView (View):
 
     tabs = {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': ''}
     decoder = None
+    minicharts = {}
     dashboard = {}
     dashboard_layout = {}
     storyboard = [
@@ -361,22 +363,27 @@ class SeekerView (View):
         value_format = self.get_field_value_format(field_name)
 
         column_type ='Column'
+        nestedfacet = None
         for facet in self.facets:
             if type(facet) == seeker.NestedFacet:
                 if facet.nestedfield == field_name:
                     column_type = 'NestedColumn'
+                    nestedfacet = facet
+                    break
             if type(facet) == seeker.OptionFacet:
                 if facet.nestedfield == field_name:
                     column_type = 'NestedColumn'
+                    nestedfacet = facet
+                    break
         if field_name in self.field_column_types:
             column_type = self.field_column_types[field_name]
 
         if column_type == 'NestedColumn':
-            return NestedColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=facet)
+            return NestedColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=nestedfacet)
         if column_type == 'LinksColumn':
             return LinksColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
         if column_type == 'JavaScriptColumn':
-            return JavaScriptColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
+            return JavaScriptColumn(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format, nestedfacet=nestedfacet)
         return Column(field_name, label=label, sort=sort, highlight=highlight, value_format=value_format)
 
     def get_columns(self):
@@ -401,12 +408,18 @@ class SeekerView (View):
                     if self.exclude and c.field in self.exclude:
                         continue
                     columns.append(c)
+        for c, attr in self.extra_columns.items():
+            column = self.make_column(c)
+            column.field = attr['field']
+            column.nestedfaced = attr.get('nestedfacet', None)
+            columns.append(column)
+
         # Make sure the columns are bound and ordered based on the display fields (selected or default).
         display = self.get_display()
 
         for c in columns:
             c.bind(self, c.field in display, c.field in self.summary, c.field in self.sumheader)
-#        columns.sort(key=lambda c: display.index(c.field) if c.visible else c.label)
+        #columns.sort(key=lambda c: display.index(c.field) if c.visible else c.label)
         columns.sort(key=lambda c: str(display.index(c.field)) if c.visible else c.label)
         return columns
 
@@ -515,6 +528,8 @@ class SeekerView (View):
                 # force the read_keywords into the input field.
                 if 'keyword_button' in self.request.GET:
                     if f.name + '_read' == self.request.GET['keyword_button']:
+                        keywords_input = f.read_keywords
+                    if f.name + '_write' == self.request.GET['keyword_button']:
                         keywords_input = f.read_keywords
                 f.keywords_text = keywords_input.strip()
                 if f.keywords_text == '' and f.initial:
@@ -968,7 +983,9 @@ class SeekerView (View):
         self.set_workbook_filters(facets, workbook)
 
         search, keywords_q = self.get_search(keywords_q, facets, facets_keyword, self.dashboard)
+        d = search.to_dict()
         search = self.get_aggr(search, self.dashboard)
+        d = search.to_dict()
         columns = self.get_columns()
 
         # Make sure we sanitize the sort fields.
@@ -995,6 +1012,7 @@ class SeekerView (View):
         page = self.request.GET.get('p', '').strip()
         page = int(page) if page.isdigit() else 1
         offset = (page - 1) * self.page_size
+        d = search.to_dict()
         results_count = search[0:0].execute().hits.total
         if results_count < offset:
             page = 1
@@ -1033,6 +1051,7 @@ class SeekerView (View):
         tiles_select = OrderedDict()
         tiles_d = {chart_name : {} for chart_name in self.dashboard.keys()}
         seeker.dashboard.bind_tile(self, tiles_select, tiles_d, None, results, benchmark)
+        seeker.dashboard.bind_minicharts(self, tiles_d, results, benchmark)
         seeker.models.stats_df = pd.DataFrame()
 
         facets_tile = self.get_facet_tile()
@@ -1088,6 +1107,7 @@ class SeekerView (View):
             'storyboard' : json.dumps(self.storyboard),
             'dashboard_name' : dashboard['name'],
             'dashboard': json.dumps(self.dashboard),
+            'minicharts' : json.dumps(self.minicharts),
             'tabs' : self.tabs,
             'page': page,
             'page_size': self.page_size,
@@ -1119,6 +1139,7 @@ class SeekerView (View):
                 'storyboard' : json.dumps(self.storyboard),
                 'dashboard_name' : dashboard['name'],
                 'dashboard': json.dumps(self.dashboard),
+                'minicharts' : json.dumps(self.minicharts),
                 'tiles_select': json.dumps(tiles_select),
                 'tiles_d': json.dumps(tiles_d),
                 #'stats_df' : seeker.models.stats_df.to_json(orient='records'),
@@ -1174,12 +1195,14 @@ class SeekerView (View):
 
     def read_keywords(self, facet_keyword, keyword_filename):
         keywords_input = ''
-        keyword_file = os.path.join(BASE_DIR, 'data/' + keyword_filename)
+        keyword_file = os.path.join(BASE_DIR, 'data/keywords/' + keyword_filename)
         try:
             file = open(keyword_file, 'r')
             pyfile = File(file)
             for line in pyfile:
-                keyword = line.rstrip('\n')
+                keyword = line.rstrip('\n').strip()
+                if len(keyword) == 0:
+                    continue
                 if keyword.count(' ') > 0 and keyword[0] != '"':
                     keyword = '"' + keyword + '"'
                 if keywords_input == '':
@@ -1195,6 +1218,28 @@ class SeekerView (View):
         facet_keyword.read_keywords = keywords_input
         return True
 
+    def write_keywords(self, facet_keyword, keywords_input):
+        keywords = keywords_input.split(',')
+        keywords_input = ''
+        keyword_filename = keywords[0].strip()
+        keyword_file = os.path.join(BASE_DIR, 'data/keywords/' + keyword_filename)
+        try:
+            file = open(keyword_file, 'w')
+            pyfile = File(file)
+            for keyword in keywords[1:]:
+                pyfile.write(keyword.strip())
+                if keywords_input == '':
+                    keywords_input = keyword
+                else:
+                    keywords_input = keywords_input + ',' + keyword
+            pyfile.close()
+        except:
+            cwd = os.getcwd()
+            print("write_keywords: working dirtory is: ", cwd)
+            print("write_keywords: keyword_file: ", keyword_file)
+            return False
+        facet_keyword.read_keywords = keywords_input
+        return True
 
     def summary_tab(self, hits, columns):
         """
@@ -1258,6 +1303,9 @@ class SeekerView (View):
                 if facet_keyword.name + '_read' == request.GET['keyword_button']:
                     keyword_filename = request.GET[facet_keyword.keywords_input]
                     self.read_keywords(facet_keyword, keyword_filename)
+                if facet_keyword.name + '_write' == request.GET['keyword_button']:
+                    keyword_filename = request.GET[facet_keyword.keywords_input]
+                    self.write_keywords(facet_keyword, keyword_filename)
         return self.render()
 
     def post(self, request, *args, **kwargs):

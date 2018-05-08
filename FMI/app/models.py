@@ -256,7 +256,8 @@ class PerfumeSeekerView (seeker.SeekerView):
     using = client
     index = "review"
     page_size = 30
-    field_column_types = {'moods': 'JavaScriptColumn'}
+    extra_columns = {"moods2" : {'field': 'moods', 'nestedfield': 'moods'}}
+    field_column_types = {'moods2': 'JavaScriptColumn'}
     facets = [
         seeker.TermsFacet("site.keyword", label = "Site"),
         seeker.TermsFacet("brand.name.keyword", label = "Brand"),
@@ -280,10 +281,12 @@ class PerfumeSeekerView (seeker.SeekerView):
         "site",
         "review",
         "label",
-        "accords"
+        "accords",
+        "moods"
         ]
     field_labels = {
-        "notespyramid" : "Top Notes",
+        "notespyramid"  : "Top Notes",
+        "moods2"        : "Moods Bar Chart"
         }
     sort = [
         "-review_date"
@@ -298,17 +301,25 @@ class PerfumeSeekerView (seeker.SeekerView):
     tabs = {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': 'hide'}
 
     minicharts = {
-        'moods' : {
-            'chart_type': "ColumnChart",
+        'moods2' : {
+            'chart_type'  : "ColumnChart",
             'chart_title' : "Moods %",
-            'data_type'  : "aggr",
-            'listener'    : {'select' : {'colsort': None}},
+            'data_type'   : "nestedfield",
+            'controls'    : [],
+            #'listener'   : {'select' : {'colsort': None}},
             'X_facet'     : {
                 'field'   : "moods",
                 "answers" : [],
                 'total'   : False,
                 'label'   : "Moods" },
-            },        
+            'Z_facet'     : {
+                'tiles'   : 'minichart',
+                },
+            'options'     : {
+                'legend'  :'none',
+                'width'   : 200,
+                'height'  : 150},
+            }
         }
 
     dashboard = {

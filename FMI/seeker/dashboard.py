@@ -1178,6 +1178,135 @@ def bind_tile(seekerview, tiles_select, tiles_d, facets_tile, results, benchmark
                     tiles_d[chart_name][facet_tile_value] = {'chart_data' : chart_data, 'meta_data' : meta_data}
     return
 
+
+def bind_nestedfield(seekerview, chart, hit, benchmark):
+    chart_data = []
+    meta_data = {}
+    X_facet = chart['X_facet']
+    X_field = X_facet['field']
+    if X_field not in hit['_source']:
+        return chart_data, meta_data
+
+    X_label = X_facet['label']
+    xfacet = seekerview.get_facet_by_field_name(X_field)
+    x_total = True
+    sub_total = False
+    if 'total' in X_facet:
+        x_total = X_facet['total']
+    calc = 'count'
+    if 'calc' in X_facet:
+        calc = X_facet['calc']
+    X_total_calc = xfacet.get_answer_total_calc(X_facet)
+    if 'Y_facet' in chart:
+        Y_facet = chart['Y_facet']
+        Y_field = chart['Y_facet']['field']
+        Y_label = Y_facet['label']
+        yfacet = seekerview.get_facet_by_field_name(Y_field)
+    else:
+        Y_facet = None
+        Y_field = ""
+        Y_Label = X_label
+        yfacet = None
+
+    nestedfield_values = hit['_source'][X_field]
+    #categories = [X_label]
+    dt_index = []
+    dt_columns = [X_label]
+    y_start = 1
+    dt_columns.append("Total")
+    y_start = y_start + 1
+    if 'a-mean' in X_total_calc:
+        dt_index.append('Mean')
+    if 'q_mean' in X_total_calc:
+        dt_columns.append('Mean')
+        y_start = y_start + 1
+    # next fill the series for the categories
+    modes = ['sizing_', 'filling_']
+    nr_respondents = 0
+    total = 0
+    for mode in modes:
+        if mode == 'filling_':
+            dt = pd.DataFrame(0.0, columns=dt_columns, index=dt_index)
+        rownr = 0
+        #for X_key, bucket in buckets.items():
+        for nestedfield_value in nestedfield_values:
+            # skip and map categories
+            X_key = nestedfield_value['val']
+            X_key = xfacet.get_answer(X_key, X_facet)
+            if X_key == None:
+                continue
+            X_metric = nestedfield_value['prc']
+            if mode == 'sizing_':
+                dt_index.append(X_key)
+                nr_respondents = nr_respondents + 1
+                total = total + X_metric
+            if mode == 'filling_':
+                count = X_metric
+                value_code = answer_value_decode(X_key)
+                if type(value_code) == int:
+                    total = total + (value_code * count)
+                if nr_respondents > 0:
+                    percentile = count / nr_respondents
+                else:
+                    percentile = count
+                dt.loc[X_key, X_label] = X_key
+                if calc == 'percentile':
+                    dt.loc[X_key, 'Total'] = dt.loc[X_key, 'Total'] + percentile * 100
+                else:
+                    dt.loc[X_key, 'Total'] = dt.loc[X_key, 'Total'] + count
+            rownr = rownr + 1
+
+    if calc == 'percentile':
+        if nr_respondents > 0:
+            mean = total / nr_respondents
+        else:
+            mean = total
+    else:
+        if rownr > 0:
+            mean = nr_respondents / rownr
+        else:
+            mean = nr_respondents
+    meta_data['mean'] = mean
+    meta_data['size'] = nr_respondents
+    if 'a-mean' in X_total_calc:
+        x_mean = dt['Total'].mean();
+        dt.loc['Mean', X_label] = 'Mean'
+        dt.loc['Mean', 'Total'] = x_mean
+        if X_total_calc['a-mean'] == '*':
+            dt_index.remove('Mean')
+            dt.drop(dt_index, axis=0, inplace=True)
+        if 'q_mean' in X_total_calc:
+            dt['Mean'] = pd.Series([x_mean for c in dt.index], index=dt.index)
+
+    dt.fillna(0, inplace=True)
+    # remove Total only when sub_totals exists
+    if sub_total == True and x_total == False:
+        dt_columns.remove('Total')
+        del dt['Total']
+    chart_data.append(dt_columns)
+    for ix, row in dt.iterrows():
+        chart_data.append(row.tolist())
+    return chart_data, meta_data
+
+def bind_minichart(seekerview, tiles_d, chart_name, chart, hits, benchmark):
+    data_type = chart['data_type']
+    tiles_d[chart_name] = {}
+    for hit in hits:
+        if data_type == 'nestedfield':
+            chart_data, meta_data = bind_nestedfield(seekerview, chart, hit, benchmark)
+        elif data_type == 'optionfield':
+            chart_data, meta_data = bind_optionfield(seekerview, chart, hit, benchmark)
+        elif data_type == 'innerhits':
+            chart_data, meta_data = bind_innerhits(seekerview, chart, hit, benchmark)
+        tiles_d[chart_name][hit['_id']] = {'chart_data' : chart_data, 'meta_data' : meta_data}
+
+def bind_minicharts(seekerview, tiles_d, results, benchmark):
+    hits = results.get('hits', {}).get('hits', [])
+    aggregations = results.get('aggregations', {})
+    for chart_name, chart in seekerview.minicharts.items():
+        bind_minichart(seekerview, tiles_d, chart_name, chart, hits, benchmark)
+
+
 def get_fqa_v_respondents(fqav_df, question, answer, facet):
     values = []
     nr_respondents = 0
