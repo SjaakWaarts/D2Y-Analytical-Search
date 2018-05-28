@@ -175,7 +175,7 @@ def retrieve_ingredients():
     #em_df['cor_total'] = 0
 
     es_host = ES_HOSTS[0]
-    headers = {}
+    headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']

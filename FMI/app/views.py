@@ -356,6 +356,7 @@ def platform_admin_view(request):
 
 def crawl_view(request):
     """Renders the crawl page."""
+    sections = {}
     if request.method == 'POST':
         form = crawl_form(request.POST)
         form.is_valid()
@@ -419,11 +420,21 @@ def crawl_view(request):
                         form.add_form_error("Could not save product data")
             if 'return_survey' in form.data:
                 pass
-            return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'scrape_li' : models.scrape_li } )
+            return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'sections' : sections, 'scrape_li' : models.scrape_li } )
     else:
         form = crawl_form(initial={'scrape_choices_field':['product', 'blog'], 'excel_choices_field':['recreate']})
+        if 'crawl_pi' in request.GET:
+            sections['crawl_mi'] = 0
+            sections['crawl_feedly'] = 0
+            sections['crawl_si_sites'] = 0
+            sections['crawl_pi'] = 1
+        else:
+            sections['crawl_mi'] = 1
+            sections['crawl_feedly'] = 1
+            sections['crawl_si_sites'] = 1
+            sections['crawl_pi'] = 1
 
-    return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS,
+    return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'sections' : sections,
                   'message':'IFF - Insight Platform', 'year':datetime.now().year})
 
 
