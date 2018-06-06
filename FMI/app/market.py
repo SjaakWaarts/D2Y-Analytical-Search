@@ -4,6 +4,7 @@ from django.core.files import File
 import glob, os
 import pickle
 import requests
+import json
 from requests_ntlm import HttpNtlmAuth
 from pandas import DataFrame
 from bs4 import BeautifulSoup
@@ -87,9 +88,11 @@ def push_posts_to_index():
             mi_post.post_category_id = categoy_map[post_category_id]
         else:
             mi_post.post_category_id = post_category_id
-        mi_post.title           = sp_post.title.encode("ascii", 'replace')
+        #mi_post.title          = sp_post.title.encode("ascii", 'replace')
+        mi_post.title           = sp_post.title
         #mi_post.relevance, mi_post.subject, mi_post.topline, mi_post.source, mi_post.article = scrape_body(mi_post.title, sp_post.body.encode("ascii", 'replace'))
-        scrape_body(mi_post, sp_post.body.encode("ascii", 'replace'))
+        #scrape_body(mi_post, sp_post.body.encode("ascii", 'replace'))
+        scrape_body(mi_post, sp_post.body)
         try:
             mi_post.average_rating  = float(sp_post.average_rating)
             mi_post.rating_count    = int(sp_post.rating_count)
@@ -118,7 +121,10 @@ def posts_retrieve(from_year, username, password):
     resp = requests.get(url + "lists/getByTitle('Posts')/items?" + select+"&"+filter+"&"+top, auth=HttpNtlmAuth(user, pswrd), headers=headers)
     if resp.status_code != 200:
         return False
-    data = resp.json()
+    #data = resp.json()
+    #convert bytes to string with decoding utf-8
+    resptext = resp.content.decode('utf-8')
+    data = json.loads(resptext)
     q = data['d']['results']
     models.posts_df = None
     models.posts_df = DataFrame(q)

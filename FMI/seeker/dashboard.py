@@ -1283,9 +1283,10 @@ def bind_nestedfield(seekerview, chart, hit, benchmark):
     if sub_total == True and x_total == False:
         dt_columns.remove('Total')
         del dt['Total']
-    chart_data.append(dt_columns)
-    for ix, row in dt.iterrows():
-        chart_data.append(row.tolist())
+    if nr_respondents > 0:
+        chart_data.append(dt_columns)
+        for ix, row in dt.iterrows():
+            chart_data.append(row.tolist())
     return chart_data, meta_data
 
 def bind_minichart(seekerview, tiles_d, chart_name, chart, hits, benchmark):
