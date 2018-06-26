@@ -1075,6 +1075,7 @@ class MailSeekerView (seeker.SeekerView):
         "published_date",
         "from_addr",
         "subject",
+        "links"
         ]
     search_children = ['links.body']
     summary = [
