@@ -34,7 +34,7 @@ urlpatterns = [
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),
     path('load', app.views.load_view, name='load'),
-    path('facts$', app.views.facts_view, name='facts'),
+    path('facts', app.views.facts_view, name='facts'),
     path('fmi_admin', app.views.fmi_admin_view, name='fmi_admin'),
 
 

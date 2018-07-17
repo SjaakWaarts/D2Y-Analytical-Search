@@ -237,3 +237,10 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
+site = 'IFF'
+# Import Local settings
+try:
+    from FMI.local_settings import *
+except ImportError:
+    import sys
+    sys.stderr.write('local_settings.py not set; using default settings\n')

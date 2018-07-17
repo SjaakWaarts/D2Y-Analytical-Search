@@ -46,7 +46,7 @@ def home(request):
         request,
         'app/index.html',
         {
-            'title':'Home Page',
+            'site' : FMI.settings.site,
             'year':datetime.now().year,
         }
     )

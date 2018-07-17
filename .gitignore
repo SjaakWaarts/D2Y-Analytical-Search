@@ -195,3 +195,4 @@ ModelManifest.xml
 /FMI/FMI/__pycache__
 /FMI/seeker/management/commands/__pycache__
 /FMI/seeker/management/__pycache__
+/FMI/FMI/local_settings.py

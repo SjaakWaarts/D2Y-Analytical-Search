@@ -3,7 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - IFF - Insight Platform</title>
+    {% if site == "IFF" %}
+        <title>IFF - Insight Platform</title>
+    {% endif %}
+    {% if site == "D2Y" %}
+        <title>D2Y - Insight Platform</title>
+    {% endif %}
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
@@ -19,14 +24,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="{% url 'home' %}" class="navbar-brand">IFF Insight Platform</a>
+                {% if site == "IFF" %} 
+                    <a href="{% url 'home' %}" class="navbar-brand">IFF Insight Platform</a>
+                {% endif %}
+                {% if site == "D2Y" %} 
+                    <a href="{% url 'home' %}" class="navbar-brand">D2Y Insight Platform</a>
+                {% endif %}
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'product_insight' %}">Product Insight</a></li>
-                    <li><a href="{% url 'consumer_insight' %}">Consumer Insight</a></li>
+                    {% if site == "IFF" %}    
+                        <li><a href="{% url 'consumer_insight' %}">Consumer Insight</a></li>
+                    {% endif %}
                     <li><a href="{% url 'market_insight' %}">Market Insight</a></li>
-                    <li><a href="{% url 'scent_emotion' %}">Scent Emotion</a></li>
+                    {% if site == "IFF" %}
+                        <li><a href="{% url 'scent_emotion' %}">Scent Emotion</a></li>
+                    {% endif %}
                 </ul>
                 {% include 'app/loginpartial.html' %}
             </div>
