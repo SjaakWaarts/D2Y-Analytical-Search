@@ -30,6 +30,7 @@ urlpatterns = [
     path('', app.views.home, name='home'),
 
     path('consumer_insight', app.views.consumer_insight_view, name='consumer_insight'),
+    path('dhk', app.views.dhk_view, name='dhk'),
 
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),

@@ -30,6 +30,13 @@
                 </p>
                 <p><a class="btn btn-primary" href="{% url 'consumer_insight' %}">Consumer Insights &raquo;</a></p>
             {% endif %}
+            {% if site == "D2Y" %}
+                <h2>de Heerlijke Keuken</h2>
+                <p>
+                    Vind het recept op basis van uw wensen.
+                </p>
+                <p><a class="btn btn-primary" href="{% url 'dhk' %}">de Heerlijke Keuken &raquo;</a></p>
+            {% endif %}
         </div>
         <div class="col-md-4">
             <h2>Market Insights</h2>

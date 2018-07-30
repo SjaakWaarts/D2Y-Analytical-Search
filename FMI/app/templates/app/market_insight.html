@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>Market Insights {{ title }} <small>Market Intelligence, News/RSS Feeds, Web Sites {{ es_hosts.0.host }}</small></h1>
+  <h1>Market Insights <small>Market Intelligence, News/RSS Feeds, Web Sites {{ es_hosts.0.host }}</small></h1>
 </div>
 
 {% load staticfiles %}
@@ -133,12 +133,6 @@
                             <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=ecosystem&storyboard_name=initial&dashboard_name=initial">
                                 Search Ecosystem <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         <p>
-                            Brugger.
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=brugger_xinumber&storyboard_name=initial&dashboard_name=initial">
-                                Brugger <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
-                        </p>
                     </div>
                 </div>
             </div>

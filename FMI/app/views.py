@@ -45,9 +45,7 @@ def home(request):
     return render(
         request,
         'app/index.html',
-        {
-            'site' : FMI.settings.site,
-            'year':datetime.now().year,
+        {'site' : FMI.settings.site, 'year':datetime.now().year,
         }
     )
 
@@ -58,8 +56,11 @@ def product_insight_view(request):
         if 'search_pi' in request.POST:
             return redirect('search_pi')
 
-    return render(request, 'app/product_insight.html',
-                  {'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(
+        request,
+        'app/product_insight.html',
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
+    )
 
 def r_and_d_view(request):
     """Renders the R&D page."""
@@ -77,7 +78,10 @@ def r_and_d_view(request):
     else:
         form = r_and_d_form(initial={'ipc_field':'100154'})
 
-    return render(request, 'app/r_and_d.html', {'form': form, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(
+        request,
+        'app/r_and_d.html',
+        {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def set_workbook(workbook_name):
     workbook = wb_excel.workbooks[workbook_name]
@@ -153,7 +157,7 @@ def excitometer_view(request):
         form = excitometer_form(initial={'type_field':['Vanilla'],'regulator_field':['Nat']})
  
     context = {
-        'message':'IFF - Insight Platform',
+        'site' : FMI.settings.site,
         'year':datetime.now().year,
         'form': form,
         'correlation_li' : correlation_li,
@@ -176,8 +180,11 @@ def scent_emotion_view(request):
         elif 'search_studies' in request.POST:
             return redirect('search_studies')
 
-    return render(request, 'app/scent_emotion.html',
-                  {'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(
+        request,
+        'app/scent_emotion.html',
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
+    )
 
 def scrape_view(request):
     """Renders the scrape page."""
@@ -204,11 +211,11 @@ def scrape_view(request):
                     if not product.scrape_save(brand_name_field):
                         form.add_form_error("Could not save scrape results")
                     return render(request, 'app/scraperesults.html', {'brand': brand_name_field, 'scrape_li' : models.scrape_li } )
-            return render(request, 'app/scrape.html', {'form': form, 'scrape_li' : models.scrape_li } )
+            return render(request, 'app/scrape.html', {'site' : FMI.settings.site, 'form': form, 'scrape_li' : models.scrape_li } )
     else:
         form = scrape_form(initial={'site_choices_field':['fragrantica'],'scrape_choices_field':['accords','moods','notes']})
 
-    return render(request, 'app/scrape.html', {'form': form, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(request, 'app/scrape.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def market_insight_view(request):
     "Renders the market insight page."
@@ -221,8 +228,11 @@ def market_insight_view(request):
             return redirect('search_mail')
         elif 'search_si_sites' in request.POST:
             return redirect('search_si_sites')
-    return render(request, 'app/market_insight.html',
-                  {'es_hosts' : FMI.settings.ES_HOSTS, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(
+        request,
+        'app/market_insight.html',
+        {'site' : FMI.settings.site, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year}
+    )
 
 def guide_view(request):
     """Renders the guide page."""
@@ -275,6 +285,7 @@ def guide_view(request):
 
 
     context = {
+            'site' : FMI.settings.site,
             'insight_api' : FMI.settings.INSIGHT_API['url'],
             'facets'    : facets,
             'results'   : results,
@@ -303,7 +314,7 @@ def facts_view(request):
     else:
         form = facts_form(initial={'facts_choices_field':['emotions'],'norms_choices_field':['age']})
 
-    return render(request, 'app/facts.html', {'form': form, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(request, 'app/facts.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def consumer_insight_view(request):
     "Renders the consumer_insight page."
@@ -341,7 +352,7 @@ def consumer_insight_view(request):
             return redirect('search_studies')
 
     return render(request, 'app/consumer_insight.html', 
-                  {'es_hosts' : FMI.settings.ES_HOSTS, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+                  {'site' : FMI.settings.site, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year})
 
 
 def platform_admin_view(request):
@@ -352,7 +363,7 @@ def platform_admin_view(request):
         elif 'elastic' in request.POST:
             return redirect('product_elastic')
     return render(request, 'app/platform_admin.html', 
-                  {'es_hosts' : FMI.settings.ES_HOSTS, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+                  {'site' : FMI.settings.site, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year})
 
 def crawl_view(request):
     """Renders the crawl page."""
@@ -420,7 +431,11 @@ def crawl_view(request):
                         form.add_form_error("Could not save product data")
             if 'return_survey' in form.data:
                 pass
-            return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'sections' : sections, 'scrape_li' : models.scrape_li } )
+            return render(
+                request,
+                'app/crawl.html',
+                {'site' : FMI.settings.site, 'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'sections' : sections, 'scrape_li' : models.scrape_li }
+            )
     else:
         form = crawl_form(initial={'scrape_choices_field':['product', 'blog'], 'excel_choices_field':['recreate']})
         if 'crawl_pi' in request.GET:
@@ -434,8 +449,10 @@ def crawl_view(request):
             sections['crawl_si_sites'] = 1
             sections['crawl_pi'] = 1
 
-    return render(request, 'app/crawl.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'sections' : sections,
-                  'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(
+        request,
+        'app/crawl.html',
+        {'site' : FMI.settings.site, 'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'sections' : sections, 'year':datetime.now().year})
 
 
 def load_view(request):
@@ -482,12 +499,16 @@ def load_view(request):
                 return render(request, 'app/loadresults.html', context )
             if 'return_survey' in form.data:
                 pass
-            return render(request, 'app/load.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS } )
+            return render(request,
+                          'app/load.html',
+                          {'site' : FMI.settings.site, 'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year} )
     else:
         form = load_form(initial={'excel_choices_field':['recreate'], 'email_choices_field':['imap']})
 
-    return render(request, 'app/load.html', {'form': form, 'es_hosts' : FMI.settings.ES_HOSTS,
-                  'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(
+        request,
+        'app/load.html',
+        {'site' : FMI.settings.site, 'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year})
 
 def fmi_admin_view(request):
     """Renders the Admin Index page."""
@@ -517,7 +538,7 @@ def fmi_admin_view(request):
     else:
         form = fmi_admin_form(initial={'index_choices_field':['cosmetic']})
 
-    return render(request, 'app/fmi_admin.html', {'form': form, 'message':'IFF - Insight Platform', 'year':datetime.now().year})
+    return render(request, 'app/fmi_admin.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def elastic_view(request):
     """Renders the elastic page."""
@@ -530,10 +551,7 @@ def elastic_view(request):
     return render(
         request,
         'app/index.html',
-        {
-            'title':'Home Page',
-            'year':datetime.now().year,
-        }
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
 
@@ -567,11 +585,7 @@ def contact(request):
     return render(
         request,
         'app/contact.html',
-        {
-            'title':'Contact',
-            'message':'Your contact page.',
-            'year':datetime.now().year,
-        }
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
 def about(request):
@@ -580,11 +594,7 @@ def about(request):
     return render(
         request,
         'app/about.html',
-        {
-            'title':'About',
-            'message':'Your application description page.',
-            'year':datetime.now().year,
-        }
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
 def register(request):
@@ -604,3 +614,11 @@ def register(request):
 
 def registrer_complete(request):
     return render_to_response('registration/registrer_complete.html')
+
+def dhk_view(request):
+    """Renders dhk page."""
+    return render(
+        request,
+        'app/dhk.html',
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
+    )

@@ -397,7 +397,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
                         else:
                             doc[field] = cell
                         #doc[field] = datetime.strptime(cell, format).date()
-                    elif type == 'text':
+                    elif type == 'text' or type == 'string':
                         cell = decode_cell(cell, decoder)
                         cell = str(cell)
                         if field not in doc:

@@ -94,6 +94,7 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 
 
 class ExcelSeekerView (seeker.SeekerView):
+    site = FMI.settings.site
     document = None
     using = client
     index = "excel"
@@ -252,6 +253,7 @@ class Review(models.Model):
 
 
 class PerfumeSeekerView (seeker.SeekerView):
+    site = FMI.settings.site
     document = None
     using = client
     index = "review"
@@ -642,6 +644,7 @@ class PostMap(models.Model):
 
 
 class PostSeekerView (seeker.SeekerView, workbooks.PostWorkbook):
+    site = FMI.settings.site
     document = None
     using = client
     index = "post"
@@ -748,6 +751,7 @@ class PageMap(models.Model):
 
 
 class PageSeekerView (seeker.SeekerView, workbooks.PageWorkbook):
+    site = FMI.settings.site
     document = None
     using = client
     index = "page"
@@ -868,6 +872,7 @@ class FeedlyMap(models.Model):
 
 
 class FeedlySeekerView (seeker.SeekerView):
+    site = FMI.settings.site
     document = None
     using = client
     index = "feedly"
@@ -1057,6 +1062,7 @@ class MailMap(models.Model):
 
 
 class MailSeekerView (seeker.SeekerView):
+    site = FMI.settings.site
     document = None
     using = client
     index = "mail"
@@ -1331,6 +1337,7 @@ class ScentemotionMap(models.Model):
 
 
 class ScentemotionSeekerView (seeker.SeekerView, workbooks.ScentemotionWorkbook):
+    site = FMI.settings.site
     document = None
     using = client
     index = "scentemotion"
@@ -1686,6 +1693,7 @@ class StudiesMap(models.Model):
 
 
 class StudiesSeekerView (seeker.SeekerView, workbooks.StudiesWorkbook):
+    site = FMI.settings.site
     document = None
     using = client
     index = "studies"
@@ -2195,6 +2203,7 @@ class SurveyMap(models.Model):
 
 
 class SurveySeekerView (seeker.SeekerView, workbooks.SurveyWorkbook):
+    site = FMI.settings.site
     document = None
     using = client
     index = "survey"

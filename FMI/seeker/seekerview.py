@@ -54,6 +54,8 @@ def elastic_get(index, endpoint, params):
 
 
 class SeekerView (View):
+    site = None
+
     document = None
     """
     A :class:`elasticsearch_dsl.DocType` class to present a view for.
@@ -1089,6 +1091,7 @@ class SeekerView (View):
         facets_data = self.get_facets_data(results, tiles_select, benchmark)
 
         context = {
+            'site' : self.site,
             'document': self.document,
             'keywords_q': keywords_q,
             'columns': columns,
@@ -1173,9 +1176,12 @@ class SeekerView (View):
         facets = self.get_facet_selected_data()
         facets_keyword = self.get_facets_keyword_selected_data()
 
-        search, keywords_q = self.get_search(keywords_q, facets, facets_keyword, self.dashboard)
         #search = self.get_search(keywords_q, facets, aggregate=False)
+        search, keywords_q = self.get_search(keywords_q, facets, facets_keyword, self.dashboard)
         columns = self.get_columns()
+        #search = search[offset:offset + self.page_size]
+        search = search[0:0 + 1000]
+        d = search.to_dict()
 
         def csv_escape(value):
             if isinstance(value, (list, tuple)):
@@ -1184,8 +1190,13 @@ class SeekerView (View):
 
         def csv_generator():
             yield ','.join('"%s"' % c.label for c in columns if c.visible and c.export) + '\n'
-            for result in search.scan():
-                yield ','.join(csv_escape(c.export_value(result)) for c in columns if c.visible and c.export) + '\n'
+            #for result in search.scan():
+            #    yield ','.join(csv_escape(c.export_value(result)) for c in columns if c.visible and c.export) + '\n'
+            # use the elastic get call instead of the execute because of the "inner_hits" problem
+            results = elastic_get(self.index, '_search', search.to_dict())
+            hits = results.get('hits', {}).get('hits', [])
+            for hit in hits:
+                yield ','.join(csv_escape(c.export_value(hit)) for c in columns if c.visible and c.export) + '\n'
 
         export_timestamp = ('_' + timezone.now().strftime('%m-%d-%Y_%H-%M-%S')) if self.export_timestamp else ''
         export_name = '%s%s.csv' % (self.export_name, export_timestamp)

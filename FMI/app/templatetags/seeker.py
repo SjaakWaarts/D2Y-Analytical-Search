@@ -25,8 +25,16 @@ def seeker_format(value):
         return value.strftime('%m/%d/%Y %H:%M:%S')
     if isinstance(value, datetime.date):
         return value.strftime('%m/%d/%Y')
-    if hasattr(value, '__iter__') and not isinstance(value, six.string_types):
-        return ', '.join(force_text(v) for v in value)
+    #if hasattr(value, '__iter__') and not isinstance(value, six.string_types):
+    #   return ', '.join(force_text(v) for v in value)
+    if isinstance(value, list):
+        list_string =  ', '.join(map(str, value))
+        list_string = '[' + list_string + ']'
+        return list_string
+    if isinstance(value, dict):
+        dict_string = ', '.join("{!s}={!r}".format(str(key),str(val)) for (key,val) in value.items())
+        dict_string = '{' + dict_string + '}'
+        return dict_string
     return force_text(value)
 
 @register.filter

@@ -167,6 +167,7 @@
     <Content Include="app\static\app\scripts\product.js" />
     <Content Include="app\templates\app\base.html" />
     <Content Include="app\templates\app\api_csrftoken.html" />
+    <Content Include="app\templates\app\dhk.html" />
     <Content Include="app\templates\app\load.html" />
     <Content Include="app\templates\app\r_and_dresults.html" />
     <Content Include="app\templates\app\r_and_d.html" />

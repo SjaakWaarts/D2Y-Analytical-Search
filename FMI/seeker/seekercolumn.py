@@ -151,11 +151,12 @@ class Column (object):
         return(sortdsl)
 
 
-    def export_value(self, result):
+    def export_value(self, hit):
         export_field = self.field if self.export is True else self.export
         if export_field:
-            value = getattr(result, export_field, '')
-            export_val = ', '.join(force_text(v.to_dict() if hasattr(v, 'to_dict') else v) for v in value) if isinstance(value, AttrList) else seeker_format(value)
+            value = hit['_source'].get(export_field, '')
+            #export_val = ', '.join(force_text(v.to_dict() if hasattr(v, 'to_dict') else v) for v in value) if isinstance(value, AttrList) else seeker_format(value)
+            export_val = seeker_format(value)
         else:
             export_val = ''
         return export_val
