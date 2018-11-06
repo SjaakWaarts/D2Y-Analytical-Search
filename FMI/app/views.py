@@ -474,13 +474,13 @@ def load_view(request):
             email_choices = form.cleaned_data['email_choices_field']
             email_address = form.cleaned_data['email_address_field']
             email_password = form.cleaned_data['email_password_field']
-            indexname = form.cleaned_data['indexname_field']
+            index_doc_name = form.cleaned_data['index_doc_name_field']
             ci_filename = form.cleaned_data['ci_filename_field']
             cimap_filename = form.cleaned_data['cimap_filename_field']
             if 'load_scentemotion' in form.data:
                 load.load_scentemotion(cft_filename)
             if 'load_excel' in form.data:
-                if not load.load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
+                if not load.load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name):
                     form.add_form_error("Could not retrieve or index excel file")
             if 'load_mail' in form.data:
                 if not load.load_mail(email_choices, email_address, email_password):

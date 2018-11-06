@@ -126,7 +126,7 @@ class load_form(forms.Form):
     email_choices_field = forms.ChoiceField(label='Mail protocol', choices=email_choices, required=False)
     email_address_field = forms.CharField(label='Your e-mail address', max_length=80, required = False, initial = '')
     email_password_field = forms.CharField(label="Your e-main password", widget=forms.PasswordInput({'class': 'form-control','placeholder':'Password'}), required=False)
-    indexname_field = forms.CharField(label='Index name', max_length=80, required = False, initial = '')
+    index_doc_name_field = forms.CharField(label='Index/Doc name', max_length=80, required = False, initial = '')
     #ci_filename_field = forms.CharField(label='CI file', max_length=40, required = False, initial = 'ChoiceModel FF USA.csv')
     def add_form_error(self, message):
         if not self._errors:

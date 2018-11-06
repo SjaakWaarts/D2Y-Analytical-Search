@@ -447,8 +447,8 @@ def crawl_feedly(from_dt, rss_field):
     ms = s * 1000
     newerthan = "{:.0f}".format(ms)
     headers = {
-        #sjaak.waarts@gmail.com (expires on 2018-aug-26)
-        "Authorization" : "A3iuGsp9UjnsSiLwl5ZoPrLZj3mO4d16muxgezgpLesPhJ4YoKgC0XdiW_ucnm7b1Z-o5DKK6oLqoW9SRNUkoTcQ8npBBmqbOF03zF3tFWaNI0Lir_hrAahmVuypG5BXVZidJJ4PuaXr4zg5pYRE32OxO0N05X_A2sdZC93oWwQU1GVLJ9evh3qmu0WXYPVXpxffytgnFjUg2JB1zGK3KJkbDl-6ioJudiD2IZczA0R52tPwFZZ0FimkE3zV:feedlydev"
+        #sjaak.waarts@gmail.com (expires on 2018-oct-21)
+        "Authorization" : "AxkSOs2FGt-h0tdLmguV2JdpdaPJLeCYJnng5pWz1mU_vZAvlmam2RYWXrF8cJs6BaGOjFPGraoMke6m3gaKo90GJKE-Vdz8VyMgP6ABSpSUH11bNOjBpnsbZj_Odp0DPbD7Xd0i0Zw7_LwQl3dEMW-I1HNIRu8MOv9yFufkoVuZLJ2voZ6l8Sxr4IRgvuSdzjy0alWjhxhGiFN7lHZ8tYdTYR8T0l2dMQBgGw7KnZRXw6Piur9IqpBv3KuV:feedlydev"
         }
 
     params_streams = {

@@ -86,8 +86,8 @@ urlpatterns = [
     # Registration URLs
     path('accounts/register/', views.register, name='register'),
     path('accounts/register_complete/', views.registrer_complete, name='register_complete'),
-    path('login/', auth_views.login, name='login'),
-    path('logout/', auth_views.logout, name='logout'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
 
     # Uncomment the admin/doc line below to enable admin documentation:

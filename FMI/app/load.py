@@ -194,7 +194,7 @@ def decode_cell(cell_coded, decoder):
     return cell_decoded
 
 
-def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
+def load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name):
     global driver
 
     es_host = ES_HOSTS[0]
@@ -203,11 +203,15 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
     doc_type = os.path.splitext(excel_filename)[0]
-    if indexname == '':
+    if index_doc_name == '':
         index = "excel_" + doc_type
     else:
-        index = indexname
-        doc_type = indexname
+        index = index_doc_name.split('/')[0]
+        if len(index_doc_name.split('/')) > 1:
+            doc_type = index_doc_name.split('/')[1]
+        else:
+            doc_type = index_doc_name
+
     url = "http://" + host + ":9200/" + index
 
     # delete and re-create excel index
@@ -233,7 +237,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
     mapping_df.fillna("", inplace=True)
 
     # create mapping in excel index
-    properties = {
+    mapping = {
         'subset' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
         }
     converters={}
@@ -247,29 +251,46 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
         column = map_s['column']
         question = map_s.get('question', '').strip()
         answer = map_s.get('answer', '').strip()
+        nesting = map_s.get('nesting', '').replace(" ", "")
+        nested_fields = nesting.split(',')
         field = map_s['field'].strip()
+        sub_fields = field.split('.')
+        last_sub_field = sub_fields[len(sub_fields)-1]
         if field == "":
             continue
         format = map_s['format']
-        type = map_s['type']
-        if type == 'string':
+        field_type = map_s['type']
+        properties = mapping
+        if len(sub_fields) > 1:
+            for sub_field in sub_fields[:-1]:
+                if sub_field not in properties:
+                    if sub_field in nested_fields:
+                        properties[sub_field] = {'type' : 'nested', 'properties' : {}}
+                    else:
+                        properties[sub_field] = {'properties' : {}}
+                properties = properties[sub_field]['properties']
+            if last_sub_field not in properties and last_sub_field in nested_fields:
+                properties[last_sub_field] = {'type' : 'nested', 'properties' : {}}
+                properties = properties[last_sub_field]['properties']
+            field = last_sub_field
+        if field_type == 'string':
             properties[field] = {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
             converters[column] = str
-        elif type == 'date':
+        elif field_type == 'date':
             properties[field] = {'type' : 'date'}
             converters[column] = str
-        elif type == 'integer':
+        elif field_type == 'integer':
             properties[field] = {'type' : 'integer'}
             converters[column] = int
-        elif type == 'float':
+        elif field_type == 'float':
             properties[field] = {'type' : 'float'}
             converters[column] = float
-        elif type == 'text':
+        elif field_type == 'text':
             properties[field] = {'type' : 'text'}
             converters[column] = str
-        elif type == 'list':
+        elif field_type == 'list':
             pass
-        elif type == 'nested':
+        elif field_type == 'nested':
             properties[field] =  {'type' : 'nested', 
                                     'properties' : 
                                     {'val' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
@@ -280,7 +301,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
             #                     { field : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}}
             #                    }
 
-    mapping = json.dumps({'properties' : properties})
+    mapping = json.dumps({'properties' : mapping})
 
     # delete and re-create excel index
     if 'recreate' in excel_choices:
@@ -333,6 +354,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
         doc = {}
         #doc['subset'] = doc_type
         for map_key, map_s in mapping_df.iterrows():
+            sub_doc = doc # in case of nesting
             field = map_s['field'].strip()
             if field == "":
                 continue
@@ -341,6 +363,10 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
             format = map_s['format']
             header = map_s.get('header', '').strip()
             decoder = map_s.get('decoder', '').strip()
+            nesting = map_s.get('nesting', '').replace(" ", "")
+            nested_fields = nesting.split(',')
+            sub_fields = field.split('.')
+            last_sub_field = sub_fields[len(sub_fields)-1]
             if decoder == "":
                 decoder = {}
             else:
@@ -358,7 +384,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
                     cell = initial
                 else:
                     cell = None
-            type = map_s['type']
+            field_type = map_s['type']
             if format == 'script':
                 module = sys.modules[__name__]
                 if hasattr(module, field):
@@ -366,9 +392,29 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
             else:
                 # incase no cell defined, doc[field] will not be populated
                 if cell is not None:
-                    if type == 'list':
+
+                    if len(sub_fields) > 1:
+                        for sub_field in sub_fields[:-1]:
+                            if sub_field not in sub_doc:
+                                if sub_field in nested_fields:
+                                    sub_doc[sub_field] = [{}]
+                                else:
+                                    sub_doc[sub_field] = {}
+                            else:
+                                if sub_field in nested_fields:
+                                    sub_doc[sub_field].append({})
+                            sub_field_value = sub_doc[sub_field]
+                            if type(sub_field_value) is dict:
+                                sub_doc = sub_doc[sub_field]
+                            if type(sub_field_value) is list:
+                                sub_doc = sub_doc[sub_field][len(sub_doc[sub_field])-1]
+                        if last_sub_field not in properties and last_sub_field in nested_fields:
+                            pass
+                        field = last_sub_field
+
+                    if field_type == 'list':
                         if field not in doc:
-                            doc[field] = []
+                            sub_doc[field] = []
                         if cell != "":
                             if len(format) > 0:
                                 delimiter = format
@@ -379,34 +425,35 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, indexname):
                                     items = cell.split(delimiter)
                                 for item in items:
                                     item = decode_cell(item, decoder)
-                                    doc[field].append(item)
+                                    sub_doc[field].append(item)
                             else:
-                                doc[field].append(cell)
-                    elif type == 'nested':
-                        if field not in doc:
-                            doc[field] = []
+                                sub_doc[field].append(cell)
+                    elif field_type == 'nested':
+                        if field not in sub_doc:
+                            sub_doc[field] = []
                         if cell != '':
                             if answer == '':
                                 nested_value = cell.split(',')
-                                doc[field].append({'val': nested_value[0], 'prc': float(nested_value[1])})
+                                sub_doc[field].append({'val': nested_value[0], 'prc': float(nested_value[1])})
                             else:
-                                doc[field].append({'val': answer, 'prc': float(cell)})
-                    elif type == 'date':
+                                sub_doc[field].append({'val': answer, 'prc': float(cell)})
+                    elif field_type == 'date':
+                        cell = str(cell)
                         if len(format) > 0:
-                            doc[field] = datetime.strptime(cell, format).strftime('%Y-%m-%d')
+                            sub_doc[field] = datetime.strptime(cell, format).strftime('%Y-%m-%d')
                         else:
-                            doc[field] = cell
+                            sub_doc[field] = cell
                         #doc[field] = datetime.strptime(cell, format).date()
-                    elif type == 'text' or type == 'string':
+                    elif field_type == 'text' or field_type == 'string':
                         cell = decode_cell(cell, decoder)
                         cell = str(cell)
                         if field not in doc:
-                            doc[field] = cell
+                            sub_doc[field] = cell
                         else:
-                            doc[field] = doc[field] + format + cell
+                            sub_doc[field] = sub_doc[field] + format + cell
                     else:
                         cell = decode_cell(cell, decoder)
-                        doc[field] = cell
+                        sub_doc[field] = cell
 
         if 'id' in doc:
             id = doc['id']
