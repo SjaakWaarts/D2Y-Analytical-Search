@@ -291,7 +291,7 @@ def copy_mapping(es_mapping, extra=None):
     doc_type = es_mapping['doc_type']
     mapping = dsl.Mapping(doc_type)
     for f, prop in es_mapping['properties'].items():
-        field = doc_field(prop['type'])
+        field = doc_field(prop.get('type', None))
         if field is not None:
             mapping.field(f, field)
     if extra:

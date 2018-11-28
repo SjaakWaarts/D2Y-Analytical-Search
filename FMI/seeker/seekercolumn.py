@@ -193,7 +193,7 @@ class NestedColumn (Column):
         selval = facets[self.nestedfacet]
         if value:
             for v in value:
-                # NestedFacet
+                # PercFacet
                 if 'val' in v:
                     newval = v['val']+": {0:4.2f}".format(v['prc'])
                     if len(selval) > 0:

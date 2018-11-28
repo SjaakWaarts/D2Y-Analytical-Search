@@ -1,0 +1,73 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Scent Emotion <small>E-Depot</small></h1>
+</div>
+
+{% load staticfiles %}
+<form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				                <div class="info-card-front">
+					                <img class="card-image" src="{% static "app/media/divault.png" %}">
+				                </div>
+			                <div class="info-card-back">
+				                <h3>E-Depot</h3>
+				                <p>
+                                    E-Depot Dashboard.
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Analyze the E-depot based on tmlo metadata.
+                        </p>
+                        <p>
+                            <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=tmlo&storyboard_name=initial&dashboard_name=initial">
+                                Search E-Depot <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    </div>
+    <div class="row">
+        {% if form.errors %}
+            <p class="validation-summary-errors">Errors detected.</p>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-error">
+                    <strong>{{ field.label_tag }}{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-error">
+                <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</form>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+    {% load staticfiles %}
+        <script src="{% static 'app/scripts/insight.js' %}"></script>
+
+{% endblock %}
+

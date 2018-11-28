@@ -77,6 +77,8 @@ urlpatterns = [
     path('customer/', app.views.home, name='customer'),
     path('market_insight', app.views.market_insight_view, name='market_insight'),
 
+    path('edepot', app.views.edepot_view, name='edepot'),
+
     path('elastic/', app.views.elastic_view, name='elastic'),
     path('autocomplete/', app.views.autocomplete_view, name='autocomplete-view'),
 

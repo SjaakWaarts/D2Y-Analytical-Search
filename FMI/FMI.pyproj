@@ -178,6 +178,7 @@
     <Content Include="app\templates\app\facts.html" />
     <Content Include="app\templates\app\factsresults.html" />
     <Content Include="app\templates\app\platform_admin.html" />
+    <Content Include="app\templates\app\edepot.html" />
     <Content Include="app\templates\app\scent_emotion.html" />
     <Content Include="app\templates\app\excitometer.html" />
     <Content Include="app\templates\app\scraperesults.html" />
@@ -193,6 +194,7 @@
     <Content Include="app\templates\app\seeker\columnlist.html" />
     <Content Include="app\templates\app\seeker\columnjavascript.html" />
     <Content Include="app\templates\app\seeker\facets\keyword.html" />
+    <Content Include="app\templates\app\seeker\facets\percterms.html" />
     <Content Include="app\templates\app\seeker\facets\optionterms.html" />
     <Content Include="app\templates\app\seeker\facets\nestedterms.html" />
     <Content Include="app\templates\registration\login.html" />

@@ -367,7 +367,7 @@ class SeekerView (View):
         column_type ='Column'
         nestedfacet = None
         for facet in self.facets:
-            if type(facet) == seeker.NestedFacet:
+            if type(facet) == seeker.PercFacet:
                 if facet.nestedfield == field_name:
                     column_type = 'NestedColumn'
                     nestedfacet = facet
@@ -482,7 +482,7 @@ class SeekerView (View):
                 facets[f] = self.request.GET.getlist(f.field) or initial.get(f.field, [])
                 if facets[f] == [''] or facets[f] == ['All']:  
                     facets[f] = []
-            if type(f) == seeker.facets.NestedFacet:
+            if type(f) == seeker.facets.PercFacet:
                 range_slider = self.request.GET.get(f.field.split('.')[0]+'_range', "0.20")
                 f.rangemin = float(range_slider)
         return facets

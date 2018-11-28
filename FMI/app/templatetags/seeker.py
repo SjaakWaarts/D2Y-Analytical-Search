@@ -54,7 +54,7 @@ def seeker_facet(facet, results, selected=None, **params):
         params.update({
             'facet': facet,
             'selected': selected,
-            'data': facet.data(results),
+            'data': buckets,
         })
         #print("seeker_facet params: ", params)
         return loader.render_to_string(facet.template, params)

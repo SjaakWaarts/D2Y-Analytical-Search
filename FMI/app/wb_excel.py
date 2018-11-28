@@ -23,7 +23,7 @@ import seeker
 import FMI.settings
 
 ###
-### EcoSystem
+### EcoSystem Dashboard
 ###
 
 ecosystem_dashboard = {
@@ -149,7 +149,7 @@ ingr_molecules_dashboard = {
     }
 
 ###
-### Patents
+### Patents Dashboard
 ###
 
 patents_dashboard = {
@@ -201,7 +201,7 @@ patents_dashboard = {
     }
 
 ###
-### Sensory
+### Sensory Dashboard
 ###
 
 sensory_dashboard = {
@@ -569,6 +569,791 @@ sensory_dashboard = {
         },
     }
 
+###
+### TMLO Dashboard
+###
+
+tmlo_dashboard = {
+    "aggregatieniveau_pie" : {
+        'chart_type': "PieChart",
+        'chart_title' : "Aggregatieniveau",
+        'data_type'  : "facet",
+        'X_facet'     : {
+            'field'   : "Aggregatieniveau",
+            'label'   : "Aggregatieniveau" },
+        },
+    "vorm_col" : {
+        'chart_type': "ColumnChart",
+        'chart_title' : "Vorm",
+        'controls'    : ['CategoryFilter'],
+        'data_type'  : "facet",
+        'X_facet'     : {
+            'field'   : "Vorm.GenreOfRedactie.keyword",
+            'label'   : "Genre of Redactie" },
+        },
+    "formaat_col" : {
+        'chart_type': "ColumnChart",
+        'chart_title' : "Formaat",
+        'controls'    : ['CategoryFilter'],
+        'data_type'  : "facet",
+        'X_facet'     : {
+            'field'   : "Bestanden.Formaten.Bestandsformaat",
+            'label'   : "Bestand Formaat" },
+        },
+    "aggr_openbaarheid_table" : {
+        'chart_type': "Table",
+        'chart_title' : "Openbaarheid",
+        'data_type'  : "aggr",
+        'controls'    : ['CategoryFilter'],
+        'transpose'   : True,
+        'listener'    : {'select' : {'rowsort': None}},
+        'X_facet'     : {
+            'field'   : "Aggregatieniveau",
+            'label'   : "Aggregatieniveau",
+            'total'   : True
+            },
+        'Y_facet'     : {
+            'field'   : "Openbaarheid.Indicatie",
+            'question': "Openbaarheid",
+            "answers" : [],
+            "values"  : [{'v-sum':'*'}],
+            'label'   : "Openbaarheid"
+            },
+        'options'     : {
+            #'sort'    : 'event',
+            'frozenColumns' : 2, # will be adjusted by bind_aggr
+            },
+        },
+    "aggr_vertrouwelijkheid_table" : {
+        'chart_type': "Table",
+        'chart_title' : "Vertrouwelijkheid",
+        'data_type'  : "aggr",
+        'controls'    : ['CategoryFilter'],
+        'transpose'   : True,
+        'listener'    : {'select' : {'rowsort': None}},
+        'X_facet'     : {
+            'field'   : "Aggregatieniveau",
+            'label'   : "Aggregatieniveau",
+            'total'   : True
+            },
+        'Y_facet'     : {
+            'field'   : "Vertrouwelijkheid.Indicatie",
+            'question': "Vertrouwelijkheid",
+            "answers" : [],
+            "values"  : [{'v-sum':'*'}],
+            'label'   : "Vertrouwelijkheid"
+            },
+        'options'     : {
+            #'sort'    : 'event',
+            'frozenColumns' : 2, # will be adjusted by bind_aggr
+            },
+        },
+        "aanmaak_keyword_line" : {
+            'chart_type'  : "LineChart",
+            'chart_title' : "Aanmaak Year-Month",
+            'data_type'  : "aggr",
+            #'data_type'  : "facet",
+            'controls'    : ['ChartRangeFilter'],
+            'X_facet'     : {
+                'field'   : "Bestanden.Formaten.Datum-aanmaak",
+                'label'   : "Aanmaak",
+                'key'     : 'key_as_string',
+                'total'   : False,
+                'type'    : 'date'},
+            #'Y_facet'     : {
+            #    'field'   : "facet_keyword",
+            #    'label'   : "Keywords" },
+            'options'     : {
+                "hAxis"   : {'format': 'yy/MMM'},
+                },
+            },
+    }
+
+###
+### TMLO Mapping
+###
+
+date_formatter = "year||year_month||year_month_day"
+
+tmlo = {
+        "Identificatiekenmerk": {
+            'type': 'text', 'fields': {'keyword': {'type': 'keyword', 'ignore_above': 256}}
+        },
+        "Aggregatieniveau": {
+            "type": "keyword"
+        },
+        "Namen": {
+            'type': 'text', 'fields': {'keyword': {'type': 'keyword', 'ignore_above': 256}}
+        },
+        "Classificaties": {
+            "type": "nested",
+            "properties": {
+                "Code": {
+                    "type": "keyword"
+                },
+                "Omschrijving": {
+                    "type": "text"
+                },
+                "Bron": {
+                    "type": "text"
+                },
+                "Periode": {
+                    "properties": {
+                        "Begin": {
+                            "type": "date",
+                            "format": date_formatter
+                        },
+                        "Eind": {
+                            "type": "date",
+                            "format": date_formatter
+                        }
+                    }
+                }
+            }
+        },
+        "Omschrijvingen": {
+            "type": "text"
+        },
+        "Locatie": {
+            "properties": {
+                "Fysiek": {
+                    "type": "keyword",
+                    "index": "false"
+                },
+                "Virtueel": {
+                    "type": "keyword",
+                    "index": "false"
+                }
+            }
+        },
+        "Dekkingen": {
+            "type": "nested",
+            "properties": {
+                "Tijd": {
+                    "properties": {
+                        "Type": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Periode": {
+                            "properties": {
+                                "Begin": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                },
+                                "Eind": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                }
+                            }
+                        }
+                    }
+                },
+                "Geografisch": {
+                    "properties": {
+                        "Locatie_aanduiding": {
+                            "type": "text"
+                        },
+                        "Adres": {
+                            "properties": {
+                                "Plaats": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Straat": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Huisnummer": {
+                                    "type": "integer",
+                                    "copy_to": "full_address"
+                                },
+                                "Letter": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Toevoeging": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Postcode": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Buurtkern": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Gemeente": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "Kadaster": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    },
+                                    "copy_to": "full_address"
+                                },
+                                "full_address": {
+                                    "type": "text"
+                                }
+                            }
+                        },
+                        "Geo-object": {
+                            "properties": {
+                                "Naam_object": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                },
+                                "ID_object": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Geometrie": {
+                            "properties": {
+                                "GML": {
+                                    "properties": {}
+                                },
+                                "IGML": {
+                                    "properties": {
+                                        "RD_X_coordinaat": {
+                                            "type": "float"
+                                        },
+                                        "RD_Y_coordinaat": {
+                                            "type": "float"
+                                        },
+                                        "WSG_X_coordinaat": {
+                                            "type": "float"
+                                        },
+                                        "WSG_Y_coordinaat": {
+                                            "type": "float"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "ExterneIdentificatieKenmerken": {
+            "type": "nested",
+            "properties": {
+                "Kenmerk": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "IdentificatieSysteem": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            }
+        },
+        "Talen": {
+            'type': 'text', 'fields': {'keyword': {'type': 'keyword', 'ignore_above': 256}}
+        },
+        "EventGeschiedenis": {
+            "type": "nested",
+            "properties": {
+                "Periode": {
+                    "properties": {
+                        "Begin": {
+                            "type": "date",
+                            "format": date_formatter,
+                        },
+                        "Eind": {
+                            "type": "date",
+                            "format": date_formatter,
+                        }
+                    }
+                },
+                "Type": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "Beschrijving": {
+                    "type": "text"
+                },
+                "Verantwoordelijke_functionaris": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "Aanleiding": {
+                    "type": "text"
+                }
+            }
+        },
+        "EventPlan": {
+            "type": "nested",
+            "properties": {
+                "Periode": {
+                    "properties": {
+                        "Begin": {
+                            "type": "date",
+                            "format": date_formatter,
+                        },
+                        "Eind": {
+                            "type": "date",
+                            "format": date_formatter,
+                        }
+                    }
+                },
+                "Type": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "Beschrijving": {
+                    "type": "text"
+                },
+                "Verantwoordelijke_functionaris": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "Aanleiding": {
+                    "type": "text"
+                }
+            }
+        },
+        "Relaties": {
+            "type": "nested",
+            "properties": {
+                "ID": {
+                    "type": "keyword"
+                },
+                "Type": {
+                    "type": "text"
+                },
+                "Periode": {
+                    "properties": {
+                        "Begin": {
+                            "type": "date",
+                            "format": date_formatter
+                        },
+                        "Eind": {
+                            "type": "date",
+                            "format": date_formatter
+                        }
+                    }
+                }
+            }
+        },
+        "Ontstaanscontexten": {
+            "type": "nested",
+            "properties": {
+                "Actor": {
+                    "properties": {
+                        "Identificatiekenmerk": {
+                            "type": "keyword"
+                        },
+                        "Aggregatieniveau": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Authorisatienaam": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Locatie": {
+                            "type": "text"
+                        },
+                        "Jurisdictie": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "Activiteit": {
+                    "properties": {
+                        "Kenmerk": {
+                            "type": "keyword"
+                        },
+                        "Aggregatieniveau": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Naam": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Gebruiksrecht": {
+            "properties": {
+                "Indicatie": {
+                    "type": "boolean"
+                },
+                "Gebruiksrechtvoorwaarden": {
+                    "type": "nested",
+                    "properties": {
+                        "Omschrijving": {
+                            "type": "text"
+                        },
+                        "Periode": {
+                            "properties": {
+                                "Begin": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                },
+                                "Eind": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Openbaarheid": {
+            "properties": {
+                "Indicatie": {
+                    "type": "boolean"
+                },
+                "Openbaarheidsbeperkingen": {
+                    "type": "nested",
+                    "properties": {
+                        "Omschrijving": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Periode": {
+                            "properties": {
+                                "Begin": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                },
+                                "Eind": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        },
+        "Vorm": {
+            "properties": {
+                "GenreOfRedactie": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "Structuur": {
+                    "type": "text"
+                },
+                "Verschijningsvorm": {
+                    "type": "text"
+                }
+            }
+        },
+        "Integriteit": {
+            "properties": {
+                "Kwaliteit": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "Datum_vaststelling": {
+                    "type": "date",
+                    "format": date_formatter
+                },
+                "Toelichting": {
+                    "type": "text"
+                }
+            }
+        },
+        "Bestanden": {
+            "type": "nested",
+            "properties": {
+                "Formaten": {
+                    "type": "nested",
+                    "properties": {
+                        "Identificatiekenmerk": {
+                            "type": "keyword",
+                        },
+                        "Bestandsnaam": {
+                            "properties": {
+                                "Naam": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                },
+                                "Extensie": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "Type": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Omvang": {
+                            "type": "float"
+                        },
+                        "Bestandsformaat": {
+                            "type": "keyword"
+                        },
+                        "Creatieapplicatie": {
+                            "properties": {
+                                "Naam": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                },
+                                "Versie": {
+                                    "type": "keyword"
+                                },
+                                "Datum_aanmaak": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                }
+                            }
+                        },
+                        "Fysieke-integriteit": {
+                            "properties": {
+                                "Algoritme": {
+                                    "type": "text",
+                                    "index": "false"
+                                },
+                                "Waarde": {
+                                    "type": "text",
+                                    "index": "false"
+                                },
+                                "Datum": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                }
+                            }
+                        },
+                        "Datum-aanmaak": {
+                            "type": "date",
+                            "format": date_formatter
+                        },
+                        "EventPlan-formaat": {
+                            "type": "nested",
+                            "properties": {
+                                "Periode": {
+                                    "properties": {
+                                        "Begin": {
+                                            "type": "date",
+                                            "format": date_formatter,
+                                        },
+                                        "Eind": {
+                                            "type": "date",
+                                            "format": date_formatter,
+                                        }
+                                    }
+                                },
+                                "Type": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                },
+                                "Beschrijving": {
+                                    "type": "text"
+                                },
+                                "Verantwoordelijke_functionaris": {
+                                    "type": "text",
+                                    "fields": {
+                                        "keyword": {
+                                            "type": "keyword"
+                                        }
+                                    }
+                                },
+                                "Aanleiding": {
+                                    "type": "text"
+                                }
+                            }
+                        },
+                        "Relaties": {
+                            "type": "nested",
+                            "properties": {
+                                "ID": {
+                                    "type": "keyword"
+                                },
+                                "Type": {
+                                    "type": "text"
+                                },
+                                "Periode": {
+                                    "properties": {
+                                        "Begin": {
+                                            "type": "date",
+                                            "format": date_formatter
+                                        },
+                                        "Eind": {
+                                            "type": "date",
+                                            "format": date_formatter
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Vertrouwelijkheid": {
+            "properties": {
+                "Indicatie": {
+                    "type": "boolean"
+                },
+                "Vertrouwelijkheden": {
+                    "type": "nested",
+                    "properties": {
+                        "Classificatieniveau": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "Periode": {
+                            "properties": {
+                                "Begin": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                },
+                                "Eind": {
+                                    "type": "date",
+                                    "format": date_formatter
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        },
+        "x-customer-meta-profile": {
+            "type": "keyword",
+        },
+        "x-customer-meta-domain": {
+            "type": "keyword"
+        },
+        "x-customer-meta-target": {
+            "type": "keyword"
+        }
+    }
+
 
 ###
 ### Workbooks and ES Index
@@ -763,16 +1548,16 @@ es_indicis = {
             seeker.TermsFacet("resp_id.keyword", label = "Respondent"),
             seeker.RangeFilter("smell", label = "Smell"),
             seeker.RangeFilter("taste", label = "Taste"),
-            seeker.NestedFacet("sensory_attr.val.keyword", label = "Sensory Attr", nestedfield="sensory_attr"),
-            seeker.NestedFacet("sensory_hedonics.val.keyword", label = "Sensory Hedonics", nestedfield="sensory_hedonics"),
-            seeker.NestedFacet("perception.val.keyword", label = "Perception", nestedfield="perception"),
+            seeker.PercFacet("sensory_attr.val.keyword", label = "Sensory Attr", nestedfield="sensory_attr"),
+            seeker.PercFacet("sensory_hedonics.val.keyword", label = "Sensory Hedonics", nestedfield="sensory_hedonics"),
+            seeker.PercFacet("perception.val.keyword", label = "Perception", nestedfield="perception"),
             seeker.TermsFacet("age.keyword", label = "Age"),
             seeker.TermsFacet("gender.keyword", label = "Gender"),
             seeker.TermsFacet("consumption.keyword", label = "Consumption"),
             seeker.TermsFacet("brand.keyword", label = "Brand"),
-            seeker.NestedFacet("choice.val.keyword", label = "Choice", nestedfield="choice"),
-            seeker.NestedFacet("describe.val.keyword", label = "Describe", nestedfield="describe"),
-            seeker.NestedFacet("hedonics.val.keyword", label = "Hedonics", nestedfield="hedonics"),
+            seeker.PercFacet("choice.val.keyword", label = "Choice", nestedfield="choice"),
+            seeker.PercFacet("describe.val.keyword", label = "Describe", nestedfield="describe"),
+            seeker.PercFacet("hedonics.val.keyword", label = "Hedonics", nestedfield="hedonics"),
             ],
         'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
         'display'       : ["subset", "blindcode", "stage", "resp_id", "smell", "taste"],
@@ -783,6 +1568,31 @@ es_indicis = {
         'urlfields'     : {},
         'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
         },
+    'tmlo' : {
+        'document'      : "tmlo",
+        'index'         : "tmlo",
+        'doc_type'      : "doc",
+        'properties'    : tmlo,
+        # SEEKER
+        'page_size'     :30,
+        'facets' : [
+            seeker.TermsFacet("Aggregatieniveau", label="Aggregatieniveau"),
+            seeker.TermsFacet("Openbaarheid.Indicatie", label="Openbaarheid"),
+            seeker.TermsFacet("Vertrouwelijkheid.Indicatie", label="Vertrouwelijkheid"),
+            seeker.TermsFacet("Vorm.GenreOfRedactie.keyword", label="Vorm"),
+            seeker.NestedFacet("Classificaties.Code", label="Classificatie", nestedfield="Classificaties"),
+            seeker.NestedFacet("Bestanden.Formaten.Bestandsformaat", label="Formaat", nestedfield="Bestanden.Formaten"),
+            seeker.MonthHistogram("Bestanden.Formaten.Datum-aanmaak", label="Aanmaak", nestedfield="Bestanden.Formaten", date_formatter=date_formatter),
+            ],
+        'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
+        'display'       : ["Identificatiekenmerk", "Aggregatieniveau","Openbaarheid.Indicatie", "Namen"],
+        'sort'          : [],
+        'summary'       : [],
+        'sumheader'     : [],
+        'SUMMARY_URL'   : "{}",
+        'urlfields'     : {"Identificatiekenmerk" : ""},
+        'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
+        }
     }
 
 workbooks = {
@@ -896,6 +1706,29 @@ workbooks = {
                     {'name'     : 'mdt_insights',
                     'layout'    : OrderedDict([
                         ('table', [['ttest_table']])])},
+                ]
+            },
+        'filters'       : {}
+        },
+    'tmlo' : {
+        'es_index'      : es_indicis['tmlo'],
+        'url'           : '/search_workbook?',
+        'display'       : ["Identificatiekenmerk", "Aggregatieniveau","Openbaarheid.Indicatie", "Namen"],
+        'facets'        : ["Aggregatieniveau", "Openbaarheid.Indicatie", "Vertrouwelijkheid.Indicatie",
+                           "Vorm.GenreOfRedactie.keyword", "Classificaties.Code",
+                           "Bestanden.Formaten.Datum-aanmaak", "Bestanden.Formaten.Bestandsformaat"],
+        'tiles'         : ["Aggregatieniveau"],
+        'charts'        : tmlo_dashboard,
+        'storyboards'   : {
+            'initial' : [
+                    {'name'     : 'initial',
+                     'layout'   : OrderedDict([
+                        ('table1', [["aggregatieniveau_pie", "aggr_openbaarheid_table", "aggr_vertrouwelijkheid_table"]]),
+                        ('table2', [["vorm_col", "formaat_col"]])])},
+                    {'name'     : 'Bestanden',
+                     'layout'   : OrderedDict([
+                        ('table1', [["aanmaak_keyword_line"]]),
+                        ('table2', [["vorm_col", "formaat_col"]])])}
                 ]
             },
         'filters'       : {}

@@ -173,7 +173,6 @@ def excitometer_view(request):
     return render(request, 'app/excitometer.html', context)
 
 def scent_emotion_view(request):
-    """Renders the scent emotion page."""
     if request.method == 'POST':
         if 'search_scentemotion' in request.POST:
             return redirect('search_scentemotion')
@@ -183,6 +182,13 @@ def scent_emotion_view(request):
     return render(
         request,
         'app/scent_emotion.html',
+        {'site' : FMI.settings.site, 'year':datetime.now().year}
+    )
+
+def edepot_view(request):
+    return render(
+        request,
+        'app/edepot.html',
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
