@@ -544,15 +544,27 @@ class SeekerView (View):
         return facets_keyword
 
     def get_facet_by_field_name(self, field_name):
-        # check on the base name and not at possible extensions like .keyword
-        base_field_name = field_name.split('.')[0]
+        # check on the base name and not at possible extensions like .keyword, .val.keyword
+        if field_name.split('.')[-1] in ['keyword', 'raw']:
+            base_field_name = ".".join(field_name.split('.')[:-1])
+        else:
+            base_field_name = field_name
         if base_field_name != 'answer' and base_field_name != '':
             for facet in self.facets:
-                facet_base_field_name = facet.field.split('.')[0]
+                if facet.field.split('.')[-1] in ['keyword', 'raw']:
+                    if facet.field.split('.')[-2] in ['val', 'prc']:
+                        facet_base_field_name = ".".join(facet.field.split('.')[:-2])
+                    else:
+                        facet_base_field_name = ".".join(facet.field.split('.')[:-1])
+                else:
+                    facet_base_field_name = facet.field
                 if facet_base_field_name == base_field_name:
                     return facet
             for facet in self.facets_keyword:
-                facet_base_field_name = facet.field.split('.')[0]
+                if facet.field.split('.')[-1] in ['keyword', 'raw']:
+                    facet_base_field_name = ".".join(facet.field.split('.')[:-1])
+                else:
+                    facet_base_field_name = facet.field
                 if facet_base_field_name == base_field_name:
                     return facet
             print("get_facet_by_field_name: facet not found, field_name ", field_name)
@@ -1353,6 +1365,13 @@ class SeekerView (View):
         """
         Check to see if the user has permission for this view. This method may optionally return an ``HttpResponse``.
         """
+        path = request.path
+        workbook_name = request.GET.get('workbook_name', "")
+        if 'search_excel' in path:
+            if workbook_name == 'tmlo':
+                if not request.user.has_perm('auth.edepot'):
+                    raise Http404
+
         if self.permission and not request.user.has_perm(self.permission):
             raise Http404
 

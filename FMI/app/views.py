@@ -10,6 +10,10 @@ from django.urls import reverse
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template import RequestContext
 from django.views.generic.base import TemplateView
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import available_attrs
+from functools import wraps
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 import seeker
@@ -38,6 +42,28 @@ from .forms import *
 
 
 models.SurveySeekerView.decoder = survey.seekerview_answer_value_decode
+
+
+
+LOCAL_IPS = (
+    '127.0.0.1'
+)
+
+def is_local_request(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip in LOCAL_IPS
+
+def local_ip_required(view_func):
+    def wrapped_view(request, *args, **kwargs):
+        if not is_local_request(request):
+            raise Http404 # or PermissionDenied or redirect
+        return view_func(request, *args, **kwargs)
+    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
+
 
 def home(request):
     """Renders the home page."""
@@ -105,9 +131,14 @@ def search_workbook(request):
     # prepare search_excel with the right
     #models.ExcelDoc2 = seeker.mapping.document_from_model(models.ingr_molecules, index="excel_ingr_molecules", using=models.client)
     #seeker.register(models.ExcelDoc)
+    user = request.user
     workbook_name = request.GET.get('workbook_name', '').strip()
     storyboard_name = request.GET.get('storyboard_name', 'initial').strip()
     dashboard_name = request.GET.get('dashboard_name', 'initial').strip()
+
+    if workbook_name == 'tmlo':
+        access =  user.has_perm('auth.edepot')
+
 
     set_workbook(workbook_name)
 
@@ -185,6 +216,9 @@ def scent_emotion_view(request):
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
+@login_required
+#@user_passes_test(lambda u: u.has_perm('auth.edepot'))
+@permission_required('auth.edepot', raise_exception=True)
 def edepot_view(request):
     return render(
         request,
@@ -524,6 +558,8 @@ def fmi_admin_view(request):
             index_choices = form.cleaned_data['index_choices_field']
             excel_filename = form.cleaned_data['excel_filename_field']
             opml_filename = form.cleaned_data['opml_filename_field']
+            auth_group_choices = form.cleaned_data['auth_group_choices_field']
+            auth_permission_choices = form.cleaned_data['auth_permission_choices_field']
             keyword_filename = form.cleaned_data['keyword_filename_field']
             if 'index_elastic' in form.data:
                 fmi_admin.create_index_elastic(index_choices, excel_filename)
@@ -540,6 +576,12 @@ def fmi_admin_view(request):
             elif 'keywords' in form.data:
                 if not fmi_admin.read_keywords(index_choices, keyword_filename):
                     form.add_form_error("Could not read keywords file")
+            if 'auth_groups' in form.data:
+                fmi_admin.auth_groups(auth_group_choices)
+            if 'auth_permissions' in form.data:
+                fmi_admin.auth_permissions(auth_permission_choices)
+            if 'auth_hasperm' in form.data:
+                fmi_admin.auth_hasperm(auth_group_choices, auth_permission_choices)
             return render(request, 'app/fmi_admin.html', {'form': form })
     else:
         form = fmi_admin_form(initial={'index_choices_field':['cosmetic']})

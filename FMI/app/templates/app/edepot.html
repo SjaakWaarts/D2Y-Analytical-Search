@@ -9,8 +9,10 @@
 {% load staticfiles %}
 <form action="" method="post" class="form-horizontal">
     {% csrf_token %}
+
     <div class="row">
         <div class="col-md-5 iff-dataset">
+            {% if 'auth.edepot' in perms %}
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-5">
@@ -37,6 +39,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="row">

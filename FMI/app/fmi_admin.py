@@ -1,6 +1,7 @@
 ﻿
 from datetime import datetime
 from django.core.files import File
+from django.contrib.auth.models import Group, Permission, ContentType
 import glob, os
 import pickle
 import requests
@@ -266,3 +267,38 @@ def read_keywords(index_choices, keyword_filename):
             models.FeedlySeekerView.facets_keyword[0].read_keywords = keywords_input
 
     return True
+
+def auth_groups(auth_group_choices):
+    for auth_group_choice in auth_group_choices:
+        if auth_group_choice == 'iff':
+            group = Group.objects.create(name='iff')
+        elif auth_group_choice == 'divault':
+            group = Group.objects.create(name='divault')
+        elif auth_group_choice == 'dhk':
+            group = Group.objects.create(name='dhk')
+        elif auth_group_choice == 'd2y':
+            group = Group.objects.create(name='d2y')
+
+def auth_permissions(auth_permission_choices):
+    ct = ContentType.objects.get(app_label='auth', model='user')
+    for auth_permission_choice in auth_permission_choices:
+        if auth_permission_choice == 'mi':
+            permission = Permission.objects.create(codename='mi', name='mi', content_type=ct)
+        elif auth_permission_choice == 'pi':
+            permission = Permission.objects.create(codename='pi', name='pi', content_type=ct)
+        elif auth_permission_choice == 'ci':
+            permission = Permission.objects.create(codename='ci', name='ci', content_type=ct)
+        elif auth_permission_choice == 'se':
+            permission = Permission.objects.create(codename='se', name='se', content_type=ct)
+        elif auth_permission_choice == 'edepot':
+            permission = Permission.objects.create(codename='edepot', name='edepot', content_type=ct)
+
+
+def auth_hasperm(auth_group_choices, auth_permission_choices):
+    for auth_group_choice in auth_group_choices:
+        group = Group.objects.get(name=auth_group_choice)
+        for auth_permission_choice in auth_permission_choices:
+            permisson = Permission.objects.get(codename=auth_permission_choice)
+            group.permissions.add(permisson)
+
+

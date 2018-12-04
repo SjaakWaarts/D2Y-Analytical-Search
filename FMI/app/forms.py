@@ -138,9 +138,14 @@ class load_form(forms.Form):
 class fmi_admin_form(forms.Form):
     index_choices = (('conf', 'Configuration'), ('excel', 'Excel Files'), ('pi', 'Product Intelligence'), ('mi', 'MI - Market Intelligence'), ('si_sites', 'SI - Sites'),
                      ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'))
-    index_choices_field = forms.MultipleChoiceField(label='Web Site', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=True)
+    index_choices_field = forms.MultipleChoiceField(label='ES Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=False)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'ecosystem.xlsx')
     opml_filename_field = forms.CharField(label='OPML file', max_length=40, required = False, initial = '')
+    auth_group_choices = (('iff', 'IFF'), ('divault', 'DiVault'), ('dhk', 'de Heerlijke Keuken'), ('d2y', 'DOUBLE2YY'))
+    auth_group_choices_field = forms.MultipleChoiceField(label='Groups', choices=auth_group_choices, widget=forms.CheckboxSelectMultiple, required=False)
+    auth_permission_choices = (('mi', 'Market Intelligence'), ('pi', 'Product Intelligence'), ('ci', 'Consumer Intelligence'),
+                               ('se', 'Scent Emotion'), ('edepot', 'E-Depot'))
+    auth_permission_choices_field = forms.MultipleChoiceField(label='Groups', choices=auth_permission_choices, widget=forms.CheckboxSelectMultiple, required=False)
     keyword_filename_field = forms.CharField(label='Keyword file', max_length=40, required = False, initial = '')
     def add_form_error(self, message):
         if not self._errors:

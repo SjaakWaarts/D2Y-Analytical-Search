@@ -519,7 +519,7 @@ class NestedFacet (TermsFacet):
         if len(values) == 0:
             return search
         self.sort_nested_filter = None
-        nested_param = {}
+        nested_param = {'query' : {}}
         terms_param = nested_param
         nested_field_path = ""
         # append term_param for each nested field to nested_param
@@ -529,9 +529,10 @@ class NestedFacet (TermsFacet):
             else:
                 nested_field_path = nested_field_path + '.' + nested_field
             terms_param['path'] = nested_field_path
+            terms_param['query'] = {}
             if nested_field != self.nestedfield[-1]:
-                terms_param['nested'] = {}
-                terms_param = terms_param['nested']
+                terms_param['query']['nested'] = {}
+                terms_param  = terms_param['query']['nested']
         terms_param['query'] = {
             'terms'  : {
                 self.field : values
@@ -539,32 +540,19 @@ class NestedFacet (TermsFacet):
             }
         search = search.filter('nested', **nested_param)
         d = search.to_dict()
-
-        query = None
-        field = self.nestedfield
-        q_field = self.field
-        filters = []
-        terms_filter = {q_field : []}
-        for val in values:
-            terms_filter[q_field].append(val)
-            sub_filter = [{"term": {q_field: val}}]
-            filter = {"path": field, "query" : {"bool" : {"must": sub_filter}}}
-            #search = search.filter('nested', **filter)
-        nested_filter = [{"terms": terms_filter}]
-        query = {"bool" : {"must": nested_filter}}
-        self.sort_nested_filter = query
         return search
 
     def data(self, response):
         aggregations = response.get('aggregations', {})
         nested_aggr = aggregations.get(self.name, {})
-        nested_field_path = self.nestedfield[0]
-        for nested_field in self.nestedfield[1:]:
-            if nested_field_path == "":
-                nested_field_path = nested_field
-            else:
-                nested_field_path = nested_field_path + '.' + nested_field
-            nested_aggr = nested_aggr.get(nested_field_path, {})
+        if len(self.nestedfield) > 0:
+            nested_field_path = self.nestedfield[0]
+            for nested_field in self.nestedfield[1:]:
+                if nested_field_path == "":
+                    nested_field_path = nested_field
+                else:
+                    nested_field_path = nested_field_path + '.' + nested_field
+                nested_aggr = nested_aggr.get(nested_field_path, {})
         nested_aggr = nested_aggr.get(self.name, {})
         return nested_aggr
 
@@ -586,6 +574,103 @@ class NestedFacet (TermsFacet):
         for bucket in nested_aggr['buckets']:
             buckets[bucket['key']] = bucket
         return buckets
+
+
+class MetricFacet (TermsFacet):
+    nestedfield = None
+
+    def __init__(self, field, nestedfield=None, **kwargs):
+        if nestedfield:
+            self.nestedfield = nestedfield.split('.')
+        else:
+            self.nestedfield = []
+        super(MetricFacet, self).__init__(field, **kwargs)
+
+    def _get_aggregation(self, **extra):
+        nested_param = {}
+        aggs_param = nested_param
+        nested_field_path = ""
+        # append aggs_param for each nested field to nested_param
+        for nested_field in self.nestedfield:
+            if nested_field_path == "":
+                nested_field_path = nested_field
+            else:
+                nested_field_path = nested_field_path + '.' + nested_field
+            aggs_param[nested_field_path] = {
+                'nested' : {
+                    'path'  : nested_field_path,
+                    'aggs'  : {}
+                    }
+                }
+            aggs_param = aggs_param[nested_field_path]['nested']['aggs']
+        aggs_param[self.field] = {
+            'sum'  : {
+                'field' : self.field,
+                }
+            }
+        aggs_param.update(self.kwargs)
+        aggs_param.update(extra)
+        return A('nested', **nested_param[self.nestedfield[0]]['nested'])
+
+    # use apply for aggregation (facet, chart, tile)
+    def apply(self, search, agg_name, aggs_stack, **extra):
+        #search.aggs.bucket(agg_name, 'nested', path=self.nestedfield).\
+        #               bucket('question', 'terms', field=self.nestedfield+".question.keyword", size=40, min_doc_count=1).\
+        #                   bucket('answer', 'terms', field=self.nestedfield+".answer.keyword", size=40, min_doc_count=1)
+        if agg_name in aggs_stack:
+            aggs_tail = search.aggs[agg_name]
+            for sub_agg_name in aggs_stack[agg_name][1:]:
+                aggs_tail = aggs_tail.aggs[sub_agg_name]
+            aggs_stack[agg_name].append(self.name)
+            sub_agg_name = self.name
+        else:
+            aggs_tail = search
+            aggs_stack[agg_name] = [agg_name]
+            sub_agg_name = agg_name
+        for nested_field in self.nestedfield:
+            aggs_stack[agg_name].append(nested_field)
+        aggs_tail.aggs[sub_agg_name] = self._get_aggregation(**extra)
+        d = search.to_dict()
+        return search
+
+    def data(self, response):
+        aggregations = response.get('aggregations', {})
+        nested_aggr = aggregations.get(self.name, {})
+        if len(self.nestedfield) > 0:
+            nested_field_path = self.nestedfield[0]
+            for nested_field in self.nestedfield[1:]:
+                if nested_field_path == "":
+                    nested_field_path = nested_field
+                else:
+                    nested_field_path = nested_field_path + '.' + nested_field
+                nested_aggr = nested_aggr.get(nested_field_path, {})
+        bucket = nested_aggr.get(self.name, {})
+        return bucket
+
+    def buckets(self, aggregations):
+        # preserve sequence
+        buckets = OrderedDict()
+        nested_aggr = aggregations
+        nested_field_path = self.nestedfield[0]
+        for nested_field in self.nestedfield[1:]:
+            if nested_field_path == "":
+                nested_field_path = nested_field
+            else:
+                nested_field_path = nested_field_path + '.' + nested_field
+            nested_aggr = nested_aggr.get(nested_field_path, {})
+        bucket = nested_aggr.get(self.name, {})
+        # for metric facets the name of the serie is the facet label.
+        # check whether is still has the original key (value), may be already renamed
+        if 'value' in bucket:
+            bucket[self.label] = bucket.pop('value')
+        return bucket
+
+    def get_metric(self, value):
+        return value
+
+    def valbuckets(self, bucket):
+        valbuckets = OrderedDict()
+        return valbuckets
 
 
 class PercFacet (TermsFacet):
@@ -1077,6 +1162,7 @@ class YearHistogram (Facet):
             buckets[key] = bucket
         return buckets
 
+
 class MonthHistogram (Facet):
     template = 'app/seeker/facets/year_histogram.html'
     nestedfield = None
@@ -1148,25 +1234,38 @@ class MonthHistogram (Facet):
         return search
 
     def filter(self, search, values):
-        if len(values) > 0:
-            filters = []
-            for val in values:
-                if self.date_formatter is None:
-                    kw = {
-                        self.field: {
-                            'gte': '%s-01T00:00:00' % val,
-                            'lte': '%s-31T23:59:59' % val,
-                        }
-                    }
-                else:
-                    kw = {
-                        self.field: {
-                            'gte': '%s-01' % val,
-                            'lte': '%s-31' % val,
-                        }
-                    }
-                filters.append(Q('range', **kw))
-            search = search.query(functools.reduce(operator.or_, filters))
+        if len(values) == 0:
+            return search
+        nested_param = {'query' : {}}
+        terms_param = nested_param
+        nested_field_path = ""
+        # append term_param for each nested field to nested_param
+        for nested_field in self.nestedfield:
+            if nested_field_path == "":
+                nested_field_path = nested_field
+            else:
+                nested_field_path = nested_field_path + '.' + nested_field
+            terms_param['path'] = nested_field_path
+            terms_param['query'] = {}
+            if nested_field != self.nestedfield[-1]:
+                terms_param['query']['nested'] = {}
+                terms_param  = terms_param['query']['nested']
+
+        filters = []
+        for val in values:
+            if self.date_formatter is None:
+                kw = {'range' : { self.field  : { 'gte': '%s-01T00:00:00' % val, 'lte': '%s-31T23:59:59' % val }}}
+            else:
+                kw = {'range' : { self.field : { 'gte': '%s-01' % val, 'lte': '%s-31' % val }}}
+            filters.append(kw)
+        #search = search.query(functools.reduce(operator.or_, filters))
+        terms_param['query'] = {
+            'bool' : {
+                'should' : filters
+                }
+            }
+        search = search.filter('nested', **nested_param)
+        d = search.to_dict()
         return search
 
     def data(self, response):
@@ -1189,12 +1288,22 @@ class MonthHistogram (Facet):
 
     def buckets(self, aggregations):
         buckets = OrderedDict()
-        # use string format as key and overwrite the key attribute as well
-        for bucket in aggregations['buckets']:
+        nested_aggr = aggregations
+        if len(self.nestedfield) > 0:
+            nested_field_path = self.nestedfield[0]
+            for nested_field in self.nestedfield[1:]:
+                if nested_field_path == "":
+                    nested_field_path = nested_field
+                else:
+                    nested_field_path = nested_field_path + '.' + nested_field
+                nested_aggr = nested_aggr.get(nested_field_path, {})
+            nested_aggr = nested_aggr.get(self.name, {})
+        for bucket in nested_aggr['buckets']:
             key = bucket['key_as_string']
             bucket['key'] = key
             buckets[key] = bucket
         return buckets
+
 
 class DayHistogram (Facet):
     template = 'app/seeker/facets/year_histogram.html'

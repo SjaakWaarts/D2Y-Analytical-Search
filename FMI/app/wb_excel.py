@@ -591,6 +591,19 @@ tmlo_dashboard = {
             'field'   : "Vorm.GenreOfRedactie.keyword",
             'label'   : "Genre of Redactie" },
         },
+    "vorm_omvang_col" : {
+        'chart_type': "ColumnChart",
+        'chart_title' : "Omvang / Vorm",
+        'controls'    : ['CategoryFilter'],
+        'data_type'  : "aggr",
+        'X_facet'     : {
+            'field'   : "Vorm.GenreOfRedactie.keyword",
+            'label'   : "Genre of Redactie",
+            'total'   : False},
+        'Y_facet'     : {
+            'field'   : "Bestanden.Formaten.Omvang",
+            'label'   : "Omvang"} # will be overwritten by the metric facet label,
+        },
     "formaat_col" : {
         'chart_type': "ColumnChart",
         'chart_title' : "Formaat",
@@ -653,12 +666,12 @@ tmlo_dashboard = {
             'chart_title' : "Aanmaak Year-Month",
             'data_type'  : "aggr",
             #'data_type'  : "facet",
-            'controls'    : ['ChartRangeFilter'],
+            'controls'    : ['DateRangeFilter'],
             'X_facet'     : {
                 'field'   : "Bestanden.Formaten.Datum-aanmaak",
                 'label'   : "Aanmaak",
                 'key'     : 'key_as_string',
-                'total'   : False,
+                'total'   : True,
                 'type'    : 'date'},
             #'Y_facet'     : {
             #    'field'   : "facet_keyword",
@@ -1582,6 +1595,7 @@ es_indicis = {
             seeker.TermsFacet("Vorm.GenreOfRedactie.keyword", label="Vorm"),
             seeker.NestedFacet("Classificaties.Code", label="Classificatie", nestedfield="Classificaties"),
             seeker.NestedFacet("Bestanden.Formaten.Bestandsformaat", label="Formaat", nestedfield="Bestanden.Formaten"),
+            seeker.MetricFacet("Bestanden.Formaten.Omvang", label="Omvang", nestedfield="Bestanden.Formaten"),
             seeker.MonthHistogram("Bestanden.Formaten.Datum-aanmaak", label="Aanmaak", nestedfield="Bestanden.Formaten", date_formatter=date_formatter),
             ],
         'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
@@ -1728,7 +1742,7 @@ workbooks = {
                     {'name'     : 'Bestanden',
                      'layout'   : OrderedDict([
                         ('table1', [["aanmaak_keyword_line"]]),
-                        ('table2', [["vorm_col", "formaat_col"]])])}
+                        ('table2', [["vorm_omvang_col"]])])}
                 ]
             },
         'filters'       : {}

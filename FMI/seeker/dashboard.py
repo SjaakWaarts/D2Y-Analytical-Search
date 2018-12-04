@@ -513,10 +513,15 @@ def bind_aggr(seekerview, chart, agg_name, aggregations, benchmark=None):
                             Y_metric = yfacet.get_metric(subbucket)
                             # check whether Y facet has subbuckets (multiple values)
                             # loop through the different values for this category, normally only one
+                            # for metric facets there are no subbuckets
                             yvalbuckets = yfacet.valbuckets(subbucket)
+                            if len(yvalbuckets) == 0:
+                                Y_value_count = Y_metric
+                                Y_value_total = Y_metric
+                            else:
+                                Y_value_count = 0
+                                Y_value_total = 0
                             Y_value_rownr = 0
-                            Y_value_count = 0
-                            Y_value_total = 0
                             Y_code = answer_value_decode(Y_key)
                             for Y_value_key, yvalbucket in yvalbuckets.items():
                                 # skip and map values

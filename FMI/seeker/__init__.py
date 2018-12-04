@@ -1,7 +1,7 @@
 ﻿__version__ = '3.0-dev'
 
 from .mapping import Indexable, ModelIndex, document_from_model, document_from_index, build_mapping, document_field, deep_field_factory, RawString, RawMultiString, DEFAULT_ANALYZER
-from .facets import Facet, TermsFacet, NestedFacet, PercFacet, OptionFacet, KeywordFacet, GlobalTermsFacet, YearHistogram, MonthHistogram, DayHistogram, RangeFilter
+from .facets import Facet, TermsFacet, NestedFacet, MetricFacet, PercFacet, OptionFacet, KeywordFacet, GlobalTermsFacet, YearHistogram, MonthHistogram, DayHistogram, RangeFilter
 from .seekerview import SeekerView, Column, elastic_get
 from .utils import search, index, delete
 from .registry import register, documents, model_documents, app_documents

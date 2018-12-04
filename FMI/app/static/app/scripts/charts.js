@@ -667,7 +667,7 @@ function google_chart(chart_name, chart_def, facet_value) {
                                 'label': label,
                                 //'unitIncrement': 0.1,
                                 //'blockIncrement' : 0.1,
-                                'step': 0.1,
+                                //'step': 0.1,
                                 'ticks': 10,
                                 'showRangeValues': true,
                             }
