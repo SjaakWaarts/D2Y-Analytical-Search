@@ -168,6 +168,8 @@
     <Content Include="app\templates\app\base.html" />
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="app\templates\app\dhk.html" />
+    <Content Include="app\templates\app\index_D2Y.html" />
+    <Content Include="app\templates\app\index_IFF.html" />
     <Content Include="app\templates\app\load.html" />
     <Content Include="app\templates\app\r_and_dresults.html" />
     <Content Include="app\templates\app\r_and_d.html" />

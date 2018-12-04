@@ -32,16 +32,19 @@
                 {% endif %}
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'product_insight' %}">Product Insight</a></li>
-                    {% if site == "IFF" %}    
+                {% if site == "IFF" %} 
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'product_insight' %}">Product Insight</a></li>  
                         <li><a href="{% url 'consumer_insight' %}">Consumer Insight</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'market_insight' %}">Market Insight</a></li>
-                    {% if site == "IFF" %}
+                        <li><a href="{% url 'market_insight' %}">Market Insight</a></li>
                         <li><a href="{% url 'scent_emotion' %}">Scent Emotion</a></li>
-                    {% endif %}
-                </ul>
+                    </ul>
+                {% endif %}
+                {% if site == "D2Y" %} 
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'edepot' %}">E-Depot</a></li>  
+                    </ul>
+                {% endif %}
                 {% include 'app/loginpartial.html' %}
             </div>
         </div>
@@ -54,7 +57,12 @@
     </div>
     <footer class="iff-box-footer">
         <hr/>
-        <p>&copy; {{ year }} - Powered by Data Science</p>
+        {% if site == "IFF" %}
+            <p>&copy; {{ year }} - Powered by Data Science</p>
+        {% endif %}
+        {% if site == "D2Y" %}
+            <p>&copy; {{ year }} - Powered by DOUBLE2YY</p>
+        {% endif %}
     </footer>
 
     <script src="{% static 'app/scripts/jquery-3.2.1.min.js' %}"></script>

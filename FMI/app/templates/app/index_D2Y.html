@@ -1,0 +1,29 @@
+
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>E-Depot</h2>
+        <p>
+            Een van de belangrijkste onderdelen van een archief is het terugvinden van de gearchiveerde informatie.
+            DiVault beschikt over een geavanceerde zoekmachine gebaseerd op OpenSource software technologie,
+            waarbij niet alleen door geindexeerde metadata, maar ook door object content kan worden gezocht.
+            Search is cruciaal in het beschikbaarstellen van opgeslagen archiefinformatie.
+            De toegankelijk die wij bieden is groot en het gebruik eenvoudig.
+            DiVault biedt de mogelijkheid om de zoekomgeving aan te passen op de specifieke wensen van haar klanten.
+        </p>
+        <p><a class="btn btn-primary" href="{% url 'edepot' %}">E-Depot &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Platform Search</h2>
+        <input type="text" class="form-control" placeholder="Platform Search" name="platform_search_q" id="platform_search_q" value="{{ keywords_q }}" />
+        <div class="controls form-inline">
+        <label for="platform_search_select">Platform Search Results</label>
+        </div>
+        <select name="platform_search_select" class="form-control facet-select" id="platform_search_select" multiple="multiple" onchange="platform_search_onchange(this)">
+            <option value="dataset"></option>
+        </select>
+    </div>
+</div>
+
+
+

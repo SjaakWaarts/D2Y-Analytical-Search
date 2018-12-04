@@ -10,7 +10,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ALLOWED_HOSTS = (
-    'localhost','108.61.167.27','172.22.66.5','naazedssv1', '10.20.33.102'
+    'localhost','108.61.167.27','172.22.66.5','naazedssv1', '10.20.33.102',
+    'www.deheerlijkekeuken.nl', '52.28.96.52'
 )
 
 ADMINS = (
@@ -70,7 +71,7 @@ ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
 
-LOGIN_URL = '/login'
+LOGIN_URL = 'login'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -169,7 +170,7 @@ WSGI_APPLICATION = 'FMI.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [PROJECT_ROOT + '/app/templates/app/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
