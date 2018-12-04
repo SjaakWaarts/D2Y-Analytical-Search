@@ -71,7 +71,9 @@ ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'accounts/login'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

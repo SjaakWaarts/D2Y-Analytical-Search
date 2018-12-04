@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% if site == "IFF" %}
         <title>IFF - Insight Platform</title>
-    {% endif %}
-    {% if site == "D2Y" %}
+    {% elif site == "D2Y" %}
         <title>D2Y - Insight Platform</title>
+    {% else %}
+        <title>Insight Platform</title>
     {% endif %}
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
@@ -26,9 +27,10 @@
                 </button>
                 {% if site == "IFF" %} 
                     <a href="{% url 'home' %}" class="navbar-brand">IFF Insight Platform</a>
-                {% endif %}
-                {% if site == "D2Y" %} 
+                {% elif site == "D2Y" %} 
                     <a href="{% url 'home' %}" class="navbar-brand">D2Y Insight Platform</a>
+                {% else %}
+                    <a href="{% url 'home' %}" class="navbar-brand">Insight Platform</a>
                 {% endif %}
             </div>
             <div class="navbar-collapse collapse">

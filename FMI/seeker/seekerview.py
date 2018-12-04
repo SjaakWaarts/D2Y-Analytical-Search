@@ -1,6 +1,6 @@
 ﻿from django.conf import settings
 from django.contrib import messages
-from django.http import JsonResponse, StreamingHttpResponse, QueryDict, Http404
+from django.http import JsonResponse, StreamingHttpResponse, QueryDict, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader, Context, RequestContext
 from django.utils import timezone
@@ -1370,7 +1370,7 @@ class SeekerView (View):
         if 'search_excel' in path:
             if workbook_name == 'tmlo':
                 if not request.user.has_perm('auth.edepot'):
-                    raise Http404
+                    return HttpResponse('Unauthorized', status=401)
 
         if self.permission and not request.user.has_perm(self.permission):
             raise Http404

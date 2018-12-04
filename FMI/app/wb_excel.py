@@ -1604,7 +1604,7 @@ es_indicis = {
         'summary'       : [],
         'sumheader'     : [],
         'SUMMARY_URL'   : "{}",
-        'urlfields'     : {"Identificatiekenmerk" : ""},
+        'urlfields'     : {"Identificatiekenmerk" : "http://sappw1.iff.com:50200/irj/servlet/prt/portal/prtroot/com.sap.ip.bi.designstudio.nw.portal.ds?APPLICATION=E2ESCENARIO_002?{0}"},
         'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
         }
     }
