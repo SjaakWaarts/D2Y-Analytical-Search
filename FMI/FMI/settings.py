@@ -65,9 +65,9 @@ CORS_ALLOW_HEADERS = default_headers + (
 #ES_HOSTS = [{'host': '10.35.58.89'}]
 
 # AWS OpenSUSE Leap 43.3, Python 3.6, ElasticSearch 6.2.2
-#ES_HOSTS = [{'host': '52.28.96.52'}]
+ES_HOSTS = [{'host': '52.28.96.52'}]
 
-ES_HOSTS = [{'host': 'localhost'}]
+#ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
 
