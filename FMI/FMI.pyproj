@@ -232,7 +232,6 @@
     <Content Include="seeker\__pycache__\views.cpython-35.pyc" />
     <Content Include="seeker\__pycache__\__init__.cpython-35.pyc" />
     <Content Include="requirements.txt" />
-    <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />
     <Content Include="app\static\app\content\bootstrap.min.css" />
     <Content Include="app\static\app\content\site.css" />

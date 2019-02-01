@@ -37,62 +37,6 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 ### Excel
 ###
 
-#
-# Based on the headers of an excel file, this ExcelDoc and ExcelSeekerView models are created.
-# During Crawl each row of the excel file is turned into a Document and stored in the 'excel' index
-# with doc_type the name of the excel file.
-# During Search the 'excel' index with the right doc_type is searched.
-#
-
-# Class name has to match the name of the mapping in ES (doc_type)
-#class ecosystem(models.Model):
-#    subset = models.TextField()
-#    aop = models.TextField()
-#    role = models.TextField()
-#    name = models.TextField()
-#    url = models.TextField()
-#    why = models.TextField()
-#    how = models.TextField()
-#    what = models.TextField()
-#    who = models.TextField()
-#    where = models.TextField()
-#    country = models.TextField()
-#    contacts = models.TextField()
-#    company = models.TextField()
-
-#class patents(models.Model):
-#    category = models.TextField()
-#    publication = models.TextField()
-#    title = models.TextField()
-#    title_DWPI = models.TextField()
-#    url = models.TextField()
-#    published_date = models.DateField()
-#    assignee = models.TextField()
-#    assignee_DWPI = models.TextField()
-#    abstract = models.TextField()
-
-#class ingr_molecules(models.Model):
-#    IPC = models.TextField()
-#    name = models.TextField()
-#    year = models.TextField()
-#    nr_of_IPCs = models.IntegerField()
-#    nr_of_IPCs_SC = models.IntegerField()
-#    selling_IPCs = models.IntegerField()
-#    FITTE_score = models.FloatField()
-#    FITTE_norm = models.FloatField()
-#    regions = models.IntegerField()
-#    flavor_classes = models.TextField()
-#    sales_val = models.FloatField()
-#    sales_vol = models.FloatField()
-#    tech_vol = models.FloatField()
-#    bucket = models.TextField()
-#    cost = models.FloatField()
-#    use_level = models.TextField()
-#    low_medium_high = models.FloatField()
-#    CIU = models.FloatField()
-#    regulator = models.TextField()
-
-
 class ExcelSeekerView (seeker.SeekerView):
     site = FMI.settings.site
     document = None
@@ -117,22 +61,22 @@ class ExcelSeekerView (seeker.SeekerView):
 ###
 
 # Class name has to match the name of the mapping in ES (doc_type)
-class Perfume(models.Model):
-    site = models.TextField()
-    brand_name = models.TextField()
-    brand_variant = models.TextField()
-    perfume = models.TextField()
-    review_date = models.DateField()
-    review = models.TextField()
-    label = models.TextField()
-    accords = models.TextField()
-    notespyramid = models.TextField()
-    moods = models.TextField()
-    notes = models.TextField()
-    longevity = models.TextField()
-    sillage = models.TextField()
-    ratings = models.TextField()
-    img_src = models.TextField()
+#class Perfume(models.Model):
+#    site = models.TextField()
+#    brand_name = models.TextField()
+#    brand_variant = models.TextField()
+#    perfume = models.TextField()
+#    review_date = models.DateField()
+#    review = models.TextField()
+#    label = models.TextField()
+#    accords = models.TextField()
+#    notespyramid = models.TextField()
+#    moods = models.TextField()
+#    notes = models.TextField()
+#    longevity = models.TextField()
+#    sillage = models.TextField()
+#    ratings = models.TextField()
+#    img_src = models.TextField()
 
 class Review(models.Model):
     reviewid = models.IntegerField()
@@ -566,20 +510,6 @@ class PerfumeSeekerView (seeker.SeekerView):
 ### Market Intelligence
 ###
 
-class Post(models.Model):
-    editor_id = models.CharField(max_length=30)
-    published_date = models.DateField()
-    post_category_id = models.CharField(max_length=30)
-    title = models.CharField(max_length=256)
-    relevance = models.TextField()
-    subject = models.TextField()
-    topline = models.TextField()
-    source = models.TextField()
-    article = models.TextField()
-    average_rating = models.FloatField()
-    rating_count = models.IntegerField()
-    num_comments_id = models.IntegerField()
-
 #class PostDoc(seeker.ModelIndex):
 # done by models.PostDoc = seeker.mapping.document_from_model(models.Post, index="post", using=models.client)
 class PostMap(models.Model):
@@ -690,17 +620,6 @@ class PostSeekerView (seeker.SeekerView, workbooks.PostWorkbook):
 ### Costmetics
 ###
 
-class Page(models.Model):
-    page_id = models.IntegerField()
-    published_date = models.DateField()
-    site = models.TextField()
-    sub_site = models.TextField()
-    section = models.TextField()
-    title = models.TextField()
-    url = models.TextField()
-    img_src = models.TextField()
-    page = models.TextField()
-
 class PageMap(models.Model):
     page_id = models.IntegerField()
     published_date = models.DateField()
@@ -805,18 +724,6 @@ class PageSeekerView (seeker.SeekerView, workbooks.PageWorkbook):
 ### FEEDLY
 ###
 
-class Feedly(models.Model):
-    post_id = models.IntegerField()
-    subset = models.TextField()
-    published_date = models.DateField()
-    category = models.TextField()
-    feed = models.TextField()
-    feed_topics = models.TextField()
-    body_topics = models.TextField()
-    title = models.TextField()
-    url = models.TextField()
-    body = models.TextField()
- 
 class FeedlyMap(models.Model):
     post_id = models.IntegerField()
     subset = models.TextField()
@@ -996,16 +903,6 @@ class FeedlySeekerView (seeker.SeekerView):
 ### MAIL
 ###
 
-class Mail(models.Model):
-    post_id = models.IntegerField()
-    to_addr = models.TextField()
-    from_addr = models.TextField()
-    published_date = models.DateField()
-    subject = models.TextField()
-    links = models.TextField()
-    url = models.TextField()
-    body = models.TextField()
-
 class MailMap(models.Model):
     post_id = models.IntegerField()
     to_addr = models.TextField()
@@ -1154,27 +1051,6 @@ class MailSeekerView (seeker.SeekerView):
 ### Scent Emotion (CFT - Ingredients)
 ###
 
-class Scentemotion(models.Model):
-    cft_id = models.IntegerField()
-    dataset = models.TextField()
-    ingr_name = models.TextField()
-    IPC = models.TextField()
-    supplier = models.TextField()
-    olfactive = models.TextField()
-    region = models.TextField()
-    review = models.TextField()
-    dilution = models.TextField()
-    intensity = models.TextField()
-    mood = models.TextField()
-    smell = models.TextField()
-    negative = models.TextField()
-    descriptor = models.TextField()
-    color = models.TextField()
-    texture = models.TextField()
-    emotion = models.TextField()
-    hedonics = models.TextField()
-
- 
 class ScentemotionMap(models.Model):
     cft_id = models.IntegerField()
     dataset = models.TextField()
@@ -1408,34 +1284,6 @@ class ScentemotionSeekerView (seeker.SeekerView, workbooks.ScentemotionWorkbook)
 ### Scent Emotion (CFT - CI Studies)
 ###
 
-class Studies(models.Model):
-    cft_id = models.IntegerField()
-    survey = models.TextField()
-    blindcode = models.TextField()
-    fragr_name = models.TextField()
-    IPC = models.TextField()
-    CRP = models.TextField()
-    olfactive = models.TextField()
-    region = models.TextField()
-    intensity = models.TextField()
-    perception = models.TextField()
-    method = models.TextField()
-    product_form = models.TextField()
-    freshness = models.IntegerField()
-    cleanliness = models.IntegerField()
-    lastingness  = models.IntegerField()
-    intensity = models.IntegerField()
-    liking = models.TextField()
-    concept = models.TextField()
-    emotion = models.TextField()
-    fragrattr = models.TextField()
-    mood = models.TextField()
-    smell = models.TextField()
-    suitable_product = models.TextField()
-    suitable_stage = models.TextField()
-    hedonics = models.TextField()
-
- 
 class StudiesMap(models.Model):
     cft_id = models.IntegerField()
     survey = models.TextField()
@@ -1761,65 +1609,6 @@ class StudiesSeekerView (seeker.SeekerView, workbooks.StudiesWorkbook):
 ###
 ### Survey (CI)
 ###
-
-class Survey(models.Model):
-    # Survey attributes
-    survey = models.TextField()
-    published_date = models.DateField()
-    category = models.TextField()
-    stage = models.TextField()
-    # Respondent Attributes
-    resp_id = models.TextField()
-    group_id = models.TextField()
-    country = models.TextField()
-    gender = models.TextField()
-    age = models.TextField()
-    ethnics = models.TextField()
-    city = models.TextField()
-    regions = models.TextField()
-    education = models.TextField()
-    income = models.TextField()
-    # Product attributes
-    blindcode = models.TextField()
-    cluster = models.TextField()
-    brand = models.TextField()
-    variant = models.TextField()
-    # Questions
-    olfactive = models.TextField()
-    method = models.TextField()
-    product_form = models.TextField()
-    # Ordinal Questions
-    perception = models.TextField()
-    freshness = models.IntegerField()
-    cleanliness = models.IntegerField()
-    lastingness  = models.IntegerField()
-    intensity = models.IntegerField()
-    liking = models.TextField()
-    # Binary Questions
-    affective = models.TextField()
-    ballot = models.TextField()
-    behavioral = models.TextField()
-    children = models.TextField()
-    concept = models.TextField()
-    descriptors = models.TextField()
-    descriptors1 = models.TextField()
-    descriptors2 = models.TextField()
-    descriptors3 = models.TextField()
-    descriptors4 = models.TextField()
-    emotion = models.TextField()
-    fragrattr = models.TextField()
-    hedonics = models.TextField()
-    imagine = models.TextField()
-    mood = models.TextField()
-    physical = models.TextField()
-    smell = models.TextField()
-    suitable_product = models.TextField()
-    suitable_stage = models.TextField()
-    # Fit Questions
-    fit_descriptors1 = models.TextField()
-    fit_descriptors2 = models.TextField()
-    fit_descriptors3 = models.TextField()
-    fit_descriptors4 = models.TextField()
 
 class SurveyMap(models.Model):
     # Survey attributes
