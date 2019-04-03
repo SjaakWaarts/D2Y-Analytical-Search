@@ -323,8 +323,8 @@ class SeekerView (View):
             return field_name
         if field_name in self.sort_fields:
             return self.sort_fields[field_name]
-        if field_name in self.document._doc_type.mapping:
-            dsl_field = self.document._doc_type.mapping[field_name]
+        if field_name in self.es_mapping:
+            dsl_field = self.es_mapping[field_name]
             if isinstance(dsl_field, (dsl.Object, dsl.Nested)):
                 return None
 #            if not isinstance(dsl_field, dsl.String):
@@ -339,16 +339,16 @@ class SeekerView (View):
     def get_field_highlight(self, field_name):
         if field_name in self.highlight_fields:
             return self.highlight_fields[field_name]
-        if field_name in self.document._doc_type.mapping:
-            dsl_field = self.document._doc_type.mapping[field_name]
+        if field_name in self.es_mapping:
+            dsl_field = self.es_mapping[field_name]
             if isinstance(dsl_field, (dsl.Object, dsl.Nested)):
                 return '%s.*' % field_name
             return field_name
         return None
 
     def get_field_value_format(self, field_name):
-        if field_name in self.document._doc_type.mapping:
-            dsl_field = self.document._doc_type.mapping[field_name]
+        if field_name in self.es_mapping:
+            dsl_field = self.es_mapping[field_name]
             if dsl_field.name == 'date':
                 return date_value_format
         return None
@@ -395,7 +395,8 @@ class SeekerView (View):
         columns = []
         if not self.columns:
             # If not specified, all mapping fields will be available.
-            for f in self.document._doc_type.mapping:
+            #for f in self.document._doc_type.mapping:
+            for f in self.es_mapping['properties']:
                 if self.exclude and f in self.exclude:
                     continue
                 columns.append(self.make_column(f))
@@ -442,7 +443,8 @@ class SeekerView (View):
         Returns a list of display field names. If the user has selected display fields, those are used, otherwise
         the default list is returned. If no default list is specified, all fields are displayed.
         """
-        default = list(self.display) if self.display else list(self.document._doc_type.mapping)
+        #default = list(self.display) if self.display else list(self.document._doc_type.mapping)
+        default = list(self.display) if self.display else list(self.es_mapping)
         display_fields = self.request.GET.getlist('d') or default
         display_fields = [f for f in display_fields if f not in self.required_display_fields]
         for field, i in self.required_display:
@@ -584,13 +586,15 @@ class SeekerView (View):
         elif mapping is not None:
             fields = []
             for field_name in mapping:
-                if mapping[field_name].to_dict().get('analyzer') == DEFAULT_ANALYZER:
-                    fields.append(prefix + field_name)
+                if mapping[field_name].get('enabled') != False:
+                    if mapping[field_name].get('type') == 'text':
+                        fields.append(prefix + field_name)
                 if hasattr(mapping[field_name], 'properties'):
                     fields.extend(self.get_search_fields(mapping=mapping[field_name].properties, prefix=prefix + field_name + '.'))
             return fields
         else:
-            return self.get_search_fields(mapping=self.document._doc_type.mapping)
+            #return self.get_search_fields(mapping=self.document._doc_type.mapping)
+            return self.get_search_fields(mapping=self.es_mapping['properties'])
 
     def get_search_query_type(self, search, keywords_q, analyzer=DEFAULT_ANALYZER):
         fields = self.get_search_fields()
@@ -1027,7 +1031,9 @@ class SeekerView (View):
         page = int(page) if page.isdigit() else 1
         offset = (page - 1) * self.page_size
         d = search.to_dict()
-        results_count = search[0:0].execute().hits.total
+        #results = search[0:0].execute()
+        results = elastic_get(self.index, '_search', search[0:0].to_dict())
+        results_count = results.get('hits', {}).get('total', 0)
         if results_count < offset:
             page = 1
             offset = 0

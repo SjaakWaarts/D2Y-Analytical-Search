@@ -891,7 +891,6 @@ class FeedlySeekerView (seeker.SeekerView):
     dashboard_layout = collections.OrderedDict()
     dashboard_layout['rows1'] = [["published_keyword_line"], ["customer_pie", "competitor_pie", "keyword_pie"]]
     dashboard_layout['rows2'] = [["category_keyword_table", "feed_keyword_table"]]
-
     storyboard = [
         {'name' : 'initial',
          'layout'   : dashboard_layout,
