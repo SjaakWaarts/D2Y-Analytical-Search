@@ -117,6 +117,7 @@ class crawl_form(forms.Form):
 class load_form(forms.Form):
     cft_filename_field = forms.CharField(label='CFT file', max_length=80, required = False, initial = 'CFT Ing.csv')
     ci_filename_field = forms.CharField(label='CI file', max_length=80, required = False, initial = 'fresh and clean - test.csv')
+    recipes_foldername_field = forms.CharField(label='Recipes folder', max_length=256, required = False, initial = "C:\\Users\\sww5648\\Documents\\Sjaak\\Culinair koken met het seizoen")
     cimap_filename_field = forms.CharField(label='CI Map file', max_length=80, required = False, initial = 'fresh and clean - Map.csv')
     excel_choices = (('recreate', 'Re-Create'), ('reload', 'Re-Load'), ('incrload', 'Incremental-Load'), ('delete', 'Delete'))
     excel_choices_field = forms.MultipleChoiceField(label='Load Mode', choices=excel_choices, required=False)
@@ -137,7 +138,8 @@ class load_form(forms.Form):
 
 class fmi_admin_form(forms.Form):
     index_choices = (('conf', 'Configuration'), ('excel', 'Excel Files'), ('pi', 'Product Intelligence'), ('mi', 'MI - Market Intelligence'), ('si_sites', 'SI - Sites'),
-                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'))
+                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'),
+                     ('dhk', 'de Heerlijke Keuken'))
     index_choices_field = forms.MultipleChoiceField(label='ES Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=False)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'ecosystem.xlsx')
     opml_filename_field = forms.CharField(label='OPML file', max_length=40, required = False, initial = '')

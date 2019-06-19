@@ -2,6 +2,7 @@
 Definition of api-views.
 """
 
+import magic
 from pandas import Series, DataFrame
 from django.shortcuts import render
 from django.http import HttpRequest
@@ -18,8 +19,148 @@ import app.guide as guide
 import app.conf as conf
 import app.wb_excel as wb_excel
 import app.workbooks as workbooks
+from FMI.settings import BASE_DIR, ES_HOSTS
 
 from .scrape_ds import *
+
+types_map = {
+    '.a': 'application/octet-stream',
+    '.ai': 'application/postscript',
+    '.aif': 'audio/x-aiff',
+    '.aifc': 'audio/x-aiff',
+    '.aiff': 'audio/x-aiff',
+    '.au': 'audio/basic',
+    '.avi': 'video/x-msvideo',
+    '.bat': 'text/plain',
+    '.bcpio': 'application/x-bcpio',
+    '.bin': 'application/octet-stream',
+    '.bmp': 'image/bmp',
+    '.c': 'text/plain',
+    '.cdf': 'application/x-netcdf',
+    '.cpio': 'application/x-cpio',
+    '.csh': 'application/x-csh',
+    '.css': 'text/css',
+    '.csv': 'text/csv',
+    '.dll': 'application/octet-stream',
+    '.doc': 'application/msword',
+    '.dot': 'application/msword',
+    '.dvi': 'application/x-dvi',
+    '.eml': 'message/rfc822',
+    '.eps': 'application/postscript',
+    '.etx': 'text/x-setext',
+    '.exe': 'application/octet-stream',
+    '.gif': 'image/gif',
+    '.gtar': 'application/x-gtar',
+    '.h': 'text/plain',
+    '.hdf': 'application/x-hdf',
+    '.htm': 'text/html',
+    '.html': 'text/html',
+    '.ico': 'image/vnd.microsoft.icon',
+    '.ief': 'image/ief',
+    '.jpe': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.jpg': 'image/jpeg',
+    '.js': 'application/javascript',
+    '.json': 'application/json',
+    '.ksh': 'text/plain',
+    '.latex': 'application/x-latex',
+    '.m1v': 'video/mpeg',
+    '.m3u': 'application/vnd.apple.mpegurl',
+    '.m3u8': 'application/vnd.apple.mpegurl',
+    '.man': 'application/x-troff-man',
+    '.me': 'application/x-troff-me',
+    '.mht': 'message/rfc822',
+    '.mhtml': 'message/rfc822',
+    '.mif': 'application/x-mif',
+    '.mjs': 'application/javascript',
+    '.mov': 'video/quicktime',
+    '.movie': 'video/x-sgi-movie',
+    '.mp2': 'audio/mpeg',
+    '.mp3': 'audio/mpeg',
+    '.mp4': 'video/mp4',
+    '.mpa': 'video/mpeg',
+    '.mpe': 'video/mpeg',
+    '.mpeg': 'video/mpeg',
+    '.mpg': 'video/mpeg',
+    '.ms': 'application/x-troff-ms',
+    '.nc': 'application/x-netcdf',
+    '.nws': 'message/rfc822',
+    '.o': 'application/octet-stream',
+    '.obj': 'application/octet-stream',
+    '.oda': 'application/oda',
+    '.p12': 'application/x-pkcs12',
+    '.p7c': 'application/pkcs7-mime',
+    '.pbm': 'image/x-portable-bitmap',
+    '.pdf': 'application/pdf',
+    '.pfx': 'application/x-pkcs12',
+    '.pgm': 'image/x-portable-graymap',
+    '.pl': 'text/plain',
+    '.png': 'image/png',
+    '.pnm': 'image/x-portable-anymap',
+    '.pot': 'application/vnd.ms-powerpoint',
+    '.ppa': 'application/vnd.ms-powerpoint',
+    '.ppm': 'image/x-portable-pixmap',
+    '.pps': 'application/vnd.ms-powerpoint',
+    '.ppt': 'application/vnd.ms-powerpoint',
+    '.ps': 'application/postscript',
+    '.pwz': 'application/vnd.ms-powerpoint',
+    '.py': 'text/x-python',
+    '.pyc': 'application/x-python-code',
+    '.pyo': 'application/x-python-code',
+    '.qt': 'video/quicktime',
+    '.ra': 'audio/x-pn-realaudio',
+    '.ram': 'application/x-pn-realaudio',
+    '.ras': 'image/x-cmu-raster',
+    '.rdf': 'application/xml',
+    '.rgb': 'image/x-rgb',
+    '.roff': 'application/x-troff',
+    '.rtx': 'text/richtext',
+    '.sgm': 'text/x-sgml',
+    '.sgml': 'text/x-sgml',
+    '.sh': 'application/x-sh',
+    '.shar': 'application/x-shar',
+    '.snd': 'audio/basic',
+    '.so': 'application/octet-stream',
+    '.src': 'application/x-wais-source',
+    '.sv4cpio': 'application/x-sv4cpio',
+    '.sv4crc': 'application/x-sv4crc',
+    '.svg': 'image/svg+xml',
+    '.swf': 'application/x-shockwave-flash',
+    '.t': 'application/x-troff',
+    '.tar': 'application/x-tar',
+    '.tcl': 'application/x-tcl',
+    '.tex': 'application/x-tex',
+    '.texi': 'application/x-texinfo',
+    '.texinfo': 'application/x-texinfo',
+    '.tif': 'image/tiff',
+    '.tiff': 'image/tiff',
+    '.tr': 'application/x-troff',
+    '.tsv': 'text/tab-separated-values',
+    '.txt': 'text/plain',
+    '.ustar': 'application/x-ustar',
+    '.vcf': 'text/x-vcard',
+    '.wav': 'audio/x-wav',
+    '.webm': 'video/webm',
+    '.wiz': 'application/msword',
+    '.wsdl': 'application/xml',
+    '.xbm': 'image/x-xbitmap',
+    '.xlb': 'application/vnd.ms-excel',
+    '.xls': 'application/vnd.ms-excel',
+    '.xml': 'text/xml',
+    '.xpdl': 'application/xml',
+    '.xpm': 'image/x-xpixmap',
+    '.xsl': 'application/xml',
+    '.xwd': 'image/x-xwindowdump',
+    '.zip': 'application/zip',
+}
+
+def get_ext(content_type):
+    ext = ""
+    for ex, ct in types_map.items():
+        if ct == content_type:
+            ext = ex
+            break
+    return ext
 
 platformseekers = {
     'Fragrantica'           : (models.PerfumeSeekerView, "search_pi"),
@@ -30,7 +171,6 @@ platformseekers = {
     #'Scent Emotion (Studies)' : (models.StudiesSeekerView, "search_studies"),
     #'CI Surveys'            : (models.SurveySeekerView, "search_survey"),
     }
-
 
 def storyboard_def(request):
     # the get can be called to first obtain the token, or it can be called to obtain the storyboard definition.
@@ -196,6 +336,48 @@ def scrape_reviews_api(request):
     reviews_df_json = scrape_reviews_json()
     return HttpResponse(reviews_df_json, content_type='application/json')
 
+#def get_PDF(self):
+#    # url_check = r'^(http:\/\/(?:archive\.divault\.(com|local)|dv-cl01\.divault\.local):\d+\/\w+)(?:\?hashtype=\w+&hash=\w+)?'
+#    # safe_url = re.match(url_check, request.GET.get('url', None))
+#    # if not safe_url:
+#    #    raise PermissionDenied
+#    # url = safe_url.group(1).replace('com', 'local')
+#    basename = self.request.GET.get('basename', None)
+#    url = self.request.GET.get('url', None)
+#    file_url = self.request.GET.get('file_url', None)
+#    try:
+#        pdf = urllib.request.urlopen(url)
+#    except urllib.error.URLError as e:
+#        logger.error('Failed to open pdf for {}.'.format(url),
+#                        extra={
+#                            'organisation': self.request.user.organisation.code,
+#                            'user': self.request.user.username,
+#                            'id': basename, 'statuscode': 0})
+#        response = render(self.request, 'website/modal-popup/modal_error.html',
+#                            {'error_message': e.reason, 'error_type': 'URLError'})
+#        return response
+#    # response = HttpResponse(pdf.read(), content_type='application/pdf')
+#    # response['content-disposition'] = 'inline;filename=' + basename
+#    response = Response(pdf.read(), content_type='application/pdf')
+#    response.content_disposition = 'inline;filename=' + basename
+#    return response
+
+def get_file(request):
+    location = request.GET.get('location', None)
+    filename = os.path.join(BASE_DIR, location)
+    if os.path.isfile(filename):
+        #mime = magic.Magic(mime=True)
+        #content_type = mime.from_file(filename)
+        splitext = os.path.splitext(filename)
+        basename = os.path.basename(filename)
+        content_type = types_map[splitext[1]]
+        with open(filename, "rb") as f:
+            response = HttpResponse(f.read(), content_type=content_type)
+        #response._headers['Content-Disposition'] = "attachment; filename=" + basename
+        return response
+    else:
+        response = HttpResponse(content_type="image/jpeg")
+        return response
 
 
 

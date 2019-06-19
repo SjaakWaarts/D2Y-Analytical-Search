@@ -40,10 +40,7 @@ import app.models as models
 import app.survey
 from .forms import *
 
-
 models.SurveySeekerView.decoder = survey.seekerview_answer_value_decode
-
-
 
 LOCAL_IPS = (
     '127.0.0.1'
@@ -117,6 +114,10 @@ def set_workbook(workbook_name):
     mapping = {'properties' : es_index['properties']}
     models.ExcelSeekerView.es_mapping = mapping
     models.ExcelSeekerView.index = es_index['index']
+    if 'extra_columns' in es_index:
+        models.ExcelSeekerView.extra_columns = es_index['extra_columns']
+    if 'field_column_types' in es_index:
+        models.ExcelSeekerView.field_column_types = es_index['field_column_types']
     models.ExcelSeekerView.facets = es_index['facets']
     models.ExcelSeekerView.facets_keyword = es_index['facets_keyword']
     models.ExcelSeekerView.display = es_index['display']
@@ -508,6 +509,7 @@ def load_view(request):
         # called from load.html
         if form.is_valid():
             cft_filename = form.cleaned_data['cft_filename_field']
+            recipes_foldername = form.cleaned_data['recipes_foldername_field']
             excel_choices = form.cleaned_data['excel_choices_field']
             excel_filename = form.cleaned_data['excel_filename_field']
             excelmap_filename = form.cleaned_data['excelmap_filename_field']
@@ -519,6 +521,8 @@ def load_view(request):
             cimap_filename = form.cleaned_data['cimap_filename_field']
             if 'load_scentemotion' in form.data:
                 load.load_scentemotion(cft_filename)
+            if 'load_recipes' in form.data:
+                load.load_recipes(recipes_foldername)
             if 'load_excel' in form.data:
                 if not load.load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name):
                     form.add_form_error("Could not retrieve or index excel file")
@@ -670,3 +674,4 @@ def dhk_view(request):
         'app/dhk.html',
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
+

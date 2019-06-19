@@ -1367,6 +1367,75 @@ tmlo = {
         }
     }
 
+###
+### DHK Dashboard
+###
+
+dhk_dashboard = {}
+
+###
+### DKH Mapping
+###
+
+course = {
+    # 'dynamic' : 'strict',
+    'title'        : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'ingredients'   : {
+        'type'      : 'nested',
+        'properties': {
+            'ingredient': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            }
+        },
+    'instructions'  : {
+        'type'       : 'nested',
+        'properties' : {
+            'instruction': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            }
+        }
+    }
+
+recipes = {
+    # 'dynamic' : 'strict',
+    'title'         : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'published_date': {'type' : 'date'},
+    'author'        : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'url'           : {'type' : 'text'},
+    'excerpt'       : {'type' : 'text'},
+    'description'   : {'type' : 'text'},
+    'categories'    :  {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'cuisiness'     :  {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'tags'          :  {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'images'        : {
+        'type'       : 'nested',
+        'properties' : {
+            'image'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'location'  : {'type' : 'text'}
+            }
+        },
+    'reviews'       : {
+        'type'       : 'nested',
+        'properties' : {
+            'review': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            }
+        },
+    'nutrition'     : {
+        'type'       : 'nested',
+        'properties' : {
+            'nutrition': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            }
+        },
+    'cooking_times'         : {
+        'type'      : 'nested',
+        'properties': {
+            'time'      : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'duration'  : {'type' : 'float'},
+            }
+        },
+    'courses'       : {
+        'type'      : 'nested',
+        'properties': course
+        }
+    }
 
 ###
 ### Workbooks and ES Index
@@ -1606,6 +1675,28 @@ es_indicis = {
         'SUMMARY_URL'   : "{}",
         'urlfields'     : {"Identificatiekenmerk" : "http://www.divault.nl?{0}"},
         'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
+        },
+    'dhk' : {
+        'document'      : "recipes",
+        'index'         : "recipes",
+        'doc_type'      : "doc",
+        'properties'    : recipes,
+        # SEEKER
+        'page_size'     :30,
+        'extra_columns'   : {"image" : {'field': 'images.location', 'nestedfield': 'images'}},
+        'field_column_types' : {'image': 'LinksColumn'},
+        'facets' : [
+            seeker.TermsFacet("categories.keyword", label="Categories"),
+            seeker.TermsFacet("tags.keyword", label="Tags"),
+            ],
+        'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
+        'display'       : ["title", "url"],
+        'sort'          : [],
+        'summary'       : [],
+        'sumheader'     : [],
+        'SUMMARY_URL'   : "{}",
+        'urlfields'     : {"title" : ""},
+        'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
         }
     }
 
@@ -1743,6 +1834,21 @@ workbooks = {
                      'layout'   : OrderedDict([
                         ('table1', [["aanmaak_keyword_line"]]),
                         ('table2', [["vorm_omvang_col"]])])}
+                ]
+            },
+        'filters'       : {}
+        },
+    'dhk' : {
+        'es_index'      : es_indicis['dhk'],
+        'url'           : '/search_workbook?',
+        'display'       : ["title", "excerpt", "categories", "tags", "images.location", "image"],
+        'facets'        : ["categories.keyword", "tags.keyword"],
+        'tiles'         : [],
+        'charts'        : dhk_dashboard,
+        'storyboards'   : {
+            'initial' : [
+                    {'name'     : 'initial',
+                     'layout'   : OrderedDict([])},
                 ]
             },
         'filters'       : {}

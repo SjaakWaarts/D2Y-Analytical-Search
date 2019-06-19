@@ -1,12 +1,16 @@
 {% load seeker %}
 <td class="{{ result.meta.doc_type }}_{{ field }}">
-    <ul>
-    {% for li in value %}
-        {% if li.2 == True %}
-            <li><a href="{{ li.1 }}" target="_blank" style="color:red;">{{ li.0 }}</a></li>
-        {% else %}
-            <li><a href="{{ li.1 }}" target="_blank">{{ li.0 }}</a></li>
-        {% endif %}
-    {% endfor %}
-    </ul>
+    {% if column_type == 'list' %}
+        <ul>
+        {% for li in value %}
+            {% if li.2 == True %}
+                <li><a href="{{ li.1 }}" target="_blank" style="color:red;">{{ li.0 }}</a></li>
+            {% else %}
+                <li><a href="{{ li.1 }}" target="_blank">{{ li.0 }}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% elif column_type == 'image' %}
+        <img src="api/get_file?location={{value|urlencode}}" alt=field width="128">
+    {% endif %}
 </td>

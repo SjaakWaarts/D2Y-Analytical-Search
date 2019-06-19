@@ -414,7 +414,7 @@ class SeekerView (View):
         for c, attr in self.extra_columns.items():
             column = self.make_column(c)
             column.field = attr['field']
-            column.nestedfaced = attr.get('nestedfacet', None)
+            column.nestedfacet = attr.get('nestedfacet', None)
             columns.append(column)
 
         # Make sure the columns are bound and ordered based on the display fields (selected or default).

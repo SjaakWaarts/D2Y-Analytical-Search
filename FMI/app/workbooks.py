@@ -472,7 +472,6 @@ class ScentemotionWorkbook:
             }
         }
 
-
 class StudiesWorkbook:
 
     dashboard = {

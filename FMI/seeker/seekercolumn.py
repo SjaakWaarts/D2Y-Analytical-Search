@@ -10,7 +10,7 @@ import elasticsearch_dsl as dsl
 from django.utils.html import escape
 from django.template import loader, Context, RequestContext
 from django.utils.safestring import mark_safe
-
+import seeker.esm as esm
 
 class Column (object):
     """
@@ -247,11 +247,12 @@ class LinksColumn (Column):
     nestedfacet = None
 
     def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None):
-        sort = {field+".name" : {"order" : "asc"}}
+        #sort = {field+".name" : {"order" : "asc"}}
         super(LinksColumn, self).__init__(field, label, sort, value_format, template, header, export, highlight)
 
     def render(self, result, facets, **kwargs):
-        value = result['_source'].get(self.field, None)
+        #value = result['_source'].get(self.field, None)
+        value = esm.get_field_nesting(self.field, result, None)
         if self.value_format:
             value = self.value_format(value)
         try:
@@ -264,14 +265,19 @@ class LinksColumn (Column):
         except:
             highlight = []
 
-        value2 = AttrList([])
-        if value:
-            for v in value:
-                child_found = v.get('child_found', False)
-                value2.append((v['name'], v['url'], child_found))
-        value = value2
+        if type(value) == list:
+            column_type = 'links'
+            value2 = AttrList([])
+            if value:
+                for v in value:
+                    child_found = v.get('child_found', False)
+                    value2.append((v['name'], v['url'], child_found))
+            value = value2
+        if type(value) == str:
+            column_type = 'image'
 
         params = {
+            'column_type' : column_type,
             'result': result,
             'field': self.field,
             'value': value,

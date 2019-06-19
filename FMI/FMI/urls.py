@@ -61,6 +61,7 @@ urlpatterns = [
     path('api/scrape_notes', app.api.scrape_notes_api, name='scrape_notes_api'),
     path('api/scrape_votes', app.api.scrape_votes_api, name='scrape_votes_api'),
     path('api/scrape_reviews', app.api.scrape_reviews_api, name='scrape_reviews_api'),
+    path('api/get_file', app.api.get_file, name='api/get_file'),
 
     #path('ingr_molecules', app.views.ingr_molecules, name='ingr_molecules'),
     path('search_workbook', app.views.search_workbook, name='search_workbook'),

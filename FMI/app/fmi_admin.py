@@ -19,6 +19,7 @@ from elasticsearch.client import IndicesClient
 from elasticsearch.helpers import bulk
 import seeker
 import app.models as models
+import app.wb_excel as wb_excel
 import app.crawl as crawl
 import app.survey as survey
 from FMI.settings import BASE_DIR
@@ -186,6 +187,18 @@ def create_index_survey():
         index=index_name
         )
 
+def create_index_dhk():
+    indices_client = IndicesClient(models.client)
+    index_name = 'recipes'
+    if indices_client.exists(index_name):
+        indices_client.delete(index=index_name)
+    indices_client.create(index=index_name)
+    indices_client.put_mapping(
+        doc_type=index_name,
+        body= {'properties' : wb_excel.recipes},
+        index=index_name
+    )
+
 
 def create_index_elastic(index_choices, excel_filename):
     for index_choice in index_choices:
@@ -209,6 +222,8 @@ def create_index_elastic(index_choices, excel_filename):
             create_index_studies()
         elif index_choice == 'survey':
             create_index_survey()
+        elif index_choice == 'dhk':
+            create_index_dhk()
             
 
 

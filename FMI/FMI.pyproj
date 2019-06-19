@@ -68,6 +68,9 @@
     <Compile Include="seeker\apps.py" />
     <Compile Include="seeker\cards.py" />
     <Compile Include="seeker\compiler.py" />
+    <Compile Include="seeker\esm.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="seeker\facets.py" />
     <Compile Include="seeker\management\commands\dumpindex.py" />
     <Compile Include="seeker\management\commands\loadindex.py" />
