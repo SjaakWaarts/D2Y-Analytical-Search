@@ -20,6 +20,8 @@ from django.contrib import auth
 params={'plugin': '', 'base_template': 'search.html'}
 
 import app.models as models
+import app.dhk.recipe
+import app.dhk.dhk
 import app.views
 import app.api
 import seeker
@@ -31,6 +33,9 @@ urlpatterns = [
 
     path('consumer_insight', app.views.consumer_insight_view, name='consumer_insight'),
     path('dhk', app.views.dhk_view, name='dhk'),
+    path('dhk/recipe', app.dhk.recipe.recipe_view, name='dhk/recipe'),
+    path('dhk/upload_file', app.dhk.dhk.upload_file, name='dhk/upload_file'),
+    path('dhk/get_uploaded_file', app.dhk.dhk.get_uploaded_files, name='dhk/get_uploaded_files'),
 
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),
@@ -61,7 +66,7 @@ urlpatterns = [
     path('api/scrape_notes', app.api.scrape_notes_api, name='scrape_notes_api'),
     path('api/scrape_votes', app.api.scrape_votes_api, name='scrape_votes_api'),
     path('api/scrape_reviews', app.api.scrape_reviews_api, name='scrape_reviews_api'),
-    path('api/get_file', app.api.get_file, name='api/get_file'),
+    path('api/stream_file', app.api.stream_file, name='api/stream_file'),
 
     #path('ingr_molecules', app.views.ingr_molecules, name='ingr_molecules'),
     path('search_workbook', app.views.search_workbook, name='search_workbook'),

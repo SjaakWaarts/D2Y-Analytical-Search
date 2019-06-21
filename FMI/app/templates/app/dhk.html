@@ -19,7 +19,7 @@
                     <div class="col-md-5">
 		                <div class="info-card">
 				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "app/media/fresh_and_clean.jpg" %}">
+					                <img class="card-image" src="{% static "app/dhk/media/search_recipe.png" %}">
 				                </div>
 			                <div class="info-card-back">
 				                <h3>Recepten</h3>
@@ -36,7 +36,34 @@
                         <p>
                             <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=dhk&storyboard_name=initial&dashboard_name=initial">
                                 Search de Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
-                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 iff-dataset">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-5">
+		                <div class="info-card">
+				                <div class="info-card-front">
+					                <img class="card-image" src="{% static "app/dhk/media/load_recipe.png" %}">
+				                </div>
+			                <div class="info-card-back">
+				                <h3>Recepten</h3>
+				                <p>
+                                    Recepten
+                                </p>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p>
+                            Laad uw recept.
+                        </p>
+                        <p>
+                            <a class="btn btn-primary" href="{% url 'dhk/recipe'%}">
+                                Laad de Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         </p>
                     </div>
                 </div>

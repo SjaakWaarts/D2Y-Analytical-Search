@@ -5,8 +5,6 @@ from datetime import timedelta
 from django.core.files import File
 import glob, os
 import shutil
-import docx
-from docx.table import _Cell, Table
 import zipfile
 import sys
 import pickle
@@ -36,6 +34,7 @@ import app.wb_excel as wb_excel
 import app.elastic as elastic
 import app.survey as survey
 import app.mail as mail
+import app.dhk.dhk as dhk
 from FMI.settings import BASE_DIR, ES_HOSTS
 
 driver = None
@@ -623,133 +622,14 @@ def load_scentemotion(cft_filename):
     pass
 
 
-def has_image(par):
-    """get all of the images in a paragraph 
-    :param par: a paragraph object from docx
-    :return: a list of r:embed 
-    """
-    ids = []
-    root = ET.fromstring(par._p.xml)
-    namespace = {
-             'a':"http://schemas.openxmlformats.org/drawingml/2006/main", \
-             'r':"http://schemas.openxmlformats.org/officeDocument/2006/relationships", \
-             'wp':"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"}
-
-    inlines = root.findall('.//wp:inline',namespace)
-    for inline in inlines:
-        imgs = inline.findall('.//a:blip', namespace)
-        for img in imgs:     
-            id = img.attrib['{{{0}}}embed'.format(namespace['r'])]
-        ids.append(id)
-
-def iter_block_items(parent):
-    if isinstance(parent, docx.document.Document):
-        parent_elm = parent.element.body
-    elif isinstance(parent, docx.table._Cell):
-        parent_elm = parent._tc
-    elif isinstance(parent, docx.table._Row):
-        parent_elm = parent._tr
-    else:
-        raise ValueError("something's not right")
-    for child in parent_elm.iterchildren():
-        if isinstance(child, docx.oxml.text.paragraph.CT_P):
-            yield docx.text.paragraph.Paragraph(child, parent)
-        elif isinstance(child, docx.oxml.table.CT_Tbl):
-            yield Table(child, parent)
-
 def load_recipes(recipes_foldername):
-    es_host = ES_HOSTS[0]
-    headers = {'Content-Type': 'application/json'}
-    if 'http_auth' in es_host:
-        headers['http_auth'] = es_host['http_auth']
-    host = es_host['host']
-    index_name = 'recipes'
-    doc_type = 'recipes'
-    url = "http://" + host + ":9200/" + index_name
-
     if os.path.isdir(recipes_foldername):
-        for file in os.listdir(recipes_foldername):
-            filename = os.path.join(recipes_foldername, file)
-            if os.path.isfile(filename) and file[0] != '~':
+        for filename in os.listdir(recipes_foldername):
+            fullname = os.path.join(recipes_foldername, filename)
+            if os.path.isfile(fullname) and filename[0] != '~':
                 if os.path.splitext(filename)[1] == '.docx':
-                    recipe = {}
-                    id = os.path.splitext(file)[0]
-                    recipe['id'] = id
-                    recipe['title'] = id
-                    path = re.sub(r'[^\w\s]','', id).lower()
-                    recipe['url'] = 'http://www.deheerlijkekeuken.nl/' + '-'.join(path.split(' '))
-                    recipe['excerpt'] = ""
-                    recipe['description'] = []
-                    recipe['categories'] = []
-                    recipe['tags'] = []
-                    recipe['images'] = []
-                    recipe['courses'] = []
-
-                    zip_basename = os.path.splitext(file)[0]
-                    zip_file = zip_basename + '.zip'
-                    zip_filename = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', zip_file)
-                    zip_dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', zip_basename)
-                    shutil.copy(filename, zip_filename)
-                    zip_ref = zipfile.ZipFile(zip_filename, 'r')
-                    namelist = zip_ref.namelist()
-                    image_type = "featured"
-                    for name in namelist:
-                        if name.startswith('word/media/'):
-                            image_location = os.path.join('data', 'dhk', 'recipes', zip_basename, 'word', 'media', name[11:])
-                            image = {'type' : image_type, 'location' : image_location}
-                            recipe['images'].append(image)
-                            image_type = "image"
-                    zip_ref.extractall(zip_dirname)
-                    zip_ref.close()
-                    os.remove(zip_filename)
-
-                    mode = 'dish'
-                    doc = docx.Document(filename)
-                    core_properties = doc.core_properties
-                    recipe['author'] = core_properties.author
-                    recipe['published_date'] = core_properties.created.strftime('%Y-%m-%d')
-                    for block in iter_block_items(doc):
-                        if isinstance(block, docx.text.paragraph.Paragraph):
-                            para = block
-                            if len(para.text) > 0:
-                                style_name = para.style.name
-                                if style_name == 'Course':
-                                    mode = 'recipe'
-                                    course = {}
-                                    course['title'] = para.text
-                                    course['ingredients'] = []
-                                    course['instructions'] = []
-                                    recipe['courses'].append(course)
-                                if mode == 'dish':
-                                    if style_name == 'Excerpt':
-                                        recipe['excerpt']= recipe['excerpt'] + para.text
-                                    if style_name == 'Categories':
-                                        pattern = re.compile("^\s+|\s*,\s*|\s+$")
-                                        categories_text = para.text.split(':')[1]
-                                        recipe['categories'].extend([x for x in pattern.split(categories_text) if x])
-                                    if style_name == 'Tags':
-                                        pattern = re.compile("^\s+|\s*,\s*|\s+$")
-                                        tags_text = para.text.split(':')[1]
-                                        recipe['tags'].extend([x for x in pattern.split(tags_text) if x])
-                                if mode == 'recipe':
-                                    if style_name == 'Recept':
-                                        course['instructions'].append({'instruction' : para.text})
-                                recipe['description'].append(para.text)
-                        elif isinstance(block, Table):
-                            table = block
-                            for row in table.rows:
-                                for cell in row.cells:
-                                    for para in cell.paragraphs:
-                                        if len(para.text) > 0:
-                                            style_name = para.style.name
-                                            if style_name == 'Ingredients':
-                                                course['ingredients'].append({'ingredient' : para.text})
-                                            recipe['description'].append(para.text)
-                    for image in doc.inline_shapes:
-                        pass
-                    data = json.dumps(recipe)
-                    r = requests.put(url + "/" + doc_type + "/" + id, headers=headers, data=data)
-                    print("load_recipe: written recipe with id", id)
+                    dhk.ingest_recipe(fullname)
+                    print("load_recipe: written recipe with id", filename)
 
 
 def map_survey(survey_filename, map_filename):

@@ -2,6 +2,7 @@
 Definition of api-views.
 """
 
+import sys
 import magic
 from pandas import Series, DataFrame
 from django.shortcuts import render
@@ -362,8 +363,12 @@ def scrape_reviews_api(request):
 #    response.content_disposition = 'inline;filename=' + basename
 #    return response
 
-def get_file(request):
+def stream_file(request):
     location = request.GET.get('location', None)
+    if sys.platform[0:3] == "win":
+        location = location.replace('/', '\\')
+    else:
+        location = location.replace('\\', '/')
     filename = os.path.join(BASE_DIR, location)
     if os.path.isfile(filename):
         #mime = magic.Magic(mime=True)

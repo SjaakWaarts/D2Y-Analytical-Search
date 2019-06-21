@@ -11,6 +11,6 @@
         {% endfor %}
         </ul>
     {% elif column_type == 'image' %}
-        <img src="api/get_file?location={{value|urlencode}}" alt=field width="128">
+        <img src="api/stream_file?location={{value|urlencode}}" alt=field width="128">
     {% endif %}
 </td>
