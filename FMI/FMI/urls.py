@@ -20,6 +20,7 @@ from django.contrib import auth
 params={'plugin': '', 'base_template': 'search.html'}
 
 import app.models as models
+import app.dhk.dhk_admin
 import app.dhk.recipe
 import app.dhk.dhk
 import app.views
@@ -33,9 +34,10 @@ urlpatterns = [
 
     path('consumer_insight', app.views.consumer_insight_view, name='consumer_insight'),
     path('dhk', app.views.dhk_view, name='dhk'),
+    path('dhk/dhk_admin', app.dhk.dhk_admin.dhk_admin_view, name='dhk/dhk_admin'),
+    path('dhk/upload_file', app.dhk.dhk_admin.upload_file, name='dhk/upload_file'),
+    path('dhk/get_uploaded_files', app.dhk.dhk_admin.get_uploaded_files, name='dhk/get_uploaded_files'),
     path('dhk/recipe', app.dhk.recipe.recipe_view, name='dhk/recipe'),
-    path('dhk/upload_file', app.dhk.dhk.upload_file, name='dhk/upload_file'),
-    path('dhk/get_uploaded_file', app.dhk.dhk.get_uploaded_files, name='dhk/get_uploaded_files'),
 
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),

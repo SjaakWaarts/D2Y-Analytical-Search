@@ -28,6 +28,7 @@ import app.sentiment as sentiment
 import app.product as product
 import app.market as market
 import app.load as load
+import app.cmis as cmis
 import app.crawl as crawl
 import app.survey as survey
 import app.guide as guide
@@ -513,6 +514,9 @@ def load_view(request):
             excel_choices = form.cleaned_data['excel_choices_field']
             excel_filename = form.cleaned_data['excel_filename_field']
             excelmap_filename = form.cleaned_data['excelmap_filename_field']
+            cmis_choices = form.cleaned_data['cmis_choices_field']
+            cmis_foldername = form.cleaned_data['cmis_foldername_field']
+            cmis_objtype = form.cleaned_data['cmis_objtype_field']
             email_choices = form.cleaned_data['email_choices_field']
             email_address = form.cleaned_data['email_address_field']
             email_password = form.cleaned_data['email_password_field']
@@ -525,6 +529,9 @@ def load_view(request):
                 load.load_recipes(recipes_foldername)
             if 'load_excel' in form.data:
                 if not load.load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name):
+                    form.add_form_error("Could not retrieve or index excel file")
+            if 'load_cmis' in form.data:
+                if not cmis.load_cmis(cmis_foldername, cmis_objtype, cmis_choices):
                     form.add_form_error("Could not retrieve or index excel file")
             if 'load_mail' in form.data:
                 if not load.load_mail(email_choices, email_address, email_password):

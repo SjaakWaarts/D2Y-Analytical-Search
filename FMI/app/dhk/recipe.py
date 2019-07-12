@@ -2,42 +2,46 @@
 Definition of views.
 """
 
-from django.shortcuts import render, redirect, render_to_response
-from django.template.context_processors import csrf
-#from django.core.urlresolvers import reverse
-# django2.0
-from django.urls import reverse
-from django.http import HttpRequest, HttpResponseRedirect
-from django.template import RequestContext
-from django.views.generic.base import TemplateView
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
-from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import available_attrs
-from functools import wraps
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search, Q
-import seeker
+from datetime import datetime
+import re
+import sys
+import os
+import shutil
 import json
 import urllib
-from datetime import datetime, time
+import requests
+from django.shortcuts import render
+from django.http import HttpRequest
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.template import RequestContext
+import seeker.esm as esm
 import FMI.settings
-import app.elastic as elastic
-import app.scrape_ds as scrape_ds
-import app.excitometer as excitometer
-import app.sentiment as sentiment
-import app.product as product
-import app.market as market
-import app.load as load
-import app.crawl as crawl
-import app.survey as survey
-import app.guide as guide
-import app.facts as facts
-import app.r_and_d as r_and_d
-import app.fmi_admin as fmi_admin
-import app.azure as azure
-import app.wb_excel as wb_excel
-import app.models as models
-import app.survey
+from FMI.settings import BASE_DIR, ES_HOSTS
+
+def get_uploaded_files(request):
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    results = esm.search_query(es_host, 'recipes', search_q)
+    results = json.loads(results.text)
+    hits = results.get('hits', {})
+    hits = hits['hits']
+    zip_list = []
+    cnt = 1
+    for hit in hits:
+        file_info = {
+            'id': cnt,
+            'name': hit['_id'],
+            'status': [],
+            'latest_status': 200,
+            'approved': False,
+            'imode': "name",
+            'aggrs' : []
+            }
+        zip_list.append(file_info)
+        cnt = cnt + 1
+    zip_list_json = json.dumps(zip_list)
+    return HttpResponse(zip_list_json, content_type='application/json')
 
 
 def recipe_view(request):

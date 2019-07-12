@@ -34,8 +34,10 @@
     <Compile Include="app\apps.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="app\dhk\dhk.py" />
     <Compile Include="app\dhk\recipe.py" />
+    <Compile Include="app\dhk\dhk.py" />
+    <Compile Include="app\dhk\dhk_admin.py" />
+    <Compile Include="app\cmis.py" />
     <Compile Include="app\mail.py" />
     <Compile Include="app\pandora.py" />
     <Compile Include="app\conf.py" />
@@ -188,7 +190,9 @@
     <Content Include="app\static\app\content\jquery-ui.min.css" />
     <Content Include="app\static\app\dhk\media\load_recipe.png" />
     <Content Include="app\static\app\dhk\media\search_recipe.png" />
+    <Content Include="app\static\app\dhk\scripts\components.js" />
     <Content Include="app\static\app\dhk\scripts\recipe.js" />
+    <Content Include="app\static\app\dhk\scripts\dhk_admin.js" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="app\static\app\media\CFT_CI.jpg" />
     <Content Include="app\static\app\media\CFT_Ingr.jpg" />
@@ -492,6 +496,7 @@
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="app\templates\app\dhk.html" />
     <Content Include="app\templates\app\dhk\recipe.html" />
+    <Content Include="app\templates\app\dhk\dhk_admin.html" />
     <Content Include="app\templates\app\index_D2Y.html" />
     <Content Include="app\templates\app\index_IFF.html" />
     <Content Include="app\templates\app\load.html" />

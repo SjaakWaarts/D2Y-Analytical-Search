@@ -9,71 +9,10 @@
 
 {% load staticfiles %}
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/dropzone/css/dropzone.min.css'%}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
 
 	<div class="row">
         <div class="col-lg-12">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Dropzone / Opname</h3>
-                        </div>
-                        <div class="box-body">
-                            <div id="actions" class="row">
-                                <div class="col-lg-12">
-                                    <!-- The fileinput-button span is used to style the file input field as button -->
-                                    <span class="btn fileinput-button">
-                                        <i class="fa fa-plus" aria-hidden="true"></i>
-                                        <span>Voeg bestanden toe</span>
-                                    </span>
-                                    <button id="start_opnamen_btn" type="submit" class="btn start">
-                                        <i class="fa fa-upload" aria-hidden="true"></i>
-                                        <span>Start opname</span>
-                                    </button>
-                                    <button type="reset" class="btn cancel">
-                                        <i class="fa fa-ban" aria-hidden="true"></i>
-                                        <span>Annuleer opname</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="table table-striped files" id="previews">
-                                    <div id="template" class="file-row">
-                                        <!-- This is used as the file preview template -->
-                                        <div width="5%">
-                                            <span class="preview"><img data-dz-thumbnail /></span>
-                                        </div>
-                                        <div width="30%">
-                                            <p class="name" data-dz-name></p>
-                                            <strong class="error text-danger" data-dz-errormessage></strong>
-                                        </div>
-                                        <div width="30%">
-                                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                                                <span class="size" data-dz-size></span>
-                                                <div class="progress-bar progress-bar-success" data-dz-uploadprogress></div>
-                                            </div>
-                                        </div>
-                                        <div width="25%">
-                                            <button style="display: none;" class="btn btn-primary start">
-                                                <i class="fa fa-upload" aria-hidden="true"></i>
-                                                <span>Opname</span>
-                                            </button>
-                                            <button data-dz-remove class="btn cancel divault-bg-red">
-                                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                                <span>Annuleer</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div id="root" class="row" style="height: 90%">
                 <div class="col-lg-12">
                     <div class="box">
@@ -125,6 +64,6 @@
     {% load staticfiles %}
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
-        <script src="{% static 'assets/dropzone/js/dropzone.min.js' %}"></script>
+        <script src="{% static 'app/dhk/scripts/components.js' %}"></script>
         <script src="{% static 'app/dhk/scripts/recipe.js' %}"></script>
 {% endblock %}
