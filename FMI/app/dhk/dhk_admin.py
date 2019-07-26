@@ -191,23 +191,11 @@ def get_uploaded_files(request):
     results = esm.search_query(es_host, 'recipes', search_q)
     results = json.loads(results.text)
     hits = results.get('hits', {})
-    hits = hits['hits']
-    zip_list = []
-    cnt = 1
-    for hit in hits:
-        file_info = {
-            'id': cnt,
-            'name': hit['_id'],
-            'status': [],
-            'latest_status': 200,
-            'approved': False,
-            'imode': "name",
-            'aggrs' : []
-            }
-        zip_list.append(file_info)
-        cnt = cnt + 1
-    zip_list_json = json.dumps(zip_list)
-    return HttpResponse(zip_list_json, content_type='application/json')
+    context = {
+        'pager' : pager,
+        'hits'  : hits,
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
 
 def has_image(par):
     """get all of the images in a paragraph 

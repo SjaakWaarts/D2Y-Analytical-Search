@@ -10,18 +10,10 @@
     background-color: #083c9d;
 }
 
-.iff-box {
-  display: flex;
-  flex-flow: column;
-  height: 100%;     
-  width: 100%;
-}
-
-.fill-height { flex-grow: 1; width: 100%; height: 80%; }
 
 /*select polymer-element with class iff-box-header and descents of class iffbox*/
 
-.iff-box .iff-box-header {
+.iff-box {
   flex: 0 1 auto;
   /* The above is shorthand for:
   flex-grow: 0,
@@ -29,15 +21,6 @@
   flex-basis: auto
   */
 }
-
-.iff-box .iff-box-content {
-  flex: 1 1 auto;
-}
-
-.iff-box .iff-box-footer {
-  flex: 0 1 20px;
-}
-
 
 .card-section {
     padding: 2% 5%;
@@ -124,10 +107,7 @@
 }
 
 /* Set padding to keep content from hitting the edges */
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;

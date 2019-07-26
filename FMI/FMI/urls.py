@@ -38,6 +38,7 @@ urlpatterns = [
     path('dhk/upload_file', app.dhk.dhk_admin.upload_file, name='dhk/upload_file'),
     path('dhk/get_uploaded_files', app.dhk.dhk_admin.get_uploaded_files, name='dhk/get_uploaded_files'),
     path('dhk/recipe', app.dhk.recipe.recipe_view, name='dhk/recipe'),
+    path('dhk/get_recipe', app.dhk.recipe.get_recipe, name='dhk/get_recipe'),
 
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),

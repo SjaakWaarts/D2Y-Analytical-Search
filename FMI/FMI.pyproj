@@ -149,6 +149,8 @@
     <Folder Include="app\static\assets\googlemaps\" />
     <Folder Include="app\static\assets\googlemaps\img\" />
     <Folder Include="app\static\assets\googlemaps\js\" />
+    <Folder Include="app\static\assets\jquery\" />
+    <Folder Include="app\static\assets\jquery\js\" />
     <Folder Include="app\static\assets\momentjs\" />
     <Folder Include="app\static\assets\momentjs\js\" />
     <Folder Include="app\static\assets\vue-fullcalendar\" />
@@ -182,12 +184,7 @@
     <Folder Include="FMI\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\static\app\content\bootstrap-theme.min.css" />
     <Content Include="app\static\app\content\dashboard.css" />
-    <Content Include="app\static\app\content\jquery-3.2.1.js" />
-    <Content Include="app\static\app\content\jquery-3.2.1.min.js" />
-    <Content Include="app\static\app\content\jquery-ui.css" />
-    <Content Include="app\static\app\content\jquery-ui.min.css" />
     <Content Include="app\static\app\dhk\media\load_recipe.png" />
     <Content Include="app\static\app\dhk\media\search_recipe.png" />
     <Content Include="app\static\app\dhk\scripts\components.js" />
@@ -217,10 +214,6 @@
     <Content Include="app\static\app\scripts\platformsearch.js" />
     <Content Include="app\static\app\scripts\guide.js" />
     <Content Include="app\static\app\scripts\loadresults.js" />
-    <Content Include="app\static\app\scripts\crossfilter.js" />
-    <Content Include="app\static\app\scripts\crossfilter.min.js" />
-    <Content Include="app\static\app\scripts\jquery-ui.min.js" />
-    <Content Include="app\static\app\scripts\jquery.min.js" />
     <Content Include="app\static\app\scripts\radarchart.js" />
     <Content Include="app\static\app\scripts\scrape.js" />
     <Content Include="app\static\app\scripts\scraperesults.js" />
@@ -442,10 +435,6 @@
     <Content Include="app\static\assets\adminlte\plugins\timepicker\bootstrap-timepicker.js" />
     <Content Include="app\static\assets\adminlte\plugins\timepicker\bootstrap-timepicker.min.css" />
     <Content Include="app\static\assets\adminlte\plugins\timepicker\bootstrap-timepicker.min.js" />
-    <Content Include="app\static\assets\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="app\static\assets\bootstrap\css\bootstrap-theme.css.map" />
-    <Content Include="app\static\assets\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="app\static\assets\bootstrap\css\bootstrap-theme.min.css.map" />
     <Content Include="app\static\assets\bootstrap\css\bootstrap.css" />
     <Content Include="app\static\assets\bootstrap\css\bootstrap.css.map" />
     <Content Include="app\static\assets\bootstrap\css\bootstrap.min.css" />
@@ -477,6 +466,13 @@
     <Content Include="app\static\assets\googlemaps\img\m4.png" />
     <Content Include="app\static\assets\googlemaps\img\m5.png" />
     <Content Include="app\static\assets\googlemaps\js\markerclusterer.js" />
+    <Content Include="app\static\assets\jquery\js\.eslintrc.json" />
+    <Content Include="app\static\assets\jquery\js\jquery.js" />
+    <Content Include="app\static\assets\jquery\js\jquery.min.js" />
+    <Content Include="app\static\assets\jquery\js\jquery.min.map" />
+    <Content Include="app\static\assets\jquery\js\jquery.slim.js" />
+    <Content Include="app\static\assets\jquery\js\jquery.slim.min.js" />
+    <Content Include="app\static\assets\jquery\js\jquery.slim.min.map" />
     <Content Include="app\static\assets\momentjs\js\moment.min.js" />
     <Content Include="app\static\assets\vue-fullcalendar\vue-fullcalendar.js" />
     <Content Include="app\static\assets\vue-fullcalendar\vue-fullcalendar.js.map" />
@@ -492,7 +488,6 @@
     <Content Include="app\static\assets\vue\js\vue-chartjs.min.js" />
     <Content Include="app\static\assets\vue\js\vue.js" />
     <Content Include="app\static\assets\vue\js\vue.min.js" />
-    <Content Include="app\templates\app\base.html" />
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="app\templates\app\dhk.html" />
     <Content Include="app\templates\app\dhk\recipe.html" />
@@ -561,28 +556,11 @@
     <Content Include="seeker\__pycache__\views.cpython-35.pyc" />
     <Content Include="seeker\__pycache__\__init__.cpython-35.pyc" />
     <Content Include="requirements.txt" />
-    <Content Include="app\static\app\content\bootstrap.css" />
-    <Content Include="app\static\app\content\bootstrap.min.css" />
     <Content Include="app\static\app\content\site.css" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="app\static\app\scripts\bootstrap.js" />
-    <Content Include="app\static\app\scripts\bootstrap.min.js" />
-    <Content Include="app\static\app\scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="app\static\app\scripts\jquery-1.10.2.js" />
-    <Content Include="app\static\app\scripts\jquery-1.10.2.min.js" />
-    <Content Include="app\static\app\scripts\jquery-1.10.2.min.map" />
-    <Content Include="app\static\app\scripts\jquery.validate-vsdoc.js" />
-    <Content Include="app\static\app\scripts\jquery.validate.js" />
-    <Content Include="app\static\app\scripts\jquery.validate.min.js" />
-    <Content Include="app\static\app\scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="app\static\app\scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="app\static\app\scripts\modernizr-2.6.2.js" />
-    <Content Include="app\static\app\scripts\respond.js" />
-    <Content Include="app\static\app\scripts\respond.min.js" />
-    <Content Include="app\static\app\scripts\_references.js" />
     <Content Include="app\templates\app\about.html" />
     <Content Include="app\templates\app\contact.html" />
     <Content Include="app\templates\app\index.html" />

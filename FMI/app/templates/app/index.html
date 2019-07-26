@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="jumbotron">
+<div class="jumbotron" style="padding: 2rem 1rem; margin-top: 1rem">
     {% if site == "IFF" %}
         <h1>IFF Insight Platform</h1>
     {% else %}
@@ -11,7 +11,7 @@
     {% endif %}
     <p class="lead">Discover meaningful, creative and actionable Insights</p>
 </div>
-<div class="iff-box-content">
+<div>
     {% if site == "IFF" %}
         {% include "app/index_IFF.html" %}
     {% endif %}
@@ -25,7 +25,6 @@
 
 {% block scripts %}
     {% load staticfiles %}
-        <script src="{% static 'app/scripts/jquery.validate.min.js' %}"></script>
         <script src="{% static 'app/scripts/platformsearch.js' %}"></script>
 
 <script>

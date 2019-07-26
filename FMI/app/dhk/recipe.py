@@ -19,36 +19,53 @@ import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
 
-def get_uploaded_files(request):
-    es_host = ES_HOSTS[0]
-    s, search_q = esm.setup_search()
-    results = esm.search_query(es_host, 'recipes', search_q)
-    results = json.loads(results.text)
-    hits = results.get('hits', {})
-    hits = hits['hits']
-    zip_list = []
-    cnt = 1
-    for hit in hits:
-        file_info = {
-            'id': cnt,
-            'name': hit['_id'],
-            'status': [],
-            'latest_status': 200,
-            'approved': False,
-            'imode': "name",
-            'aggrs' : []
-            }
-        zip_list.append(file_info)
-        cnt = cnt + 1
-    zip_list_json = json.dumps(zip_list)
-    return HttpResponse(zip_list_json, content_type='application/json')
-
 
 def recipe_view(request):
     """Renders dhk page."""
+    id = request.GET['id']
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    search_filters = search_q["query"]["bool"]["filter"]
+    field = 'id.keyword'
+    terms = [id]
+    terms_filter = {"terms": {field: terms}}
+    search_filters.append(terms_filter)
+    search_aggs = search_q["aggs"]
+
+    results = esm.search_query(es_host, 'recipes', search_q)
+    results = json.loads(results.text)
+    hits = results.get('hits', {})
+    hit = hits.get('hits', [{}])[0]
+    recipe = hit.get('_source', {})
+    context = {
+        'site' : FMI.settings.site,
+        'year':datetime.now().year,
+        'recipe'  : recipe,
+        }
     return render(
         request,
         'app/dhk/recipe.html',
-        {'site' : FMI.settings.site, 'year':datetime.now().year}
+        context
     )
+
+def get_recipe(request):
+    id = request.GET['id']
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    search_filters = search_q["query"]["bool"]["filter"]
+    field = 'id.keyword'
+    terms = [id]
+    terms_filter = {"terms": {field: terms}}
+    search_filters.append(terms_filter)
+    search_aggs = search_q["aggs"]
+
+    results = esm.search_query(es_host, 'recipes', search_q)
+    results = json.loads(results.text)
+    hits = results.get('hits', {})
+    hit = hits.get('hits', [{}])[0]
+    recipe = hit.get('_source', {})
+    context = {
+        'recipe'  : recipe,
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
 

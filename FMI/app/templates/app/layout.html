@@ -11,54 +11,50 @@
         <title>Insight Platform</title>
     {% endif %}
     {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
-    <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
+    {% block css %}
+    {% endblock %}
 </head>
 
-<body class="iff-box">
-    <div class="navbar navbar-inverse navbar-fixed-top iff-box-header">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                {% if site == "IFF" %} 
-                    <a href="{% url 'home' %}" class="navbar-brand">IFF Insight Platform</a>
-                {% elif site == "D2Y" %} 
-                    <a href="{% url 'home' %}" class="navbar-brand">D2Y Insight Platform</a>
-                {% else %}
-                    <a href="{% url 'home' %}" class="navbar-brand">Insight Platform</a>
-                {% endif %}
-            </div>
-            <div class="navbar-collapse collapse">
-                {% if site == "IFF" %} 
-                    <ul class="nav navbar-nav">
-                        <li><a href="{% url 'product_insight' %}">Product Insight</a></li>  
-                        <li><a href="{% url 'consumer_insight' %}">Consumer Insight</a></li>
-                        <li><a href="{% url 'market_insight' %}">Market Insight</a></li>
-                        <li><a href="{% url 'scent_emotion' %}">Scent Emotion</a></li>
-                    </ul>
-                {% endif %}
-                {% if site == "D2Y" %} 
-                    <ul class="nav navbar-nav">
-                        <li><a href="{% url 'edepot' %}">E-Depot</a></li>
-                        <li><a href="{% url 'dhk' %}">de Heerlijke Keuken</a></li>
-                    </ul>
-                {% endif %}
+<body class="d-flex flex-column">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        {% if site == "IFF" %}
+            <a class="navbar-brand" href="{% url 'home' %}">IFF Insight Platform</a>
+            <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb1" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            <div class="navbar-collapse collapse" id="navb1" style="">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'consumer_insight' %}">Consumer Insight</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'market_insight' %}">Market Insight</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'scent_emotion' %}">Scent Emotion</a></li>
+                </ul>
                 {% include 'app/loginpartial.html' %}
             </div>
-        </div>
-    </div>
+        {% endif %}
+        {% if site == "D2Y" %}
+            <a class="navbar-brand" href="{% url 'home' %}">D2Y Insight Platform</a>
+            <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb2" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            <div class="navbar-collapse collapse" id="navb2" style="">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'edepot' %}">E-Depot</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}">de Heerlijke Keuken</a></li>
+                </ul>
+                {% include 'app/loginpartial.html' %}
+            </div>
+        {% endif %}
+    </nav>
 
-    <div class="container-fluid iff-padding-30 iff-box-content">
+    <div class="container-fluid iff-padding-30 flex-grow-1">
         <div >
-            {% block content %}{% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
     </div>
-    <footer class="iff-box-footer">
+    <footer>
         <hr/>
         {% if site == "IFF" %}
             <p>&copy; {{ year }} - Powered by Data Science</p>
@@ -68,10 +64,13 @@
         {% endif %}
     </footer>
 
-    <script src="{% static 'app/scripts/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'app/scripts/bootstrap.min.js' %}"></script>
-    <script src="{% static 'app/scripts/respond.js' %}"></script>
-{% block scripts %}{% endblock %}
+    <script src="{% static 'assets/jquery/js/jquery.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    {% block scripts %}
+    {% endblock %}
 
 </body>
 </html>

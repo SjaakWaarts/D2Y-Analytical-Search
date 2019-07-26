@@ -3,49 +3,77 @@
 
 {% block content %}
 
-<div class="page-header">
-  <h1>de Heerlijke Keuken <small>Recepten</small></h1>
-</div>
-
 {% load staticfiles %}
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
 
 	<div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12" v-if="this.recipe">
             <div id="root" class="row" style="height: 90%">
                 <div class="col-lg-12">
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Recipes</h3>
+                    <div class="jumbotron" style="padding: 2rem 1rem; margin-top: 1rem">
+                        <h2>[[ this.recipe.title ]]</h2>
+                        [[ this.recipe.excerpt ]]
+                    </div>
+                    <div class="row d-flex flex-row">
+                        <div class="d-flex flex-row bg-secondary">
+                          <div v-for="image in this.recipe.images" style="background: white">
+                            <img v-bind:src="stream_file_url(api_stream_file_url, image.location)" alt=field width="128" height="128"  style="margin: 5px">
+                          </div>
                         </div>
-                        <div class="box-body">
-                            <div class="table-responsive">
-                                <table id="zipfile-table" class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Naam</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Acties</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="zip in ziplist"
-                                            v-on:click="currentZip = zip, getStructure($event, zip.id), currentAggr = null"
-                                            v-bind:class="{active : currentZip==zip}">
-                                            <td style="width:60%;"><a href="#">[[ zip.name ]]</a></td>
-                                            <td style="width:20%;" class="text-center">
-                                                <latest-status-mark v-bind:latest_status="zip.latest_status"></latest-status-mark>
-                                            </td>
-                                            <td style="width:20%;" class="text-center">
-                                                <span v-if="zip.imode">
-                                                    <a href="#"><i class="fa fa-eye divault-blue" title="Beheer" aria-hidden="true"></i></a>
-                                                </span>
-                                                <a href="#" v-on:click="removeZip(zip.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div style="margin: 5px">
+                            Categories: 
+                            <ul class="list-group list-group-horizontal" >
+                                <li class="list-group-item list-group-item-primary" v-for="category in this.recipe.categories">[[category]]</li>
+                            </ul>
+                        </div>
+                        <div style="margin: 5px">
+                            Tags:
+                            <ul class="list-group list-group-horizontal">
+                                <li class="list-group-item list-group-item-secondary" v-for="tag in this.recipe.tags">[[tag]]</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1rem" v-for="course in this.recipe.courses">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">[[ course.title ]]</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="table-responsive">
+                                            <table id="ingredients_table" class="table-striped table-bordered table-hover">
+                                                <thead class="thead-ligth">
+                                                    <tr>
+                                                        <th>Ingredients</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="ingredient in course.ingredients">
+                                                        <td style="width:60%;">[[ ingredient.ingredient ]]</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="table-responsive">
+                                            <table id="courses_table" class="table-striped table-bordered table-hover">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Instructies</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="instruction in course.instructions">
+                                                        <td style="width:60%;">[[ instruction.instruction ]]</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -54,8 +82,9 @@
         </div>
     </div>
     {% csrf_token %}
-	<input type="hidden" name="upload_file_url" value="{% url 'dhk/upload_file' %}">
-	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk/get_uploaded_files' %}">
+	<input type="hidden" name="get_recipe_url" value="{% url 'dhk/get_recipe' %}">
+    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
+
 
 {% endblock %}
 

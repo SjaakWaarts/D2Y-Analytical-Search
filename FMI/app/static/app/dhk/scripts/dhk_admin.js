@@ -108,16 +108,9 @@ var app = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         pager: { page_nr: 1, nr_hits: 0, page_size: 25, nr_pages: 0, page_nrs: [], nr_pages_nrs: 5 },
-        ziplist: [],
-        currentZip: '',
-        currentZipIX: null,
-        structure: null,
-        currentXml: null,
-        bestandformaat: null,
-        currentAggr: null,
-        searchLinkablesInput: null,
-        relatie_hits: null,
-        current_relatie_hit: null
+        hits: [],
+        current_recipe: '',
+        current_recipeIX: null,
     },
     methods: {
         get_uploaded_files: function (uploaded_file_id = null) {
@@ -128,16 +121,18 @@ var app = new Vue({
                 'pager': this.pager,
                 },
                 { 'headers': headers }).then(response => {
-                //this.ziplist = JSON.parse(response.bodyText);
-                this.ziplist = response.body;
-                this.pager.nr_hits = this.ziplist.length;
+                //this.hits = JSON.parse(response.bodyText);
+                this.pager = response.body.pager;
+                if ('hits' in response.body.hits) {
+                    this.hits = response.body.hits.hits;
+                }
+                this.pager.nr_hits = response.body.hits.total;
                 // nr_pages needed to call computed component.page_nrs
                 this.pager.nr_pages = Math.ceil(this.pager.nr_hits / this.pager.page_size);
                 if (uploaded_file_id) {
-                    for (ix = 0; ix < this.ziplist.length; ix++) {
-                        if (this.ziplist[ix]['id'] === uploaded_file_id) {
-                            this.currentZip = this.ziplist[ix];
-                            this.structure = this.currentZip.aggrs;
+                    for (ix = 0; ix < this.hits.length; ix++) {
+                        if (this.hits[ix]['id'] === uploaded_file_id) {
+                            this.current_recipe = this.hits[ix];
                         }
                     }
                 }
@@ -146,47 +141,8 @@ var app = new Vue({
         recipe_url(url, id) {
             return url + '?id=' + id;
         },
-        indexZipList: function () {
-            var raise_alert = true;
-            var ingest_zip_bewaar = 0;
-            for (var ix = 0; ix < this.ziplist.length; ix++) {
-                zip = this.ziplist[ix]
-                if (zip['approved'] === true) {
-                    ingest_zip_bewaar++;
-                    for (jx = 0; jx < zip['aggrs'].length; jx++) {
-                        aggr = zip['aggrs'][jx];
-                        if (aggr['approved'] == true) {
-                            raise_alert = false;
-                        }
-                    }
-                }
-            }
-            if (raise_alert) {
-                alert("Nog geen zip bestand en/of dossier goedgekeurd!");
-                index_zip_bewaar = 0;
-                return;
-            }
-            ingest_zip_total = ingest_zip_bewaar;
-            ingest_zip_cnt = 0;
-            display_progress_header();
-            var textarea = document.getElementById("ingest_progress_textarea");
-            textarea.value = "Bewaar gestart\n";
-            poll_queue();
-            var bewaar_opnamen_btn = document.getElementById("bewaar_opnamen_btn");
-            bewaar_opnamen_btn.disabled = true;
-            this.$http.post(index_zips_url, { ziplist: this.ziplist }).then(response => {
-                bewaar_opnamen_btn.disabled = false;
-                if (response.body['status'] === true) {
-                    this.getZipList();
-                }
-                alert(response.body['msg'])
-            })
-        }
     },
     computed: {
-        statusList() {
-            return this.currentAggr ? this.currentAggr.status : this.currentZip ? this.currentZip.status : [];
-        }
     },
     mounted: function () {
         this.get_uploaded_files();

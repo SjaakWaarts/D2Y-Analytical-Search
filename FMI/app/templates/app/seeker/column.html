@@ -1,5 +1,5 @@
 {% load seeker %}
-<td class="{{ result.meta.doc_type }}_{{ field }}">
+<td class="column_{{ field }}">
     {% if url == "" %}
         {% if highlight %}
             {{ highlight.0|safe }}

@@ -79,28 +79,24 @@
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Recipes</h3>
-                        </div>
+                        </div>current_recipe
                         <div class="box-body">
                             <div class="table-responsive">
-                                <table id="zipfile-table" class="table table-hover">
+                                <table id="recipe_table" class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Naam</th>
-                                            <th class="text-center">Status</th>
                                             <th class="text-center">Acties</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="zip in ziplist"
-                                            v-on:click="currentZip = zip, getStructure($event, zip.id), currentAggr = null"
-                                            v-bind:class="{active : currentZip==zip}">
-                                            <td style="width:60%;"><a href="#">[[ zip.name ]]</a></td>
+                                        <tr v-for="hit in hits"
+                                            v-on:click="current_recipe = hit"
+                                            v-bind:class="{active : current_recipe==hit}">
+                                            <td style="width:60%;"><a href="#">[[ hit._source.id ]]</a></td>
                                             <td style="width:20%;" class="text-center">
-                                                <latest-status-mark v-bind:latest_status="zip.latest_status"></latest-status-mark>
-                                            </td>
-                                            <td style="width:20%;" class="text-center">
-                                                <a v-bind:href="recipe_url('recipe', zip.name)"><i class="fa fa-eye divault-blue" title="Beheer" aria-hidden="true"></i></a>
-                                                <a href="#" v-on:click="removeZip(zip.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
+                                                <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye divault-blue" title="Beheer" aria-hidden="true"></i></a>
+                                                <a href="#" v-on:click="remove_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
                                             </td>
                                         </tr>
                                     </tbody>
