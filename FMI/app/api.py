@@ -3,7 +3,7 @@ Definition of api-views.
 """
 
 import sys
-import magic
+#import magic
 from pandas import Series, DataFrame
 from django.shortcuts import render
 from django.http import HttpRequest

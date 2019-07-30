@@ -8,6 +8,7 @@
 *.dll
 *.log
 *.pyc
+*.vscode
 
 /bin
 /FMI/bin

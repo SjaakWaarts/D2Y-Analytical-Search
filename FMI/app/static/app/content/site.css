@@ -207,43 +207,71 @@ a.seeker:visited {color:DodgerBlue ;}
 a.seeker:hover {color:DarkSlateBlue ;}
 
 /* Style for CI*/
-  .bold-green-font {
+.bold-green-font {
     font-weight: bold;
     text-align : right;
     color: green;
-  }
+}
 
-  .benchmark {
+.benchmark {
     font-weight: bold;
     text-align : right;
     color: blue;
-  }
-  .win95 {
+}
+.win95 {
     text-align : right;
     color: darkgreen;
-  }
-  .win90 {
+}
+.win90 {
     text-align : right;
     color: green;
-  }
-  .win80 {
+}
+.win80 {
     text-align : right;
     color: lightgreen;
-  }
-  .lose95 {
+}
+.lose95 {
     text-align : right;
     color: darkred;
-  }
-  .lose90 {
+}
+.lose90 {
     text-align : right;
     color: red;
-  }
-  .lose80 {
+}
+.lose80 {
     text-align : right;
     color: indianred;
-  }
+}
 
-  .orange-background {
+.orange-background {
     background-color: orange;
-  }
+}
+
+/* Style for DHK*/
+.widget {
+    margin-bottom: 2rem;
+}
+.widget-header {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid;
+    border-color: #d7d7d7;
+}
+
+.recipe-ingredients {
+    padding: 15px;
+    background-color: #f8f8f8;
+}
+
+.recipe-ingredients-title .recipe-instructions-title {
+    margin-bottom: 15px;
+    color: #111111;
+}
+
+.recipe-instructions {
+    padding: 15px;
+    background-color: #fef1f2;
+}
+
+
         

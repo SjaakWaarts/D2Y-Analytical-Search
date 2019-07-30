@@ -15,63 +15,140 @@
                         <h2>[[ this.recipe.title ]]</h2>
                         [[ this.recipe.excerpt ]]
                     </div>
-                    <div class="row d-flex flex-row">
-                        <div class="d-flex flex-row bg-secondary">
-                          <div v-for="image in this.recipe.images" style="background: white">
-                            <img v-bind:src="stream_file_url(api_stream_file_url, image.location)" alt=field width="128" height="128"  style="margin: 5px">
-                          </div>
-                        </div>
-                        <div style="margin: 5px">
-                            Categories: 
-                            <ul class="list-group list-group-horizontal" >
-                                <li class="list-group-item list-group-item-primary" v-for="category in this.recipe.categories">[[category]]</li>
-                            </ul>
-                        </div>
-                        <div style="margin: 5px">
-                            Tags:
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-secondary" v-for="tag in this.recipe.tags">[[tag]]</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-top: 1rem" v-for="course in this.recipe.courses">
-                        <div class="box">
-                            <div class="box-header">
-                                <h3 class="box-title">[[ course.title ]]</h3>
-                            </div>
-                            <div class="box-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="recipe">
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="table-responsive">
-                                            <table id="ingredients_table" class="table-striped table-bordered table-hover">
-                                                <thead class="thead-ligth">
-                                                    <tr>
-                                                        <th>Ingredients</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="ingredient in course.ingredients">
-                                                        <td style="width:60%;">[[ ingredient.ingredient ]]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                    <div class="col-lg-9">
+                                        <div class="recipe-meta">
+                                            <ul class="list-group list-group-horizontal">
+                                                <li class="list-group-item"><a href="#"><i class="far fa-calendar-alt">[[this.recipe.published_date]]</i></a></li>
+                                                <li class="list-group-item"><a href="#"><i class="fas fa-user">[[this.recipe.author]]</i></a></li>
+                                                <li class="list-group-item"><a href="#"><i class="fas fa-start"><span>9/10</span></i></a></li>
+                                                <li class="list-group-item"><a href="#"><i class="fas fa-heart"><span>2</span></i></a></li>
+                                            </ul>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="table-responsive">
-                                            <table id="courses_table" class="table-striped table-bordered table-hover">
-                                                <thead class="thead-light">
-                                                    <tr>
-                                                        <th>Instructies</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="instruction in course.instructions">
-                                                        <td style="width:60%;">[[ instruction.instruction ]]</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                    <div class="col-lg-3">
+                                        <div class="recipe-actions">
+                                            <ul class="list-group list-group-horizontal">
+                                                <li class="list-group-item"><button><i class="fas fa-print"></i></button></li>
+                                                <li class="list-group-item"><button><i class="fas fa-expand-arrows-alt"></i></button></li>
+                                                <li class="list-group-item"><button><i class="fas fa-share-alt"></i></button></li>
+                                            </ul>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item" v-for="(course, course_ix) in this.recipe.courses">
+                                                <a v-bind:class="{'nav-link':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix">[[course.title]]</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#reviews">Reviews</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#kookclub">Kookclub</a>
+                                            </li>
+                                        </ul>
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                          <div v-bind:class="{'tab-pane':true, 'container':true, active : course_ix==0}" v-bind:id="'course'+course_ix" v-for="(course, course_ix) in this.recipe.courses">
+                                            <div class="box">
+                                                <div class="box-header">
+                                                    <h3 class="box-title">[[ course.title ]]</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="recipe-ingredients">
+                                                                <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Ingridients</h3>
+                                                                <div class="checkbox checkbox-primary" v-for="ingredient in course.ingredients">
+                                                                    <input id="checkbox1" type="checkbox">
+                                                                    <label for="checkbox1">[[ ingredient.ingredient ]]</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="recipe-instructions">
+                                                                <h3 class="recipe-instructions-title"><i class="fas fa-info"></i>Instructies</h3>
+                                                                <ul class="list-group">
+                                                                    <li class="list-group-item" v-for="instruction in course.instructions">
+                                                                        [[ instruction.instruction ]]
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                          <div class="tab-pane container fade" id="reviews">WIP Reviews</div>
+                                          <div class="tab-pane container fade" id="kookclub">WIP Kookclub</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 sidebar">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3>Media</h3>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="widget-carousel">
+                                        <div id="widget-carousel" class="carousel slide" data-ride="carousel">
+                                            <!-- Indicators -->
+                                            <ul class="carousel-indicators">
+                                                <li data-target="#widget-carousel" v-bind:data-slide-to="image_ix" v-bind:class="{active : image_ix==0}"
+                                                    v-for="(image, image_ix) in this.recipe.images"></li>
+                                            </ul>
+  
+                                            <!-- The slideshow -->
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item" v-bind:class="{active : image_ix==0}" style="background: grey"
+                                                     v-for="(image, image_ix) in this.recipe.images">
+                                                    <img v-bind:src="stream_file_url(api_stream_file_url, image.location)" alt=field width="128" height="128"  style="margin: 5px">
+                                                </div>
+                                            </div>
+                                            <!-- Left and right controls -->
+                                            <a class="carousel-control-prev" href="#widget-carousel" data-slide="prev">
+                                                <span class="carousel-control-prev-icon"></span>
+                                            </a>
+                                            <a class="carousel-control-next" href="#widget-carousel" data-slide="next">
+                                                <span class="carousel-control-next-icon"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3>Categories</h3>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="widget-categories">
+                                        <ul class="list-group" >
+                                            <li class="list-group-item list-group-item-primary" v-for="category in this.recipe.categories">
+                                                <a href="#">[[category]]</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3>Tags</h3>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="widget-tags">
+                                        <ul class="list-group" >
+                                            <li class="list-group-item list-group-item-primary" v-for="tag in this.recipe.tags">
+                                                <a href="#">[[tag]]</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
