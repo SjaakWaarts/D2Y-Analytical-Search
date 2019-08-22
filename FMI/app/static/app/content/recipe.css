@@ -1,0 +1,241 @@
+﻿
+
+/*** Style for DHK ***/
+
+/* DHK sidebar */
+
+.sidebar {
+}
+
+.widget {
+    margin-bottom: 2rem;
+}
+.widget-header {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid;
+    border-color: #d7d7d7;
+}
+
+/* With arrow tabs */
+
+.with-arrow .nav-link.active {
+    position: relative;
+}
+
+    .with-arrow .nav-link.active::after {
+        content: '';
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #2b90d9;
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: block;
+    }
+
+/* lined tabs */
+
+.lined .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+}
+
+    .lined .nav-link:hover {
+        border: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .lined .nav-link.active {
+        background: none;
+        color: #555;
+        border-color: #2b90d9;
+    }
+
+/* DHK recipe */
+
+.recipe {
+}
+
+.recipe-meta {
+}
+
+.recipe .recipe-meta a i {
+    margin-right: 5px;
+    color: #ff4a52;
+    font-size: 14px;
+}
+
+.recipe-actions {
+}
+
+.recipe-actions li {
+    display: inline-block;
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid #d5d5d5;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.recipe-action-hover {
+    position: relative;
+}
+
+.recipe-action-hover:hover div {
+    display: block !important;
+}
+
+.recipe-action-hover-wrap {
+    position: absolute;
+    z-index: 5;
+    display: none;
+    top: 20px;
+    padding-top: 10px;
+    left: 0;
+    text-align: center;
+    overflow: hidden;
+    transition: all 0.9s ease-in-out;
+}
+
+.recipe-action-hover-wrap a {
+    color: #ffffff;
+    background-color: #ff4a52;
+    display: block;
+    padding: 10px 12px;
+}
+
+.recipe-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    background-color: deepskyblue;
+    margin-bottom: 1rem;
+}
+
+.recipe-categories, .recipe-tags {
+    margin: 1rem;
+}
+
+.recipe-categories-list-group-item, .recipe-tags-list-group-item {
+    background-color: silver;
+}
+
+.recipe-categories-list-group-item:hover, .recipe-tags-list-group-item:hover {
+    background-color: gold;
+}
+
+.recipe-ingredients {
+    padding: 15px;
+    background-color: #f8f8f8;
+}
+
+.recipe-ingredient {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.recipe-instructions {
+    padding: 15px;
+    background-color: #fef1f2;
+}
+
+.recipe-ingredients-title, .recipe-instructions-title {
+    margin-bottom: 15px;
+    color: #111111;
+}
+
+.recipe-ingredients-title i, .recipe-instructions-title i {
+    margin-right: 10px;
+    color: #ff4a52;
+}
+
+.recipe-instruction {
+    padding-bottom: 10px;
+    border-bottom: solid;
+    border-color: darkgrey;
+    border-bottom-width: thick;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.recipe-instruction-instruction {
+    padding-left: 10px;
+}
+
+.recipe-instruction-time {
+    padding-left: 10px;
+}
+
+.serial-number {
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid #acacac;
+    height: 105px;
+    width: 100px;
+    padding: 15px 5px;
+}
+
+.serial-number h4 {
+    color: #111111;
+    font-weight: 700;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+.serial-number span {
+    display: block;
+    font-size: 18px;
+}
+
+.recipe-reviews {
+    padding: 5rem;
+    background-color: aliceblue;
+    margin-top: 1rem;
+    margin-bottom: 5rem;
+}
+
+.recipe-leave-review {
+    padding: 5rem;
+    background-color: aliceblue;
+}
+
+.rate-wrapper {
+    display: inline-flex;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.rate-wrapper .rate-label {
+    margin-right: 1rem;
+}
+
+.rate-wrapper .rate {
+    display: inline-flex;
+    color: lightslategray;
+}
+
+.rate-wrapper .rate .selected {
+    display: inline-flex;
+    color: gold;
+}
+
+.rate-wrapper .rate-item:hover ~ .rate-item,
+.rate-wrapper .rate-item.active ~ .rate-item {
+    color: #c9c9c9;
+}
+
+.rate-wrapper .rate-item {
+    cursor: pointer;
+    margin: 0px 5px 0px 5px;
+}
+        

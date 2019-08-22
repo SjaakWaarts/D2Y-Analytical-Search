@@ -246,32 +246,4 @@ a.seeker:hover {color:DarkSlateBlue ;}
 .orange-background {
     background-color: orange;
 }
-
-/* Style for DHK*/
-.widget {
-    margin-bottom: 2rem;
-}
-.widget-header {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid;
-    border-color: #d7d7d7;
-}
-
-.recipe-ingredients {
-    padding: 15px;
-    background-color: #f8f8f8;
-}
-
-.recipe-ingredients-title .recipe-instructions-title {
-    margin-bottom: 15px;
-    color: #111111;
-}
-
-.recipe-instructions {
-    padding: 15px;
-    background-color: #fef1f2;
-}
-
-
-        
+      

@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\static\app\content\dashboard.css" />
+    <Content Include="app\static\app\content\recipe.css" />
     <Content Include="app\static\app\dhk\media\load_recipe.png" />
     <Content Include="app\static\app\dhk\media\search_recipe.png" />
     <Content Include="app\static\app\dhk\scripts\components.js" />

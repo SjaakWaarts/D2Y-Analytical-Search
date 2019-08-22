@@ -19,7 +19,7 @@
 </head>
 
 <body class="d-flex flex-column">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top mb-3">
         {% if site == "IFF" %}
             <a class="navbar-brand" href="{% url 'home' %}">IFF Insight Platform</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb1" aria-expanded="false">
@@ -49,21 +49,20 @@
         {% endif %}
     </nav>
 
-    <div class="container-fluid iff-padding-30 flex-grow-1">
+    <div class="container-fluid iff-padding-30" style="margin-top:4rem; margin-bottom: 2rem">
         <div >
             {% block content %}
             {% endblock %}
         </div>
     </div>
-    <footer>
-        <hr/>
+    <div class="bg-dark text-white fixed-bottom">
         {% if site == "IFF" %}
-            <p>&copy; {{ year }} - Powered by Data Science</p>
+            <p class="mb-0">&copy; {{ year }} - Powered by Data Science</p>
         {% endif %}
         {% if site == "D2Y" %}
-            <p>&copy; {{ year }} - Powered by DOUBLE2YY</p>
+            <p class="mb-0">&copy; {{ year }} - Powered by DOUBLE2YY</p>
         {% endif %}
-    </footer>
+    </div>
 
     <script src="{% static 'assets/jquery/js/jquery.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

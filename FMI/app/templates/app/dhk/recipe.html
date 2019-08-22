@@ -1,40 +1,72 @@
 ﻿{% extends "app/layout.html" %}
 
 
+{% block css %}
+    {% load staticfiles %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/recipe.css' %}" />
+{% endblock %}
+
 {% block content %}
-
-{% load staticfiles %}
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
-
 	<div class="row">
         <div class="col-lg-12" v-if="this.recipe">
-            <div id="root" class="row" style="height: 90%">
+            <div id="root" class="row">
                 <div class="col-lg-12">
-                    <div class="jumbotron" style="padding: 2rem 1rem; margin-top: 1rem">
+                    <div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 1rem">
                         <h2>[[ this.recipe.title ]]</h2>
                         [[ this.recipe.excerpt ]]
+                    </div>
+                    <div class="row">
+                        <div class="recipe-header">
+                            <div class="recipe-categories">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item"><strong>Categories:</strong></li>
+                                    <li class="list-group-item recipe-categories-list-group-item" v-for="category in this.recipe.categories">
+                                        <a href="#">[[category]]</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="recipe-tags">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item"><strong>Tags:</strong></li>
+                                    <li class="list-group-item recipe-tags-list-group-item" v-for="tag in this.recipe.tags">
+                                        <a href="#">[[tag]]</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="recipe">
                                 <div class="row">
-                                    <div class="col-lg-9">
+                                    <div class="col-xl-9 col-12">
                                         <div class="recipe-meta">
                                             <ul class="list-group list-group-horizontal">
-                                                <li class="list-group-item"><a href="#"><i class="far fa-calendar-alt">[[this.recipe.published_date]]</i></a></li>
-                                                <li class="list-group-item"><a href="#"><i class="fas fa-user">[[this.recipe.author]]</i></a></li>
-                                                <li class="list-group-item"><a href="#"><i class="fas fa-start"><span>9/10</span></i></a></li>
-                                                <li class="list-group-item"><a href="#"><i class="fas fa-heart"><span>2</span></i></a></li>
+                                                <li class="list-group-item border-0"><a href="#"><i class="far fa-calendar-alt"></i>[[this.recipe.published_date]]</a></li>
+                                                <li class="list-group-item border-0"><a href="#"><i class="fas fa-user"></i>[[this.recipe.author]]</a></li>
+                                                <li class="list-group-item border-0"><a href="#"><i class="fas fa-star"></i><span>9/10</span></a></li>
+                                                <li class="list-group-item border-0"><a href="#"><i class="fas fa-heart"></i><span>2</span></a></li>
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-xl-3 col-12">
                                         <div class="recipe-actions">
-                                            <ul class="list-group list-group-horizontal">
-                                                <li class="list-group-item"><button><i class="fas fa-print"></i></button></li>
-                                                <li class="list-group-item"><button><i class="fas fa-expand-arrows-alt"></i></button></li>
-                                                <li class="list-group-item"><button><i class="fas fa-share-alt"></i></button></li>
+                                            <ul>
+                                                <li><button><i class="fas fa-print"></i></button></li>
+                                                <li><button><i class="fas fa-expand-arrows-alt"></i></button></li>
+                                                <li class="recipe-action-hover">
+                                                    <button><i class="fas fa-share-alt"></i></button>
+                                                    <div class="recipe-action-hover-wrap">
+                                                        <a href="#" title="facebook"><i class="fab fa-facebook-f"></i></a>
+                                                        <a href="#" title="twitter"><i class="fab fa-twitter"></i></a>
+                                                        <a href="#" title="linkedin"><i class="fab fa-linkedin-in"></i></a>
+                                                        <a href="#" title="pinterest"><i class="fab fa-pinterest-p"></i></a>
+                                                        <a href="#" title="skype"><i class="fab fa-skype"></i></a>
+                                                        <a href="#" title="rss"><i class="fas fa-rss"></i></a>
+                                                    </div>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -42,8 +74,8 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <!-- Nav tabs -->
-                                        <ul class="nav nav-tabs">
-                                            <li class="nav-item" v-for="(course, course_ix) in this.recipe.courses">
+                                        <ul role="tablist" class="nav nav-tabs nav-pills with-arrow lined flex-column flex-sm-row text-center">
+                                            <li class="nav-item flex-sm-fill" v-for="(course, course_ix) in this.recipe.courses">
                                                 <a v-bind:class="{'nav-link':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix">[[course.title]]</a>
                                             </li>
                                             <li class="nav-item">
@@ -54,39 +86,94 @@
                                             </li>
                                         </ul>
                                         <!-- Tab panes -->
-                                        <div class="tab-content">
-                                          <div v-bind:class="{'tab-pane':true, 'container':true, active : course_ix==0}" v-bind:id="'course'+course_ix" v-for="(course, course_ix) in this.recipe.courses">
-                                            <div class="box">
-                                                <div class="box-header">
-                                                    <h3 class="box-title">[[ course.title ]]</h3>
-                                                </div>
-                                                <div class="box-body">
-                                                    <div class="row">
-                                                        <div class="col-lg-6">
-                                                            <div class="recipe-ingredients">
-                                                                <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Ingridients</h3>
-                                                                <div class="checkbox checkbox-primary" v-for="ingredient in course.ingredients">
-                                                                    <input id="checkbox1" type="checkbox">
-                                                                    <label for="checkbox1">[[ ingredient.ingredient ]]</label>
+                                        <div class="tab-content">        
+                                            <div v-bind:class="{'tab-pane':true, 'container':true, active : course_ix==0}" v-bind:id="'course'+course_ix" v-for="(course, course_ix) in this.recipe.courses">
+                                                <div class="box border mt-2 p-1">
+                                                    <div class="box-header">
+                                                        <h3 class="box-title">[[ course.title ]]</h3>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="recipe-ingredients">
+                                                                    <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Ingredienten</h3>
+                                                                    <div class="recipe-ingredient" v-for="(ingredient, index) in course.ingredients">
+                                                                        <div class="custom-control custom-checkbox mb-3">
+                                                                            <input type="checkbox" class="custom-control-input" v-bind:id="'ingredient_cb'+index">
+                                                                            <label class="custom-control-label" v-bind:for="'ingredient_cb'+index">[[ ingredient.ingredient ]]x</label>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <div class="recipe-instructions">
-                                                                <h3 class="recipe-instructions-title"><i class="fas fa-info"></i>Instructies</h3>
-                                                                <ul class="list-group">
-                                                                    <li class="list-group-item" v-for="instruction in course.instructions">
-                                                                        [[ instruction.instruction ]]
-                                                                    </li>
-                                                                </ul>
+                                                            <div class="col-lg-6">
+                                                                <div class="recipe-instructions">
+                                                                    <h3 class="recipe-instructions-title"><i class="fas fa-info"></i>Instructies</h3>
+                                                                    <div class="recipe-instruction" v-for="(instruction, index) in course.instructions">
+                                                                        <div class="serial-number">
+                                                                            <h4>[[ index + 1 ]]</h4>
+                                                                            <span>Stap</span>
+                                                                        </div>
+                                                                        <div class="recipe-instruction-instruction">
+                                                                            <span class="recipe-instruction-time">
+                                                                                <i class="far fa-clock"></i>
+                                                                                Mins
+                                                                            </span>
+                                                                            <p>[[ instruction.instruction ]]</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                          </div>
-                                          <div class="tab-pane container fade" id="reviews">WIP Reviews</div>
-                                          <div class="tab-pane container fade" id="kookclub">WIP Kookclub</div>
+                                            <div class="tab-pane container fade" id="reviews">
+                                                <div class="recipe-reviews">
+                                                    <h2>Reviews</h2>
+                                                </div>
+                                                <div class="recipe-leave-review">
+                                                    <h2 class="item-heading">LEAVE A REVIEW</h2>
+                                                    <div class="rate-wrapper">
+                                                        <div class="rate-label">Rating</div>
+                                                        <div class="rate" v-on:click="rate_click(event)">
+                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                        </div>
+                                                    </div>
+                                                    <form class="leave-form-box">
+                                                        <div class="row">
+                                                            <div class="col-12 form-group">
+                                                                <label>Comment :</label>
+                                                                <textarea placeholder="" class="textarea form-control" name="message" rows="7" cols="20" data-error="Message field is required" required=""></textarea>
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-lg-4 form-group">
+                                                                <label>Name :</label>
+                                                                <input type="text" placeholder="" class="form-control" name="name" data-error="Name field is required" required="">
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-lg-4 form-group">
+                                                                <label>E-mail :</label>
+                                                                <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required="">
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-lg-4 form-group">
+                                                                <label>Website :</label>
+                                                                <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required="">
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-12 form-group mb-0">
+                                                                <button type="submit" class="item-btn">POST REVIEW</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-response"></div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container fade" id="kookclub">WIP Kookclub</div>
                                         </div>
                                     </div>
                                 </div>
