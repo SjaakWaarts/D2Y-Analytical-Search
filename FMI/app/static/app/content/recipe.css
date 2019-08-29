@@ -17,42 +17,6 @@
     border-color: #d7d7d7;
 }
 
-/* With arrow tabs */
-
-.with-arrow .nav-link.active {
-    position: relative;
-}
-
-    .with-arrow .nav-link.active::after {
-        content: '';
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 6px solid #2b90d9;
-        position: absolute;
-        bottom: -6px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: block;
-    }
-
-/* lined tabs */
-
-.lined .nav-link {
-    border: none;
-    border-bottom: 3px solid transparent;
-}
-
-    .lined .nav-link:hover {
-        border: none;
-        border-bottom: 3px solid transparent;
-    }
-
-    .lined .nav-link.active {
-        background: none;
-        color: #555;
-        border-color: #2b90d9;
-    }
-
 /* DHK recipe */
 
 .recipe {
@@ -109,6 +73,7 @@
 .recipe-header {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-around;
     width: 100%;
     background-color: deepskyblue;
@@ -121,6 +86,7 @@
 
 .recipe-categories-list-group-item, .recipe-tags-list-group-item {
     background-color: silver;
+    float: left;
 }
 
 .recipe-categories-list-group-item:hover, .recipe-tags-list-group-item:hover {
@@ -200,13 +166,83 @@
 .recipe-reviews {
     padding: 5rem;
     background-color: aliceblue;
-    margin-top: 1rem;
     margin-bottom: 5rem;
+}
+
+.recipe-reviews .avarage-rating-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.recipe-reviews ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+
+.recipe-reviews .reviews-single-item .media-body {
+    position: relative;
+}
+
+.recipe-reviews .reviews-single-item {
+    position: relative;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    padding: 30px;
+    -webkit-box-shadow: 0px 9px 18px 0px rgba(113, 113, 113, 0.07);
+    -moz-box-shadow: 0px 9px 18px 0px rgba(113, 113, 113, 0.07);
+    box-shadow: 0px 9px 18px 0px rgba(113, 113, 113, 0.07);
+}
+
+.recipe-reviews .reviews-single-item .item-rating {
+    position: inherit;
+    margin-bottom: 5px;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.recipe-reviews .reviews-single-item .item-rating .single-item {
+    display: inline-block;
+}
+
+.recipe-reviews .reviews-single-item .item-rating .star-fill > i {
+    color: #ffb300;
+}
+
+.recipe-reviews .reviews-single-item .item-rating .star-empty > i {
+    color: #d9d9d9;
+}
+
+.recipe-reviews .reviews-single-item .item-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    font-size: 14px;
+    color: #444444;
+    padding: 5px;
+    border-radius: 4px;
+    display: inline-block;
+    transition: all 0.3s ease-out;
 }
 
 .recipe-leave-review {
     padding: 5rem;
     background-color: aliceblue;
+}
+
+.kookclub-wrapper {
+    display: inline-flex;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.kookclub-wrapper .kookclub-label {
+    margin-right: 1rem;
 }
 
 .rate-wrapper {
@@ -219,19 +255,30 @@
     margin-right: 1rem;
 }
 
+/* Rate star selection
+/* 1. all rate-items belong to .rate with certain color
+/* 2. once a rate-item is clicked, the selected class is added to rate. The .rate.selected class kicks in and gold color is active
+/* 3. the :hover pseudo class on .rate takes care of gold color on hover
+/* 4. the :hover pseudo class on .rate-items resets this color from the hovered item until the end
+/* 5. once an rate-item is selected it will be set to active. All the rate-items beyond the active one are reset from the gold color.
+*/
+
 .rate-wrapper .rate {
     display: inline-flex;
     color: lightslategray;
 }
 
-.rate-wrapper .rate .selected {
-    display: inline-flex;
+.rate-wrapper .rate.selected {
+    color: gold;
+}
+
+.rate-wrapper .rate:hover {
     color: gold;
 }
 
 .rate-wrapper .rate-item:hover ~ .rate-item,
 .rate-wrapper .rate-item.active ~ .rate-item {
-    color: #c9c9c9;
+    color: lightslategray;
 }
 
 .rate-wrapper .rate-item {

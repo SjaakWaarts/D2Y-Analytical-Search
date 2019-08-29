@@ -1399,7 +1399,6 @@ recipes = {
     'title'         : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
     'published_date': {'type' : 'date'},
     'author'        : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-    'url'           : {'type' : 'text'},
     'excerpt'       : {'type' : 'text'},
     'description'   : {'type' : 'text'},
     'categories'    :  {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
@@ -1694,7 +1693,7 @@ es_indicis = {
         'sort'          : [],
         'summary'       : [],
         'sumheader'     : [],
-        'SUMMARY_URL'   : "{}",
+        'SUMMARY_URL'   : "/dhk/recipe?id={}",
         'urlfields'     : {"title" : ""},
         'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
         }

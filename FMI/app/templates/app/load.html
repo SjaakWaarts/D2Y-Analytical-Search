@@ -1,148 +1,103 @@
 ﻿{% extends "app/layout.html" %}
 
+{% block css %}
+{% endblock %}
+
 {% block content %}
 
-<div class="page-header">
+<div class="page-header mb-4">
   <h1>Load Datasets {{ title }} <small>A dataset is loaded and indexed on {{ es_hosts.0.host }}</small></h1>
 </div>
 
 <form action="" method="post" class="form-horizontal">
     {% csrf_token %}
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Load and Index an Excel (xlsx) file</h4>
-                            {{ form.excel_choices_field.label_tag }} {{ form.excel_choices_field }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.excel_filename_field.label_tag }} {{ form.excel_filename_field }}<br />
-                            {{ form.excelmap_filename_field.label_tag }} {{ form.excelmap_filename_field }}<br />
-                            {{ form.index_doc_name_field.label_tag }}<br /> {{ form.index_doc_name_field }}
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="load_excel" class="btn btn-primary">Load and Index an Excel File
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="row adminrow">
+        <div class="col-6">
+            <h4>Load and Index an Excel (xlsx) file</h4>
+            {{ form.excel_choices_field.label_tag }} {{ form.excel_choices_field }}
+        </div>
+        <div class="col-3">
+            {{ form.excel_filename_field.label_tag }} {{ form.excel_filename_field }}<br />
+            {{ form.excelmap_filename_field.label_tag }} {{ form.excelmap_filename_field }}<br />
+            {{ form.index_doc_name_field.label_tag }}<br /> {{ form.index_doc_name_field }}
             </div>
+        <div class="col-3">
+            <button type="submit" name="load_excel" class="btn btn-primary">Load and Index an Excel File
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Load and Index a CMIS document</h4>
-                            {{ form.cmis_choices_field.label_tag }} {{ form.cmis_choices_field }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.cmis_foldername_field.label_tag }} {{ form.cmis_foldername_field }}<br />
-                            {{ form.cmis_objtype_field.label_tag }} {{ form.cmis_objtype_field }}<br />
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="load_cmis" class="btn btn-primary">Load and Index a CMIS document
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="row adminrow">
+        <div class="col-6">
+            <h4>Load and Index a CMIS document</h4>
+            {{ form.cmis_choices_field.label_tag }} {{ form.cmis_choices_field }}
+        </div>
+        <div class="col-3">
+            {{ form.cmis_foldername_field.label_tag }} {{ form.cmis_foldername_field }}<br />
+            {{ form.cmis_objtype_field.label_tag }} {{ form.cmis_objtype_field }}<br />
             </div>
+        <div class="col-3">
+            <button type="submit" name="load_cmis" class="btn btn-primary">Load and Index a CMIS document
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Load your mailbox/folder</h4>
-                            {{ form.email_choices_field.label_tag }} {{ form.email_choices_field }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.email_address_field.label_tag }} {{ form.email_address_field }}<br />
-                            {{ form.email_password_field.label_tag }} {{ form.email_password_field }}<br />
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="load_mail" class="btn btn-primary">Load and Index an Mailbox
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="row adminrow">
+        <div class="col-6">
+            <h4>Load your mailbox/folder</h4>
+            {{ form.email_choices_field.label_tag }} {{ form.email_choices_field }}
+        </div>
+        <div class="col-3">
+            {{ form.email_address_field.label_tag }} {{ form.email_address_field }}<br />
+            {{ form.email_password_field.label_tag }} {{ form.email_password_field }}<br />
             </div>
+        <div class="col-3">
+            <button type="submit" name="load_mail" class="btn btn-primary">Load and Index an Mailbox
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Load Recipes <a href="http://www.deheerlijkekeuken.nl" target="_blank">de Heerlijke Keuken</a></h4>
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.recipes_foldername_field.label_tag }} {{ form.recipes_foldername_field }}
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="load_recipes" class="btn btn-primary">Load Recipes
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="row adminrow">
+        <div class="col-6">
+            <h4>Load Recipes <a href="http://www.deheerlijkekeuken.nl" target="_blank">de Heerlijke Keuken</a></h4>
+        </div>
+        <div class="col-3">
+            {{ form.recipes_foldername_field.label_tag }} {{ form.recipes_foldername_field }}
             </div>
+        <div class="col-3">
+            <button type="submit" name="load_recipes" class="btn btn-primary">Load Recipes
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Load Scent Emotion <a href="http://apps.iff.com/CFT" target="_blank">Scent Emotion site</a></h4>
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.cft_filename_field.label_tag }} {{ form.cft_filename_field }}
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="load_scentemotion" class="btn btn-primary">Load Scent Emontion
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="row adminrow">
+        <div class="col-6">
+            <h4>Load Scent Emotion <a href="http://apps.iff.com/CFT" target="_blank">Scent Emotion site</a></h4>
+        </div>
+        <div class="col-3">
+            {{ form.cft_filename_field.label_tag }} {{ form.cft_filename_field }}
             </div>
+        <div class="col-3">
+            <button type="submit" name="load_scentemotion" class="btn btn-primary">Load Scent Emontion
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Load Survey <a href="https://teamsites.iff.com/fragrances/ods" target="_blank">CI Surveys</a></h4>
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.ci_filename_field.label_tag }} {{ form.ci_filename_field }}
-                            {{ form.cimap_filename_field.label_tag }} {{ form.cimap_filename_field }}
-                         </div>
-                        <div class="col-md-3">
-                            <button type="submit" name="map_survey" class="btn btn-primary">Map and Crawl CI Survey
-                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="row adminrow">
+        <div class="col-6">
+            <h4>Load Survey <a href="https://teamsites.iff.com/fragrances/ods" target="_blank">CI Surveys</a></h4>
+        </div>
+        <div class="col-3">
+            {{ form.ci_filename_field.label_tag }} {{ form.ci_filename_field }}
+            {{ form.cimap_filename_field.label_tag }} {{ form.cimap_filename_field }}
             </div>
+        <div class="col-3">
+            <button type="submit" name="map_survey" class="btn btn-primary">Map and Crawl CI Survey
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-4">
         {% if form.errors %}
             <p class="validation-summary-errors">Errors detected.</p>
             {% for field in form %}

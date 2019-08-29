@@ -1,17 +1,17 @@
 ﻿{% extends "app/layout.html" %}
 
+{% block css %}
+    {% load staticfiles %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/dropzone/css/dropzone.min.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/dropzone.css' %}" />
+{% endblock %}
 
 {% block content %}
 
-<div class="page-header">
-  <h1>de Heerlijke Keuken <small>Recepten</small></h1>
-</div>
-
-{% load staticfiles %}
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'assets/dropzone/css/dropzone.min.css'%}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
-
+    <div class="page-header">
+      <h1>de Heerlijke Keuken <small>Recepten</small></h1>
+    </div>
 	<div class="row">
         <div class="col-lg-12">
             <div class="row">
@@ -24,15 +24,15 @@
                             <div id="actions" class="row">
                                 <div class="col-lg-12">
                                     <!-- The fileinput-button span is used to style the file input field as button -->
-                                    <span class="btn fileinput-button">
+                                    <span class="btn fileinput-button btn-primary">
                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                         <span>Voeg bestanden toe</span>
                                     </span>
-                                    <button id="start_opnamen_btn" type="submit" class="btn start">
+                                    <button id="start_opnamen_btn" type="submit" class="btn start btn-success">
                                         <i class="fa fa-upload" aria-hidden="true"></i>
                                         <span>Start opname</span>
                                     </button>
-                                    <button type="reset" class="btn cancel">
+                                    <button type="reset" class="btn cancel btn-warning">
                                         <i class="fa fa-ban" aria-hidden="true"></i>
                                         <span>Annuleer opname</span>
                                     </button>
@@ -61,7 +61,7 @@
                                                 <i class="fa fa-upload" aria-hidden="true"></i>
                                                 <span>Opname</span>
                                             </button>
-                                            <button data-dz-remove class="btn cancel divault-bg-red">
+                                            <button data-dz-remove class="btn cancel btn-warning">
                                                 <i class="fa fa-ban" aria-hidden="true"></i>
                                                 <span>Annuleer</span>
                                             </button>
@@ -79,7 +79,7 @@
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Recipes</h3>
-                        </div>current_recipe
+                        </div>
                         <div class="box-body">
                             <div class="table-responsive">
                                 <table id="recipe_table" class="table table-hover">
@@ -93,7 +93,7 @@
                                         <tr v-for="hit in hits"
                                             v-on:click="current_recipe = hit"
                                             v-bind:class="{active : current_recipe==hit}">
-                                            <td style="width:60%;"><a href="#">[[ hit._source.id ]]</a></td>
+                                            <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.id ]]</a></td>
                                             <td style="width:20%;" class="text-center">
                                                 <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye divault-blue" title="Beheer" aria-hidden="true"></i></a>
                                                 <a href="#" v-on:click="remove_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>

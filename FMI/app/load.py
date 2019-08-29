@@ -34,7 +34,7 @@ import app.wb_excel as wb_excel
 import app.elastic as elastic
 import app.survey as survey
 import app.mail as mail
-import app.dhk.dhk as dhk
+import app.dhk.dhk_admin as dhk_admin
 from FMI.settings import BASE_DIR, ES_HOSTS
 
 driver = None
@@ -628,7 +628,7 @@ def load_recipes(recipes_foldername):
             fullname = os.path.join(recipes_foldername, filename)
             if os.path.isfile(fullname) and filename[0] != '~':
                 if os.path.splitext(filename)[1] == '.docx':
-                    dhk.ingest_recipe(fullname)
+                    dhk_admin.ingest_recipe(fullname)
                     print("load_recipe: written recipe with id", filename)
 
 

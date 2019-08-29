@@ -1,15 +1,18 @@
 ﻿{% extends "app/layout.html" %}
 
+{% block css %}
+{% endblock %}
+
 {% block content %}
 
-<div class="page-header">
+<div class="page-header mb-4">
   <h1>Admin <small>Maintain Index for Crawled Sites</small></h1>
 </div>
 
 
 <form action="" method="post" class="form-horizontal">
     {% csrf_token %}
-    <div class="row">
+    <div class="row adminrow">
         <div class="col-md-4">
             {{ form.excel_filename_field.label_tag }} {{ form.excel_filename_field }}<br />
             {{ form.index_choices_field.label_tag }} {{ form.index_choices_field }}
@@ -26,7 +29,7 @@
             </button>
         </div>
     </div>
-    <div class="row">
+    <div class="row adminrow">
         <div class="col-md-3">
             {{ form.auth_group_choices_field.label_tag }} {{ form.auth_group_choices_field }}
         </div>
@@ -45,7 +48,7 @@
             </button>
         </div>
     </div>
-    <div class="row">
+    <div class="row adminrow">
         <div class="col-md-4">
             {{ form.opml_filename_field.label_tag }} {{ form.opml_filename_field }}
         </div>
@@ -58,7 +61,7 @@
             </button>
             </div>
     </div>
-    <div class="row">
+    <div class="row adminrow">
         <div class="col-md-4">
             {{ form.keyword_filename_field.label_tag }} {{ form.keyword_filename_field }}
         </div>
@@ -68,7 +71,7 @@
             </button>
         </div>
     </div>
-    <div class="row">
+    <div class="row adminrow">
         <div class="col-md-12">
             <button type="submit" class="btn btn-primary" name="save_conf" value="save_conf">Safe Configuration
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span>

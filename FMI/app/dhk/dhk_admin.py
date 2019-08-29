@@ -244,7 +244,7 @@ def load_recipe(recipe_fullname, recipe_basename, namelist):
     recipe = {}
     recipe['id'] = recipe_basename
     recipe['title'] = recipe_basename
-    recipe['url'] = 'http://www.deheerlijkekeuken.nl/' + recipe_basename
+    #recipe['url'] = 'http://www.deheerlijkekeuken.nl/' + recipe_basename
     recipe['excerpt'] = ""
     recipe['description'] = []
     recipe['categories'] = []
