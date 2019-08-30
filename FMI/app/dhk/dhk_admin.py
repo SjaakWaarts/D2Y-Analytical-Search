@@ -231,7 +231,7 @@ def iter_block_items(parent):
         elif isinstance(child, docx.oxml.table.CT_Tbl):
             yield Table(child, parent)
 
-def load_recipe(recipe_fullname, recipe_basename, namelist):
+def load_recipe(filename, recipe_fullname, recipe_basename, namelist):
     es_host = ES_HOSTS[0]
     headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
@@ -243,13 +243,15 @@ def load_recipe(recipe_fullname, recipe_basename, namelist):
 
     recipe = {}
     recipe['id'] = recipe_basename
-    recipe['title'] = recipe_basename
+    recipe['title'] = os.path.splitext(filename)[0]
     #recipe['url'] = 'http://www.deheerlijkekeuken.nl/' + recipe_basename
     recipe['excerpt'] = ""
     recipe['description'] = []
     recipe['categories'] = []
     recipe['tags'] = []
     recipe['images'] = []
+    recipe['cooking_clubs'] = []
+    recipe['reviews'] = []
     recipe['courses'] = []
 
     image_type = "featured"
@@ -309,7 +311,7 @@ def load_recipe(recipe_fullname, recipe_basename, namelist):
     print("load_recipe: written recipe with id", recipe_basename)
 
 
-def ingest_recipe(recipe_fullname):
+def ingest_recipe(filename, recipe_fullname):
     recipe_filename = os.path.basename(recipe_fullname)
     recipe_basename, recipe_ext = os.path.splitext(recipe_filename)
     recipe_basename = slugify(recipe_basename)
@@ -321,12 +323,13 @@ def ingest_recipe(recipe_fullname):
     namelist = zip_ref.namelist()
     zip_ref.extractall(zip_dirname)
     zip_ref.close()
-    load_recipe(recipe_fullname, recipe_basename, namelist)
+    load_recipe(filename, recipe_fullname, recipe_basename, namelist)
     os.remove(recipe_fullname)
     os.remove(zip_fullname)
 
 def upload_file(request):
     request_file = request.FILES['file']
+    filename = request_file.name
     dropdown_filename = request_file.name
     dropdown_file_handler = request_file.file
     dropdown_basename, dropdown_ext = os.path.splitext(dropdown_filename)
@@ -347,7 +350,7 @@ def upload_file(request):
         zip_ref.extractall(zip_dirname)
         zip_ref.close()
     elif dropdown_ext == '.docx':
-        ingest_recipe(dropdown_fullname)
+        ingest_recipe(filename, dropdown_fullname)
 
     return HttpResponse( {'succes': 'Bestand succesvol geüpload'}, content_type='application/json')
 

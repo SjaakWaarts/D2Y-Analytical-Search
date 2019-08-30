@@ -128,6 +128,8 @@ def set_workbook(workbook_name):
     models.ExcelSeekerView.urlfields = es_index['urlfields']
     models.ExcelSeekerView.tabs = es_index['tabs']
     models.ExcelSeekerView.workbooks = wb_excel.workbooks
+    url = workbook.get('url', 'search_excel')
+    return url
 
 def search_workbook(request):
     # prepare search_excel with the right
@@ -141,8 +143,8 @@ def search_workbook(request):
     if workbook_name == 'tmlo':
         access =  user.has_perm('auth.edepot')
 
-
-    set_workbook(workbook_name)
+    url = set_workbook(workbook_name)
+    url = reverse(url)
 
     kwargs={}
     kwargs['workbook_name'] = workbook_name
@@ -151,7 +153,6 @@ def search_workbook(request):
     for arg, arg_value in request.GET.items():
         kwargs[arg] = arg_value
 
-    url = reverse('search_excel')
     params = urllib.parse.urlencode(kwargs)
     #return redirect('search_excel')
     return HttpResponseRedirect(url + "?%s" % params)
@@ -678,7 +679,7 @@ def dhk_view(request):
     """Renders dhk page."""
     return render(
         request,
-        'app/dhk.html',
+        'app/dhk/dhk.html',
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 

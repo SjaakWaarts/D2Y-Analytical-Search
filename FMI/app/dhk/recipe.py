@@ -15,6 +15,9 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import requires_csrf_token
+from django.views.decorators.csrf import ensure_csrf_cookie
 import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
@@ -68,4 +71,20 @@ def get_recipe(request):
         'recipe'  : recipe,
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
+
+# prevent CsrfViewMiddleware from reading the POST stream
+#@csrf_exempt
+@requires_csrf_token
+def post_recipe(request):
+    # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
+    json_data = json.loads(request.body)
+    recipe = json_data.get('recipe', None)
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
+    context = {
+        'recipe' : recipe
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
 

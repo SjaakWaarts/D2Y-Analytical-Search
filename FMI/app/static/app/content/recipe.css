@@ -11,10 +11,20 @@
     margin-bottom: 2rem;
 }
 .widget-header {
+    position: relative;
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 1px solid;
     border-color: #d7d7d7;
+}
+.widget-header:before {
+    position: absolute;
+    content: "";
+    bottom: -2px;
+    left: 0;
+    background-color: #ff4a52;
+    height: 3px;
+    width: 50px;
 }
 
 /* DHK recipe */
@@ -175,6 +185,12 @@
     justify-content: space-between;
     margin-bottom: 20px;
     flex-wrap: wrap;
+}
+
+.recipe-reviews .post-date {
+    margin-bottom: 10px;
+    display: block;
+    color: #a1a1a1;
 }
 
 .recipe-reviews ul {

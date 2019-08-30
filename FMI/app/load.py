@@ -628,7 +628,7 @@ def load_recipes(recipes_foldername):
             fullname = os.path.join(recipes_foldername, filename)
             if os.path.isfile(fullname) and filename[0] != '~':
                 if os.path.splitext(filename)[1] == '.docx':
-                    dhk_admin.ingest_recipe(fullname)
+                    dhk_admin.ingest_recipe(filename, fullname)
                     print("load_recipe: written recipe with id", filename)
 
 

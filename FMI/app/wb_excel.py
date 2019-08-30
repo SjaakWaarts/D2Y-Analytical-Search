@@ -1411,10 +1411,28 @@ recipes = {
             'location'  : {'type' : 'text'}
             }
         },
+    'cooking_clubs' : {
+        'type'      : 'nested',
+        'properties': {
+            'cook'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'cooking_date': {'type' : 'date'},
+            'address'  : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'location' : {"properties": {"lat": {"type": "float"}, "lng": {"type": "float"}}},
+            'club'     : {
+                'type'       : 'nested',
+                'properties' : {
+                    'user'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                    }
+                }
+            }
+        },
     'reviews'       : {
         'type'       : 'nested',
         'properties' : {
-            'review': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            'user': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'review_date': {'type' : 'date'},
+            'review': {'type' : 'text'},
+            'stars': {'type' : 'integer'}
             }
         },
     'nutrition'     : {
@@ -1702,7 +1720,6 @@ es_indicis = {
 workbooks = {
     'ecosystem' : {
         'es_index'      : es_indicis['ecosystem'],
-        'url'           : '/search_workbook?',
         'display'       : [],
         'facets'        : ["aop.keyword", "role.keyword", "country.keyword", "company.keyword"],
         'tiles'         : [],
@@ -1719,7 +1736,6 @@ workbooks = {
         },
     'ingr_molecules' : {
         'es_index'      : es_indicis['ingr_molecules'],
-        'url'           : '/search_workbook?',
         'display'       : ["IPC", "name", "uptake", "year", "bucket", "FITTE_norm", "CIU", "regulator"],
         'facets'        : ["IPC.keyword", "name.keyword", "uptake.keyword", "year.keyword", "bucket.keyword", "flavor_classes.keyword", "regulator.keyword"],
         'tiles'         : ["year.keyword", "regulator.keyword", "bucket.keyword", "flavor_classes.keyword"],
@@ -1740,7 +1756,6 @@ workbooks = {
         },
     'patents' : {
         'es_index'      : es_indicis['patents'],
-        'url'           : '/search_workbook?',
         'display'       : ["title","category", "assignee", "publication", "published_date"],
         'facets'        : ["category.keyword", "published_date", "assignee.keyword"],
         'tiles'         : ["category"],
@@ -1757,7 +1772,6 @@ workbooks = {
         },
     'sensory' : {
         'es_index'      : es_indicis['sensory'],
-        'url'           : '/search_workbook?',
         'display'       : ["blindcode", "stage", "resp_id", "smell", "taste", "sensory_attr", "sensory_hedonics"],
         'facets'        : ["subset.keyword", "country.keyword", "blindcode.keyword", "category.keyword", "category.keyword", "flavor_name.keyword",
                            "sensory_attr.val.keyword", "sensory_hedonics.val.keyword", "perception.val.keyword",
@@ -1815,8 +1829,8 @@ workbooks = {
         'filters'       : {}
         },
     'tmlo' : {
+        'url'           : 'search_excel',
         'es_index'      : es_indicis['tmlo'],
-        'url'           : '/search_workbook?',
         'display'       : ["Identificatiekenmerk", "Aggregatieniveau","Openbaarheid.Indicatie", "Namen"],
         'facets'        : ["Aggregatieniveau", "Openbaarheid.Indicatie", "Vertrouwelijkheid.Indicatie",
                            "Vorm.GenreOfRedactie.keyword", "Classificaties.Code",
@@ -1838,8 +1852,8 @@ workbooks = {
         'filters'       : {}
         },
     'dhk' : {
+        'url'           : 'dhk/search',
         'es_index'      : es_indicis['dhk'],
-        'url'           : '/search_workbook?',
         'display'       : ["title", "excerpt", "categories", "tags", "images.location", "image"],
         'facets'        : ["categories.keyword", "tags.keyword"],
         'tiles'         : [],

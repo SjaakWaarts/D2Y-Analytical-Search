@@ -421,6 +421,20 @@ def search_query(es_host, index, q, doc_type=None):
         logging.error('ES search failed, error {}.'.format(r.text))
     return r
 
+def update_doc(es_host, index, id, doc, doc_type=None):
+    headers = {'Content-Type': 'application/json'}
+    if 'http_auth' in es_host:
+        headers['http_auth'] = es_host['http_auth']
+    host = es_host['host']
+    if doc_type is None:
+        doc_type = index
+    url = "http://" + host + ":9200" + "/" + index
+    data = json.dumps({'doc' : doc})
+    r = requests.post(url + "/" + doc_type + "/" + id + "/_update", headers=headers, data=data)
+    if r.status_code >= 400:
+        logging.error('ES update failed, error {}.'.format(r.text))
+    return r
+
 def get_field_nesting(nested_field, hit, default_field_value):
     field_value = hit['_source']
     fields = nested_field.split('.')

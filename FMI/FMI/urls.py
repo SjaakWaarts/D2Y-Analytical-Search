@@ -39,6 +39,8 @@ urlpatterns = [
     path('dhk/get_uploaded_files', app.dhk.dhk_admin.get_uploaded_files, name='dhk/get_uploaded_files'),
     path('dhk/recipe', app.dhk.recipe.recipe_view, name='dhk/recipe'),
     path('dhk/get_recipe', app.dhk.recipe.get_recipe, name='dhk/get_recipe'),
+    path('dhk/post_recipe', app.dhk.recipe.post_recipe, name='dhk/post_recipe'),
+    path('dhk/search', models.ExcelSeekerView.as_view(), name='dhk/search'),
 
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),

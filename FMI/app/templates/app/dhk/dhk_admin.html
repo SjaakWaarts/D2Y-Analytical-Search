@@ -1,4 +1,4 @@
-﻿{% extends "app/layout.html" %}
+﻿{% extends "app/dhk/dhk_layout.html" %}
 
 {% block css %}
     {% load staticfiles %}
@@ -93,7 +93,7 @@
                                         <tr v-for="hit in hits"
                                             v-on:click="current_recipe = hit"
                                             v-bind:class="{active : current_recipe==hit}">
-                                            <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.id ]]</a></td>
+                                            <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.title ]]</a></td>
                                             <td style="width:20%;" class="text-center">
                                                 <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye divault-blue" title="Beheer" aria-hidden="true"></i></a>
                                                 <a href="#" v-on:click="remove_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
@@ -121,6 +121,7 @@
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
         <script src="{% static 'assets/dropzone/js/dropzone.min.js' %}"></script>
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
         <script src="{% static 'app/dhk/scripts/components.js' %}"></script>
         <script src="{% static 'app/dhk/scripts/dhk_admin.js' %}"></script>
 {% endblock %}

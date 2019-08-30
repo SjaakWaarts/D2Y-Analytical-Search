@@ -1,4 +1,4 @@
-﻿{% extends "app/layout.html" %}
+﻿{% extends "app/dhk/dhk_layout.html" %}
 
 
 {% block css %}
@@ -37,18 +37,18 @@
                                     </ul>
                                 </div>
                                 <div class="rate-wrapper" style="align-self: center">
-                                    <div class="rate-label">Rating</div>
-                                    <div class="rate" v-on:click="rate_click(event)">
-                                        <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                        <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                        <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                        <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                        <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                    <div class="rate-label">Review</div>
+                                    <div id="header_rate" class="rate" v-on:click="rate_click(event)">
+                                        <div id="header_rate_1" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                        <div id="header_rate_2" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                        <div id="header_rate_3" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                        <div id="header_rate_4" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                        <div id="header_rate_5" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
                                     </div>
                                 </div>
-                                <div class="kookclub-wrapper">
-                                    <div class="kookclub-label">Kook</div>
-                                    <a href="#"><i class="far fa-calendar-alt mr-1"></i>Datum</a>
+                                <div class="kookclub-wrapper" style="align-self: center">
+                                    <div class="kookclub-label">Kookclub</div>
+                                    <a href="#"><i class="fas fa-users mr-2"></i><i class="far fa-calendar-alt mr-1"></i>Datum</a>
                                 </div>
                             </div>
                         </div>
@@ -92,13 +92,13 @@
                                         <!-- Nav tabs -->
                                         <ul class="nav nav-tabs">
                                             <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)" v-for="(course, course_ix) in this.recipe.courses">
-                                                <a v-bind:class="{'nav-link':true, 'w-100':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix">[[course.title]]</a>
+                                                <a v-bind:class="{'nav-link':true, 'w-100':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix"><i class="fas fa-utensils mr-2"></i>[[course.title]]</a>
                                             </li>
                                             <li class="nav-item" style="width:20%; display:flex">
-                                                <a class="nav-link w-100" data-toggle="tab" href="#reviews">Reviews</a>
+                                                <a class="nav-link w-100" data-toggle="tab" href="#reviews"><i class="far fa-comments mr-2"></i>Reviews</a>
                                             </li>
                                             <li class="nav-item" style="width:20%; display:flex" v-on:click="kookclub_tab_click()">
-                                                <a class="nav-link w-100" data-toggle="tab" href="#kookclub">Kookclub</a>
+                                                <a class="nav-link w-100" data-toggle="tab" href="#kookclub"><i class="fas fa-users mr-2"></i>Kookclub</a>
                                             </li>
                                         </ul>
                                         <!-- Tab panes -->
@@ -158,25 +158,23 @@
                                                                 <i class="fas fa-star"></i>
                                                                 <i class="fas fa-star"></i>
                                                             </span>
-                                                            <span class="rating-number">(5)</span>                                        
+                                                            <span class="rating-number">[[average_rating]] / 5</span>                                        
                                                         </div>
-                                                        <div class="total-reviews">Total Reviews:<span class="review-number">(02)</span></div>
+                                                        <div class="total-reviews">Total Reviews:<span class="review-number">([[recipe.reviews.length]])</span></div>
                                                     </div>
                                                     <ul>
-                                                        <li class="reviews-single-item">
+                                                        <li class="reviews-single-item" v-for="(review, index) in recipe.reviews">
                                                             <div class="media media-none--xs">
                                                                 <div class="media-body">
-                                                                    <h4 class="comment-title">Liza Zaman</h4>
-                                                                    <span class="post-date">September 27, 2018</span>
-                                                                    <p>Absolutely great recipe. I cooked it for my kids and they loved it, even
-                                                                        asked for more, can you believe it?</p>
+                                                                    <h4 class="comment-title">[[review.user]]</h4>
+                                                                    <span class="post-date">[[review.review_date]]</span>
+                                                                    <p>[[review.review]]</p>
                                                                     <ul class="item-rating p-0">
-                                                                        <li class="single-item star-fill"><i class="fas fa-star"></i></li>
-                                                                        <li class="single-item star-fill"><i class="fas fa-star"></i></li>
-                                                                        <li class="single-item star-fill"><i class="fas fa-star"></i></li>
-                                                                        <li class="single-item star-fill"><i class="fas fa-star"></i></li>
-                                                                        <li class="single-item star-empty"><i class="fas fa-star"></i></li>
-                                                                        <li class="single-item"><span>9<span> / 10</span></span> </li>
+                                                                        <li v-bind:class="{'single-item':true, 'star-fill':n<=review.stars, 'star-empty':n>review.starts}"
+                                                                            v-for="n in 5" :key="n">
+                                                                            <i class="fas fa-star"></i>
+                                                                        </li>
+                                                                        <li class="single-item"><span>[[review.stars]] / 5</span> </li>
                                                                     </ul>
                                                                     <a href="#" class="item-btn">REPLY<i class="fas fa-long-arrow-alt-right"></i></a>
                                                                 </div>
@@ -188,35 +186,38 @@
                                                     <h2 class="item-heading">LEAVE A REVIEW</h2>
                                                     <div class="rate-wrapper">
                                                         <div class="rate-label">Rating</div>
-                                                        <div class="rate" v-on:click="rate_click(event)">
-                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                        <div id="comment_rate" class="rate" v-on:click="rate_click(event)">
+                                                            <div id="comment_rate_1" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div id="comment_rate_2" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div id="comment_rate_3" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div id="comment_rate_4" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+                                                            <div id="comment_rate_5" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
                                                         </div>
                                                     </div>
                                                     <div class="leave-form-box">
                                                         <div class="row">
                                                             <div class="col-12 form-group">
                                                                 <label>Comment :</label>
-                                                                <textarea placeholder="" class="textarea form-control" name="message" rows="7" cols="20" data-error="Message field is required" required=""></textarea>
+                                                                <textarea id="comment_textarea" placeholder="" class="textarea form-control" name="message" rows="7" cols="20"
+                                                                          data-error="Message field is required" required=""></textarea>
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
                                                                 <label>Name :</label>
                                                                 <input type="text" placeholder="" class="form-control" name="name" data-error="Name field is required" required=""
-                                                                       v-model="leave_review.comment">
+                                                                       v-model="leave_review.name">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
                                                                 <label>E-mail :</label>
-                                                                <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required="">
+                                                                <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required=""
+                                                                       v-model="leave_review.email">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
                                                                 <label>Website :</label>
-                                                                <input type="email" placeholder="" class="form-control" name="website">
+                                                                <input type="email" placeholder="" class="form-control" name="website"
+                                                                       v-model="leave_review.website">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-12 form-group mb-0">
@@ -297,6 +298,7 @@
     </div>
     {% csrf_token %}
 	<input type="hidden" name="get_recipe_url" value="{% url 'dhk/get_recipe' %}">
+    <input type="hidden" name="post_recipe_url" value="{% url 'dhk/post_recipe' %}">
     <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
 
 
@@ -312,6 +314,7 @@
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl4shlG7ca_SneqGEEOswOyJuxpqA4KKk"></script>
         <script src="{% static 'assets/googlemaps/js/markerclusterer.js' %}"></script>
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
         <script src="{% static 'app/dhk/scripts/components.js' %}"></script>
         <script src="{% static 'app/dhk/scripts/recipe.js' %}"></script>
 {% endblock %}

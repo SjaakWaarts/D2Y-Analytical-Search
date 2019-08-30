@@ -21,6 +21,7 @@
 //var csrf_token = $("input[name=csrf_token]").val();
 var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
 var get_recipe_url = $("input[name=get_recipe_url]").val();
+var post_recipe_url = $("input[name=post_recipe_url]").val();
 var api_stream_file_url = $("input[name=api_stream_file_url]").val();
 
 //Vue part
@@ -31,15 +32,17 @@ var app = new Vue({
     data: {
         iframe_src: null,
         id : '',
-        recipe : null,
+        recipe: null,
+        average_rating : 0,
         hits: [],
         shopping_basket: [],
         leave_review: {
             'comment': "",
+            'name': "",
             'email': "",
-            'website' : ""
+            'website': "",
+            'stars' : 0
         },
-        kookclub : []
     },
     methods: {
         bind_stream_file_url(url, location) {
@@ -52,10 +55,42 @@ var app = new Vue({
         get_recipe: function () {
             this.$http.get(get_recipe_url, { params: { id: this.id }}).then(response => {
                 this.recipe = response.body.recipe;
+                if (this.recipe.reviews.length == 0) {
+                    this.average_rating = 0;
+                } else {
+                    var total_stars = 0;
+                    for (var ix = 0; ix < this.recipe.reviews.length; ix++) {
+                        total_stars += this.recipe.reviews[ix].stars;
+                    }
+                    this.average_rating = Math.ceil(total_stars / this.recipe.reviews.length);
+                }
             });
         },
         leave_review_click: function () {
-            var comment = this.leave_review.comment;
+            var review = {};
+            var textarea_tag = document.getElementById("comment_textarea");
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = yyyy + '-' + mm + '-' + dd;
+            review.user = this.leave_review.name;
+            review.review_date = today;
+            review.review = textarea_tag.value;
+            review.stars = this.leave_review.stars;
+            this.recipe.reviews.push(review)
+            this.post_recipe();
+        },
+        post_recipe: function () {
+            var csrftoken_cookie = getCookie('csrftoken');
+            var headers = { 'X-CSRFToken': csrftoken_cookie }
+            this.$http.post(post_recipe_url, {
+                'csrfmiddlewaretoken': csrftoken,
+                'recipe': this.recipe,
+            },
+                { 'headers': headers }).then(response => {
+                this.recipe = response.body.recipe;
+            });
         },
         rate_click: function(event) {
             var i_tag = event.target;
@@ -67,6 +102,7 @@ var app = new Vue({
                 active_rate_item_tag[0].classList.remove('active');
             }
             rate_item_tag.classList.add('active');
+            this.leave_review.stars = Number(rate_item_tag.id.slice(-1));
         },
         recipe_ingredient_click: function (event, ingredient) {
             var checkbox_tag = event.target;
@@ -87,6 +123,9 @@ var app = new Vue({
         kookclub_tab_click: function () {
             var div_name = 'GoogleMap';
             this.draw_map(div_name);
+        },
+        kookclub_join_marker_click: function (cooking_club) {
+            var cook = cooking_club.cook;
         },
         draw_map: function (elm_id) {
             var gmap_div = document.getElementById(elm_id);
@@ -120,12 +159,12 @@ var app = new Vue({
             //            label: label
             //        });
             //});
-            for (var rownr = 0; rownr < this.kookclub; rownr++) {
-                var row = this.kookclub[rownr];
+            for (var rownr = 0; rownr < this.recipe.cooking_clubs; rownr++) {
+                var cooking_club = this.recipe.cooking_clubs[rownr];
                 label = labels[rownr % labels.length];
                 var position = null;
-                if (row.coord.lat != 0 && row.coord.lng != 0) {
-                    position = new google.maps.LatLng(parseFloat(row.coord.lat), parseFloat(row.coord.lng));
+                if (cooking_club.location.lat != 0 && cooking_club.location.lng != 0) {
+                    position = new google.maps.LatLng(parseFloat(cooking_club.location.lat), parseFloat(cooking_club.location.lng));
                     var marker = new google.maps.Marker({
                         position: position,
                         map: map,
@@ -133,18 +172,17 @@ var app = new Vue({
                     });
                     markers.push(marker);
                     bounds.extend(marker.position);
-                    google.maps.event.addListener(marker, 'click', (function (marker, label, row) {
+                    google.maps.event.addListener(marker, 'click', (function (marker, label, cooking_club) {
                         return function () {
-                            //infowindow.setContent(label + 'bevat dossier ' + row.identificatiekenmerk);
-                            //infowindow.open(map, marker);
-                            //app.filter_facets.rel_id_path.push(row.identificatiekenmerk);
-                            //app.path_search();
-                            app.getXml(row.identificatiekenmerk);
+                            infowindow.setContent(label + 'kok ' + cooking_club.cook);
+                            infowindow.open(map, marker);
+                            app.kookclub_join_marker_click(cooking_club);
                         }
-                    })(marker, label, row));
+                    })(marker, label, cooking_club));
                 } else {
-                    if (row.adres.length > 2 && row.plaats != '') {
-                        address = row.adres + ',' + row.plaats;
+                    if (cooking_club.address.length > 2) {
+                        //address = row.adres + ',' + row.plaats;
+                        address = cooking_club.address;
                         var marker_label = label;
                         // asynchroon
                         //geocoder.geocode({ 'address': address, 'region': 'nl' }, function (results, status) {
