@@ -251,6 +251,45 @@
     background-color: aliceblue;
 }
 
+.kookclub-events {
+    padding: 1rem;
+    background-color: aliceblue;
+    margin-bottom: 2rem;
+}
+
+.kookclub-events .kookclub-map-event {
+    display: flex;
+    flex-direction: row;
+}
+
+.kookclub-events .kookclub-map-event .kookclub-map {
+    width: 50%;
+}
+
+.kookclub-events .kookclub-map-event .koopclub-event {
+    width: 50%;
+    margin-left: 1rem;
+}
+
+.kookclub-modal {
+}
+
+.kookclub-modal .kookclub-modal-header {
+    color: red;
+    font-size: 1.2rem;
+}
+
+.kookclub-modal .kookclub-club {
+    font-size: 1rem;
+}
+
+.kookclub-modal .cooking-club-join {
+    font-size: 0.8rem;
+    border: 1px solid;
+    border-color: lightgray;
+    padding: 0.5rem;
+}
+
 .kookclub-wrapper {
     display: inline-flex;
     margin-bottom: 1rem;

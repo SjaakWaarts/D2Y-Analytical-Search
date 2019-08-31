@@ -10,6 +10,8 @@ import shutil
 import json
 import urllib
 import requests
+from geopy.exc import GeopyError
+from geopy.geocoders import Nominatim
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.http import HttpResponse
@@ -82,6 +84,15 @@ def post_recipe(request):
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
     result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
+    # Get the position from the address
+    if len(recipe['cooking_clubs']) > 0:
+        cooking_club = recipe['cooking_clubs'][-1]
+        if 'position'not in cooking_club and len(cooking_club['address']) > 2:
+            try:
+                geolocator = Nominatim(user_agent="dhk")
+                cooking_club['position'] = geolocator.geocode(cooking_club['address'])
+            except (AttributeError, GeopyError):
+                pass
     context = {
         'recipe' : recipe
         }

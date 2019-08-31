@@ -183,9 +183,9 @@
                                                     </ul>
                                                 </div>
                                                 <div class="recipe-leave-review">
-                                                    <h2 class="item-heading">LEAVE A REVIEW</h2>
+                                                    <h2 class="item-heading">SCHRIJF EEN REVIEW</h2>
                                                     <div class="rate-wrapper">
-                                                        <div class="rate-label">Rating</div>
+                                                        <div class="rate-label">Rating *</div>
                                                         <div id="comment_rate" class="rate" v-on:click="rate_click(event)">
                                                             <div id="comment_rate_1" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
                                                             <div id="comment_rate_2" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
@@ -197,45 +197,91 @@
                                                     <div class="leave-form-box">
                                                         <div class="row">
                                                             <div class="col-12 form-group">
-                                                                <label>Comment :</label>
-                                                                <textarea id="comment_textarea" placeholder="" class="textarea form-control" name="message" rows="7" cols="20"
+                                                                <label>Commentaar *</label>
+                                                                <textarea id="comment_textarea" placeholder="" class="textarea form-control" name="message" rows="3" cols="20"
                                                                           data-error="Message field is required" required=""></textarea>
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
-                                                                <label>Name :</label>
+                                                                <label>Naam *</label>
                                                                 <input type="text" placeholder="" class="form-control" name="name" data-error="Name field is required" required=""
                                                                        v-model="leave_review.name">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
-                                                                <label>E-mail :</label>
+                                                                <label>E-mail *</label>
                                                                 <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required=""
                                                                        v-model="leave_review.email">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
-                                                                <label>Website :</label>
+                                                                <label>Website</label>
                                                                 <input type="email" placeholder="" class="form-control" name="website"
                                                                        v-model="leave_review.website">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                             <div class="col-12 form-group mb-0">
-                                                                <button class="item-btn" v-on:click="leave_review_click()">
-                                                                    POST REVIEW
+                                                                <button class="item-btn" v-on:click="post_review_click()">
+                                                                    BOEK REVIEW
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        <div class="form-response"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="tab-pane container fade" id="kookclub">
-                                                <h2>Kookclub</h2>
-                                                <p>
-                                                    Kijk waar dit gerecht wordt bereid en schuif aan.
-                                                </p>
-                                                <div id="GoogleMap"></div>
+                                                <div class="kookclub-events">
+                                                    <div class="section-heading3 heading-dark">
+                                                        <h2 class="item-heading">KOOKCLUB UITJES</h2>
+                                                        <p>
+                                                            Kijk waar dit gerecht wordt bereid en schuif aan.
+                                                        </p>                                                   
+                                                    </div>
+                                                    <div class="kookclub-map-event">
+                                                        <div id="GoogleMap" class="kookclub-map"></div>
+                                                        <div class="koopclub-event">
+                                                            <div class="leave-form-box">
+                                                                <div class="row">
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Datum *</label>
+                                                                        <input type="datetime-local" class="form-control" name="date" data-error="Datum is vereist" required=""
+                                                                               v-model="post_event.date">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Uitnodiging *</label>
+                                                                        <textarea id="event_textarea" placeholder="Plaats hier de uitnodiging" class="textarea form-control" name="message" rows="3" cols="10"
+                                                                                  data-error="Vul een uitnodiging in voor de gasten" required=""></textarea>
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Naam *</label>
+                                                                        <input type="text" placeholder="" class="form-control" name="name" data-error="Naam is vereist" required=""
+                                                                               v-model="post_event.name">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 form-group">
+                                                                        <label>E-mail *</label>
+                                                                        <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail is vereist" required=""
+                                                                               v-model="post_event.email">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Adres *</label>
+                                                                        <input type="email" placeholder="Straat Huisnummer, Plaats" class="form-control" name="address"
+                                                                               v-model="post_event.address">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 form-group mb-0">
+                                                                        <button class="item-btn" v-on:click="post_cooking_club_click()">
+                                                                            ORGANISEER ETENTJE
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -293,6 +339,7 @@
                         </div>
                     </div>
                 </div>
+                {% include 'app/dhk/recipe - cookingclub.html' %}
             </div>
         </div>
     </div>
