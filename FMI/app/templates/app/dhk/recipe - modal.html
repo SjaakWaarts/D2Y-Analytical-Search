@@ -1,0 +1,88 @@
+﻿<!-- The Modal -->
+<div class="modal fade" id="recipe-modal">
+    <div class="modal-dialog">
+        <div class="modal-content" v-if="this.cooking_club">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">[[recipe.title]]</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+        
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="club-modal">
+                    <div class="club-modal-header mb-2">
+                        <i class="fas fa-users mr-2"></i>[[cooking_club.cook]] 
+                        <i class="far fa-calendar-alt m-1"></i>[[cooking_club.cooking_date.substr(2, 8)]]
+                        <i class="far fa-clock m-1"></i>[[cooking_club.cooking_date.substr(11, 5)]]
+                    </div>
+                    <div class="club-invitation">
+                        <h5>Uitnodiging</h5>
+                        <p>[[cooking_club.invitation]]</p>
+                    </div>
+                    <div class="club-club">
+                        <h5>Gastenlijst</h5>
+                        <table class="table table-bordered table-hover table-striped">
+                            <tr>
+                                <th>Gast</th>
+                                <th>Opmerking</th>
+                                <th></th>
+                            </tr>
+                            <tr v-for="(participant, index) in this.cooking_club.participants">
+                                <td>[[participant.user]]</td>
+                                <td>[[participant.comment]]</td>
+                                <td>
+                                    <a href="#" v-on:click="club_participant_update_click(index)"><i class="fa fa-eye" title="Beheer"></i></a>
+                                    <a href="#" v-on:click="club_participant_delete_click(index)"><i class="fa fa-trash" title="Verwijder"></i></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="club-join">
+                        <h5>Meld je aan als gast</h5>
+                        <div class="row">
+                            <div class="col-12 input-group input-group-sm">
+                                 <div class="input-group-prepend">
+                                   <span class="input-group-text">Naam *</span>
+                                </div>
+                                <input type="text" placeholder="" name="name" class="form-control" data-error="Naam is vereist" required=""
+                                        v-model="cooking_club_participant.user">
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="col-12 input-group input-group-sm">
+                                 <div class="input-group-prepend">
+                                   <span class="input-group-text">E-mail *</span>
+                                </div>
+                                <input type="email" placeholder="" name="email" class="form-control" data-error="E-mail is vereist" required=""
+                                        v-model="cooking_club_participant.email">
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="col-12 form-group">
+                                <label>Opmerking</label>
+                                <textarea id="participant_textarea" placeholder="Eventueel commentaar" class="textarea form-control" name="message" rows="3" cols="40"></textarea>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="col-12">
+                                <p><em>Je ontvangt een uitnodiging nadat je hebt aangemeld met de details.</em></p>
+                            </div>
+                            <div class="col-12 mb-0">
+                                <button id="participate_button" class="item-btn" v-on:click="post_cooking_club_participant_click()" value="new">
+                                    AANMELDEN ETENTJE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        
+        </div>
+    </div>
+</div>
+  
+

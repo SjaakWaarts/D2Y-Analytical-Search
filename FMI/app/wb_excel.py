@@ -1415,15 +1415,17 @@ recipes = {
         'type'      : 'nested',
         'properties': {
             'cook'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'email': {'type' : 'text'},
             'cooking_date': {'type' : 'date'},
             'address'  : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
             'position' : {"properties": {"lat": {"type": "float"}, "lng": {"type": "float"}}},
             'invitation': {'type' : 'text'},
             'cost' : {'type': 'float'},
-            'club'     : {
+            'participants'     : {
                 'type'       : 'nested',
                 'properties' : {
                     'user'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                    'email': {'type' : 'text'},
                     'comment': {'type' : 'text'},
                     }
                 }

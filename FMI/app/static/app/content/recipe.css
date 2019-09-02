@@ -32,6 +32,9 @@
 .recipe {
 }
 
+.recipe-header {
+}
+
 .recipe-meta {
 }
 
@@ -42,15 +45,17 @@
 }
 
 .recipe-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
-.recipe-actions li {
+.recipe-actions .recipe-action {
     display: inline-block;
-    margin-right: 10px;
-    padding-right: 10px;
+    padding: 0.75rem 0.75rem;
     border-right: 1px solid #d5d5d5;
     line-height: 1;
-    margin-bottom: 5px;
 }
 
 .recipe-action-hover {
@@ -65,7 +70,7 @@
     position: absolute;
     z-index: 5;
     display: none;
-    top: 20px;
+    top: 40px;
     padding-top: 10px;
     left: 0;
     text-align: center;
@@ -80,26 +85,43 @@
     padding: 10px 12px;
 }
 
-.recipe-header {
+.recipe-categories {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
-    width: 100%;
-    background-color: deepskyblue;
-    margin-bottom: 1rem;
-}
-
-.recipe-categories, .recipe-tags {
+    list-style: outside;
     margin: 1rem;
 }
 
-.recipe-categories-list-group-item, .recipe-tags-list-group-item {
+.recipe-categories .recipe-category {
     background-color: silver;
     float: left;
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+    padding: 0.5rem;
 }
 
-.recipe-categories-list-group-item:hover, .recipe-tags-list-group-item:hover {
+.recipe-categories .recipe-category:hover {
+    background-color: gold;
+}
+
+.recipe-tags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    list-style: outside;
+    margin: 1rem;
+}
+
+.recipe-tags .recipe-tag {
+    background-color: silver;
+    float: left;
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+    padding: 0.5rem;
+}
+
+.recipe-tags .recipe-tag:hover {
     background-color: gold;
 }
 
@@ -251,53 +273,56 @@
     background-color: aliceblue;
 }
 
-.kookclub-events {
+.club-events {
     padding: 1rem;
     background-color: aliceblue;
     margin-bottom: 2rem;
 }
 
-.kookclub-events .kookclub-map-event {
+.club-events .club-map-event {
     display: flex;
     flex-direction: row;
 }
 
-.kookclub-events .kookclub-map-event .kookclub-map {
+.club-events .club-map-event .club-map {
     width: 50%;
 }
 
-.kookclub-events .kookclub-map-event .koopclub-event {
+.club-events .club-map-event .club-event {
     width: 50%;
     margin-left: 1rem;
 }
 
-.kookclub-modal {
+.club-modal {
 }
 
-.kookclub-modal .kookclub-modal-header {
+.club-modal .club-modal-header {
     color: red;
     font-size: 1.2rem;
 }
 
-.kookclub-modal .kookclub-club {
-    font-size: 1rem;
+.club-modal .club-invitation {
+    border: 1px solid;
+    border-color: lightgray;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
-.kookclub-modal .cooking-club-join {
-    font-size: 0.8rem;
+.club-modal .club-club {
+    border: 1px solid;
+    border-color: lightgray;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.club-modal .club-join {
     border: 1px solid;
     border-color: lightgray;
     padding: 0.5rem;
 }
 
-.kookclub-wrapper {
-    display: inline-flex;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-}
-
-.kookclub-wrapper .kookclub-label {
-    margin-right: 1rem;
+.club-modal .club-join .input-group-text {
+    min-width: 80px;
 }
 
 .rate-wrapper {

@@ -31,11 +31,20 @@ var app = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         iframe_src: null,
-        id : '',
+        id: '',
         recipe: null,
         average_rating: 0,
-        cooking_club: null,
-        cooking_club_club: {
+        cooking_club: {
+            'cook': "",
+            'email': "",
+            'cooking_date': "",
+            'address': "",
+            'position': null,
+            'invitation': "",
+            'cost': 0,
+            'participants': []
+        },
+        cooking_club_participant: {
             'user': "",
             'email': "",
             'comment': ""
@@ -46,13 +55,7 @@ var app = new Vue({
             'name': "",
             'email': "",
             'website': "",
-            'stars' : 0
-        },
-        post_event: {
-            'name': "",
-            'email': "",
-            'date': "",
-            'address': ""
+            'stars': 0
         },
     },
     methods: {
@@ -61,10 +64,60 @@ var app = new Vue({
         },
         bind_nav_tab_style(nrtabs) {
             var tab_width = 100 / nrtabs
-            return "width:" + tab_width.toString()+"%; display:flex";
+            return "width:" + tab_width.toString() + "%; display:flex";
+        },
+        club_tab_click: function () {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = yyyy + '-' + mm + '-' + dd + 'T19:30';
+            this.cooking_club.cooking_date = today;
+            this.draw_map();
+        },
+        club_join_marker_click: function (cooking_club) {
+            var textarea_tag = document.getElementById("invitation_textarea");
+            textarea_tag.value = cooking_club.invitation;
+            var button_tag = document.getElementById("organize_button");
+            button_tag.value = "update";
+            button_tag.innerHTML = "UPDATE ETENTJE";
+            this.cooking_club = cooking_club;
+            this.cooking_club_participant.user = "";
+            this.cooking_club_participant.email = "";
+            this.cooking_club_participant.comment = "";
+            var textarea_tag = document.getElementById("participant_textarea");
+            textarea_tag.value = this.cooking_club_participant.comment;
+            var button_tag = document.getElementById("participate_button");
+            button_tag.innerHTML = "AANMELDEN ETENTJE";
+            button_tag.value = "new";
+            var recipe_model_div = document.getElementById('recipe-modal');
+            $('#recipe-modal').modal('show');
+            var cook = cooking_club.cook;
+        },
+        club_participant_update_click: function (index) {
+            this.cooking_club_participant.user = this.cooking_club.participants[index].user;
+            this.cooking_club_participant.email = this.cooking_club.participants[index].email;
+            this.cooking_club_participant.comment = this.cooking_club.participants[index].comment;
+            var textarea_tag = document.getElementById("participant_textarea");
+            textarea_tag.value = this.cooking_club_participant.comment;
+            var button_tag = document.getElementById("participate_button");
+            button_tag.innerHTML = "UPDATE AANMELDING";
+            button_tag.value = "update-"+index;
+        },
+        club_participant_delete_click: function (index) {
+            this.cooking_club.participants.splice(index, 1);
+            this.cooking_club_participant.user = "";
+            this.cooking_club_participant.email = "";
+            this.cooking_club_participant.comment = "";
+            var textarea_tag = document.getElementById("participant_textarea");
+            textarea_tag.value = this.cooking_club_participant.comment;
+            var button_tag = document.getElementById("participate_button");
+            button_tag.innerHTML = "AANMELDEN ETENTJE";
+            button_tag.value = "new";
+            this.post_recipe();
         },
         get_recipe: function () {
-            this.$http.get(get_recipe_url, { params: { id: this.id }}).then(response => {
+            this.$http.get(get_recipe_url, { params: { id: this.id } }).then(response => {
                 this.recipe = response.body.recipe;
                 if (this.recipe.reviews.length == 0) {
                     this.average_rating = 0;
@@ -93,33 +146,42 @@ var app = new Vue({
             this.post_recipe();
         },
         post_cooking_club_click: function () {
-            var cooking_club = {};
-            var textarea_tag = document.getElementById("event_textarea");
-            cooking_club.cook = this.post_event.name;
-            cooking_club.cooking_date = this.post_event.date;
-            cooking_club.invitation = textarea_tag.value;
-            cooking_club.address = this.post_event.address;
-            cooking_club.club = [];
+            var textarea_tag = document.getElementById("invitation_textarea");
+            this.cooking_club.invitation = textarea_tag.value;
+            var button_tag = document.getElementById("organize_button");
             // asynchroon
             var geocoder = new google.maps.Geocoder();
             var position = null;
-            geocoder.geocode({ 'address': cooking_club.address, 'region': 'nl' }, function (results, status) {
+            geocoder.geocode({ 'address': this.cooking_club.address, 'region': 'nl' }, function (results, status) {
                 if (status == 'OK') {
                     position = results[0].geometry.location;
-                    cooking_club.position = position;
-                    app.recipe.cooking_clubs.push(cooking_club)
+                    app.cooking_club.position = position;
+                    if (button_tag.value == "new") {
+                        app.recipe.cooking_clubs.push(app.cooking_club)
+                    } else {
+                        //var index = parseInt(button_tag.value.split('-')[1]);
+                        //this.recipe.cooking_clubs[index] = this.cooking_club;
+                    }
                     app.post_recipe();
                 } else {
                     alert('Geocoding: "' + cooking_club.address + '", kan adres niet vinden, status: ' + status);
                 }
             });
         },
-        post_cooking_club_club_click: function () {
-            var cooking_club_club = {};
-            var textarea_tag = document.getElementById("club_textarea");
-            cooking_club_club.user = this.cooking_club_club.user;
-            cooking_club_club.comment = textarea_tag.value;
-            this.cooking_club.club.push(cooking_club_club)
+        post_cooking_club_participant_click: function () {
+            var participant = {};
+            var textarea_tag = document.getElementById("participant_textarea");
+            this.cooking_club_participant.comment = textarea_tag.value;
+            participant.user = this.cooking_club_participant.user;
+            participant.email = this.cooking_club_participant.email;
+            participant.comment = this.cooking_club_participant.comment;
+            var button_tag = document.getElementById("participate_button");
+            if (button_tag.value == "new") {
+                this.cooking_club.participants.push(participant);
+            } else {
+                var index = parseInt(button_tag.value.split('-')[1]);
+                this.cooking_club.participants[index] = participant;
+            }
             this.post_recipe();
         },
         post_recipe: function () {
@@ -161,21 +223,6 @@ var app = new Vue({
                     }
                 }
             }
-        },
-        kookclub_tab_click: function () {
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
-            today = yyyy + '-' + mm + '-' + dd +'T19:30';
-            this.post_event.date = today;
-            this.draw_map();
-        },
-        kookclub_join_marker_click: function (cooking_club) {
-            this.cooking_club = cooking_club;
-            var recipe_model_div = document.getElementById('recipe-modal');
-            $('#recipe-modal').modal('show');
-            var cook = cooking_club.cook;
         },
         draw_map: function () {
             var div_name = 'GoogleMap';
@@ -230,7 +277,7 @@ var app = new Vue({
                         return function () {
                             //infowindow.setContent(label + ' Gastheer: ' + cooking_club.cook + ' datum: ' + cooking_club.cooking_date);
                             //infowindow.open(map, marker);
-                            app.kookclub_join_marker_click(cooking_club);
+                            app.club_join_marker_click(cooking_club);
                         }
                     })(marker, label, cooking_club));
                 } else {

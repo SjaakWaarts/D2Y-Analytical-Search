@@ -495,7 +495,9 @@
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="app\templates\app\dhk\dhk.html" />
     <Content Include="app\templates\app\dhk\dhk_layout.html" />
-    <Content Include="app\templates\app\dhk\recipe - cookingclub.html" />
+    <Content Include="app\templates\app\dhk\recipe - header.html" />
+    <Content Include="app\templates\app\dhk\recipe - modal.html" />
+    <Content Include="app\templates\app\dhk\recipe - sidebar.html" />
     <Content Include="app\templates\app\dhk\recipe.html" />
     <Content Include="app\templates\app\dhk\dhk_admin.html" />
     <Content Include="app\templates\app\index_D2Y.html" />
