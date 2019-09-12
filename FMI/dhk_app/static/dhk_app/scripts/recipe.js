@@ -73,6 +73,10 @@ var app = new Vue({
             var yyyy = today.getFullYear();
             today = yyyy + '-' + mm + '-' + dd + 'T19:30';
             this.cooking_club.cooking_date = today;
+            if (user != "") {
+                this.cooking_club.cook = user;
+                this.cooking_club.email = user_email;
+            }
             this.draw_map();
         },
         club_join_marker_click: function (cooking_club) {

@@ -657,29 +657,7 @@ def about(request):
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
-def register(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/accounts/register_complete')
 
-    else:
-        form = RegistrationForm()
-    token = {}
-    token.update(csrf(request))
-    token['form'] = form
 
-    return render_to_response('registration/register.html', token)
 
-def registrer_complete(request):
-    return render_to_response('registration/registrer_complete.html')
-
-def dhk_view(request):
-    """Renders dhk page."""
-    return render(
-        request,
-        'app/dhk/dhk.html',
-        {'site' : FMI.settings.site, 'year':datetime.now().year}
-    )
 

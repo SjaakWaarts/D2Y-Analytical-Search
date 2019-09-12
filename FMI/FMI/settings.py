@@ -7,6 +7,8 @@ from os import path
 PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#AUTH_USER_MODEL = 'models.User'
+
 DEBUG = True
 
 ALLOWED_HOSTS = (
@@ -193,6 +195,8 @@ TEMPLATES = [
 INSTALLED_APPS = (
     'app.apps.AppConfig',
     'seeker.apps.SeekerConfig',
+    'dhk_app.apps.dhk_appConfig',
+    'users_app.apps.UsersAppConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -205,6 +209,11 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'corsheaders',
 )
+
+AUTH_USER_MODEL = 'users_app.User'
+#LOGIN_REDIRECT_URL = 'profile'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

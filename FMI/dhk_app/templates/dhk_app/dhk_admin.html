@@ -1,4 +1,4 @@
-﻿{% extends "app/dhk/dhk_layout.html" %}
+﻿{% extends "dhk_app/dhk_layout.html" %}
 
 {% block css %}
     {% load staticfiles %}
@@ -122,6 +122,6 @@
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
         <script src="{% static 'assets/dropzone/js/dropzone.min.js' %}"></script>
         <script src="{% static 'app/scripts/utils.js' %}"></script>
-        <script src="{% static 'app/dhk/scripts/components.js' %}"></script>
-        <script src="{% static 'app/dhk/scripts/dhk_admin.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/dhk_admin.js' %}"></script>
 {% endblock %}

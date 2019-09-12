@@ -34,7 +34,7 @@ import app.wb_excel as wb_excel
 import app.elastic as elastic
 import app.survey as survey
 import app.mail as mail
-import app.dhk.dhk_admin as dhk_admin
+import dhk_app.dhk_admin as dhk_admin
 from FMI.settings import BASE_DIR, ES_HOSTS
 
 driver = None

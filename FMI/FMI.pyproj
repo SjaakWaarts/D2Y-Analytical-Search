@@ -34,9 +34,8 @@
     <Compile Include="app\apps.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="app\dhk\recipe.py" />
-    <Compile Include="app\dhk\dhk.py" />
-    <Compile Include="app\dhk\dhk_admin.py" />
+    <Compile Include="dhk_app\recipe.py" />
+    <Compile Include="dhk_app\dhk_admin.py" />
     <Compile Include="app\cmis.py" />
     <Compile Include="app\mail.py" />
     <Compile Include="app\pandora.py" />
@@ -65,6 +64,14 @@
     <Compile Include="app\survey.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="dhk_app\admin.py" />
+    <Compile Include="dhk_app\apps.py" />
+    <Compile Include="dhk_app\migrations\__init__.py" />
+    <Compile Include="dhk_app\models.py" />
+    <Compile Include="dhk_app\tests.py" />
+    <Compile Include="dhk_app\urls.py" />
+    <Compile Include="dhk_app\views.py" />
+    <Compile Include="dhk_app\__init__.py" />
     <Compile Include="FMI\local_settings.py">
       <SubType>Code</SubType>
     </Compile>
@@ -102,15 +109,23 @@
     <Compile Include="FMI\settings.py" />
     <Compile Include="FMI\urls.py" />
     <Compile Include="FMI\wsgi.py" />
+    <Compile Include="users_app\admin.py" />
+    <Compile Include="users_app\apps.py" />
+    <Compile Include="users_app\forms.py" />
+    <Compile Include="users_app\migrations\__init__.py" />
+    <Compile Include="users_app\models.py" />
+    <Compile Include="users_app\tests.py" />
+    <Compile Include="users_app\urls.py" />
+    <Compile Include="users_app\views.py" />
+    <Compile Include="users_app\__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\migrations\" />
-    <Folder Include="app\dhk\" />
-    <Folder Include="app\static\app\dhk\media\" />
-    <Folder Include="app\static\app\dhk\scripts\" />
+    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\static\dhk_app\media\" />
+    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\static\dhk_app\scripts\" />
     <Folder Include="app\static\app\media\" />
-    <Folder Include="app\static\app\dhk\" />
+    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\static\dhk_app\" />
     <Folder Include="app\static\assets\" />
     <Folder Include="app\static\assets\adminlte\" />
     <Folder Include="app\static\assets\adminlte\css\" />
@@ -160,8 +175,16 @@
     <Folder Include="app\static\assets\vue-videojs\js\" />
     <Folder Include="app\static\assets\vue\" />
     <Folder Include="app\static\assets\vue\js\" />
-    <Folder Include="app\templates\app\dhk\" />
+    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\templates\dhk_app\" />
     <Folder Include="app\templates\registration\" />
+    <Folder Include="dhk_app\" />
+    <Folder Include="dhk_app\migrations\" />
+    <Folder Include="dhk_app\static\" />
+    <Folder Include="dhk_app\static\dhk_app\" />
+    <Folder Include="dhk_app\static\dhk_app\media\" />
+    <Folder Include="dhk_app\static\dhk_app\scripts\" />
+    <Folder Include="dhk_app\templates\" />
+    <Folder Include="dhk_app\templates\dhk_app\" />
     <Folder Include="seeker\" />
     <Folder Include="seeker\management\" />
     <Folder Include="seeker\management\commands\" />
@@ -182,17 +205,22 @@
     <Folder Include="app\templates\" />
     <Folder Include="app\templates\app\" />
     <Folder Include="FMI\" />
+    <Folder Include="users_app\" />
+    <Folder Include="users_app\migrations\" />
+    <Folder Include="users_app\templates\" />
+    <Folder Include="users_app\templates\registration\" />
+    <Folder Include="users_app\templates\users_app\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\static\app\content\dashboard.css" />
     <Content Include="app\static\app\content\dropzone.css" />
     <Content Include="app\static\app\content\recipe.css" />
     <Content Include="app\static\app\content\dhk_site.css" />
-    <Content Include="app\static\app\dhk\media\load_recipe.png" />
-    <Content Include="app\static\app\dhk\media\search_recipe.png" />
-    <Content Include="app\static\app\dhk\scripts\components.js" />
-    <Content Include="app\static\app\dhk\scripts\recipe.js" />
-    <Content Include="app\static\app\dhk\scripts\dhk_admin.js" />
+    <Content Include="dhk_app\static\dhk_app\media\load_recipe.png" />
+    <Content Include="dhk_app\static\dhk_app\media\search_recipe.png" />
+    <Content Include="dhk_app\static\dhk_app\scripts\components.js" />
+    <Content Include="dhk_app\static\dhk_app\scripts\recipe.js" />
+    <Content Include="dhk_app\static\dhk_app\scripts\dhk_admin.js" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="app\static\app\media\CFT_CI.jpg" />
     <Content Include="app\static\app\media\CFT_Ingr.jpg" />
@@ -493,13 +521,13 @@
     <Content Include="app\static\assets\vue\js\vue.js" />
     <Content Include="app\static\assets\vue\js\vue.min.js" />
     <Content Include="app\templates\app\api_csrftoken.html" />
-    <Content Include="app\templates\app\dhk\dhk.html" />
-    <Content Include="app\templates\app\dhk\dhk_layout.html" />
-    <Content Include="app\templates\app\dhk\recipe - header.html" />
-    <Content Include="app\templates\app\dhk\recipe - modal.html" />
-    <Content Include="app\templates\app\dhk\recipe - sidebar.html" />
-    <Content Include="app\templates\app\dhk\recipe.html" />
-    <Content Include="app\templates\app\dhk\dhk_admin.html" />
+    <Content Include="dhk_app\templates\dhk_app\dhk.html" />
+    <Content Include="dhk_app\templates\dhk_app\dhk_layout.html" />
+    <Content Include="dhk_app\templates\dhk_app\recipe - header.html" />
+    <Content Include="dhk_app\templates\dhk_app\recipe - modal.html" />
+    <Content Include="dhk_app\templates\dhk_app\recipe - sidebar.html" />
+    <Content Include="dhk_app\templates\dhk_app\recipe.html" />
+    <Content Include="dhk_app\templates\dhk_app\dhk_admin.html" />
     <Content Include="app\templates\app\index_D2Y.html" />
     <Content Include="app\templates\app\index_IFF.html" />
     <Content Include="app\templates\app\load.html" />
@@ -532,8 +560,7 @@
     <Content Include="app\templates\app\seeker\facets\optionterms.html" />
     <Content Include="app\templates\app\seeker\facets\nestedterms.html" />
     <Content Include="app\templates\registration\login.html" />
-    <Content Include="app\templates\registration\register.html" />
-    <Content Include="app\templates\registration\register_complete.html" />
+    <Content Include="users_app\templates\registration\register_complete.html" />
     <Content Include="seeker\.spyderproject" />
     <Content Include="seeker\management\commands\__pycache__\reindex.cpython-35.pyc" />
     <Content Include="seeker\management\commands\__pycache__\__init__.cpython-35.pyc" />
@@ -574,6 +601,12 @@
     <Content Include="app\templates\app\index.html" />
     <Content Include="app\templates\app\layout.html" />
     <Content Include="app\templates\app\loginpartial.html" />
+    <Content Include="users_app\templates\registration\login.html" />
+    <Content Include="users_app\templates\registration\profile.html" />
+    <Content Include="users_app\templates\registration\register.html" />
+    <Content Include="users_app\templates\users_app\layout.html" />
+    <Content Include="users_app\templates\users_app\log_message.html" />
+    <Content Include="users_app\templates\users_app\users_app.html" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.mht">

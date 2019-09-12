@@ -1,4 +1,4 @@
-﻿{% extends "app/dhk/dhk_layout.html" %}
+﻿{% extends "dhk_app/dhk_layout.html" %}
 
 
 {% block css %}
@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="recipe">
-                                {% include 'app/dhk/recipe - header.html' %}
+                                {% include 'dhk_app/recipe - header.html' %}
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <!-- Nav tabs -->
@@ -223,11 +223,11 @@
                             </div>
                         </div>
                         <div class="col-lg-4 sidebar">
-                            {% include 'app/dhk/recipe - sidebar.html' %}
+                            {% include 'dhk_app/recipe - sidebar.html' %}
                         </div>
                     </div>
                 </div>
-                {% include 'app/dhk/recipe - modal.html' %}
+                {% include 'dhk_app/recipe - modal.html' %}
             </div>
         </div>
     </div>
@@ -243,6 +243,10 @@
 {% block scripts %}
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
+        var user = "{{ user.username }}";
+        var user_first_name = "{{ user.first_name }}";
+        var user_last_name = "{{ user.last_name }}";
+        var user_email = "{{ user.email }}";
     </script>
     {% load staticfiles %}
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -250,6 +254,6 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl4shlG7ca_SneqGEEOswOyJuxpqA4KKk"></script>
         <script src="{% static 'assets/googlemaps/js/markerclusterer.js' %}"></script>
         <script src="{% static 'app/scripts/utils.js' %}"></script>
-        <script src="{% static 'app/dhk/scripts/components.js' %}"></script>
-        <script src="{% static 'app/dhk/scripts/recipe.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/recipe.js' %}"></script>
 {% endblock %}

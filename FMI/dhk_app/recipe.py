@@ -49,7 +49,7 @@ def recipe_view(request):
         }
     return render(
         request,
-        'app/dhk/recipe.html',
+        'dhk_app/recipe.html',
         context
     )
 

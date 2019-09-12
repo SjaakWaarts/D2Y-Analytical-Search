@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.views.generic.base import TemplateView
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 import queue
@@ -23,7 +24,6 @@ import app.workbooks as workbooks
 import app.wb_excel as wb_excel
 
 from django.utils.encoding import python_2_unicode_compatible
-
 
 client = Elasticsearch(FMI.settings.ES_HOSTS)
 

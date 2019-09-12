@@ -20,9 +20,6 @@ from django.contrib import auth
 params={'plugin': '', 'base_template': 'search.html'}
 
 import app.models as models
-import app.dhk.dhk_admin
-import app.dhk.recipe
-import app.dhk.dhk
 import app.views
 import app.api
 import seeker
@@ -33,15 +30,6 @@ urlpatterns = [
     path('', app.views.home, name='home'),
 
     path('consumer_insight', app.views.consumer_insight_view, name='consumer_insight'),
-    path('dhk', app.views.dhk_view, name='dhk'),
-    path('dhk/dhk_admin', app.dhk.dhk_admin.dhk_admin_view, name='dhk/dhk_admin'),
-    path('dhk/upload_file', app.dhk.dhk_admin.upload_file, name='dhk/upload_file'),
-    path('dhk/get_uploaded_files', app.dhk.dhk_admin.get_uploaded_files, name='dhk/get_uploaded_files'),
-    path('dhk/recipe', app.dhk.recipe.recipe_view, name='dhk/recipe'),
-    path('dhk/get_recipe', app.dhk.recipe.get_recipe, name='dhk/get_recipe'),
-    path('dhk/post_recipe', app.dhk.recipe.post_recipe, name='dhk/post_recipe'),
-    path('dhk/search', models.ExcelSeekerView.as_view(), name='dhk/search'),
-
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),
     path('load', app.views.load_view, name='load'),
@@ -95,10 +83,10 @@ urlpatterns = [
 
     path('contact', app.views.contact, name='contact'),
     path('about', app.views.about, name='about'),
+    path('dhk/', include("dhk_app.urls")),
 
     # Registration URLs
-    path('accounts/register/', views.register, name='register'),
-    path('accounts/register_complete/', views.registrer_complete, name='register_complete'),
+    path("", include("users_app.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 

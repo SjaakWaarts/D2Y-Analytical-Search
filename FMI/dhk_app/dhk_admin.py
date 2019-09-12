@@ -32,7 +32,7 @@ def dhk_admin_view(request):
     if request.method == 'GET':
         return render(
             request,
-            'app/dhk/dhk_admin.html',
+            'dhk_app/dhk_admin.html',
             {'site' : FMI.settings.site, 'year':datetime.now().year}
         )
     else:
