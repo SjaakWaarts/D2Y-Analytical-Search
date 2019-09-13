@@ -1,0 +1,11 @@
+<div class="navbar-right">
+    <ul class="navbar-nav mr-auto site-menu">
+        {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link navbar-brand" href="{% url 'profile' %}"><i class="far fa-user mr-2"></i>Hello {{user.username}}</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2"></i>Log off</a></li>     
+        {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="far fa-id-card mr-2"></i>Register</a></li> 
+            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-2"></i>Log in</a></li>        
+        {% endif %}
+    </ul>
+</div>

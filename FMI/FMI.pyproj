@@ -176,7 +176,6 @@
     <Folder Include="app\static\assets\vue\" />
     <Folder Include="app\static\assets\vue\js\" />
     <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\templates\dhk_app\" />
-    <Folder Include="app\templates\registration\" />
     <Folder Include="dhk_app\" />
     <Folder Include="dhk_app\migrations\" />
     <Folder Include="dhk_app\static\" />
@@ -559,7 +558,6 @@
     <Content Include="app\templates\app\seeker\facets\percterms.html" />
     <Content Include="app\templates\app\seeker\facets\optionterms.html" />
     <Content Include="app\templates\app\seeker\facets\nestedterms.html" />
-    <Content Include="app\templates\registration\login.html" />
     <Content Include="users_app\templates\registration\register_complete.html" />
     <Content Include="seeker\.spyderproject" />
     <Content Include="seeker\management\commands\__pycache__\reindex.cpython-35.pyc" />
@@ -600,7 +598,7 @@
     <Content Include="app\templates\app\contact.html" />
     <Content Include="app\templates\app\index.html" />
     <Content Include="app\templates\app\layout.html" />
-    <Content Include="app\templates\app\loginpartial.html" />
+    <Content Include="users_app\templates\registration\loginpartial.html" />
     <Content Include="users_app\templates\registration\login.html" />
     <Content Include="users_app\templates\registration\profile.html" />
     <Content Include="users_app\templates\registration\register.html" />

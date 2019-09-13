@@ -14,7 +14,7 @@
 </head>
 
 <body class="d-flex flex-column">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top mb-3">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-static-top mb-3">
     <a class="navbar-brand" href="{% url 'dhk' %}">de Heerlijke Keuken</a>
         <ul class="navbar-nav mr-auto site-menu">
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-home"></i>Home</a></li>
@@ -30,10 +30,10 @@
             </li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-users mr-2"></i>Kookclub</a></li>
         </ul>
-        {% include 'app/loginpartial.html' %}
+        {% include 'registration/loginpartial.html' %}
     </nav>
 
-    <div class="container-fluid iff-padding-30" style="margin-top:4rem; margin-bottom: 2rem">
+    <div class="container-fluid iff-padding-30" style="margin-top:1rem; margin-bottom: 2rem">
         <div >
             {% block content %}
             {% endblock %}

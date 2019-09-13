@@ -7,7 +7,7 @@ from django.views.generic import ListView
 import django.contrib.auth as auth
 
 from users_app.forms import LogMessageForm
-from users_app.forms import RegisterForm
+from users_app.forms import RegisterForm, ProfileForm
 from users_app.models import LogMessage
 
 # Create your views here.
@@ -65,7 +65,7 @@ def register(request):
                 user = User.objects.create_user(
                     form.cleaned_data['username'], 
                     form.cleaned_data['email'], 
-                    #form.cleaned_data['password'], Needs to be crypted
+                    form.cleaned_data['password'],
                     form.cleaned_data['email'],
                     form.cleaned_data['password'],
                     form.cleaned_data['first_name'],
@@ -114,7 +114,7 @@ def profile(request):
                 # Create the user:
                 user = User.objects.get(username=form.cleaned_data['username'])
                 user.email = form.cleaned_data['email']
-                user.password = form.cleaned_data['password']
+                #user.password = form.cleaned_data['password'] # Needs to be crypted
                 user.first_name = form.cleaned_data['first_name']
                 user.last_name = form.cleaned_data['last_name']
                 user.street = form.cleaned_data['street']
@@ -150,6 +150,6 @@ def profile(request):
             'date_joined'   : request.user.date_joined,
             'last_login'    : request.user.last_login,
         }
-        form = RegisterForm(initial=initial)
+        form = ProfileForm(initial=initial)
 
     return render(request, template, {'form': form})  

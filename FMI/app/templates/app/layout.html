@@ -19,7 +19,7 @@
 </head>
 
 <body class="d-flex flex-column">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top mb-3">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-static-top mb-3">
         {% if site == "IFF" %}
             <a class="navbar-brand" href="{% url 'home' %}">IFF Insight Platform</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb1" aria-expanded="false">
@@ -31,7 +31,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'market_insight' %}">Market Insight</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'scent_emotion' %}">Scent Emotion</a></li>
                 </ul>
-                {% include 'app/loginpartial.html' %}
+                {% include 'registration/loginpartial.html' %}
             </div>
         {% endif %}
         {% if site == "D2Y" %}
@@ -44,12 +44,12 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'edepot' %}">E-Depot</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}">de Heerlijke Keuken</a></li>
                 </ul>
-                {% include 'app/loginpartial.html' %}
+                {% include 'registration/loginpartial.html' %}
             </div>
         {% endif %}
     </nav>
 
-    <div class="container-fluid iff-padding-30" style="margin-top:4rem; margin-bottom: 2rem">
+    <div class="container-fluid iff-padding-30" style="margin-top:1rem; margin-bottom: 2rem">
         <div >
             {% block content %}
             {% endblock %}
