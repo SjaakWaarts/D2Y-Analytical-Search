@@ -20,6 +20,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core.mail import send_mail
 import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
@@ -93,6 +94,8 @@ def post_recipe(request):
                 cooking_club['position'] = geolocator.geocode(cooking_club['address'])
             except (AttributeError, GeopyError):
                 pass
+
+    send_mail('Subject', 'Email message', 'info@deheerlijkekeuken.nl', ['sjaak.waarts@iff.com'],fail_silently=False)
     context = {
         'recipe' : recipe
         }

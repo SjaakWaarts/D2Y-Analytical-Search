@@ -74,8 +74,9 @@ var app = new Vue({
             today = yyyy + '-' + mm + '-' + dd + 'T19:30';
             this.cooking_club.cooking_date = today;
             if (user != "") {
-                this.cooking_club.cook = user;
-                this.cooking_club.email = user_email;
+                this.cooking_club.cook = user.username;
+                this.cooking_club.email = user.email;
+                this.cooking_club.address = user.street + " " + user.housenumber + ", " + user.city;
             }
             this.draw_map();
         },
@@ -86,8 +87,13 @@ var app = new Vue({
             button_tag.value = "update";
             button_tag.innerHTML = "UPDATE ETENTJE";
             this.cooking_club = cooking_club;
-            this.cooking_club_participant.user = "";
-            this.cooking_club_participant.email = "";
+            if (user != "") {
+                this.cooking_club_participant.user = user.username;;
+                this.cooking_club_participant.email = user.email;;
+            } else {
+                this.cooking_club_participant.user = "";
+                this.cooking_club_participant.email = "";
+            }
             this.cooking_club_participant.comment = "";
             var textarea_tag = document.getElementById("participant_textarea");
             textarea_tag.value = this.cooking_club_participant.comment;
@@ -181,7 +187,17 @@ var app = new Vue({
             participant.comment = this.cooking_club_participant.comment;
             var button_tag = document.getElementById("participate_button");
             if (button_tag.value == "new") {
-                this.cooking_club.participants.push(participant);
+                var found = false;
+                for (var ix = 0; ix < this.cooking_club.participants.length; ix++) {
+                    if (participant.user == this.cooking_club.participants[ix].user ||
+                        participant.email == this.cooking_club.participants[ix].email) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    this.cooking_club.participants.push(participant);
+                }
             } else {
                 var index = parseInt(button_tag.value.split('-')[1]);
                 this.cooking_club.participants[index] = participant;
@@ -269,21 +285,31 @@ var app = new Vue({
                 var position = null;
                 if (cooking_club.position.lat != 0 && cooking_club.position.lng != 0) {
                     position = new google.maps.LatLng(parseFloat(cooking_club.position.lat), parseFloat(cooking_club.position.lng));
-                    var marker = new google.maps.Marker({
-                        position: position,
-                        map: map,
-                        label: label,
-                        title: title
-                    });
-                    markers.push(marker);
-                    bounds.extend(marker.position);
-                    google.maps.event.addListener(marker, 'click', (function (marker, label, cooking_club) {
-                        return function () {
-                            //infowindow.setContent(label + ' Gastheer: ' + cooking_club.cook + ' datum: ' + cooking_club.cooking_date);
-                            //infowindow.open(map, marker);
-                            app.club_join_marker_click(cooking_club);
+                    // check if this position has already had a marker
+                    var found = false;
+                    for (var x = 0; x < markers.length; x++) {
+                        if (markers[x].getPosition().equals(position)) {
+                            found = true;
+                            break;
                         }
-                    })(marker, label, cooking_club));
+                    }
+                    if (!found) {
+                        var marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            label: label,
+                            title: title
+                        });
+                        markers.push(marker);
+                        bounds.extend(marker.position);
+                        google.maps.event.addListener(marker, 'click', (function (marker, label, cooking_club) {
+                            return function () {
+                                //infowindow.setContent(label + ' Gastheer: ' + cooking_club.cook + ' datum: ' + cooking_club.cooking_date);
+                                //infowindow.open(map, marker);
+                                app.club_join_marker_click(cooking_club);
+                            }
+                        })(marker, label, cooking_club));
+                    }
                 } else {
                     if (cooking_club.address.length > 2) {
                         //address = row.adres + ',' + row.plaats;

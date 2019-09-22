@@ -256,3 +256,10 @@ try:
 except ImportError:
     import sys
     sys.stderr.write('local_settings.py not set; using default settings\n')
+
+
+# Email settings
+EMAIL_HOST = 'smtp.deheerlijkekeuken.nl'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = '25'
