@@ -94,8 +94,8 @@ def post_recipe(request):
                 cooking_club['position'] = geolocator.geocode(cooking_club['address'])
             except (AttributeError, GeopyError):
                 pass
-
-    send_mail('Subject', 'Email message', 'info@deheerlijkekeuken.nl', ['sjaak.waarts@iff.com'],fail_silently=False)
+        for cooking_club in recipe['cooking_clubs']:
+            send_mail('Kookclub', 'Uitnodiging kookclub', 'info@deheerlijkekeuken.nl', ['sjaak.waarts@iff.com'], fail_silently=True)
     context = {
         'recipe' : recipe
         }

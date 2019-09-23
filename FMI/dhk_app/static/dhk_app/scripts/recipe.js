@@ -73,7 +73,7 @@ var app = new Vue({
             var yyyy = today.getFullYear();
             today = yyyy + '-' + mm + '-' + dd + 'T19:30';
             this.cooking_club.cooking_date = today;
-            if (user != "") {
+            if (user.username != "") {
                 this.cooking_club.cook = user.username;
                 this.cooking_club.email = user.email;
                 this.cooking_club.address = user.street + " " + user.housenumber + ", " + user.city;
@@ -87,7 +87,7 @@ var app = new Vue({
             button_tag.value = "update";
             button_tag.innerHTML = "UPDATE ETENTJE";
             this.cooking_club = cooking_club;
-            if (user != "") {
+            if (user.username != "") {
                 this.cooking_club_participant.user = user.username;;
                 this.cooking_club_participant.email = user.email;;
             } else {

@@ -9,6 +9,7 @@
 *.log
 *.pyc
 *.vscode
+__pychache__
 
 /bin
 /FMI/bin
@@ -25,4 +26,5 @@
 /FMI/FMI/__pycache__
 /FMI/seeker/management/commands/__pycache__
 /FMI/seeker/management/__pycache__
+/FMI/seeker/migrations/__pycache__
 /FMI/FMI/local_settings.py
