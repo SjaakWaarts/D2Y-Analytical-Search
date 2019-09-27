@@ -126,6 +126,11 @@ var app = new Vue({
             button_tag.value = "new";
             this.post_recipe();
         },
+        club_participant_me_click: function () {
+            this.cooking_club_participant.user = user.username;
+            this.cooking_club_participant.email = user.email;
+            this.cooking_club_participant.comment = "";
+        },
         get_recipe: function () {
             this.$http.get(get_recipe_url, { params: { id: this.id } }).then(response => {
                 this.recipe = response.body.recipe;
@@ -360,6 +365,13 @@ var app = new Vue({
         var urlParams = new URLSearchParams(window.location.search);
         this.id = decodeURI(urlParams.has('id') ? urlParams.get('id') : '');
         this.get_recipe();
+        if (user.username != "") {
+            this.cooking_club.cook = user.username;
+            this.cooking_club.email = user.email;
+            this.cooking_club.address = user.street + " " + user.housenumber + ", " + user.city;
+            this.leave_review.name = user.username;
+            this.leave_review.email = user.email;
+        }
     },
 });
 

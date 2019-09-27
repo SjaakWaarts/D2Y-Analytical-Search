@@ -1,11 +1,80 @@
 <div class="navbar-right">
     <ul class="navbar-nav mr-auto site-menu">
         {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link navbar-brand" href="{% url 'profile' %}"><i class="far fa-user mr-2"></i>Hello {{user.username}}</a></li>
+            <li class="nav-item"><a class="nav-link navbar-brand" href="{% url 'users_app/profile' %}"><i class="far fa-user mr-2"></i>Hello {{user.username}}</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2"></i>Log off</a></li>     
         {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="far fa-id-card mr-2"></i>Register</a></li> 
-            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-2"></i>Log in</a></li>        
+            <li class="nav-item"><a class="nav-link" href="{% url 'users_app/register' %}"><i class="far fa-id-card mr-2"></i>Register</a></li> 
+            <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#login-modal"><i class="fas fa-sign-in-alt mr-2"></i>Log in</a></li>
         {% endif %}
     </ul>
 </div>
+
+<!-- The Modal -->
+<div class="modal fade" id="login-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Login</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+        
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="login-modal">
+                    <div class="login-modal-header mb-2">
+                    </div>
+                    <div class="login-modal-body">
+                        <form id="login_form" method="post" action="{% url 'users_app/login' %}">
+                            {% csrf_token %}
+                            <div class="row mb-4">
+                                <div class="col-12 input-group input-group-sm">
+                                    <input id="username_input" type="text" placeholder="Username or Email" name="username" class="form-control"
+                                           data-error="Naam is vereist" required="">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-12 input-group input-group-sm">
+                                    <input id="password_input" type="password" placeholder="Password" name="password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-4">
+                                    <button class="item-btn"><i class="fas fa-sign-in-alt mr-2"></i>Log in</button>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn" href="{% url 'users_app/register' %}"><i class="far fa-id-card mr-2"></i>Register</a>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn" href="#" onclick="unlock_click()"><i class="fas fa-unlock-alt mr-2"></i>Lost Password</a>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div id="login_message_div"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+{% csrf_token %}
+<input type="hidden" name="login_url" value="{% url 'users_app/login' %}">
+<input type="hidden" name="logout_url" value="{% url 'logout' %}">
+<input type="hidden" name="register_url" value="{% url 'users_app/register' %}">
+<input type="hidden" name="unlock_url" value="{% url 'users_app/unlock' %}">
+<input type="hidden" name="profile_url" value="{% url 'users_app/profile' %}">
+

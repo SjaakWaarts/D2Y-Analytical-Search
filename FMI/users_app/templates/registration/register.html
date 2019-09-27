@@ -6,7 +6,7 @@
 
 {% block content %}
     <h2>Registreer</h2>
-    <form action="{% url 'register' %}" method="post">
+    <form action="{% url 'users_app/register' %}" method="post">
         {% csrf_token %}
         {% if error_message %}
             <p class="bg-danger p-d ml-b">{{ error_message }}</p>

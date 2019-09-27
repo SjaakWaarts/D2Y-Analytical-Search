@@ -1,11 +1,15 @@
 import re
+import json
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView
+from django.views.decorators.csrf import requires_csrf_token
 #from django.contrib.auth.models import User
 import django.contrib.auth as auth
-
+from django.contrib.auth import update_session_auth_hash
+from django.core.mail import send_mail
+ 
 from users_app.forms import LogMessageForm
 from users_app.forms import RegisterForm, ProfileForm
 from users_app.models import LogMessage
@@ -63,18 +67,16 @@ def register(request):
             else:
                 # Create the user: 
                 user = User.objects.create_user(
-                    form.cleaned_data['username'], 
-                    form.cleaned_data['email'], 
-                    form.cleaned_data['password'],
-                    form.cleaned_data['email'],
-                    form.cleaned_data['password'],
-                    form.cleaned_data['first_name'],
-                    form.cleaned_data['last_name'],
-                    form.cleaned_data['street'],
-                    form.cleaned_data['housenumber'],
-                    form.cleaned_data['zip'],
-                    form.cleaned_data['city'],
-                    form.cleaned_data['country']                    
+                    form.cleaned_data['username'],
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    email=form.cleaned_data['email'],
+                    street=form.cleaned_data['street'],
+                    housenumber=form.cleaned_data['housenumber'],
+                    zip=form.cleaned_data['zip'],
+                    city=form.cleaned_data['city'],
+                    country=form.cleaned_data['country'],
+                    password=form.cleaned_data['password']
                 )
                 user.phone_number = form.cleaned_data['phone_number']
                 user.date_of_birth = form.cleaned_data['date_of_birth']  
@@ -93,6 +95,60 @@ def register(request):
 
     return render(request, template, {'form': form})
 
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        if "@" in username:
+            users = User.objects.filter(email=username)
+        else:
+            users = User.objects.filter(username=username)
+        if len(users) > 0:
+            user = users[0]
+            username = user.username
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            login = True
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            login = False
+        context = {
+            'login' : login
+            }
+        return HttpResponse(json.dumps(context), content_type='application/json')
+    else:
+        template = 'registration/register.html'
+        form = RegisterForm()
+        return render(request, template, {'form': form})
+
+def logout(request):
+    response = auth.logout(request)
+    context = {
+        'logout' : True
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
+
+@requires_csrf_token
+def unlock(request):
+    # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
+    #json_data = json.loads(request.body)
+    #username = json_data.get('username', None)
+    username = request.POST['username']
+    if "@" in username:
+        users = User.objects.filter(email=username)
+    else:
+        users = User.objects.filter(username=username)
+    if len(users) > 0:
+        user = users[0]
+        send_mail('Reset Password', 'Password reset naar "0000"', 'info@deheerlijkekeuken.nl', [user.email], fail_silently=True)
+    context = {
+        'username' : username
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
+
 def registrer_complete(request):
     return render_to_response('registration/register_complete.html')
 
@@ -102,7 +158,7 @@ def profile(request):
     
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = RegisterForm(request.POST)
+        form = ProfileForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
             if form.cleaned_data['password'] != form.cleaned_data['password_repeat']:
@@ -111,9 +167,11 @@ def profile(request):
                     'error_message': 'Passwords do not match.'
                 })
             else:
-                # Create the user:
+                # Modify the user:
                 user = User.objects.get(username=form.cleaned_data['username'])
                 user.email = form.cleaned_data['email']
+                if len(form.cleaned_data['password']) > 0:
+                    user.set_password(form.cleaned_data['password'])
                 #user.password = form.cleaned_data['password'] # Needs to be crypted
                 user.first_name = form.cleaned_data['first_name']
                 user.last_name = form.cleaned_data['last_name']
@@ -126,7 +184,8 @@ def profile(request):
                 user.date_of_birth = form.cleaned_data['date_of_birth']                
                 user.save()               
                 # Login the user
-                auth.login(request, user)
+                # auth.login(request, user)
+                update_session_auth_hash(request, user)  # Important!
                 
                 # redirect to accounts page:
                 return HttpResponseRedirect(reverse('home'))

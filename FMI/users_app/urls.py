@@ -10,8 +10,11 @@ home_list_view = views.HomeListView.as_view(
 
 urlpatterns = [
     path("log/", views.log_message, name="log"),
-    path("register/", views.register, name='register'),
+    path("register/", views.register, name='users_app/register'),
+    path("login/", views.login, name='users_app/login'),
+    path("logout/", views.logout, name='users_app/logout'),
+    path("unlock/", views.unlock, name='users_app/unlock'),
     #path('accounts/register/', views.register, name='register'),
-    path('register_complete/', views.registrer_complete, name='register_complete'),
-    path("profile/", views.profile, name='profile')
+    path('register_complete/', views.registrer_complete, name='users_app/register_complete'),
+    path("profile/", views.profile, name='users_app/profile')
 ]

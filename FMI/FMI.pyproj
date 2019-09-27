@@ -206,6 +206,9 @@
     <Folder Include="FMI\" />
     <Folder Include="users_app\" />
     <Folder Include="users_app\migrations\" />
+    <Folder Include="users_app\static\" />
+    <Folder Include="users_app\static\users_app\" />
+    <Folder Include="users_app\static\users_app\scripts\" />
     <Folder Include="users_app\templates\" />
     <Folder Include="users_app\templates\registration\" />
     <Folder Include="users_app\templates\users_app\" />
@@ -558,6 +561,7 @@
     <Content Include="app\templates\app\seeker\facets\percterms.html" />
     <Content Include="app\templates\app\seeker\facets\optionterms.html" />
     <Content Include="app\templates\app\seeker\facets\nestedterms.html" />
+    <Content Include="users_app\static\users_app\scripts\login.js" />
     <Content Include="users_app\templates\registration\register_complete.html" />
     <Content Include="seeker\.spyderproject" />
     <Content Include="seeker\management\commands\__pycache__\reindex.cpython-35.pyc" />

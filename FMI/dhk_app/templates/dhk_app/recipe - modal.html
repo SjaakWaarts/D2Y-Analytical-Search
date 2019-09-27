@@ -1,6 +1,6 @@
 ﻿<!-- The Modal -->
 <div class="modal fade" id="recipe-modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content" v-if="this.cooking_club">
       
             <!-- Modal Header -->
@@ -33,14 +33,19 @@
                                 <td>[[participant.user]]</td>
                                 <td>[[participant.comment]]</td>
                                 <td>
-                                    <a href="#" v-on:click="club_participant_update_click(index)"><i class="fa fa-eye" title="Beheer"></i></a>
-                                    <a href="#" v-on:click="club_participant_delete_click(index)"><i class="fa fa-trash" title="Verwijder"></i></a>
+                                    <a href="#" v-on:click="club_participant_update_click(index)">
+                                        <i class="fa fa-eye" title="Beheer"></i>
+                                    </a>
+                                    <a href="#" v-on:click="club_participant_delete_click(index)" v-if="participant.user==user.username">
+                                        <i class="fa fa-trash" title="Verwijder"></i>
+                                    </a>
                                 </td>
                             </tr>
                         </table>
                     </div>
                     <div class="club-join">
                         <h5>Meld je aan als gast</h5>
+
                         <div class="row">
                             <div class="col-12 input-group input-group-sm">
                                  <div class="input-group-prepend">
@@ -50,7 +55,7 @@
                                         v-model="cooking_club_participant.user">
                                 <div class="help-block with-errors"></div>
                             </div>
-                            <div class="col-12 input-group input-group-sm">
+                            <div class="col-12 input-group input-group-sm" v-if="cooking_club_participant.user==user.username">
                                  <div class="input-group-prepend">
                                    <span class="input-group-text">E-mail *</span>
                                 </div>
@@ -63,11 +68,15 @@
                                 <textarea id="participant_textarea" placeholder="Eventueel commentaar" class="textarea form-control" name="message" rows="3" cols="40"></textarea>
                                 <div class="help-block with-errors"></div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12" v-if="user.username!=''">
                                 <p><em>Je ontvangt een uitnodiging nadat je hebt aangemeld met de details.</em></p>
                             </div>
+                            <div class="col-12" v-else>
+                                <p><em style="color:red">Login om je te kunnen aanmelden voor een etentje</em></p>
+                            </div>
                             <div class="col-12 mb-0">
-                                <button id="participate_button" class="item-btn" v-on:click="post_cooking_club_participant_click()" value="new">
+                                <button id="participate_button" class="item-btn" v-on:click="post_cooking_club_participant_click()" value="new"
+                                        v-bind:disabled="cooking_club_participant.user!=user.username || user.username==''">
                                     AANMELDEN ETENTJE
                                 </button>
                             </div>

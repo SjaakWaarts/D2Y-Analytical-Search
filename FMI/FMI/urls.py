@@ -86,7 +86,7 @@ urlpatterns = [
     path('dhk/', include("dhk_app.urls")),
 
     # Registration URLs
-    path("", include("users_app.urls")),
+    path("users_app/", include("users_app.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 

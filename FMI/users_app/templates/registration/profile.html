@@ -6,7 +6,7 @@
 
 {% block content %}
     <h2>Profiel</h2>
-    <form action="{% url 'profile' %}" method="post">
+    <form action="{% url 'users_app/profile' %}" method="post">
         {% csrf_token %}
         {% if error_message %}
             <p class="bg-danger p-d ml-b">{{ error_message }}</p>
