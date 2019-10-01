@@ -202,3 +202,48 @@ Vue.component('pager', {
             </ul>
         </div>`
 })
+
+Vue.component('rating', {
+    data: function () {
+        return {}
+    },
+    props: {
+        stars: Number,
+        rate: Boolean
+    },
+    computed: {
+    },
+    methods: {
+        rate_click: function (event) {
+            var i_tag = event.target;
+            var rate_item_tag = i_tag.parentElement;
+            var rate_tag = rate_item_tag.parentElement;
+            rate_tag.classList.add('selected');
+            var active_rate_item_tag = rate_tag.querySelectorAll('.active');
+            if (active_rate_item_tag.length > 0) {
+                active_rate_item_tag[0].classList.remove('active');
+            }
+            rate_item_tag.classList.add('active');
+            this.stars = Number(rate_item_tag.id.slice(-1));
+            this.$emit('update:stars', this.stars)
+            this.$emit('rating')
+        },
+    },
+    template:
+    `<div class="rating">
+        <ul v-if="rate == false" class="item-rating p-0">
+            <li v-bind:class="{'single-item':true, 'star-fill':n<=stars, 'star-empty':n>stars}"
+                v-for="n in 5" :key="n">
+                <i class="fas fa-star"></i>
+            </li>
+            <li class="single-item"><span>{{stars}} / 5</span> </li>
+        </ul>
+        <div v-else id="comment_rate" class="rate" v-on:click="rate_click(event)">
+            <div id="rating_1" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+            <div id="rating_2" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+            <div id="rating_3" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+            <div id="rating_4" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+            <div id="rating_5" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
+        </div>
+    </div>`
+})

@@ -221,18 +221,6 @@ var app = new Vue({
                     this.draw_map();
                 });
         },
-        rate_click: function(event) {
-            var i_tag = event.target;
-            var rate_item_tag = i_tag.parentElement;
-            var rate_tag = rate_item_tag.parentElement;
-            rate_tag.classList.add('selected');
-            var active_rate_item_tag = rate_tag.querySelectorAll('.active');
-            if (active_rate_item_tag.length > 0) {
-                active_rate_item_tag[0].classList.remove('active');
-            }
-            rate_item_tag.classList.add('active');
-            this.leave_review.stars = Number(rate_item_tag.id.slice(-1));
-        },
         recipe_ingredient_click: function (event, ingredient) {
             var checkbox_tag = event.target;
             var shopping_item;
@@ -248,6 +236,18 @@ var app = new Vue({
                     }
                 }
             }
+        },
+        review_rating_click: function () {
+            var i_tag = event.target;
+            var rate_item_tag = i_tag.parentElement;
+            var rate_tag = rate_item_tag.parentElement;
+            rate_tag.classList.add('selected');
+            var active_rate_item_tag = rate_tag.querySelectorAll('.active');
+            if (active_rate_item_tag.length > 0) {
+                active_rate_item_tag[0].classList.remove('active');
+            }
+            rate_item_tag.classList.add('active');
+            this.leave_review.stars = Number(rate_item_tag.id.slice(-1));
         },
         draw_map: function () {
             var div_name = 'GoogleMap';

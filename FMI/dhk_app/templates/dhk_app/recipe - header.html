@@ -6,8 +6,11 @@
                 <ul class="list-group list-group-horizontal">
                     <li class="list-group-item border-0"><a href="#"><i class="far fa-calendar-alt"></i>[[this.recipe.published_date]]</a></li>
                     <li class="list-group-item border-0"><a href="#"><i class="fas fa-user"></i>[[this.recipe.author]]</a></li>
-                    <li class="list-group-item border-0"><a href="#"><i class="fas fa-star"></i><span>9/10</span></a></li>
-                    <li class="list-group-item border-0"><a href="#"><i class="fas fa-heart"></i><span>2</span></a></li>
+                    <li class="list-group-item border-0">
+                            <rating v-bind:stars="average_rating" v-bind:rate="false"></rating>                                     
+                    </li>
+                    <li class="list-group-item border-0"><a href="#"><i class="fas fa-heart"></i><span>[[recipe.reviews.length]]</span></a></li>
+                    <li class="list-group-item border-0"><a href="#"><i class="fas fa-users"></i><span>[[recipe.cooking_clubs.length]]</span></a></li>
                 </ul>
             </div>
         </div>

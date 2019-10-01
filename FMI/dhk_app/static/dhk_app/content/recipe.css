@@ -243,18 +243,6 @@
     z-index: 1;
 }
 
-.recipe-reviews .reviews-single-item .item-rating .single-item {
-    display: inline-block;
-}
-
-.recipe-reviews .reviews-single-item .item-rating .star-fill > i {
-    color: #ffb300;
-}
-
-.recipe-reviews .reviews-single-item .item-rating .star-empty > i {
-    color: #d9d9d9;
-}
-
 .recipe-reviews .reviews-single-item .item-btn {
     position: absolute;
     bottom: 0;
@@ -343,25 +331,37 @@
 /* 5. once an rate-item is selected it will be set to active. All the rate-items beyond the active one are reset from the gold color.
 */
 
-.rate-wrapper .rate {
+.rating .single-item {
+    display: inline-block;
+}
+
+.rating .star-fill > i {
+    color: #ffb300;
+}
+
+.rating .star-empty > i {
+    color: #d9d9d9;
+}
+
+.rating .rate {
     display: inline-flex;
     color: lightslategray;
 }
 
-.rate-wrapper .rate.selected {
+.rating .rate.selected {
     color: gold;
 }
 
-.rate-wrapper .rate:hover {
+.rating .rate:hover {
     color: gold;
 }
 
-.rate-wrapper .rate-item:hover ~ .rate-item,
-.rate-wrapper .rate-item.active ~ .rate-item {
+.rating .rate-item:hover ~ .rate-item,
+.rating .rate-item.active ~ .rate-item {
     color: lightslategray;
 }
 
-.rate-wrapper .rate-item {
+.rating .rate-item {
     cursor: pointer;
     margin: 0px 5px 0px 5px;
 }

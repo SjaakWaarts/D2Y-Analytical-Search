@@ -5,7 +5,7 @@
     {% load staticfiles %}
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
         <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'app/content/recipe.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'dhk_app/content/recipe.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -86,14 +86,7 @@
                                                     </div>
                                                     <div class="avarage-rating-wrap">
                                                         <div class="avarage-rating">Avarage Rating: 
-                                                            <span class="rating-icon-wrap">
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                            </span>
-                                                            <span class="rating-number">[[average_rating]] / 5</span>                                        
+                                                            <rating v-bind:stars="average_rating" v-bind:rate="false"></rating>                                     
                                                         </div>
                                                         <div class="total-reviews">Total Reviews:<span class="review-number">([[recipe.reviews.length]])</span></div>
                                                     </div>
@@ -104,13 +97,7 @@
                                                                     <h4 class="comment-title">[[review.user]]</h4>
                                                                     <span class="post-date">[[review.review_date]]</span>
                                                                     <p>[[review.review]]</p>
-                                                                    <ul class="item-rating p-0">
-                                                                        <li v-bind:class="{'single-item':true, 'star-fill':n<=review.stars, 'star-empty':n>review.starts}"
-                                                                            v-for="n in 5" :key="n">
-                                                                            <i class="fas fa-star"></i>
-                                                                        </li>
-                                                                        <li class="single-item"><span>[[review.stars]] / 5</span> </li>
-                                                                    </ul>
+                                                                    <rating v-bind:stars="review.stars" v-bind:rate="false" v-on:rating="review_rating_click(index)"></rating>
                                                                     <a href="#" class="item-btn">REPLY<i class="fas fa-long-arrow-alt-right"></i></a>
                                                                 </div>
                                                             </div>
@@ -121,13 +108,7 @@
                                                     <h2 class="item-heading">SCHRIJF EEN REVIEW</h2>
                                                     <div class="rate-wrapper">
                                                         <div class="rate-label">Rating *</div>
-                                                        <div id="comment_rate" class="rate" v-on:click="rate_click(event)">
-                                                            <div id="comment_rate_1" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div id="comment_rate_2" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div id="comment_rate_3" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div id="comment_rate_4" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                            <div id="comment_rate_5" class="rate-item"><i class="fa fa-star" aria-hidden="true"></i></div>
-                                                        </div>
+                                                        <rating v-bind:stars.sync="leave_review.stars" v-bind:rate="true" v-on:rating="review_rating_click()"></rating>
                                                     </div>
                                                     <div class="leave-form-box">
                                                         <div class="row">

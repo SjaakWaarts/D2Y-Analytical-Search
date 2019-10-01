@@ -1,0 +1,126 @@
+﻿{% extends "dhk_app/dhk_layout.html" %}
+{% load i18n %}
+
+{% block css %}
+    {% load staticfiles %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/fullcalendar/core/main.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/fullcalendar/daygrid/main.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'dhk_app/content/recipe.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+
+    <div div id="root">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="box">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>Start</td>
+                                <td><input class="form-control" v-model="filter_facets.dekking_date.start" type="date"></td>
+                            </tr>
+                            <tr>
+                                <td>Eind</td>
+                                <td><input class="form-control" v-model="filter_facets.dekking_date.end" type="date"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="box">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>Categorie</td>
+                                <td v-if="aggs.typevergadering && workbook">
+                                    <select name="facet-typevergadering" v-model="filter_facets.typevergadering" style="height:auto"
+                                            class="form-control facet-select" multiple="multiple" id="typevergadering-select">
+                                        <option v-for="bucket in workbook.filters.typevergadering.buckets"
+                                                v-bind:value="bucket.key"
+                                                v-bind:class="{selected : bucket.key in filter_facets.typevergadering}">
+                                            [[bucket.key]] ([[bucket.doc_count]])
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="box">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>Keuken</td>
+                                <td><input class="form-control" v-model="query_facets.query_agenda" placeholder="Zoek op Agenda (ORI)"></td>
+                            </tr>
+                            <tr>
+                                <td>Afstand</td>
+                                <td><input class="form-control" v-model="query_facets.query_spreker" placeholder="Zoek op Spreker (ORI)"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span class="input-group-btn">
+                        <button id="search_webcasts_ori_edepot_btn" class="btn divault-search"
+                                v-on:click="pager.page_nr=1; search_webcasts_ori_edepot()" style="margin-right:5px">
+                            Zoek
+                        </button>
+                        <button class="btn divault-reset" v-on:click="pager.page_nr=1; reset_search()" style="margin-right:5px">Reset</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="GoogleMap" class="club-map"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    {% csrf_token %}
+	<input type="hidden" name="get_recipe_url" value="{% url 'dhk/get_recipe' %}">
+    <input type="hidden" name="post_recipe_url" value="{% url 'dhk/post_recipe' %}">
+    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">    
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        var static_assets_url = "{% static 'assets' %}";
+        var user = {
+           'username' : "{{ user.username }}",
+           'first_name' : "{{ user.first_name }}",
+           'last_name' : "{{ user.last_name }}",
+           'email' : "{{ user.email }}",
+           'street' : "{{ user.street }}",
+           'housenumber' : "{{ user.housenumber }}",
+           'city' : "{{ user.city }}",
+           'country' : "{{ user.country }}"
+        };
+    </script>
+    {% load staticfiles %}
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl4shlG7ca_SneqGEEOswOyJuxpqA4KKk"></script>
+        <script src="{% static 'assets/googlemaps/js/markerclusterer.js' %}"></script>
+        <script src="{% static 'assets/fullcalendar/core/main.js' %}"></script>
+        <script src="{% static 'assets/fullcalendar/core/locales/nl.js' %}"></script>
+        <script src="{% static 'assets/fullcalendar/daygrid/main.js' %}"></script>
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/club.js' %}"></script>
+
+{% endblock %}

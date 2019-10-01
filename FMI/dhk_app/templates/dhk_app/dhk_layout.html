@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'app/content/dhk_site.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'dhk_app/content/dhk_site.css' %}" />
     {% block css %}
     {% endblock %}
 </head>
@@ -21,14 +21,14 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-utensils mr-2"></i>Zoek Gerecht</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-tags"></i>Categories</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-mitten"></i>Keuken</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-graduation-cap">
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-graduation-cap">
                 </i>Kookcursus</a>
                 <ul class="dropdown-menu-col-1">
-                    <li><a href="{% url 'dhk' %}">Workshops</a></li>
-                    <li><a href="{% url 'dhk' %}">Stuurhuis</a></li>
+                    <li><a href="{% url 'dhk/workshops' %}">Workshops</a></li>
+                    <li><a href="{% url 'dhk/stuurhuis' %}">Stuurhuis</a></li>
                 </ul>
             </li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-users mr-2"></i>Kookclub</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dhk/club' %}"><i class="fas fa-users mr-2"></i>Kookclub</a></li>
         </ul>
         {% include 'registration/loginpartial.html' %}
     </nav>
