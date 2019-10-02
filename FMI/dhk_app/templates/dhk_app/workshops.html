@@ -1,166 +1,262 @@
 ﻿{% extends "dhk_app/dhk_layout.html" %}
+{% load i18n %}
+
+{% block css %}
+    {% load staticfiles %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'dhk_app/content/recipe.css' %}" />
+{% endblock %}
 
 {% block content %}
+    <script type="text/javascript">
+        workshops = {{ workshops | safe }};
+    </script>
+	<div class="row">
+        <div class="col-12">
+            <div id="root" class="row">
+                <div class="col-12" v-if="this.workshop">
+                    <div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 1rem">
+                        <h2>Workshops</h2>
+                        Kies de workshop uit die bij je past.
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="workshop">
+                                <h3 class="box-title">[[ workshop.title ]]</h3>
+                                {% include 'dhk_app/workshop - header.html' %}
+                                <div class="row mb-5">
+                                    <div class="col-12">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item" style="width:60%; display:flex">
+                                                <a class="nav-link w-100 active" data-toggle="tab" href="#workshop"><i class="fas fa-utensils mr-2"></i>Workshop</a>
+                                            </li>
+                                            <li class="nav-item" style="width:20%; display:flex">
+                                                <a class="nav-link w-100" data-toggle="tab" href="#reviews"><i class="far fa-comments mr-2"></i>Reviews</a>
+                                            </li>
+                                            <li class="nav-item" style="width:20%; display:flex">
+                                                <a class="nav-link w-100" data-toggle="tab" href="#kookclub"><i class="fas fa-users mr-2"></i>Deelnemers</a>
+                                            </li>
+                                        </ul>
+                                        <!-- Tab panes -->
+                                        <div class="tab-content border border-top-0 p-2">        
+                                            <div class="tab-pane container active" id="workshop">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <img v-bind:src="bind_stream_file_url(api_stream_file_url, workshop.images[0].location)" alt=field width="auto" height="156px"  style="margin: 5px">
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <p>[[ workshop.excempt]]</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="recipe-ingredients">
+                                                            <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Dates</h3>
+                                                            <div class="recipe-ingredient" v-for="(date, index) in workshop.dates">
+                                                                <div class="custom-control custom-checkbox mb-3">
+                                                                    <input type="checkbox" class="custom-control-input" v-bind:id="'workshop'+'_date'+index">
+                                                                    <label class="custom-control-label" v-bind:for="'workshop'+'_date'+index">[[ date ]]</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="recipe-instructions">
+                                                            <h3 class="recipe-instructions-title"><i class="fas fa-info"></i>Instructies</h3>
+                                                            <div class="recipe-instruction" v-for="(instruction, index) in workshop.instructions">
+                                                                <div class="serial-number">
+                                                                    <h4>[[ index + 1 ]]</h4>
+                                                                    <span>Stap</span>
+                                                                </div>
+                                                                <div class="recipe-instruction-instruction">
+                                                                    <p>[[ instruction ]]</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container fade" id="reviews">
+                                                <div class="recipe-reviews">
+                                                    <div class="section-heading3 heading-dark">
+                                                        <h2 class="item-heading">RECIPE REVIEWS</h2>
+                                                    </div>
+                                                    <div class="avarage-rating-wrap">
+                                                        <div class="avarage-rating">Avarage Rating: 
+                                                            <rating v-bind:stars="average_rating" v-bind:rate="false"></rating>                                     
+                                                        </div>
+                                                        <div class="total-reviews">Total Reviews:<span class="review-number">([[workshop.reviews.length]])</span></div>
+                                                    </div>
+                                                    <ul>
+                                                        <li class="reviews-single-item" v-for="(review, index) in workshop.reviews">
+                                                            <div class="media media-none--xs">
+                                                                <div class="media-body">
+                                                                    <h4 class="comment-title">[[review.user]]</h4>
+                                                                    <span class="post-date">[[review.review_date]]</span>
+                                                                    <p>[[review.review]]</p>
+                                                                    <rating v-bind:stars="review.stars" v-bind:rate="false" v-on:rating="review_rating_click(index)"></rating>
+                                                                    <a href="#" class="item-btn">REPLY<i class="fas fa-long-arrow-alt-right"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="recipe-leave-review">
+                                                    <h2 class="item-heading">SCHRIJF EEN REVIEW</h2>
+                                                    <div class="rate-wrapper">
+                                                        <div class="rate-label">Rating *</div>
+                                                        <rating v-bind:stars.sync="leave_review.stars" v-bind:rate="true" v-on:rating="review_rating_click()"></rating>
+                                                    </div>
+                                                    <div class="leave-form-box">
+                                                        <div class="row">
+                                                            <div class="col-12 form-group">
+                                                                <label>Commentaar *</label>
+                                                                <textarea id="comment_textarea" placeholder="" class="textarea form-control" name="message" rows="3" cols="20"
+                                                                            data-error="Message field is required" required=""></textarea>
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-lg-4 form-group">
+                                                                <label>Naam *</label>
+                                                                <input type="text" placeholder="" class="form-control" name="name" data-error="Name field is required" required=""
+                                                                        v-model="leave_review.name">
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-lg-4 form-group">
+                                                                <label>E-mail *</label>
+                                                                <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required=""
+                                                                        v-model="leave_review.email">
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-lg-4 form-group">
+                                                                <label>Website</label>
+                                                                <input type="text" placeholder="" class="form-control" name="website"
+                                                                        v-model="leave_review.website">
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                            <div class="col-12 form-group mb-0">
+                                                                <button class="item-btn" v-on:click="post_review_click()">
+                                                                    BOEK REVIEW
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container fade" id="kookclub">
+                                                <div class="club-events">
+                                                    <div class="section-heading3 heading-dark">
+                                                        <h2 class="item-heading">WORKSHOP</h2>
+                                                        <p>
+                                                            Schrijf je in voor deze workshop.
+                                                        </p>                                                   
+                                                    </div>
+                                                    <div class="club-map-event">
+                                                        <div class="club-event mr-2">
+                                                            <h5>Deelnemers</h5>
+                                                            <table class="table table-bordered table-hover table-striped">
+                                                                <tr>
+                                                                    <th>Gast</th>
+                                                                    <th>Opmerking</th>
+                                                                    <th></th>
+                                                                </tr>
+                                                                <tr v-for="(participant, index) in workshop.participants">
+                                                                    <td>[[participant.user]]</td>
+                                                                    <td>[[participant.comment]]</td>
+                                                                    <td>
+                                                                        <a href="#" v-on:click="club_participant_update_click(index)">
+                                                                            <i class="fa fa-eye" title="Beheer"></i>
+                                                                        </a>
+                                                                        <a href="#" v-on:click="club_participant_delete_click(index)" v-if="participant.user==user.username">
+                                                                            <i class="fa fa-trash" title="Verwijder"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <div class="club-event">
+                                                            <div class="leave-form-box">
+                                                                <div class="row">
+                                                                    <div class="col-12 input-group input-group-sm">
+                                                                            <div class="input-group-prepend">
+                                                                            <span class="input-group-text">Naam *</span>
+                                                                        </div>
+                                                                        <input type="text" placeholder="" name="name" class="form-control" data-error="Naam is vereist" required=""
+                                                                                v-model="workshop_participant.user">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 input-group input-group-sm" v-if="workshop_participant.user==user.username">
+                                                                            <div class="input-group-prepend">
+                                                                            <span class="input-group-text">E-mail *</span>
+                                                                        </div>
+                                                                        <input type="email" placeholder="" name="email" class="form-control" data-error="E-mail is vereist" required=""
+                                                                                v-model="workshop_participant.email">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Opmerking</label>
+                                                                        <textarea id="participant_textarea" placeholder="Eventueel commentaar" class="textarea form-control" name="message" rows="3" cols="40"></textarea>
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-12" v-if="user.username!=''">
+                                                                        <p><em>Je ontvangt een uitnodiging nadat je hebt aangemeld met de details.</em></p>
+                                                                    </div>
+                                                                    <div class="col-12" v-else>
+                                                                        <p><em style="color:red">Login om je te kunnen aanmelden voor een etentje</em></p>
+                                                                    </div>
+                                                                    <div class="col-12 mb-0">
+                                                                        <button id="participate_button" class="item-btn" v-on:click="post_workshop_participant_click()" value="new"
+                                                                                v-bind:disabled="workshop_participant.user!=user.username || user.username==''">
+                                                                            AANMELDEN WORKSHOP
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-<div class="page-header">
-  <h1>Kookcursus <small>Workshops</small></h1>
-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 sidebar">
+                            {% include 'dhk_app/workshop - sidebar.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-{% load staticfiles %}
-<form id="dhk_form" method="post" class="form-horizontal">
     {% csrf_token %}
-    <input type="hidden" id="workbook_name" name="workbook_name" value="test">
-    <input type="hidden" id="storyboard_name" name="storyboard_name" value="initial">
-    <input type="hidden" id="dashboard_name" name="dashboard_name" value="initial">
-    <div class="row">
-        <div class="col-md-5 iff-dataset">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-		                <div class="info-card">
-				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/search_recipe.png" %}">
-				                </div>
-			                <div class="info-card-back">
-				                <h3>Recepten</h3>
-				                <p>
-                                    Recepten
-                                </p>
-			                </div>
-		                </div>
-                    </div>
-                    <div class="col-md-7">
-                        <p>
-                            Vindt uw recept.
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=dhk&storyboard_name=initial&dashboard_name=initial">
-                                Search de Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-5 iff-dataset">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-		                <div class="info-card">
-				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/load_recipe.png" %}">
-				                </div>
-			                <div class="info-card-back">
-				                <h3>Recepten</h3>
-				                <p>
-                                    Recepten
-                                </p>
-			                </div>
-		                </div>
-                    </div>
-                    <div class="col-md-7">
-                        <p>
-                            Laad uw recept.
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'dhk/dhk_admin'%}">
-                                Laad de Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-5 iff-dataset">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-		                <div class="info-card">
-				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/search_recipe.png" %}">
-				                </div>
-			                <div class="info-card-back">
-				                <h3>Kookcursus</h3>
-				                <p>
-                                    Workshops
-                                </p>
-			                </div>
-		                </div>
-                    </div>
-                    <div class="col-md-7">
-                        <p>
-                            Volg een workshop.
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'dhk/workshops' %}">
-                                Kook workshop <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-5 iff-dataset">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-		                <div class="info-card">
-				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/load_recipe.png" %}">
-				                </div>
-			                <div class="info-card-back">
-				                <h3>Kookcursus</h3>
-				                <p>
-                                    Cursus
-                                </p>
-			                </div>
-		                </div>
-                    </div>
-                    <div class="col-md-7">
-                        <p>
-                            Volg een cursus.
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'dhk/stuurhuis'%}">
-                                Kook cursus <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        {% if form.errors %}
-            <p class="validation-summary-errors">Errors detected.</p>
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <div class="alert alert-error">
-                    <strong>{{ field.label_tag }}{{ error|escape }}</strong>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <div class="alert alert-error">
-                <strong>{{ error|escape }}</strong>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-    </div>
-</form>
-
-<div class="row">
-    <div class="col-md-12" id="scrape_progress"></>
-    </div>
-</div>
-
+	<input type="hidden" name="get_recipe_url" value="{% url 'dhk/get_recipe' %}">
+    <input type="hidden" name="post_recipe_url" value="{% url 'dhk/post_recipe' %}">
+    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
 
 {% endblock %}
 
-
-
 {% block scripts %}
-
+    <script type="text/javascript">
+        var static_assets_url = "{% static 'assets' %}";
+        var user = {
+           'username' : "{{ user.username }}",
+           'first_name' : "{{ user.first_name }}",
+           'last_name' : "{{ user.last_name }}",
+           'email' : "{{ user.email }}",
+           'street' : "{{ user.street }}",
+           'housenumber' : "{{ user.housenumber }}",
+           'city' : "{{ user.city }}",
+           'country' : "{{ user.country }}"
+        };
+    </script>
     {% load staticfiles %}
-        <script src="{% static 'app/scripts/insight.js' %}"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/workshops.js' %}"></script>
 {% endblock %}

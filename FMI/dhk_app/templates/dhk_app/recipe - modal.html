@@ -1,7 +1,7 @@
 ﻿<!-- The Modal -->
 <div class="modal fade" id="recipe-modal">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" v-if="this.cooking_club">
+        <div class="modal-content" v-if="this.cooking_club && this.recipe">
       
             <!-- Modal Header -->
             <div class="modal-header">
@@ -16,6 +16,7 @@
                         <i class="fas fa-users mr-2"></i>[[cooking_club.cook]] 
                         <i class="far fa-calendar-alt m-1"></i>[[cooking_club.cooking_date.substr(2, 8)]]
                         <i class="far fa-clock m-1"></i>[[cooking_club.cooking_date.substr(11, 5)]]
+                        <i class="fas fa-euro-sign m-1"></i>[[cooking_club.cost]]
                     </div>
                     <div class="club-invitation">
                         <h5>Uitnodiging</h5>

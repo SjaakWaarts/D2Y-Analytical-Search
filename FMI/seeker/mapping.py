@@ -289,6 +289,8 @@ def doc_field(type):
 
 def copy_mapping(es_mapping, extra=None):
     doc_type = es_mapping['doc_type']
+    # ES 6.x mapping = dsl.Mapping(doc_type)
+    # ES 7.x mapping = dsl.Mapping()
     mapping = dsl.Mapping(doc_type)
     for f, prop in es_mapping['properties'].items():
         field = doc_field(prop.get('type', None))

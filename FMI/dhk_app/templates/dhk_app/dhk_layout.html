@@ -20,12 +20,12 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-home"></i>Home</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-utensils mr-2"></i>Zoek Gerecht</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-tags"></i>Categories</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'dhk' %}"><i class="fas fa-mitten"></i>Keuken</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-graduation-cap">
-                </i>Kookcursus</a>
+            <li class="nav-item"><a class="nav-link" href="{% url 'dhk/workshops' %}"><i class="fas fa-graduation-cap"></i>Workshops</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-mitten">
+                </i>Keuken</a>
                 <ul class="dropdown-menu-col-1">
-                    <li><a href="{% url 'dhk/workshops' %}">Workshops</a></li>
-                    <li><a href="{% url 'dhk/stuurhuis' %}">Stuurhuis</a></li>
+                    <li><a href="{% url 'dhk/kitchen' %}">Oosters</a></li>
+                    <li><a href="{% url 'dhk/kitchen' %}">Nederlands</a></li>
                 </ul>
             </li>
             <li class="nav-item"><a class="nav-link" href="{% url 'dhk/club' %}"><i class="fas fa-users mr-2"></i>Kookclub</a></li>

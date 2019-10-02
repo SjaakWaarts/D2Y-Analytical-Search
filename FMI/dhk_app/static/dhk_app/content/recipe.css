@@ -27,6 +27,11 @@
     width: 50px;
 }
 
+/* DHK workshop */
+
+.workshop {
+}
+
 /* DHK recipe */
 
 .recipe {
@@ -38,7 +43,7 @@
 .recipe-meta {
 }
 
-.recipe .recipe-meta a i {
+.recipe-meta a i {
     margin-right: 5px;
     color: #ff4a52;
     font-size: 14px;

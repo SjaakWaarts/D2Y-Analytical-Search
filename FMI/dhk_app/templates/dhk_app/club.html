@@ -12,8 +12,8 @@
 
 {% block content %}
 
-
     <div div id="root">
+        {% include 'dhk_app/recipe - modal.html' %}
         <div class="row">
             <div class="col-md-3">
                 <div class="box">
@@ -93,7 +93,7 @@
     {% csrf_token %}
 	<input type="hidden" name="get_recipe_url" value="{% url 'dhk/get_recipe' %}">
     <input type="hidden" name="post_recipe_url" value="{% url 'dhk/post_recipe' %}">
-    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">    
+    <input type="hidden" name="calendar_items_url" value="{% url 'dhk/calendar_items' %}">    
 
 {% endblock %}
 

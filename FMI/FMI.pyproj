@@ -71,7 +71,8 @@
     <Compile Include="dhk_app\models.py" />
     <Compile Include="dhk_app\tests.py" />
     <Compile Include="dhk_app\urls.py" />
-    <Compile Include="dhk_app\course.py" />
+    <Compile Include="dhk_app\kitchen.py" />
+    <Compile Include="dhk_app\workshops.py" />
     <Compile Include="dhk_app\views.py" />
     <Compile Include="dhk_app\__init__.py" />
     <Compile Include="FMI\local_settings.py">
@@ -303,6 +304,7 @@
     <Content Include="dhk_app\static\dhk_app\media\search_recipe.png" />
     <Content Include="dhk_app\static\dhk_app\scripts\components.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\club.js" />
+    <Content Include="dhk_app\static\dhk_app\scripts\workshops.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\recipe.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\dhk_admin.js" />
     <Content Include="app\static\app\fonts\glyphicons-halflings-regular.woff2" />
@@ -606,7 +608,9 @@
     <Content Include="app\static\assets\vue\js\vue.min.js" />
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="dhk_app\templates\dhk_app\club.html" />
-    <Content Include="dhk_app\templates\dhk_app\stuurhuis.html" />
+    <Content Include="dhk_app\templates\dhk_app\workshop - sidebar.html" />
+    <Content Include="dhk_app\templates\dhk_app\workshop - header.html" />
+    <Content Include="dhk_app\templates\dhk_app\kitchen.html" />
     <Content Include="dhk_app\templates\dhk_app\workshops.html" />
     <Content Include="dhk_app\templates\dhk_app\dhk.html" />
     <Content Include="dhk_app\templates\dhk_app\dhk_layout.html" />

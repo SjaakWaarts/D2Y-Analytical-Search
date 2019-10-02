@@ -1,4 +1,15 @@
 ﻿
+
+<div class="widget" v-if="this.carousel_images">
+    <div class="widget-header">
+        <h3>Workshops</h3>
+    </div>
+    <div class="widget-body">
+        <ul>
+            <li v-for="(workshop, workshop_ix) in workshops"><a href="#" v-on:click="workshop_click(workshop_ix)">[[workshop.title]]</a></li>
+        </ul>
+    </div>
+</div>
 <div class="widget" v-if="this.carousel_images">
     <div class="widget-header">
         <h3>Media</h3>

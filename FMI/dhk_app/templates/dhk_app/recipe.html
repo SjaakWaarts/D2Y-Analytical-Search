@@ -29,10 +29,10 @@
                                             <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)" v-for="(course, course_ix) in this.recipe.courses">
                                                 <a v-bind:class="{'nav-link':true, 'w-100':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix"><i class="fas fa-utensils mr-2"></i>[[course.title]]</a>
                                             </li>
-                                            <li class="nav-item" style="width:20%; display:flex">
+                                            <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)">
                                                 <a class="nav-link w-100" data-toggle="tab" href="#reviews"><i class="far fa-comments mr-2"></i>Reviews</a>
                                             </li>
-                                            <li class="nav-item" style="width:20%; display:flex" v-on:click="club_tab_click()">
+                                            <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)" v-on:click="club_tab_click()">
                                                 <a class="nav-link w-100" data-toggle="tab" href="#kookclub"><i class="fas fa-users mr-2"></i>Kookclub</a>
                                             </li>
                                         </ul>
@@ -158,10 +158,21 @@
                                                         <div class="club-event">
                                                             <div class="leave-form-box">
                                                                 <div class="row">
-                                                                    <div class="col-12 form-group">
+                                                                    <div class="col-6 form-group">
                                                                         <label>Datum *</label>
                                                                         <input type="datetime-local" class="form-control" name="date" data-error="Datum is vereist" required=""
                                                                                v-model="cooking_club.cooking_date">
+                                                                        <div class="help-block with-errors"></div>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label>Prijs (€) *</label>
+                                                                        <div class="input-group input-group-sm">
+                                                                            <div class="input-group-prepend">
+                                                                               <span class="input-group-text">€</span>
+                                                                            </div>
+                                                                            <input type="number" class="form-control" name="price" data-error="Prijs is vereist" required=""
+                                                                                   v-model="cooking_club.cost">
+                                                                        </div>
                                                                         <div class="help-block with-errors"></div>
                                                                     </div>
                                                                     <div class="col-12 form-group">

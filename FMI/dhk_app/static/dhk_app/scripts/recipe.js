@@ -30,10 +30,8 @@ var app = new Vue({
     el: '#root',
     delimiters: ['[[', ']]'],
     data: {
-        iframe_src: null,
-        id: '',
-        recipe: null,
         average_rating: 0,
+        carousel_images: null,
         cooking_club: {
             'cook': "",
             'email': "",
@@ -50,13 +48,15 @@ var app = new Vue({
             'comment': ""
         },
         hits: [],
-        shopping_basket: [],
+        id: '',
         leave_review: {
             'name': "",
             'email': "",
             'website': "",
             'stars': 0
         },
+        recipe: null,
+        shopping_basket: [],
     },
     methods: {
         bind_stream_file_url(url, location) {
@@ -142,6 +142,7 @@ var app = new Vue({
                         total_stars += this.recipe.reviews[ix].stars;
                     }
                     this.average_rating = Math.ceil(total_stars / this.recipe.reviews.length);
+                    this.carousel_images = this.recipe.images;
                 }
             });
         },
@@ -283,9 +284,8 @@ var app = new Vue({
             //            label: label
             //        });
             //});
-            for (var rownr = 0; rownr < this.recipe.cooking_clubs.length; rownr++) {
+            for (var rownr=0, labelnr=0; rownr < this.recipe.cooking_clubs.length; rownr++) {
                 var cooking_club = this.recipe.cooking_clubs[rownr];
-                label = labels[rownr % labels.length];
                 title = cooking_club.cook + ' / ' + cooking_club.cooking_date.substr(5, 5);
                 var position = null;
                 if (cooking_club.position.lat != 0 && cooking_club.position.lng != 0) {
@@ -299,6 +299,8 @@ var app = new Vue({
                         }
                     }
                     if (!found) {
+                        label = labels[labelnr % labels.length];
+                        labelnr++;
                         var marker = new google.maps.Marker({
                             position: position,
                             map: map,
