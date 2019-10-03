@@ -119,6 +119,8 @@ def set_workbook(workbook_name):
         models.ExcelSeekerView.extra_columns = es_index['extra_columns']
     if 'field_column_types' in es_index:
         models.ExcelSeekerView.field_column_types = es_index['field_column_types']
+    if 'layout_template' in es_index:
+        models.ExcelSeekerView.layout_template = es_index['layout_template']
     models.ExcelSeekerView.facets = es_index['facets']
     models.ExcelSeekerView.facets_keyword = es_index['facets_keyword']
     models.ExcelSeekerView.display = es_index['display']

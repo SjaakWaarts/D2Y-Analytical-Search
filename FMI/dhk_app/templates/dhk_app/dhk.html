@@ -3,7 +3,18 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>de Heerlijke Keuken <small>Recepten</small></h1>
+    <h3>
+        Op zoek naar een recept, of schuif je liever aan bij iemand die voor je kookt!
+    </h3>
+    <p>
+        Beide is mogelijk op deze site. Ga <b>opzoek</b> waar je zin in hebt via het uitgebruide zoek scherm.
+        Eenmaal gevonden, dan staan de verschillende gangen van de maaltijd overzichtelijk naast elkaar.
+        Het recept dat bij iedere gang hoort staat opgesomt middels de benodigde ingrediënten en de stappen voor de bereidingswijze.
+    </p>
+    <p>
+        Geen zin om zelf te koken, meld je dan aan bij de <b>Kookclub</b> die voor deze maaltijd wordt georganiseerd en schuif aan.
+        Of, juist wel zin om te koken maar niet alleen. Organiseer dan zelf een Kookclub, nodig mensen uit of wacht wie er zich inschrijft.
+    </p>
 </div>
 
 {% load staticfiles %}
@@ -19,23 +30,24 @@
                     <div class="col-md-5">
 		                <div class="info-card">
 				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/search_recipe.png" %}">
+					                <img class="card-image" src="{% static "dhk_app/media/search_supermarket.jpg" %}">
 				                </div>
 			                <div class="info-card-back">
 				                <h3>Recepten</h3>
 				                <p>
-                                    Recepten
+                                    Ga <b>opzoek</b>!
                                 </p>
 			                </div>
 		                </div>
                     </div>
                     <div class="col-md-7">
                         <p>
-                            Vindt uw recept.
+                            Ga <b>opzoek</b> naar de maaltijd waar je zin in hebt via het uitgebruide zoek scherm.
+                            Kook zelf of schuif aan bij de <b>Kookclub</b>.
                         </p>
                         <p>
                             <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=dhk&storyboard_name=initial&dashboard_name=initial">
-                                Search de Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                                Ga <b>opzoek</b> <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         </p>
                     </div>
                 </div>
@@ -47,23 +59,23 @@
                     <div class="col-md-5">
 		                <div class="info-card">
 				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/load_recipe.png" %}">
+					                <img class="card-image" src="{% static "dhk_app/media/club_dining_table.jpg" %}">
 				                </div>
 			                <div class="info-card-back">
-				                <h3>Recepten</h3>
+				                <h3>Kookclub</h3>
 				                <p>
-                                    Recepten
+                                    Schuif aan!
                                 </p>
 			                </div>
 		                </div>
                     </div>
                     <div class="col-md-7">
                         <p>
-                            Laad uw recept.
+                            Geen zin om zelf te koken, meld je dan aan bij een Kookclub en schuif aan. Hier een overzicht van alle <b>Kookclubs</b>.
                         </p>
                         <p>
-                            <a class="btn btn-primary" href="{% url 'dhk/dhk_admin'%}">
-                                Laad de Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                            <a class="btn btn-primary" href="{% url 'dhk/club'%}">
+                                Schuif aan <b>Kookclub</b> <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         </p>
                     </div>
                 </div>
@@ -77,23 +89,23 @@
                     <div class="col-md-5">
 		                <div class="info-card">
 				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/search_recipe.png" %}">
+					                <img class="card-image" src="{% static "dhk_app/media/workshop_cooks.jpg" %}">
 				                </div>
 			                <div class="info-card-back">
-				                <h3>Kookcursus</h3>
+				                <h3>Workshops</h3>
 				                <p>
-                                    Workshops
+                                    Meld je aan!
                                 </p>
 			                </div>
 		                </div>
                     </div>
                     <div class="col-md-7">
                         <p>
-                            Volg een workshop.
+                            Een overzicht van alle workshops. Is er iets voor je bij, meld je aan.
                         </p>
                         <p>
                             <a class="btn btn-primary" href="{% url 'dhk/workshops' %}">
-                                Kook workshop <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                                Volg <b>Workshop</b> <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         </p>
                     </div>
                 </div>
@@ -105,23 +117,24 @@
                     <div class="col-md-5">
 		                <div class="info-card">
 				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "dhk_app/media/load_recipe.png" %}">
+					                <img class="card-image" src="{% static "dhk_app/media/mykitchen_baker.jpg" %}">
 				                </div>
 			                <div class="info-card-back">
-				                <h3>Keuken</h3>
+				                <h3>Mijn Keuken</h3>
 				                <p>
-                                    Keuken
+                                    Organiseer!
                                 </p>
 			                </div>
 		                </div>
                     </div>
                     <div class="col-md-7">
                         <p>
-                            Keuken.
+                            Vind je het leuk om zelf te koken en met anderen te delen, dat kan hier!
+                            Laad je eigen recepten en organiseer eigen workshops.
                         </p>
                         <p>
-                            <a class="btn btn-primary" href="{% url 'dhk/kitchen'%}">
-                                Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                            <a class="btn btn-primary" href="{% url 'dhk/dhk_admin'%}">
+                                My Heerlijke Keuken <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         </p>
                     </div>
                 </div>

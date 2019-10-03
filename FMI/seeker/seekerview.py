@@ -75,9 +75,10 @@ class SeekerView (View):
     The ES index to use. Defaults to the SEEKER_INDEX setting.
     """
 
+    layout_template = 'app/layout.html'
     template_name = 'app/seeker/seeker.html'
     """
-    The overall seeker template to render.
+    The overall seeker template with its layout to render.
     """
 
     header_template = 'app/seeker/header.html'
@@ -450,15 +451,6 @@ class SeekerView (View):
         for field, i in self.required_display:
             display_fields.insert(i, field)
         return display_fields
-
-    def get_saved_search(self):
-        """
-        Returns the "saved_search" GET parameter if it's in the proper format, otherwise returns None.
-        """
-        saved_search_vals = [val for val in self.request.GET.getlist('saved_search') if val]
-        if len(saved_search_vals) == 1 and saved_search_vals[0].isdigit():
-            return saved_search_vals[0]
-        return None
 
     def get_facets(self):
         facet_l = []
@@ -979,20 +971,8 @@ class SeekerView (View):
         #        return redirect(default)
 
         ## Figure out if this is a saved search, and grab the current user's saved searches.
-        saved_search = None
-        saved_searches = []
         self.aggs_stack = None
         self.aggs_stack = {}
-        #if self.request.user and self.request.user.is_authenticated():
-        #    saved_search_pk = self.get_saved_search()
-        #    if saved_search_pk:
-        #        try:
-        #            saved_search = self.request.user.seeker_searches.get(pk=saved_search_pk, url=self.request.path, querystring=querystring)
-        #        except SavedSearch.DoesNotExist:
-        #            pass
-        #    saved_searches = list(self.request.user.seeker_searches.filter(url=self.request.path))
-        #else:
-        #    saved_searches = []
 
         workbook, dashboard = self.get_workbook_dashboard_names()
         keywords_q = self.get_keywords_q()
@@ -1009,10 +989,7 @@ class SeekerView (View):
         # Make sure we sanitize the sort fields.
         sort_fields = []
         column_lookup = {c.field: c for c in columns}
-        if saved_search:
-            sorts = self.request.GET.getlist('s')
-        else:
-            sorts = self.request.GET.getlist('s') or self.sort or []
+        sorts = self.request.GET.getlist('s') or self.sort or []
         for s in sorts:
             # Get the column based on the field name, and use it's "sort" field, if applicable.
             c = column_lookup.get(s.lstrip('-'))
@@ -1138,12 +1115,10 @@ class SeekerView (View):
             'reset_querystring': self.normalized_querystring(ignore=['p', 's', 'saved_search']),
             'show_rank': self.show_rank,
             'export_name': self.export_name,
-            #'can_save': self.can_save and self.request.user and self.request.user.is_authenticated(),
+            'layout_template': self.layout_template,
             'header_template': self.header_template,
             'results_template': self.results_template,
             'footer_template': self.footer_template,
-            'saved_search': saved_search,
-            'saved_searches': saved_searches,
         }
 
         if self.extra_context:
@@ -1342,29 +1317,6 @@ class SeekerView (View):
             return redirect(request.get_full_path())
         post_qs = request.POST.get('querystring', '')
         qs = self.normalized_querystring(post_qs, ignore=['p', 'saved_search'])
-        saved_search_pk = request.POST.get('saved_search', '').strip()
-        if not saved_search_pk.isdigit():
-            saved_search_pk = None
-        if '_save' in request.POST:
-            name = request.POST.get('name', '').strip()
-            if not name:
-                messages.error(request, 'You did not provide a name for this search. Please try again.')
-                return redirect('%s?%s' % (request.path, post_qs))
-            default = request.POST.get('default', '').strip() == '1'
-            if default:
-                request.user.seeker_searches.filter(url=request.path).update(default=False)
-            search_values = {'querystring': qs, 'default': default}
-            search, created = request.user.seeker_searches.update_or_create(name=name, url=request.path, defaults=search_values)
-            messages.success(request, 'Successfully saved "%s".' % search)
-            return redirect(search)
-        elif '_default' in request.POST and saved_search_pk:
-            request.user.seeker_searches.filter(url=request.path).update(default=False)
-            request.user.seeker_searches.filter(pk=saved_search_pk, url=request.path, querystring=qs).update(default=True)
-        elif '_unset' in request.POST and saved_search_pk:
-            request.user.seeker_searches.filter(url=request.path).update(default=False)
-        elif '_delete' in request.POST and saved_search_pk:
-            request.user.seeker_searches.filter(pk=saved_search_pk, url=request.path, querystring=qs).delete()
-            return redirect(request.path)
         return redirect('%s?%s' % (request.path, post_qs))
 
     def check_permission(self, request):

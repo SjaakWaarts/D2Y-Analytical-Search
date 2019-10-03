@@ -300,8 +300,15 @@
     <Content Include="app\static\assets\fullcalendar\daygrid\main.min.js" />
     <Content Include="dhk_app\static\dhk_app\content\recipe.css" />
     <Content Include="dhk_app\static\dhk_app\content\dhk_site.css" />
+    <Content Include="dhk_app\static\dhk_app\media\club_dining_table.jpg" />
+    <Content Include="dhk_app\static\dhk_app\media\club_serving.jpg" />
     <Content Include="dhk_app\static\dhk_app\media\load_recipe.png" />
+    <Content Include="dhk_app\static\dhk_app\media\mykitchen_baker.jpg" />
     <Content Include="dhk_app\static\dhk_app\media\search_recipe.png" />
+    <Content Include="dhk_app\static\dhk_app\media\search_supermarket.jpg" />
+    <Content Include="dhk_app\static\dhk_app\media\workshop_cooks.jpg" />
+    <Content Include="dhk_app\static\dhk_app\media\workshop_dish_decoration.jpg" />
+    <Content Include="dhk_app\static\dhk_app\media\workshop_hands.jpg" />
     <Content Include="dhk_app\static\dhk_app\scripts\components.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\club.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\workshops.js" />

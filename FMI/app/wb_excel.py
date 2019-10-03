@@ -1704,6 +1704,7 @@ es_indicis = {
         'doc_type'      : "doc",
         'properties'    : recipes,
         # SEEKER
+        'layout_template' : "dhk_app/dhk_layout.html",
         'page_size'     :30,
         'extra_columns'   : {"image" : {'field': 'images.location', 'nestedfield': 'images'}},
         'field_column_types' : {'image': 'LinksColumn'},
