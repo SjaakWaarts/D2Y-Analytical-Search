@@ -11,8 +11,7 @@ from django.views.generic import View
 from django.core.files import File
 import glob, os
 from elasticsearch_dsl.utils import AttrList, AttrDict
-#from seeker.templatetags.seeker import seeker_format
-from app.templatetags.seeker import seeker_format
+from seeker.templatetags.seeker import seeker_format
 from FMI.settings import BASE_DIR, ES_HOSTS
 from seeker.summary import get_ngrams, clean_input
 import seeker.models
@@ -76,22 +75,22 @@ class SeekerView (View):
     """
 
     layout_template = 'app/layout.html'
-    template_name = 'app/seeker/seeker.html'
+    template_name = 'seeker/seeker.html'
     """
     The overall seeker template with its layout to render.
     """
 
-    header_template = 'app/seeker/header.html'
+    header_template = 'seeker/header.html'
     """
     The template used to render the search results header.
     """
 
-    results_template = 'app/seeker/results.html'
+    results_template = 'seeker/results.html'
     """
     The template used to render the search results.
     """
 
-    footer_template = 'app/seeker/footer.html'
+    footer_template = 'seeker/footer.html'
     """
     The template used to render the search results footer.
     """

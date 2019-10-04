@@ -18,11 +18,6 @@
 
 
 <form action="{{ form_action }}" method="get" id="seeker_form">
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#criteria" aria-controls="criteria" role="tab" data-toggle="tab">Search</a></li>
-        <li role="presentation"><a href="#display" aria-controls="display" role="tab" data-toggle="tab">Display</a></li>
-        <li role="presentation"><a href="#dashboard_tab" aria-controls="dashboard" role="tab" data-toggle="tab">Dashboard</a></li>
-    </ul>
     <input type="hidden" name="tab" value="result_tab">
     <input type="hidden" name="workbook_name" value="">
     <input type="hidden" name="storyboard_name" value="">
@@ -31,8 +26,15 @@
     <input type="hidden" name="tile_facet_field" value="">
     <input type="hidden" name="tile_facet_value" value="">
     <input type="hidden" name="keyword_button" value="">
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="criteria">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#criteria">Search</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#display">Display</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#dashboard_tab">Dashboard</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content border border-top-0 p-2">
+        <div class="tab-pane container-fluid active" id="criteria">
             <div class="form-group">
                 <label class="sr-only" for="q">{% trans "Search" %}</label>
                 <input type="text" class="form-control" placeholder="{% trans "Search" %}" name="q" id="q" value="{{ keywords_q }}" autofocus="autofocus" />
@@ -73,50 +75,46 @@
                 </div>
             {% endfor %}
         </div>
-        <div role="tabpanel" class="tab-pane" id="display">
-            <div class="container-fluid">
-                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Display Columns</label>
-                            {% for c in optional_columns %}
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="d" class="display-field" value="{{ c.field }}"{% if c in display_columns %} checked="checked"{% endif %} />
-                                        {{ c.label }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
-                    <div class="col-md-12">
-                        <label>Display Facet Pos (0=hide)</label>
-                        {% for f in facets %}
-                            <div class="form-group" style="margin-bottom: 4px">
-                                <input type="text" name="a{{f.field}}" class="display-field" id={{f.field}} value="{{ f.visible_pos }}" size="2" />
-                                <label>{{ f.label }}</label>
+        <div  id="display" class="tab-pane container-fluid">
+            <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Display Columns</label>
+                        {% for c in optional_columns %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="d" class="display-field" value="{{ c.field }}"{% if c in display_columns %} checked="checked"{% endif %} />
+                                    {{ c.label }}
+                                </label>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
+            <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                <div class="col-md-12">
+                    <label>Display Facet Pos (0=hide)</label>
+                    {% for f in facets %}
+                        <div class="form-group" style="margin-bottom: 4px">
+                            <input type="text" name="a{{f.field}}" class="display-field" id={{f.field}} value="{{ f.visible_pos }}" size="2" />
+                            <label>{{ f.label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="dashboard_tab">
-            <div class="container-fluid">
-                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Dashboard Layout</label>
-                            <div class="well" id="db_layout_div">
-                                <table class="table table-bordered table-condensed" id="db_layout_table"></table>
-                            </div>
-                            <label>Chart Definitions</label>
-                            <div class="well" id="chart_definition_div">
-                                <div id="chart_selection_div"> </div>
-                                <table class="table table-bordered table-condensed" id="chart_definition_table"></table>
-                            </div>
+        <div id="dashboard_tab" class="tab-pane container-fluid" >
+            <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Dashboard Layout</label>
+                        <div class="well" id="db_layout_div">
+                            <table class="table table-bordered table-condensed" id="db_layout_table"></table>
+                        </div>
+                        <label>Chart Definitions</label>
+                        <div class="well" id="chart_definition_div">
+                            <div id="chart_selection_div"> </div>
+                            <table class="table table-bordered table-condensed" id="chart_definition_table"></table>
                         </div>
                     </div>
                 </div>

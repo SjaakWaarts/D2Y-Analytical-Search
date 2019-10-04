@@ -9,8 +9,7 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.views.generic import View
 from elasticsearch_dsl.utils import AttrList, AttrDict
-#from seeker.templatetags.seeker import seeker_format
-from app.templatetags.seeker import seeker_format
+from seeker.templatetags.seeker import seeker_format
 from .mapping import DEFAULT_ANALYZER
 import collections
 import elasticsearch_dsl as dsl

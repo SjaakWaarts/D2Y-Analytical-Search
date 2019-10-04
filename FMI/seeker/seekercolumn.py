@@ -1,8 +1,7 @@
 ﻿
 import glob, os
 from elasticsearch_dsl.utils import AttrList, AttrDict
-#from seeker.templatetags.seeker import seeker_format
-from app.templatetags.seeker import seeker_format
+from seeker.templatetags.seeker import seeker_format
 import collections
 import inspect
 from collections import OrderedDict
@@ -47,15 +46,15 @@ class Column (object):
             search_templates.append(self.template)
         for cls in inspect.getmro(view.document):
             if issubclass(cls, dsl.DocType):
-                search_templates.append('app/seeker/%s/%s.html' % (cls._doc_type.name, self.field))
-        search_templates.append('app/seeker/column.html')
+                search_templates.append('seeker/%s/%s.html' % (cls._doc_type.name, self.field))
+        search_templates.append('seeker/column.html')
         self.template = loader.select_template(search_templates)
         return self
 
     def header(self):
         cls = '%s_%s' % (self.view.document._doc_type.name, self.field.replace('.', '_'))
         if not self.sort:
-            return mark_safe('<th class="%s">%s</th>' % (cls, self.header_html))
+            return mark_safe('<th class="%s border">%s</th>' % (cls, self.header_html))
         q = self.view.request.GET.copy()
         field = q.get('s', '')
         sort = None
@@ -70,7 +69,7 @@ class Column (object):
             q['s'] = self.field
         next_sort = 'descending' if sort == 'Ascending' else 'ascending'
         sr_label = (' <span class="sr-only">(%s)</span>' % sort) if sort else ''
-        html = '<th class="%s"><a href="?%s" title="Click to sort %s" data-sort="%s">%s%s</a></th>' % (cls, q.urlencode(), next_sort, q['s'], self.header_html, sr_label)
+        html = '<th class="%s border"><a href="?%s" title="Click to sort %s" data-sort="%s">%s%s</a></th>' % (cls, q.urlencode(), next_sort, q['s'], self.header_html, sr_label)
         return mark_safe(html)
 
     def context(self, result, **kwargs):
@@ -103,11 +102,11 @@ class Column (object):
 
         keys = []
 
-        template_name = 'app/seeker/column.html'
+        template_name = 'seeker/column.html'
         if type(value) == AttrList or type(value) == list:
-            template_name = 'app/seeker/columnlist.html'
+            template_name = 'seeker/columnlist.html'
         elif type(value) == AttrDict or type(value) == dict:
-            template_name = 'app/seeker/columndict.html'
+            template_name = 'seeker/columndict.html'
             keys = list(value)
             value2 = {}
             for key in keys:
@@ -121,11 +120,11 @@ class Column (object):
             print("Column.render: AttrDict found {0} with value {1}".format(self.field, value))
         elif type(value) == str:
             if value[:4] == 'http':
-                template_name = 'app/seeker/columnimg.html'
+                template_name = 'seeker/columnimg.html'
             elif value.startswith("<html"):
-                template_name = 'app/seeker/columntextarea.html'
+                template_name = 'seeker/columntextarea.html'
             #elif len(value) > 80:
-            #    template_name = 'app/seeker/columntextarea.html'
+            #    template_name = 'seeker/columntextarea.html'
         params = {
             'result': result,
             'field': self.field,
@@ -223,7 +222,7 @@ class NestedColumn (Column):
         }
 
         params.update(self.context(result, **kwargs))
-        template_name = 'app/seeker/columnlist.html'
+        template_name = 'seeker/columnlist.html'
 
         return loader.render_to_string(template_name, params)
 
@@ -287,7 +286,7 @@ class LinksColumn (Column):
         }
 
         params.update(self.context(result, **kwargs))
-        template_name = 'app/seeker/columnanchor.html'
+        template_name = 'seeker/columnanchor.html'
 
         return loader.render_to_string(template_name, params)
 
@@ -337,7 +336,7 @@ class JavaScriptColumn (Column):
         }
 
         params.update(self.context(result, **kwargs))
-        template_name = 'app/seeker/columnjavascript.html'
+        template_name = 'seeker/columnjavascript.html'
 
         return loader.render_to_string(template_name, params)
 

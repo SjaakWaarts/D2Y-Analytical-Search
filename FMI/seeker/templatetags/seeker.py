@@ -66,7 +66,7 @@ def seeker_column(column, result, facets, **kwargs):
     return column.render(result, facets, **kwargs)
 
 @register.simple_tag
-def seeker_score(result, max_score=None, template='app/seeker/score.html'):
+def seeker_score(result, max_score=None, template='seeker/score.html'):
     #pct = result.meta.score / max_score if max_score else 0.0
     score = result['_score']
     pct = score / max_score if max_score else 0.0
@@ -77,7 +77,7 @@ def seeker_score(result, max_score=None, template='app/seeker/score.html'):
     })
 
 @register.simple_tag
-def seeker_pager(total, page_size=10, page=1, param='p', querystring='', spread=7, template='app/seeker/pager.html'):
+def seeker_pager(total, page_size=10, page=1, param='p', querystring='', spread=7, template='seeker/pager.html'):
     paginator = Paginator(range(total), page_size)
     if paginator.num_pages < 2:
         return ''

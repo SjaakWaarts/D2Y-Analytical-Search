@@ -10,5 +10,5 @@ def kitchen_view(request):
     return render(
         request,
         'dhk_app/kitchen.html',
-        {'site' : FMI.settings.site, 'year':datetime.now().year}
+        {'site' : FMI.settings.site, 'year':datetime.now().year, 'layout_template': 'dhk_app/dhk_layout.html'}
     )

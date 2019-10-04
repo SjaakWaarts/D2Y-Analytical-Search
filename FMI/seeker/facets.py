@@ -104,7 +104,7 @@ class Facet (object):
     keywords_input = 'keywords_k'
     search_fields = None
 
-    template = getattr(settings, 'SEEKER_DEFAULT_FACET_TEMPLATE', 'app/seeker/facets/terms.html')
+    template = getattr(settings, 'SEEKER_DEFAULT_FACET_TEMPLATE', 'seeker/facets/terms.html')
 
     def __init__(self, field, label=None, name=None, description=None, template=None, visible_pos = 1, **kwargs):
         self.field = field
@@ -438,7 +438,7 @@ class TermsFacet (Facet):
 
 
 class NestedFacet (TermsFacet):
-    template = 'app/seeker/facets/nestedterms.html'
+    template = 'seeker/facets/nestedterms.html'
     nestedfield = None
     sort_nested_filter = None
 
@@ -674,7 +674,7 @@ class MetricFacet (TermsFacet):
 
 
 class PercFacet (TermsFacet):
-    template = 'app/seeker/facets/percterms.html'
+    template = 'seeker/facets/percterms.html'
     rangeon = True
     rangemin = 0.20
     rangemax = 0.0
@@ -863,7 +863,7 @@ class PercFacet (TermsFacet):
 
 
 class OptionFacet (TermsFacet):
-    template = 'app/seeker/facets/optionterms.html'
+    template = 'seeker/facets/optionterms.html'
     rangeon = True
     rangemin = 0.25
     rangemax = 0.0
@@ -994,7 +994,7 @@ class OptionFacet (TermsFacet):
 
 
 class KeywordFacet (TermsFacet):
-    template = 'app/seeker/facets/keyword.html'
+    template = 'seeker/facets/keyword.html'
     keywords_input = ''
     keywords_text = ''
     keywords_k = []
@@ -1107,7 +1107,7 @@ class GlobalTermsFacet (TermsFacet):
 
 
 class YearHistogram (Facet):
-    template = 'app/seeker/facets/year_histogram.html'
+    template = 'seeker/facets/year_histogram.html'
 
     def _get_aggregation(self, **extra):
         params = {
@@ -1164,7 +1164,7 @@ class YearHistogram (Facet):
 
 
 class MonthHistogram (Facet):
-    template = 'app/seeker/facets/year_histogram.html'
+    template = 'seeker/facets/year_histogram.html'
     nestedfield = None
     date_formatter = None
 
@@ -1306,7 +1306,7 @@ class MonthHistogram (Facet):
 
 
 class DayHistogram (Facet):
-    template = 'app/seeker/facets/year_histogram.html'
+    template = 'seeker/facets/year_histogram.html'
 
     def _get_aggregation(self, **extra):
         params = {
@@ -1363,7 +1363,7 @@ class DayHistogram (Facet):
 
 
 class RangeFilter (Facet):
-    template = 'app/seeker/facets/range.html'
+    template = 'seeker/facets/range.html'
 
     def _get_chart_aggregation(self, **extra):
         params = {

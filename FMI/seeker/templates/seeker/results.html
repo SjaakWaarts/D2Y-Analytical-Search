@@ -19,18 +19,19 @@ function summary_line(sentence, ngram) {
     {% include header_template %}
 {% endblock header %}
 
+<!-- Nav tabs -->
 <ul class="nav nav-tabs" id="tabs">
-    <li class="{{ tabs.results_tab }}"><a href="#results_tab" data-toggle="tab">Results</a></li>
+    <li class="nav-item"><a class="nav-link {{ tabs.results_tab }}" data-toggle="tab" href="#results_tab">Results</a></li>
     {% if tabs.summary_tab != 'hide' %}
-        <li class="{{ tabs.summary_tab }}"><a href="#summary_tab" data-toggle="tab">Auto Summary</a></li>
+        <li class=""><a class="nav-link {{ tabs.summary_tab }}" data-toggle="tab" href="#summary_tab">Auto Summary</a></li>
     {% endif %}
-    <li class="{{ tabs.storyboard_tab }}"><a href="#storyboard_tab" data-toggle="tab">Storyboard</a></li>
+    <li class="nav-item"><a class="nav-link {{ tabs.storyboard_tab }}" data-toggle="tab" href="#storyboard_tab">Storyboard</a></li>
     {% if tabs.insights_tab != 'hide' %}
-        <li class="{{ tabs.insights_tab }}"><a href="#insights_tab" data-toggle="tab">Insights/Norms</a></li>
+        <li class="nav-item"><a class="nav-link {{ tabs.insights_tab }}" data-toggle="tab" href="#insights_tab">Insights/Norms</a></li>
     {% endif %}
 </ul>
-
-<div class="tab-content">
+<!-- Tab panes -->
+<div class="tab-content border border-top-0 p-2">
     <div class="tab-pane {{ tabs.results_tab }}" id="results_tab">
         <div class="table-responsive">
             <table class="table table-striped table-condensed table-seeker">
@@ -39,7 +40,7 @@ function summary_line(sentence, ngram) {
                         {% block pre-headers %}{% endblock pre-headers %}
                         {% block headers %}
                             {% if show_rank and keywords_q %}
-                                <th class="sort{% if not sort %} desc{% endif %}">
+                                <th class="sort{% if not sort %} desc{% endif %} border">
                                     {% if sort %}
                                         <a href="?{{ reset_querystring }}">{% trans "Rank" %}</a>
                                     {% else %}

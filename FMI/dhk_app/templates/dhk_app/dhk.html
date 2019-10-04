@@ -1,4 +1,6 @@
-﻿{% extends "dhk_app/dhk_layout.html" %}
+{% extends 'dhk_app/dhk_layout.html' %}
+ 
+{% load staticfiles %}
 
 {% block content %}
 
@@ -17,7 +19,6 @@
     </p>
 </div>
 
-{% load staticfiles %}
 <form id="dhk_form" method="post" class="form-horizontal">
     {% csrf_token %}
     <input type="hidden" id="workbook_name" name="workbook_name" value="test">
@@ -161,15 +162,8 @@
     </div>
 </form>
 
-<div class="row">
-    <div class="col-md-12" id="scrape_progress"></>
-    </div>
-</div>
-
 
 {% endblock %}
-
-
 
 {% block scripts %}
 
