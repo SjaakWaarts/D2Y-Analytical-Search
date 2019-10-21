@@ -47,7 +47,6 @@
     text-align: center;
 }
 
-
 /* With arrow tabs */
 
 .nav-item.show {
@@ -339,4 +338,6 @@ a.seeker:hover {color:DarkSlateBlue ;}
 .orange-background {
     background-color: orange;
 }
+
+
       

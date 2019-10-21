@@ -27,6 +27,40 @@ import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
 
+workbook = {
+    'top_down_mode': 'tdn',  # td0 (flat), td1 (top-down), tdn (complete hier)
+    'facets': {
+        'author': {
+            'label': '`Van', 'field': 'author', 'has_keyword': False,
+            'nested': 'Ontstaanscontexten.Actoren', 'type': 'terms'},
+        'published_date': {
+            'label': 'Datum', 'field': 'published_date', 'has_keyword': False,
+            'nested': None, 'type': 'date'},
+    },
+    'filters': ['author', 'published_date'],
+    'charts': {},
+    'columns': ['author', 'title', 'published_date'],
+    'pager': {'nr_hits': 0, 'page_size': 10},
+    'sort': [],
+    'table': []
+}
+
+
+def delete_recipe(request):
+    # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
+    json_data = json.loads(request.body)
+    id = json_data.get('id', None)
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    search_filters = search_q["query"]["bool"]["filter"]
+    field = 'id.keyword'
+    terms = [id]
+    terms_filter = {"terms": {field: terms}}
+    search_filters.append(terms_filter)
+    search_aggs = search_q["aggs"]
+    results = esm.delete_by_query(es_host, 'recipes', search_q)
+    return HttpResponse( {'succes': 'Bestand succesvol geüpload'}, content_type='application/json')
+
 def dhk_admin_view(request):
     """Renders dhk page."""
     if request.method == 'GET':
@@ -185,12 +219,33 @@ def get_ext(content_type):
 def get_uploaded_files(request):
     # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
     json_data = json.loads(request.body)
+    filter_facets = json_data.get('filter_facets', None)
+    sort_facets = json_data.get('sort_facets', None)
     pager = json_data.get('pager', None)
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
+    ##
+    # Add Sorts
+    ##
+    if not sort_facets and workbook['sort']:
+        sort_facets = workbook['sort']
+    for facet, facet_conf in workbook['facets'].items():
+        if facet in sort_facets:
+            field = facet_conf['field']
+            if facet_conf['has_keyword']:
+                field = field + '.keyword'
+            nested = facet_conf['nested']
+            order = sort_facets[facet]
+            search_q["sort"].append({field: {"order": order}})
+    ##
+    # Add Page
+    ##
+    search_q["from"] = (pager['page_nr'] - 1) * pager['page_size']
+    search_q["size"] = pager['page_size']
     results = esm.search_query(es_host, 'recipes', search_q)
     results = json.loads(results.text)
     hits = results.get('hits', {})
+    pager['nr_hits'] = hits.get('total', 0)
     context = {
         'pager' : pager,
         'hits'  : hits,
@@ -231,7 +286,7 @@ def iter_block_items(parent):
         elif isinstance(child, docx.oxml.table.CT_Tbl):
             yield Table(child, parent)
 
-def load_recipe(filename, recipe_fullname, recipe_basename, namelist):
+def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
     es_host = ES_HOSTS[0]
     headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
@@ -265,7 +320,8 @@ def load_recipe(filename, recipe_fullname, recipe_basename, namelist):
     mode = 'dish'
     doc = docx.Document(recipe_fullname)
     core_properties = doc.core_properties
-    recipe['author'] = core_properties.author
+    #recipe['author'] = core_properties.author
+    recipe['author'] = username
     recipe['published_date'] = core_properties.created.strftime('%Y-%m-%d')
     for block in iter_block_items(doc):
         if isinstance(block, docx.text.paragraph.Paragraph):
@@ -306,12 +362,40 @@ def load_recipe(filename, recipe_fullname, recipe_basename, namelist):
                             recipe['description'].append(para.text)
     for image in doc.inline_shapes:
         pass
-    data = json.dumps(recipe)
-    r = requests.put(url + "/" + doc_type + "/" + recipe_basename, headers=headers, data=data)
-    print("load_recipe: written recipe with id", recipe_basename)
+
+    log = []
+    success = True
+    if recipe['excerpt'] == "":
+        log.append("Style Excerpt is missing")
+        success = False
+    if len(recipe['categories']) == 0:
+        log.append("Style Categories is missing")
+        success = False
+    if len(recipe['tags']) == 0:
+        log.append("Style Tags is missing")
+        success = False
+    if len(recipe['courses']) == 0:
+        log.append("Style Course is missing")
+        success = False
+    if len(recipe['images']) == 0:
+        log.append("No images found")
+        success = False
+    for course in recipe['courses']:
+        if len(course['instructions']) == 0:
+            log.append("Style Recept is missing for course {1}".format(course.title))
+            success = False
+        if len(course['ingredients']) == 0:
+            log.append("Style Ingredients is missing for course {1}".format(course.title))
+            success = False
+
+    if success:
+        data = json.dumps(recipe)
+        r = requests.put(url + "/" + doc_type + "/" + recipe_basename, headers=headers, data=data)
+        print("load_recipe: written recipe with id", recipe_basename)
+    return success, log
 
 
-def ingest_recipe(filename, recipe_fullname):
+def ingest_recipe(username, filename, recipe_fullname):
     recipe_filename = os.path.basename(recipe_fullname)
     recipe_basename, recipe_ext = os.path.splitext(recipe_filename)
     recipe_basename = slugify(recipe_basename)
@@ -323,12 +407,14 @@ def ingest_recipe(filename, recipe_fullname):
     namelist = zip_ref.namelist()
     zip_ref.extractall(zip_dirname)
     zip_ref.close()
-    load_recipe(filename, recipe_fullname, recipe_basename, namelist)
+    success, log = load_recipe(username, filename, recipe_fullname, recipe_basename, namelist)
     os.remove(recipe_fullname)
     os.remove(zip_fullname)
+    return recipe_basename, success, log
 
 def upload_file(request):
     request_file = request.FILES['file']
+    username = request.user.username
     filename = request_file.name
     dropdown_filename = request_file.name
     dropdown_file_handler = request_file.file
@@ -349,10 +435,16 @@ def upload_file(request):
         zip_ref = zipfile.ZipFile(dropdown_fullname, 'r')
         zip_ref.extractall(zip_dirname)
         zip_ref.close()
+        log = []
     elif dropdown_ext == '.docx':
-        ingest_recipe(filename, dropdown_fullname)
+        id, success, log = ingest_recipe(username, filename, dropdown_fullname)
 
-    return HttpResponse( {'succes': 'Bestand succesvol geüpload'}, content_type='application/json')
+    context = {
+        'id'  : id,
+        'success' : success,
+        'log' : log
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
 
 
 def stream_file(request):

@@ -128,10 +128,7 @@
     <Folder Include="app\static\assets\fullcalendar\core\" />
     <Folder Include="app\static\assets\fullcalendar\core\locales\" />
     <Folder Include="app\static\assets\fullcalendar\daygrid\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\static\dhk_app\media\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\static\dhk_app\scripts\" />
     <Folder Include="app\static\app\media\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\static\dhk_app\" />
     <Folder Include="app\static\assets\" />
     <Folder Include="app\static\assets\adminlte\" />
     <Folder Include="app\static\assets\adminlte\css\" />
@@ -181,7 +178,6 @@
     <Folder Include="app\static\assets\vue-videojs\js\" />
     <Folder Include="app\static\assets\vue\" />
     <Folder Include="app\static\assets\vue\js\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\dhk_app\templates\dhk_app\" />
     <Folder Include="dhk_app\" />
     <Folder Include="dhk_app\migrations\" />
     <Folder Include="dhk_app\static\" />
@@ -198,12 +194,10 @@
     <Folder Include="seeker\management\__pycache__\" />
     <Folder Include="seeker\migrations\" />
     <Folder Include="seeker\migrations\__pycache__\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\seeker\templates\seeker\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\seeker\templates\seeker\facets\" />
-    <Folder Include="C:\Users\sww5648\Documents\Visual Studio 2017\Projects\FMI\FMI\seeker\templatetags\" />
     <Folder Include="seeker\templates\" />
     <Folder Include="seeker\templates\seeker\" />
     <Folder Include="seeker\templates\seeker\facets\" />
+    <Folder Include="seeker\templatetags\" />
     <Folder Include="seeker\__pycache__\" />
     <Folder Include="app\static\" />
     <Folder Include="app\static\app\" />

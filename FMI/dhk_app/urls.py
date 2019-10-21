@@ -11,6 +11,7 @@ from dhk_app import recipe
 urlpatterns = [
     path('', views.dhk_view, name='dhk'),
     path('dhk_admin', dhk_admin.dhk_admin_view, name='dhk/dhk_admin'),
+    path('delete_recipe', dhk_admin.delete_recipe, name='dhk/delete_recipe'),
     path('upload_file', dhk_admin.upload_file, name='dhk/upload_file'),
     path('get_uploaded_files', dhk_admin.get_uploaded_files, name='dhk/get_uploaded_files'),
     path('club', club.club_view, name='dhk/club'),

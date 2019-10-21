@@ -48,7 +48,7 @@
                         </p>
                         <p>
                             <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=dhk&storyboard_name=initial&dashboard_name=initial">
-                                Ga <b>opzoek</b> <span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
+                                Ga <b>opzoek</b> Recept<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a>
                         </p>
                     </div>
                 </div>
@@ -132,6 +132,9 @@
                         <p>
                             Vind je het leuk om zelf te koken en met anderen te delen, dat kan hier!
                             Laad je eigen recepten en organiseer eigen workshops.
+                            {% if not user.is_authenticated %}
+                            (Login vereist)
+                            {% endif %}
                         </p>
                         <p>
                             <a class="btn btn-primary" href="{% url 'dhk/dhk_admin'%}">

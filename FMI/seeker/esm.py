@@ -393,6 +393,20 @@ from elasticsearch_dsl import Index, Search
 #        return field_value
 
 
+def delete_by_query(es_host, index, q, doc_type=None):
+    headers = {'Content-Type': 'application/json'}
+    if 'http_auth' in es_host:
+        headers['http_auth'] = es_host['http_auth']
+    host = es_host['host']
+    if doc_type is None:
+        doc_type = index
+    url = "http://" + host + ":9200" + "/" + index
+    data = json.dumps(q)
+    r = requests.post(url + "/" + doc_type + "/_delete_by_query", headers=headers, data=data)
+    if r.status_code >= 400:
+        logging.error('ES delete_by_query failed, error {}.'.format(r.text))
+    return r
+
 def setup_search():
     q = {
         "query": {

@@ -241,16 +241,6 @@
 {% block scripts %}
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
-        var user = {
-           'username' : "{{ user.username }}",
-           'first_name' : "{{ user.first_name }}",
-           'last_name' : "{{ user.last_name }}",
-           'email' : "{{ user.email }}",
-           'street' : "{{ user.street }}",
-           'housenumber' : "{{ user.housenumber }}",
-           'city' : "{{ user.city }}",
-           'country' : "{{ user.country }}"
-        };
     </script>
     {% load staticfiles %}
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>

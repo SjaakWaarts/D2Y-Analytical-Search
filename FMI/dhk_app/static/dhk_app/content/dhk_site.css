@@ -82,3 +82,10 @@
 .site-menu > li ul.dropdown-menu-col-1 > li > a:hover:after {
     left: 0;
 }
+
+
+/* vue-bootstrap4-table */
+
+.vbt-row-selected {
+    background-color: lavender
+}
