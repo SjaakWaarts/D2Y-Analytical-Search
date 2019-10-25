@@ -27,24 +27,6 @@ import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
 
-workbook = {
-    'top_down_mode': 'tdn',  # td0 (flat), td1 (top-down), tdn (complete hier)
-    'facets': {
-        'author': {
-            'label': '`Van', 'field': 'author', 'has_keyword': False,
-            'nested': 'Ontstaanscontexten.Actoren', 'type': 'terms'},
-        'published_date': {
-            'label': 'Datum', 'field': 'published_date', 'has_keyword': False,
-            'nested': None, 'type': 'date'},
-    },
-    'filters': ['author', 'published_date'],
-    'charts': {},
-    'columns': ['author', 'title', 'published_date'],
-    'pager': {'nr_hits': 0, 'page_size': 10},
-    'sort': [],
-    'table': []
-}
-
 
 def delete_recipe(request):
     # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
@@ -222,8 +204,65 @@ def get_uploaded_files(request):
     filter_facets = json_data.get('filter_facets', None)
     sort_facets = json_data.get('sort_facets', None)
     pager = json_data.get('pager', None)
+    q = ""
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
+    ##
+    # Workbook
+    ##
+    workbook = {
+        'top_down_mode': 'tdn',  # td0 (flat), td1 (top-down), tdn (complete hier)
+        'facets': {
+            'author': {
+                'label': None, 'field': 'author', 'has_keyword': True, 'size' : "1", 'multiple' : False,
+                'nested': None, 'type': 'terms', 'value' : None},
+            'published_date': {
+                'label': None, 'field': 'published_date', 'has_keyword': False,
+                'nested': None, 'type': 'date', 'value' : None},
+            'title': {
+                'label': None, 'field': 'title', 'has_keyword': False,
+                'nested': None, 'type': 'text', 'value' : None},
+        },
+        'filters': ['author', 'published_date', 'title'],
+        'charts': {},
+        'columns': ['author', 'title', 'published_date'],
+        'pager': {'nr_hits': 0, 'page_size': 10},
+        'sort': [],
+        'table': []
+    }
+    ##
+    # Add Aggs
+    ##
+    search_aggs = search_q["aggs"]
+    for facet, facet_conf in workbook['facets'].items():
+        if facet in workbook['filters'] and facet_conf['type'] == 'terms':
+            field = facet_conf['field']
+            if facet_conf['has_keyword']:
+                field = field + '.keyword'
+            nested = facet_conf['nested']
+            search_aggs[facet] = {'terms': {"field": field}}
+            terms_agg = {'terms': {"field": field}}
+            search_aggs[facet] = esm.add_agg_nesting(field, nested, terms_agg)
+    ##
+    # Add Filters
+    ##
+    if not request.user.is_admin:
+        filter_facets['author'] = [request.user.username]
+    search_filters = search_q["query"]["bool"]["filter"]
+    search_queries = search_q["query"]["bool"]["must"]
+    esm.add_search_filter(search_q, filter_facets, workbook)
+    for facet_name in workbook['filters']:
+        facet_conf = workbook['facets'][facet_name]
+        if facet_name in filter_facets:
+            if facet_conf['type'] == 'terms':
+                facet_conf['value'] = filter_facets[facet_name]
+            if facet_conf['type'] == 'text':
+                facet_conf['value'] = filter_facets[facet_name]
+            if facet_conf['type'] == 'date':
+                facet_conf['value'] = filter_facets[facet_name]
+            if facet_conf['type'] == 'periode':
+                facet_conf['start'] = filter_facets[facet_name]['start']
+                facet_conf['end'] = filter_facets[facet_name]['end']
     ##
     # Add Sorts
     ##
@@ -238,6 +277,12 @@ def get_uploaded_files(request):
             order = sort_facets[facet]
             search_q["sort"].append({field: {"order": order}})
     ##
+    # Add Search
+    ##
+    if q is not None and q != "":
+        search_q["query"]["bool"]["must"].append({"query_string": {
+            "query": q, "default_operator": "AND", "fields": ["Identificatiekenmerk", "Namen"]}})
+    ##
     # Add Page
     ##
     search_q["from"] = (pager['page_nr'] - 1) * pager['page_size']
@@ -246,9 +291,24 @@ def get_uploaded_files(request):
     results = json.loads(results.text)
     hits = results.get('hits', {})
     pager['nr_hits'] = hits.get('total', 0)
+    aggs = results.get('aggregations', [])
+    ##
+    # Parse Aggs into Filter values and Charts that contain Aggs
+    ##
+    for facet, facet_conf in workbook['facets'].items():
+        if facet in workbook['filters']:
+            if facet in aggs:
+                field = facet_conf['field']
+                if facet_conf['has_keyword']:
+                    field = field + '.keyword'
+                nested = facet_conf['nested']
+                buckets, totals = esm.get_buckets_nesting(field, nested, aggs[facet])
+                workbook['facets'][facet]['buckets'] = buckets
     context = {
+        'workbook' : workbook,
         'pager' : pager,
         'hits'  : hits,
+        'aggs'  : aggs
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 
@@ -309,20 +369,31 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
     recipe['reviews'] = []
     recipe['courses'] = []
 
-    image_type = "featured"
-    for name in namelist:
-        if name.startswith('word/media/'):
-            image_location = os.path.join('data', 'dhk', 'recipes', recipe_basename, 'word', 'media', name[11:])
-            image = {'type' : image_type, 'location' : image_location}
-            recipe['images'].append(image)
-            image_type = "image"
-
     mode = 'dish'
     doc = docx.Document(recipe_fullname)
     core_properties = doc.core_properties
     #recipe['author'] = core_properties.author
     recipe['author'] = username
     recipe['published_date'] = core_properties.created.strftime('%Y-%m-%d')
+
+    image_type = "featured"
+    #for name in namelist:
+    #    if name.startswith('word/media/'):
+    #        image_location = os.path.join('data', 'dhk', 'recipes', recipe_basename, 'word', 'media', name[11:])
+    #        image = {'type' : image_type, 'location' : image_location}
+    #        recipe['images'].append(image)
+    #        image_type = "image"
+    # the shapes within the document \ header and footer
+    for shape in doc.inline_shapes:
+        rId = shape._inline.graphic.graphicData.pic.blipFill.blip.embed
+        image_part = doc.part.related_parts[rId]
+        partname = image_part.partname
+        if partname.startswith('/word/media/'):
+            image_location = os.path.join('data', 'dhk', 'recipes', recipe_basename, 'word', 'media', partname[12:])
+            image = {'type' : image_type, 'location' : image_location}
+            recipe['images'].append(image)
+            image_type = "image"
+
     for block in iter_block_items(doc):
         if isinstance(block, docx.text.paragraph.Paragraph):
             para = block
@@ -360,8 +431,7 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                             if style_name == 'Ingredients':
                                 course['ingredients'].append({'ingredient' : para.text})
                             recipe['description'].append(para.text)
-    for image in doc.inline_shapes:
-        pass
+
 
     log = []
     success = True

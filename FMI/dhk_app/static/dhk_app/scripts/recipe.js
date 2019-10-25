@@ -134,7 +134,8 @@ var app = new Vue({
         get_recipe: function () {
             this.$http.get(get_recipe_url, { params: { id: this.id } }).then(response => {
                 this.recipe = response.body.recipe;
-                if (this.recipe.reviews.length == 0) {
+                this.carousel_images = this.recipe.images;
+                if (this.recipe.reviews.length === 0) {
                     this.average_rating = 0;
                 } else {
                     var total_stars = 0;
@@ -142,7 +143,6 @@ var app = new Vue({
                         total_stars += this.recipe.reviews[ix].stars;
                     }
                     this.average_rating = Math.ceil(total_stars / this.recipe.reviews.length);
-                    this.carousel_images = this.recipe.images;
                 }
             });
         },

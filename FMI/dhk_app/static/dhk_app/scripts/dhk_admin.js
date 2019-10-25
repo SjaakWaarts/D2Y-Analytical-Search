@@ -99,12 +99,14 @@ var app = new Vue({
     data: {
         filter_facets: {
             author: [],
-            published_date: { start: null, end: null }
+            published_date: ""
         },
         sort_facets: {},
         query_string: null,
         pager: { page_nr: 1, nr_hits: 0, page_size: 25, nr_pages: 0, page_nrs: [], nr_pages_nrs: 5 },
+        workbook: null,
         hits: [],
+        aggs: [],
         current_recipe: '',
         current_recipeIX: null,
         rows: [
@@ -217,7 +219,11 @@ var app = new Vue({
                     });
             }
         },
-        get_uploaded_files: function (sort=null, uploaded_file_id = null) {
+        facet_filter: function (facet_name) {
+            var facet = this.workbook.facets[facet_name];
+            this.get_uploaded_files();
+        },
+        get_uploaded_files: function (sort = null, uploaded_file_id = null) {
             var csrftoken_cookie = getCookie('csrftoken');
             var headers = { 'X-CSRFToken': csrftoken_cookie };
             if (sort) {
@@ -230,6 +236,13 @@ var app = new Vue({
             } else {
                 this.sort_facets = {};
             }
+            if (this.workbook) {
+                for (var fix = 0; fix < this.workbook.filters.length; fix++) {
+                    var facet_name = this.workbook.filters[fix];
+                    var facet = this.workbook.facets[facet_name];
+                    this.filter_facets[facet_name] = facet.value;
+                }
+            }
             this.$http.post(get_uploaded_files_url, {
                 'csrfmiddlewaretoken': csrftoken,
                 filter_facets: this.filter_facets,
@@ -239,9 +252,13 @@ var app = new Vue({
             },
                 { 'headers': headers }).then(response => {
                     //this.hits = JSON.parse(response.bodyText);
+                    this.workbook = response.body.workbook;
                     this.pager = response.body.pager;
                     if ('hits' in response.body.hits) {
                         this.hits = response.body.hits.hits;
+                    }
+                    if ('aggs' in response.body) {
+                        this.aggs = response.body.aggs;
                     }
                     this.pager.nr_hits = response.body.hits.total;
                     // nr_pages needed to call computed component.page_nrs
@@ -257,6 +274,14 @@ var app = new Vue({
         },
         recipe_url(url, id) {
             return url + '?id=' + id;
+        },
+        reset_filters: function () {
+            for (var fix = 0; fix < this.workbook.filters.length; fix++) {
+                var facet_name = this.workbook.filters[fix];
+                var facet = this.workbook.facets[facet_name];
+                facet.value = null;
+            }
+            this.get_uploaded_files();
         },
     },
     computed: {

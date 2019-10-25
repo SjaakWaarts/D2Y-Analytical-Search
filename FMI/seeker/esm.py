@@ -186,7 +186,7 @@ from elasticsearch_dsl import Index, Search
 #        filter_facets['parent_id'] = [rel_id]
 #        filter_facets['aggregatieniveau'] = ['archief', 'serie', 'dossier']
 #        search_filters = search_q["query"]["bool"]["filter"]
-#        self.add_search_filter(search_filters, filter_facets, workbook)
+#        self.add_search_filter(search_q, filter_facets, workbook)
 #        results = self.search_query('tmlo', search_q)
 #        results = json.loads(results.text)
 #        hits = results.get('hits', {})
@@ -198,199 +198,204 @@ from elasticsearch_dsl import Index, Search
 #            if new_rel_id not in rel_ids:
 #                self.get_rel_ids(new_rel_id, rel_ids, workbook)
 
-#    def add_search_aggs(self, search_aggs, workbook):
-#        for facet, facet_conf in workbook['facets'].items():
-#            if facet in workbook['filters']:
-#                field = facet_conf['field']
-#                if facet_conf['has_keyword']:
-#                    field = field + '.keyword'
-#                nested = facet_conf['nested']
-#                search_aggs[facet] = {'terms': {"field": field}}
-#                terms_agg = {'terms': {"field": field}}
-#                search_aggs[facet] = self.add_agg_nesting(field, nested, terms_agg)
+def add_search_aggs(search_aggs, workbook):
+    for facet, facet_conf in workbook['facets'].items():
+        if facet in workbook['filters']:
+            field = facet_conf['field']
+            if facet_conf['has_keyword']:
+                field = field + '.keyword'
+            nested = facet_conf['nested']
+            search_aggs[facet] = {'terms': {"field": field}}
+            terms_agg = {'terms': {"field": field}}
+            search_aggs[facet] = add_agg_nesting(field, nested, terms_agg)
 
-#    def add_search_filter(self, search_filters, filter_facets, workbook):
-#        for facet, facet_conf in workbook['facets'].items():
-#            if facet in filter_facets:
-#                if filter_facets[facet] is None:
-#                    continue
-#                field = facet_conf['field']
-#                if facet_conf['has_keyword']:
-#                    field = field + '.keyword'
-#                nested = facet_conf['nested']
-#                if facet_conf['type'] == 'terms':
-#                    terms = filter_facets[facet]
-#                    if len(terms) == 0:
-#                        continue
-#                    if type(terms) is not list:
-#                        terms = [terms]
-#                    terms_filter = {"terms": {field: terms}}
-#                    nested_filter = self.add_filter_nesting(field, nested, terms_filter)
-#                    search_filters.append(nested_filter)
-#                if facet_conf['type'] == 'date':
-#                    date_range = filter_facets[facet]
-#                    if date_range['start'] is None and date_range['end'] is None:
-#                        continue
-#                    date_range_filter = {"range": {field: {}}}
-#                    if date_range['start'] is not None:
-#                        date_range_filter['range'][field]['gte'] = date_range['start']
-#                    if date_range['end'] is not None:
-#                        date_range_filter['range'][field]['lte'] = date_range['end']
-#                    nested_filter = self.add_filter_nesting(field, nested, date_range_filter)
-#                    search_filters.append(nested_filter)
-#                if facet_conf['type'] == 'periode':
-#                    date_range = filter_facets[facet]
-#                    if date_range['start'] is None and date_range['end'] is None:
-#                        continue
-#                    field = field = facet_conf['field'] + '.Begin'
-#                    date_range_filter = {"range": {field: {}}}
-#                    if date_range['start'] is not None:
-#                        date_range_filter['range'][field]['gte'] = date_range['start']
-#                        nested_filter = self.add_filter_nesting(field, nested, date_range_filter)
-#                        search_filters.append(nested_filter)
-#                    field = field = facet_conf['field'] + '.Eind'
-#                    date_range_filter = {"range": {field: {}}}
-#                    if date_range['end'] is not None:
-#                        date_range_filter['range'][field]['lte'] = date_range['end']
-#                        nested_filter = self.add_filter_nesting(field, nested, date_range_filter)
-#                        search_filters.append(nested_filter)
-#                if facet_conf['type'] == 'path':
-#                    path = filter_facets[facet]
-#                    if len(path) == 0:
-#                        continue
-#                    rel_id = path[-1]
-#                    mode = workbook.get('top_down_mode', 'td0')
-#                    if mode == 'td0':
-#                        search_filters.append({'nested': {'path': 'Relaties',
-#                                                          'query': {'terms': {field: [rel_id]}}}})
-#                    elif mode == 'td1':
-#                        # Add a boolean should in the filter context. The document should match the selected id
-#                        # or it should have a relation to this id.
-#                        search_filters.append(
-#                            {
-#                                "bool": {
-#                                    "should": [
-#                                        {"term": {"Identificatiekenmerk.keyword": rel_id}},
-#                                        {"nested": {
-#                                            "path": "Relaties",
-#                                            "query": {
-#                                                "bool": {
-#                                                    "must": [{"terms": {"Relaties.ID": [rel_id]}}]
-#                                                }
-#                                            }
-#                                        }
-#                                        }
-#                                    ]
-#                                }
-#                            }
-#                        )
-#                    elif mode == 'tdn':
-#                        rel_ids = [rel_id]  # routine to find all relation id's
-#                        self.get_rel_ids(rel_id, rel_ids, workbook)
-#                        search_filters.append({'nested': {'path': 'Relaties',
-#                                                          'query': {'terms': {field: rel_ids}}}})
+def add_search_filter(search_q, filter_facets, workbook):
+    search_filters = search_q["query"]["bool"]["filter"]
+    search_queries = search_q["query"]["bool"]["must"]
+    for facet, facet_conf in workbook['facets'].items():
+        if facet in filter_facets:
+            if filter_facets[facet] is None:
+                continue
+            field = facet_conf['field']
+            if facet_conf['has_keyword']:
+                field = field + '.keyword'
+            nested = facet_conf['nested']
+            if facet_conf['type'] == 'terms':
+                terms = filter_facets[facet]
+                if len(terms) == 0:
+                    continue
+                if type(terms) is not list:
+                    terms = [terms]
+                terms_filter = {"terms": {field: terms}}
+                nested_filter = add_filter_nesting(field, nested, terms_filter)
+                search_filters.append(nested_filter)
+            elif facet_conf['type'] == 'text':
+                if filter_facets[facet] in [None, ""]:
+                    continue
+                q = filter_facets[facet]
+                search_queries.append({"query_string": {
+                    "query": q, "default_operator": "AND", "fields": [facet_conf['field']]}})
+            elif facet_conf['type'] == 'date':
+                date_range = filter_facets[facet]
+                if date_range in [None, ""]:
+                    continue
+                date_range_filter = {"range": {field: {}}}
+                date_range_filter['range'][field]['gte'] = date_range
+                nested_filter = add_filter_nesting(field, nested, date_range_filter)
+                search_filters.append(nested_filter)
+            elif facet_conf['type'] == 'periode':
+                date_range = filter_facets[facet]
+                if date_range['start'] in [None, ""] and date_range['end'] in [None, ""]:
+                    continue
+                field = field = facet_conf['field'] + '.Begin'
+                date_range_filter = {"range": {field: {}}}
+                if date_range['start'] not in [None, ""]:
+                    date_range_filter['range'][field]['gte'] = date_range['start']
+                    nested_filter = add_filter_nesting(field, nested, date_range_filter)
+                    search_filters.append(nested_filter)
+                field = field = facet_conf['field'] + '.Eind'
+                date_range_filter = {"range": {field: {}}}
+                if date_range['end'] not in [None, ""]:
+                    date_range_filter['range'][field]['lte'] = date_range['end']
+                    nested_filter = add_filter_nesting(field, nested, date_range_filter)
+                    search_filters.append(nested_filter)
+            elif facet_conf['type'] == 'path':
+                path = filter_facets[facet]
+                if len(path) == 0:
+                    continue
+                rel_id = path[-1]
+                mode = workbook.get('top_down_mode', 'td0')
+                if mode == 'td0':
+                    search_filters.append({'nested': {'path': 'Relaties',
+                                                        'query': {'terms': {field: [rel_id]}}}})
+                elif mode == 'td1':
+                    # Add a boolean should in the filter context. The document should match the selected id
+                    # or it should have a relation to this id.
+                    search_filters.append(
+                        {
+                            "bool": {
+                                "should": [
+                                    {"term": {"Identificatiekenmerk.keyword": rel_id}},
+                                    {"nested": {
+                                        "path": "Relaties",
+                                        "query": {
+                                            "bool": {
+                                                "must": [{"terms": {"Relaties.ID": [rel_id]}}]
+                                            }
+                                        }
+                                    }
+                                    }
+                                ]
+                            }
+                        }
+                    )
+                elif mode == 'tdn':
+                    rel_ids = [rel_id]  # routine to find all relation id's
+                    self.get_rel_ids(rel_id, rel_ids, workbook)
+                    search_filters.append({'nested': {'path': 'Relaties',
+                                                        'query': {'terms': {field: rel_ids}}}})
 
-#    def add_agg_nesting(self, field, nested_field, aggregation):
-#        nested = {}
-#        sub_nested = nested
-#        sub_nested_field = ''
-#        if nested_field:
-#            fields = nested_field.split('.')
-#            for field in fields:
-#                if sub_nested_field == '':
-#                    sub_nested_field = field
-#                else:
-#                    sub_nested_field = sub_nested_field + '.' + field
-#                sub_nested['nested'] = {'path': sub_nested_field}
-#                sub_nested['aggs'] = {sub_nested_field: {}}
-#                if field != fields[-1]:
-#                    sub_nested = sub_nested['aggs'][sub_nested_field]
-#            sub_nested['aggs'][sub_nested_field] = aggregation
-#        else:
-#            nested = aggregation
-#        return nested
+def add_agg_nesting(field, nested_field, aggregation):
+    nested = {}
+    sub_nested = nested
+    sub_nested_field = ''
+    if nested_field:
+        fields = nested_field.split('.')
+        for field in fields:
+            if sub_nested_field == '':
+                sub_nested_field = field
+            else:
+                sub_nested_field = sub_nested_field + '.' + field
+            sub_nested['nested'] = {'path': sub_nested_field}
+            sub_nested['aggs'] = {sub_nested_field: {}}
+            if field != fields[-1]:
+                sub_nested = sub_nested['aggs'][sub_nested_field]
+        sub_nested['aggs'][sub_nested_field] = aggregation
+    else:
+        nested = aggregation
+    return nested
 
-#    def add_filter_nesting(self, field, nested_field, filter):
-#        nested_filter = {}
-#        sub_nested_filter = nested_filter
-#        sub_nested_field = ''
-#        if nested_field:
-#            fields = nested_field.split('.')
-#            for field in fields:
-#                if sub_nested_field == '':
-#                    sub_nested_field = field
-#                else:
-#                    sub_nested_field = sub_nested_field + '.' + field
-#                sub_nested_filter['nested'] = {'path': sub_nested_field, 'query': {}}
-#                if field != fields[-1]:
-#                    sub_nested_filter = sub_nested_filter['nested']['query']
-#            sub_nested_filter['nested']['query'] = filter
-#        else:
-#            nested_filter = filter
-#        return nested_filter
+def add_filter_nesting(field, nested_field, filter):
+    nested_filter = {}
+    sub_nested_filter = nested_filter
+    sub_nested_field = ''
+    if nested_field:
+        fields = nested_field.split('.')
+        for field in fields:
+            if sub_nested_field == '':
+                sub_nested_field = field
+            else:
+                sub_nested_field = sub_nested_field + '.' + field
+            sub_nested_filter['nested'] = {'path': sub_nested_field, 'query': {}}
+            if field != fields[-1]:
+                sub_nested_filter = sub_nested_filter['nested']['query']
+        sub_nested_filter['nested']['query'] = filter
+    else:
+        nested_filter = filter
+    return nested_filter
 
-#    def get_buckets_nesting(self, field, nested_field, buckets):
-#        nested_totals = []
-#        nested_buckets = buckets
-#        sub_nested_field = ''
-#        if nested_field:
-#            fields = nested_field.split('.')
-#            for field in fields:
-#                if sub_nested_field == '':
-#                    sub_nested_field = field
-#                else:
-#                    sub_nested_field = sub_nested_field + '.' + field
-#                nested_totals.append((sub_nested_field, nested_buckets.get('doc_count', 0)))
-#                nested_buckets = nested_buckets[sub_nested_field]
-#        else:
-#            nested_buckets = buckets
-#        return nested_buckets['buckets'], nested_totals
+def get_buckets_nesting(field, nested_field, buckets):
+    nested_totals = []
+    nested_buckets = buckets
+    sub_nested_field = ''
+    if nested_field:
+        fields = nested_field.split('.')
+        for field in fields:
+            if sub_nested_field == '':
+                sub_nested_field = field
+            else:
+                sub_nested_field = sub_nested_field + '.' + field
+            nested_totals.append((sub_nested_field, nested_buckets.get('doc_count', 0)))
+            nested_buckets = nested_buckets[sub_nested_field]
+    else:
+        nested_buckets = buckets
+    return nested_buckets['buckets'], nested_totals
 
-#    def get_field_nesting(self, nested_field, hit, default_field_value):
-#        field_value = hit['_source']
-#        fields = nested_field.split('.')
-#        for field in fields[:-1]:
-#            if field in field_value:
-#                field_value = field_value[field]
-#                if type(field_value) is list:
-#                    if len(field_value) > 0:
-#                        field_value = field_value[0]
-#                    else:
-#                        field_value = {}
-#            else:
-#                field_value = {}
-#                break
-#        field = fields[-1]
-#        if field in field_value:
-#            field_value = field_value[field]
-#        else:
-#            field_value = default_field_value
-#        return field_value
+def get_field_nesting(nested_field, hit, default_field_value):
+    field_value = hit['_source']
+    fields = nested_field.split('.')
+    for field in fields[:-1]:
+        if field in field_value:
+            field_value = field_value[field]
+            if type(field_value) is list:
+                if len(field_value) > 0:
+                    field_value = field_value[0]
+                else:
+                    field_value = {}
+        else:
+            field_value = {}
+            break
+    field = fields[-1]
+    if field in field_value:
+        field_value = field_value[field]
+    else:
+        field_value = default_field_value
+    return field_value
 
-#    def get_bucket_value_nesting(self, nested_field, bucket):
-#        sub_bucket = bucket
-#        fields = nested_field.split('.')
-#        sub_nested_field = ''
-#        for field in fields:
-#            if sub_nested_field == '':
-#                sub_nested_field = field
-#            else:
-#                sub_nested_field = sub_nested_field + '.' + field
-#            if sub_nested_field in sub_bucket:
-#                sub_bucket = sub_bucket[sub_nested_field]
-#                if type(sub_bucket) is list:
-#                    if len(sub_bucket) > 0:
-#                        sub_bucket = sub_bucket[0]
-#                    else:
-#                        sub_bucket = {}
-#            else:
-#                sub_bucket = {}
-#                break
-#        if 'value' in sub_bucket:
-#            field_value = sub_bucket['value']
-#        else:
-#            field_value = None
-#        return field_value
+def get_bucket_value_nesting(nested_field, bucket):
+    sub_bucket = bucket
+    fields = nested_field.split('.')
+    sub_nested_field = ''
+    for field in fields:
+        if sub_nested_field == '':
+            sub_nested_field = field
+        else:
+            sub_nested_field = sub_nested_field + '.' + field
+        if sub_nested_field in sub_bucket:
+            sub_bucket = sub_bucket[sub_nested_field]
+            if type(sub_bucket) is list:
+                if len(sub_bucket) > 0:
+                    sub_bucket = sub_bucket[0]
+                else:
+                    sub_bucket = {}
+        else:
+            sub_bucket = {}
+            break
+    if 'value' in sub_bucket:
+        field_value = sub_bucket['value']
+    else:
+        field_value = None
+    return field_value
 
 
 def delete_by_query(es_host, index, q, doc_type=None):
