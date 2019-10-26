@@ -495,19 +495,24 @@ def upload_file(request):
     buffer_file = BytesIO(dropdown_file_handler.read())
     # Make sure we start copying from the beginning.
     buffer_file.seek(0)
+    success = True
     try:
         with open(dropdown_fullname, 'wb') as output_file:
             shutil.copyfileobj(buffer_file, output_file)
     except IOError as e:
+        id = dropdown_filename
+        success = False
+        log = ["Cannot open file {1}, exception {2}".format(dropdown_fullname, e)]
         return False
-    if dropdown_ext == '.zip':
-        zip_dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', dropdown_basename)
-        zip_ref = zipfile.ZipFile(dropdown_fullname, 'r')
-        zip_ref.extractall(zip_dirname)
-        zip_ref.close()
-        log = []
-    elif dropdown_ext == '.docx':
-        id, success, log = ingest_recipe(username, filename, dropdown_fullname)
+    if success:
+        if dropdown_ext == '.zip':
+            zip_dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', dropdown_basename)
+            zip_ref = zipfile.ZipFile(dropdown_fullname, 'r')
+            zip_ref.extractall(zip_dirname)
+            zip_ref.close()
+            log = []
+        elif dropdown_ext == '.docx':
+            id, success, log = ingest_recipe(username, filename, dropdown_fullname)
 
     context = {
         'id'  : id,
