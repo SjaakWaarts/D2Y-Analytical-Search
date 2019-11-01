@@ -1719,7 +1719,8 @@ es_indicis = {
         'sumheader'     : [],
         'SUMMARY_URL'   : "../dhk/recipe?id={}",
         'urlfields'     : {"title" : ""},
-        'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
+        'tabs'          : {'display_tab' : 'hide', 'dashboard_tab' : 'hide',
+                           'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
         }
     }
 

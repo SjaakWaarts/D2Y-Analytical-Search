@@ -101,6 +101,7 @@ class Facet (object):
     field = None
     label = None
     visible_pos = 1
+    accordion_open = True
     keywords_input = 'keywords_k'
     search_fields = None
 

@@ -58,22 +58,9 @@ function question_selecion_onchange() {
             var mean = g_stats_df[stat].mean.toFixed(2);
             var std = g_stats_df[stat].std.toFixed(2);
             add_table_row_cells(tbody, [g_stats_df[stat].answer, g_stats_df[stat].value, g_stats_df[stat].count,
-                                       mean, std, g_stats_df[stat].min, g_stats_df[stat].max]);
+                mean, std, g_stats_df[stat].min, g_stats_df[stat].max]);
         }
     }
-    var $table = $("#stats_table").tablesorter({
-        widgets: ["zebra", "filter", "resizable"],
-        widgetOptions: {
-            // class name applied to filter row and each input
-            filter_cssFilter: 'tablesorter-filter',
-            // search from beginning
-            filter_startsWith: true,
-            // Set this option to false to make the searches case sensitive
-            filter_ignoreCase: true,
-            filter_reset: '.reset',
-            resizable_addLastColumn: true
-        },
-    });
     $(table).trigger("update");
     $(table).trigger("appendCache");
 }
@@ -242,40 +229,72 @@ $("#_keywords_filter").click(function () {
 });
 
 $(document).ready(function () {
-
     $('[data-toggle="tooltip"]').tooltip(); 
-
-    var $table = $("#stats_table").tablesorter({
-        widgets: ["zebra", "filter", "resizable"],
-        widgetOptions: {
-            // class name applied to filter row and each input
-            filter_cssFilter: 'tablesorter-filter',
-            // search from beginning
-            filter_startsWith: true,
-            // Set this option to false to make the searches case sensitive
-            filter_ignoreCase: true,
-            filter_reset: '.reset',
-            resizable_addLastColumn: true
-        },
-    });
-
-
-    var $table = $("#corr_table").tablesorter({
-        widgets: ["zebra", "filter", "resizable"],
-        widgetOptions: {
-            // class name applied to filter row and each input
-            filter_cssFilter: 'tablesorter-filter',
-            // search from beginning
-            filter_startsWith: true,
-            // Set this option to false to make the searches case sensitive
-            filter_ignoreCase: true,
-            filter_reset: '.reset',
-            resizable_addLastColumn: true
-        },
-    });
- 
 });
 
+
+var app = new Vue({
+    el: '#root',
+    delimiters: ['[[', ']]'],
+    data: {
+        filter_facets: {},
+        sort_facets: {},
+        query_string: null,
+        pager: { page_nr: 1, nr_hits: 0, page_size: 25, nr_pages: 0, page_nrs: [], nr_pages_nrs: 5 },
+        workbook: {
+            facets: {}},
+        hits: [],
+        aggs: [],
+        item: {isopen: true}
+    },
+    methods: {
+        accordion_collapse: function (hide) {
+            var accordion_item_elms = document.getElementsByClassName("accordion-item");
+            for (var ix = 0; ix < accordion_item_elms.length; ix++) {
+                var accordion_item_elm = accordion_item_elms[ix];
+                var field = accordion_item_elm.getAttribute("name");
+                var accordion_arrow_elm = accordion_item_elm.getElementsByClassName("accordion_arrow")[0];
+                var accordion_item_content_elm = accordion_item_elm.getElementsByClassName("accordion-item-content")[0];
+                if (hide && accordion_arrow_elm.classList.contains('accordion_arrow--open')) {
+                    accordion_arrow_elm.classList.remove('accordion_arrow--open');
+                    accordion_item_content_elm.style.display = "none";
+                }
+                if (!hide && !accordion_arrow_elm.classList.contains('accordion_arrow--open')) {
+                    accordion_arrow_elm.classList.add('accordion_arrow--open');
+                    accordion_item_content_elm.style.display = "block";
+                }
+            }
+        },
+        accordion_arrow_toggle: function (event) {
+            var accordion_header_elm = event.currentTarget;
+            var accordion_item_elm = accordion_header_elm.closest(".accordion-item");
+            var field = accordion_item_elm.getAttribute("name");
+            var accordion_arrow_elm = accordion_item_elm.getElementsByClassName("accordion_arrow")[0];
+            var accordion_item_content_elm = accordion_item_elm.getElementsByClassName("accordion-item-content")[0];
+            if (accordion_arrow_elm.classList.contains('accordion_arrow--open')) {
+                accordion_arrow_elm.classList.remove('accordion_arrow--open');
+                accordion_item_content_elm.style.display = "none";
+            } else {
+                accordion_arrow_elm.classList.add('accordion_arrow--open');
+                accordion_item_content_elm.style.display = "block";
+            }
+        },
+    },
+    computed: {
+        isopen : function () {
+            // opn = this.workbook.facets[field].isopen;
+            var opn = true;
+            return opn;
+        }
+    },
+    mounted: function () {
+        for (var field in g_facets_data) {
+            var facet_data = g_facets_data[field];
+            this.workbook.facets[field] = facet_data;
+        }
+    },
+
+});
 
 tab_active();
 get_workbook_dashboard_names();

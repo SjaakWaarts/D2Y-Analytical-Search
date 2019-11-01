@@ -1,6 +1,9 @@
 {% extends layout_template %}
 
-{% load staticfiles %}
+{% block css %}
+    {% load staticfiles %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+{% endblock %}
 
 
 {% block content %}
@@ -15,26 +18,12 @@
     #criteria { padding-top: 10px; }
 </style>
 
-<div style="display: flex">
-    <div class="iff-pane-border" style="flex: 0 0 auto; min-width:100px; margin-right: 5px; margin-top: 5px; width: 300px;
-            resize: horizontal; overflow: auto;">
+<div id="root" class="seeker">
+    <div class="iff-pane-border seeker-form">
         {% include "seeker/form.html" %}
     </div>
-    <div class="iff-pane-border" style="flex: 5 5 100%; padding-bottom:10px; padding-top:10px; min-width:800px; margin-top: 5px;">
+    <div class="iff-pane-border seeker-results">
         {% include results_template %}
-    </div>
-    <div id="configuration_editor_div" class="iff-pane-border collapse"
-            style="flex: 0 0 auto; min-width:100px; margin-right: 5px; margin-top: 5px; padding: 5px;
-            resize: horizontal; overflow: auto;">
-        <div class="panel panel-default">
-            <div class="panel-heading">Configuration Editor</div>
-            <div class="panel-body">
-                <div id="conf_card_div">
-                    <label></label><br />
-                </div>
-                <table class="table table-bordered table-condensed" id="card_configuration_table"></table>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -42,9 +31,12 @@
 
 {% block scripts %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+    var g_facets_data = {{ facets_data|safe }}
+</script>
     {% load staticfiles %}
         <script src="{% static 'app/scripts/radarchart.js' %}"></script>
         <script src="{% static 'app/scripts/charts.js' %}"></script>
@@ -54,13 +46,12 @@
         <script src="{% static 'app/scripts/seeker.js' %}"></script>
 
 <script>
-
     fill_tiles({{ facets_data|safe }}, {{ tiles_select|safe }}, {{ tiles_d|safe }} );
     draw_storyboard({{ storyboard|safe }}, "{{dashboard_name}}", {{ dashboard|safe }}, {{ tiles_select|safe }});
     draw_minicharts({{ minicharts|safe }});
     facts_norms( {{ stats_df|safe}}  );
-
 </script>
+
 
 {% endblock %}
 

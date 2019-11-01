@@ -6,7 +6,6 @@
 var g_baseurl;
 var g_charts;                       // populated by api_storyboard_def_callback and draw_storyboard
 var g_minicharts;
-var g_facets_data;
 var g_tiles_d;
 var g_tiles_select;
 var g_options;
@@ -128,7 +127,6 @@ function tile_value_select_onchange() {
 
 
 function fill_tiles(facets_data, tiles_select, tiles_d) {
-    g_facets_data = facets_data
     g_tiles_select = tiles_select;
     if (typeof g_tiles_d == 'undefined') {
         g_tiles_d = tiles_d;
@@ -145,6 +143,9 @@ function fill_tiles(facets_data, tiles_select, tiles_d) {
     selectList.appendChild(option);
     for (var facet_field in facets_data) {
         var facet_data = facets_data[facet_field];
+        if (!facet_data.facet_data) {
+            continue;
+        }
         var optgroup = document.createElement("optgroup");
         optgroup.setAttribute('value', facet_field);
         optgroup.setAttribute("label", facet_data['label']);
@@ -171,6 +172,9 @@ function fill_tiles(facets_data, tiles_select, tiles_d) {
     selectList.appendChild(option);
     for (var facet_field in facets_data) {
         var facet_data = facets_data[facet_field];
+        if (!facet_data.facet_data) {
+            continue;
+        }
         var option = document.createElement("option");
         option.setAttribute('value', facet_field);
         if (facet_data['selected'] == true) {

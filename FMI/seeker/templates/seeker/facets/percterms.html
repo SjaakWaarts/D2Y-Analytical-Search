@@ -1,6 +1,5 @@
 {% load seeker %}
 
-<label for="{{ facet.name }}_select">{{ facet.label|capfirst }}
 <span class="float-right"; white-space: nowrap; overflow-x: auto;>
     <input type="range" value="{{facet.rangemin}}"min="0" max="1" step="0.1" name="{{ facet.nestedfield }}_range" id="{{ facet.nestedfield }}_range"
             style="display: inline-block; width:30%" oninput="{{ facet.nestedfield }}_range_value.value = {{ facet.nestedfield }}_range.value" />

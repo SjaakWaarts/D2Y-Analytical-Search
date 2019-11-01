@@ -1,20 +1,19 @@
 {% load seeker %}
-<span>
-    <label for="{{ facet.name }}_select">{{ facet.label|capfirst }}</label>
-    <button type="button" class="btn btn-default pull-right" name="{{ facet.name}}_search" data-toggle="tooltip" title="Copy Keywords to Search"
+<div class="keywords">
+    <input type="text" class="form-control" placeholder="{{ facet.label }}" name="{{ facet.keywords_input }}" id="{{ facet.keywords_input }}" value="{{ facet.keywords_text }}"  />
+    <button type="button" class="btn p-0 pull-right" name="{{ facet.name}}_search" data-toggle="tooltip" title="Copy Keywords to Search"
             onclick='keyword_button_submit("{{ facet.name}}_search")'>
-        <i class="glyphicon glyphicon-search"></i>
+        <i class="fas fa-search text-info"></i>
     </button>
-    <button type="button" class="btn btn-default pull-right" name="{{ facet.name}}_write" data-toggle="tooltip" title="Write Keywords to File"
+    <button type="button" class="btn p-0 pull-right" name="{{ facet.name}}_write" data-toggle="tooltip" title="Write Keywords to File"
             onclick='keyword_button_submit("{{ facet.name}}_write")'>
-        <i class="glyphicon glyphicon-download"></i>
+        <i class="fas fa-file-download text-info"></i>
     </button>
-    <button type="button" class="btn btn-default pull-right" name="{{ facet.name}}_read" data-toggle="tooltip" title="Read Keywords from File"
+    <button type="button" class="btn p-0 pull-right" name="{{ facet.name}}_read" data-toggle="tooltip" title="Read Keywords from File"
             onclick='keyword_button_submit("{{ facet.name}}_read")'>
-        <i class="glyphicon glyphicon-upload"></i>
+        <i class="fas fa-file-upload text-info"></i>
     </button>
-</span>
-<input type="text" class="form-control" placeholder="{{ facet.label }}" name="{{ facet.keywords_input }}" id="{{ facet.keywords_input }}" value="{{ facet.keywords_text }}"  />
+</div>
 <select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
     {% for key, b in data.buckets.items %}
         <option value="{{ key }}" data-data='{"key": "{{ key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if key in selected %} selected="selected"{% endif %}>{{ key }} ({{ b.doc_count }})</option>

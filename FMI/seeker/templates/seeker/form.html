@@ -1,22 +1,6 @@
 {% load seeker %}
 {% load i18n %}
 
-<style>
-.important {
-    font-weight: bold;
-    font-size: xx-large;
-}
-
-.blue {
-    color: blue;
-}
-.red
-{
-    background-color:red;
-}
-</style>
-
-
 <form action="{{ form_action }}" method="get" id="seeker_form">
     <input type="hidden" name="tab" value="result_tab">
     <input type="hidden" name="workbook_name" value="">
@@ -29,8 +13,12 @@
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
         <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#criteria">Search</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#display">Display</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#dashboard_tab">Dashboard</a></li>
+        {% if tabs.display_tab != 'hide' %}
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#display">Display</a></li>
+        {% endif %}
+        {% if tabs.dashboard_tab != 'hide' %}
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#dashboard_tab">Dashboard</a></li>
+        {% endif %}
     </ul>
     <!-- Tab panes -->
     <div class="tab-content border border-top-0 p-2">
@@ -39,93 +27,110 @@
                 <label class="sr-only" for="q">{% trans "Search" %}</label>
                 <input type="text" class="form-control" placeholder="{% trans "Search" %}" name="q" id="q" value="{{ keywords_q }}" autofocus="autofocus" />
             </div>
-            <div class="container-fluid">
-                <script>g_facetcounter = 0;</script>
-                {% for facet, selected in facets.items %}
-                    {% if facet.visible_pos > 0 %}
-                        <script>
-                            if (g_facetcounter % 2 == 0) {
-                                document.write('<div class="row"><div class="col-md-6">');
-                            } else {
-                                document.write('<div class="col-md-6">');
-                            }
-                        </script>
-                        <div class="form-group">
-                            {% seeker_facet facet results selected %}
-                        </div>
-                        <script>
-                            if (g_facetcounter % 2 == 0) {
-                                document.write('</div>');
-                            } else {
-                                document.write('</div></div>');
-                            }
-                            g_facetcounter = g_facetcounter + 1;
-                        </script>
-                    {% endif %}
-                {% endfor %}
-                <script>
-                    if (g_facetcounter % 2 == 1) {
-                        document.write('</div>');
-                    }
-                </script>
+            <div class="form-actions mb-2">
+                <button type="submit" id="_filter" name="_filter" class="btn btn-primary"
+                        data-toggle="tooltip" title="Start zoek en filters">
+                    <i class="fas fa-search"></i></button>
+                <button type="submit" id="_reset" name="_reset" class="btn btn-info"
+                        data-toggle="tooltip" title="Reset zoek en filters">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Expand all filters" v-on:click="accordion_collapse(false)">
+                    <i class="fas fa-caret-down"></i>
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Collapse all filters" v-on:click="accordion_collapse(true)">
+                    <i class="fas fa-caret-up"></i>
+                </button>
+                <button type="submit" id="_export" name="_export" class="btn btn-info"
+                        data-toggle="tooltip" title="Export resultaten naar file">
+                    <i class="fas fa-file-export"></i>
+                </button>
             </div>
-            {% for facet_keyword, selected in facets_keyword.items %}
-                <div class="form-group">
-                    {% seeker_facet facet_keyword results selected %}
-                </div>
-            {% endfor %}
+            <div class="accordion">
+                <ul>
+                    {% for facet, selected in facets.items %}
+                        {% if facet.visible_pos > 0 %}
+                            <li name="{{facet.field}}-accordion-item" class="accordion-item">
+                                <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                                    <div class="accordion_arrow accordion_arrow--open" ></div>
+                                    {{ facet.label|capfirst }}
+                                </span>
+                                <div class="accordion-item-content">
+                                    <div class="item">
+                                        <div class="seeker-facet form-group">
+                                            {% seeker_facet facet results selected %}
+                                        </div>
+                                    </div>  
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% for facet_keyword, selected in facets_keyword.items %}
+                        {% if facet_keyword.visible_pos > 0 %}
+                            <li name="{{facet.field}}-accordion-item" class="accordion-item">
+                                <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                                    <div class="accordion_arrow accordion_arrow--open" ></div>
+                                    {{ facet_keyword.label|capfirst }}
+                                </span>
+                                <div class="accordion-item-content">
+                                    <div class="seeker-facet form-group">
+                                        {% seeker_facet facet_keyword results selected %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <div  id="display" class="tab-pane container-fluid">
-            <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Display Columns</label>
-                        {% for c in optional_columns %}
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="d" class="display-field" value="{{ c.field }}"{% if c in display_columns %} checked="checked"{% endif %} />
-                                    {{ c.label }}
-                                </label>
+        {% if tabs.display_tab != 'hide' %}
+            <div  id="display" class="tab-pane container-fluid">
+                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Display Columns</label>
+                            {% for c in optional_columns %}
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="d" class="display-field" value="{{ c.field }}"{% if c in display_columns %} checked="checked"{% endif %} />
+                                        {{ c.label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                    <div class="col-md-12">
+                        <label>Display Facet Pos (0=hide)</label>
+                        {% for f in facets %}
+                            <div class="form-group" style="margin-bottom: 4px">
+                                <input type="text" name="a{{f.field}}" class="display-field" id={{f.field}} value="{{ f.visible_pos }}" size="2" />
+                                <label>{{ f.label }}</label>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
-                <div class="col-md-12">
-                    <label>Display Facet Pos (0=hide)</label>
-                    {% for f in facets %}
-                        <div class="form-group" style="margin-bottom: 4px">
-                            <input type="text" name="a{{f.field}}" class="display-field" id={{f.field}} value="{{ f.visible_pos }}" size="2" />
-                            <label>{{ f.label }}</label>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div id="dashboard_tab" class="tab-pane container-fluid" >
-            <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Dashboard Layout</label>
-                        <div class="well" id="db_layout_div">
-                            <table class="table table-bordered table-condensed" id="db_layout_table"></table>
-                        </div>
-                        <label>Chart Definitions</label>
-                        <div class="well" id="chart_definition_div">
-                            <div id="chart_selection_div"> </div>
-                            <table class="table table-bordered table-condensed" id="chart_definition_table"></table>
+        {% endif %}
+        {% if tabs.dashboard_tab != 'hide' %}
+            <div id="dashboard_tab" class="tab-pane container-fluid" >
+                <div class="row" style="border: 2px solid lightblue; margin-bottom: 4px">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Dashboard Layout</label>
+                            <div class="well" id="db_layout_div">
+                                <table class="table table-bordered table-condensed" id="db_layout_table"></table>
+                            </div>
+                            <label>Chart Definitions</label>
+                            <div class="well" id="chart_definition_div">
+                                <div id="chart_selection_div"> </div>
+                                <table class="table table-bordered table-condensed" id="chart_definition_table"></table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="form-actions">
-        <button type="submit" id="_filter" name="_filter" class="btn btn-primary">
-            <span class="glyphicon glyphicon-filter"></span>{% trans "Filter" %}</button>
-        <a id="_reset" href="?q=" class="btn btn-default">{% trans "Reset" %}</a>
-        <button type="submit" id="_export" name="_export" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>{% trans "Export" %}</button>
+        {% endif %}
     </div>
 </form>

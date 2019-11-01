@@ -1,13 +1,5 @@
 {% load seeker %}
 
-<div class="controls form-inline">
-<label for="{{ facet.name }}_select">{{ facet.label|capfirst }}</label>
-<!-- replaced by tile_facet_field hidden field
-<div class="checkbox">
-    <label><input type="checkbox" name="{{ facet.field }}_tile" id="{{ facet.field }}_tile"> Tile</label>
-</div>
--->
-</div>
 <select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
     {% for b in data.buckets %}
         <option value="{{ b.key }}" data-data='{"key": "{{ b.key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if b.key in selected %} selected="selected"{% endif %}>{{ b.key }} ({{ b.doc_count }})</option>

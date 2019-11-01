@@ -484,13 +484,18 @@ class SeekerView (View):
         aggregations = results.get('aggregations', {})
         facets_data = OrderedDict()
         for f in self.get_facets():
+            selected = False
+            facet_data = False
+            keys = []
+            if f.label in tiles_select:
+                selected = True
             if type(f) == seeker.facets.TermsFacet and f.visible_pos > 0 and f.field in aggregations and f.field in self.tiles:
-                if f.label in tiles_select:
-                    selected = True
-                else:
-                    selected = False
+                facet_data = True
+            if f.field in aggregations:
                 keys = [key for key in f.buckets(aggregations[f.field])]
-                facets_data[f.field] = {'label': f.label, 'selected': selected, 'benchmark': benchmark, 'values': keys}
+            facets_data[f.field] = {'label': f.label, 'facet_data' : facet_data,
+                                    'visible_pos' : f.visible_pos, 'accordion_open' : f.accordion_open,
+                                    'selected': selected, 'benchmark': benchmark, 'values': keys}
         return facets_data
 
     def get_facet_tile(self):
