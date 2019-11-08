@@ -77,7 +77,7 @@
                             </div>
                             <div class="col-12 mb-0">
                                 <button id="participate_button" class="item-btn" v-on:click="post_cooking_club_participant_click()" value="new"
-                                        v-bind:disabled="cooking_club_participant.user!=user.username || user.username==''">
+                                        v-bind:disabled="!cooking_club.participants.includes(user.username) || user.username=='' || recipe.cook == user.username">
                                     AANMELDEN ETENTJE
                                 </button>
                             </div>

@@ -94,8 +94,16 @@ def post_recipe(request):
                 cooking_club['position'] = geolocator.geocode(cooking_club['address'])
             except (AttributeError, GeopyError):
                 pass
+        sender = "info@deheerlijkekeuken.nl"
         for cooking_club in recipe['cooking_clubs']:
-            send_mail('Kookclub', 'Uitnodiging kookclub', 'info@deheerlijkekeuken.nl', ['sjaak.waarts@iff.com'], fail_silently=True)
+            cooking_date = datetime.strptime(cooking_club['cooking_date'], "%Y-%m-%dT%H:%M")
+            subject = "Kookclub {0} bij {1}".format(cooking_date.strftime('%m %b %Y - %H:%M'), cooking_club['cook'])
+            message = "Uitnodiging kookclub\n{0}\nKosten per persoon: € {1}\n{2}".format(
+                recipe['title'], cooking_club['cost'], cooking_club['invitation'])
+            to_list = [cooking_club['email']]
+            for participant in cooking_club['participants']:
+                to_list.append(participant['email'])
+            send_mail(subject, message, sender, to_list, fail_silently=True)
     context = {
         'recipe' : recipe
         }

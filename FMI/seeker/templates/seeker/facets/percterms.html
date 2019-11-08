@@ -1,11 +1,10 @@
 {% load seeker %}
 
-<span class="float-right"; white-space: nowrap; overflow-x: auto;>
-    <input type="range" value="{{facet.rangemin}}"min="0" max="1" step="0.1" name="{{ facet.nestedfield }}_range" id="{{ facet.nestedfield }}_range"
-            style="display: inline-block; width:30%" oninput="{{ facet.nestedfield }}_range_value.value = {{ facet.nestedfield }}_range.value" />
-    <output id="{{ facet.nestedfield }}_range_value" for="{{ facet.nestedfield }}_range" style="display: inline-block; width:10%">{{facet.rangemin}}</output>
+<span style="display:flex; flex-direction:row; ">
+    <input style="flex-grow:1" type="range" value="{{facet.rangemin}}" min="0" max="1" step="0.1" name="{{ facet.nestedfield }}_range" id="{{ facet.nestedfield }}_range"
+            oninput="{{ facet.nestedfield }}_range_value.value = {{ facet.nestedfield }}_range.value" />
+    <output id="{{ facet.nestedfield }}_range_value" for="{{ facet.nestedfield }}_range">{{facet.rangemin}}</output>
 </span>
-    </label>
 <select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
     {% for b in data.val.buckets %}
         <option value="{{ b.key }}" data-data='{"key": "{{ b.key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if b.key in selected %} selected="selected"{% endif %}>{{ b.key }} ({{ b.doc_count }})</option>

@@ -86,6 +86,8 @@ var app = new Vue({
             var button_tag = document.getElementById("organize_button");
             button_tag.value = "update";
             button_tag.innerHTML = "UPDATE ETENTJE";
+            button_tag = document.getElementById("cancel_button");
+            button_tag.style.visibility = "visible";
             this.cooking_club = cooking_club;
             if (user.username != "") {
                 this.cooking_club_participant.user = user.username;;
@@ -161,9 +163,14 @@ var app = new Vue({
             this.recipe.reviews.push(review)
             this.post_recipe();
         },
-        post_cooking_club_click: function () {
+        post_cooking_club_click: function (cancelled) {
             var textarea_tag = document.getElementById("invitation_textarea");
-            this.cooking_club.invitation = textarea_tag.value;
+            this.cooking_club.cancelled = cancelled;
+            if (cancelled) {
+                this.cooking_club.invitation = "GEANNULEERD!!\n"+textarea_tag.value;
+            } else {
+                this.cooking_club.invitation = textarea_tag.value;
+            }
             var button_tag = document.getElementById("organize_button");
             // asynchroon
             var geocoder = new google.maps.Geocoder();

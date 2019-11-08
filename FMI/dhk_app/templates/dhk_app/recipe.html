@@ -206,9 +206,13 @@
                                                                         <p><em style="color:red">{% trans "Login om een etentje te kunnen organiseren." %}</em></p>
                                                                     </div>
                                                                     <div class="col-12 form-group mb-0">
-                                                                        <button id="organize_button" class="item-btn" v-on:click="post_cooking_club_click()" value="new"
+                                                                        <button id="organize_button" class="item-btn" v-on:click="post_cooking_club_click(false)" value="new"
                                                                                 v-bind:disabled="cooking_club.cook!=user.username || user.username==''">
                                                                             ORGANISEER ETENTJE
+                                                                        </button>
+                                                                        <button id="cancel_button" style="visibility:hidden" class="item-btn" v-on:click="post_cooking_club_click(true)" value="delete"
+                                                                                v-bind:disabled="cooking_club.cook!=user.username || user.username==''">
+                                                                            ANNULEER ETENTJE
                                                                         </button>
                                                                     </div>
                                                                 </div>
