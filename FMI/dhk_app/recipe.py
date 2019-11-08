@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import send_mail
+from users_app.models import User
 import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
@@ -88,6 +89,7 @@ def post_recipe(request):
     # Get the position from the address
     if len(recipe['cooking_clubs']) > 0:
         cooking_club = recipe['cooking_clubs'][-1]
+        cook_user = User.objects.get(username=cooking_club['cook'])
         if 'position'not in cooking_club and len(cooking_club['address']) > 2:
             try:
                 geolocator = Nominatim(user_agent="dhk")
@@ -98,8 +100,11 @@ def post_recipe(request):
         for cooking_club in recipe['cooking_clubs']:
             cooking_date = datetime.strptime(cooking_club['cooking_date'], "%Y-%m-%dT%H:%M")
             subject = "Kookclub {0} bij {1}".format(cooking_date.strftime('%m %b %Y - %H:%M'), cooking_club['cook'])
-            message = "Uitnodiging kookclub\n{0}\nKosten per persoon: € {1}\n{2}".format(
-                recipe['title'], cooking_club['cost'], cooking_club['invitation'])
+            message = "Uitnodiging kookclub\n\n{0}\n\nKosten per persoon: € {1}]n\n{2}\n\nAdres\n{3}\n{4}\n{5}".format(
+                recipe['title'], cooking_club['cost'], cooking_club['invitation'],
+                cook_user.first_name + " " + cook_user.last_name,
+                cook_user.street + " " + cook_user.housenumber,
+                cook_user.zip + " " + cook_user.city)
             to_list = [cooking_club['email']]
             for participant in cooking_club['participants']:
                 to_list.append(participant['email'])
