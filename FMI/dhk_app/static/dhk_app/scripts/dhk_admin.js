@@ -275,7 +275,7 @@ var app = new Vue({
         recipe_url(url, id) {
             return url + '?id=' + id;
         },
-        reset_filters: function () {
+        reset_search: function () {
             for (var fix = 0; fix < this.workbook.filters.length; fix++) {
                 var facet_name = this.workbook.filters[fix];
                 var facet = this.workbook.facets[facet_name];

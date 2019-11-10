@@ -52,17 +52,17 @@ Vue.component('facet-filter', {
             <div v-if="facet.type == 'date'">
                 <input v-model="facet.value" type="date" v-on:change="process_check()">
             </div>
-            <div v-if="facet.type == 'periode'" class="box">
+            <div v-if="facet.type == 'period'" class="box">
                 <div class="table-responsive">
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td>Start</td>
-                                <td><input class="form-control" v-model="facet.start" type="date" v-on:change="process_check()"></td>
+                                <td><input class="form-control" v-model="facet.value.start" type="date" v-on:change="process_check()"></td>
                             </tr>
                             <tr>
                                 <td>Eind</td>
-                                <td><input class="form-control" v-model="facet.end" type="date" v-on:change="process_check()"></td>
+                                <td><input class="form-control" v-model="facet.value.end" type="date" v-on:change="process_check()"></td>
                             </tr>
                         </tbody>
                     </table>

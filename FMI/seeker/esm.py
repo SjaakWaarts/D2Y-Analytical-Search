@@ -243,17 +243,17 @@ def add_search_filter(search_q, filter_facets, workbook):
                 date_range_filter['range'][field]['gte'] = date_range
                 nested_filter = add_filter_nesting(field, nested, date_range_filter)
                 search_filters.append(nested_filter)
-            elif facet_conf['type'] == 'periode':
+            elif facet_conf['type'] == 'period':
                 date_range = filter_facets[facet]
                 if date_range['start'] in [None, ""] and date_range['end'] in [None, ""]:
                     continue
-                field = field = facet_conf['field'] + '.Begin'
+                field = field = facet_conf['field']
                 date_range_filter = {"range": {field: {}}}
                 if date_range['start'] not in [None, ""]:
                     date_range_filter['range'][field]['gte'] = date_range['start']
                     nested_filter = add_filter_nesting(field, nested, date_range_filter)
                     search_filters.append(nested_filter)
-                field = field = facet_conf['field'] + '.Eind'
+                field = field = facet_conf['field']
                 date_range_filter = {"range": {field: {}}}
                 if date_range['end'] not in [None, ""]:
                     date_range_filter['range'][field]['lte'] = date_range['end']
