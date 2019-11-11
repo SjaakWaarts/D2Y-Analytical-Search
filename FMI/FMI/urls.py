@@ -83,7 +83,7 @@ urlpatterns = [
 
     path('contact', app.views.contact, name='contact'),
     path('about', app.views.about, name='about'),
-    path('dhk/', include("dhk_app.urls")),
+    path('dhk/', include("dhk_app.urls", namespace="dhk")),
 
     # Registration URLs
     path("users_app/", include("users_app.urls")),

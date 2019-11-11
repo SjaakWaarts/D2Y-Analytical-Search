@@ -1,0 +1,67 @@
+<!-- Club Form -->
+{% load i18n %}
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#criteria">Search</a></li>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content border border-top-0 p-2">
+    <div class="tab-pane container-fluid active" id="criteria">
+        <div class="form-group">
+            <label class="sr-only" for="q">{% trans "Search" %}</label>
+            <input type="text" class="form-control" placeholder="{% trans "Search" %}" name="q" id="q" value="{{ keywords_q }}" autofocus="autofocus" />
+        </div>
+        <div class="form-actions mb-2">
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" title="Start zoek en filters" v-on:click="get_cooking_clubs()">
+                <i class="fas fa-search"></i></button>
+            <button type="button" class="btn btn-info" data-toggle="tooltip" title="Reset zoek en filters" v-on:click="reset_search()">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button type="button" class="btn btn-info" data-toggle="tooltip" title="Expand all filters" v-on:click="accordion_collapse(false)">
+                <i class="fas fa-caret-down"></i>
+            </button>
+            <button type="button" class="btn btn-info" data-toggle="tooltip" title="Collapse all filters" v-on:click="accordion_collapse(true)">
+                <i class="fas fa-caret-up"></i>
+            </button>
+        </div>
+        <div class="accordion" v-if="workbook">
+            <ul>
+                <li name="cooking_date-accordion-item" class="accordion-item">
+                    <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                        <div class="accordion_arrow accordion_arrow--open" ></div>
+                        Datum
+                    </span>
+                    <div class="accordion-item-content">
+                        <facet-filter facet_name="cooking_date" v-bind:workbook.sync="this.workbook"
+                            v-on:facet-filter="facet_filter('cooking_date')">
+                        </facet-filter>
+                    </div>
+                </li>
+                <li name="category-accordion-item" class="accordion-item">
+                    <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                        <div class="accordion_arrow accordion_arrow--open" ></div>
+                        Categorie
+                    </span>
+                    <div class="accordion-item-content">
+                        <facet-filter facet_name="categories" v-bind:workbook.sync="this.workbook"
+                            v-on:facet-filter="facet_filter('categories')">
+                        </facet-filter>
+                    </div>
+                </li>
+                <li name="category-accordion-item" class="accordion-item">
+                    <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                        <div class="accordion_arrow accordion_arrow--open" ></div>
+                        Kok
+                    </span>
+                    <div class="accordion-item-content">
+                        <facet-filter facet_name="cook" v-bind:workbook.sync="this.workbook"
+                            v-on:facet-filter="facet_filter('cook')">
+                        </facet-filter>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

@@ -4,8 +4,6 @@
 {% block css %}
     {% load staticfiles %}
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
-	    <link rel="stylesheet" type="text/css" href="{% static 'assets/fullcalendar/core/main.css'%}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'assets/fullcalendar/daygrid/main.css'%}" />
         <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
 {% endblock %}
 
@@ -13,18 +11,18 @@
 
     <div id="root" class="content">
         <div class="iff-pane-border content-form">
-            {% include "dhk_app/club-form.html" %}
+            {% include "dhk_app/workshop-form.html" %}
         </div>
         <div class="iff-pane-border content-results">
-            {% include "dhk_app/club-results.html" %}
+            {% include "dhk_app/workshop-results.html" %}
         </div>
     </div>
 
     {% csrf_token %}
-    <input type="hidden" name="get_cooking_clubs_url" value="{% url 'dhk:get_cooking_clubs' %}">
+    <input type="hidden" name="get_workshops_url" value="{% url 'dhk:get_workshops' %}">
 	<input type="hidden" name="get_recipe_url" value="{% url 'dhk:get_recipe' %}">
-    <input type="hidden" name="post_recipe_url" value="{% url 'dhk:post_recipe' %}">
-  
+    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
+
 {% endblock %}
 
 {% block scripts %}
@@ -34,14 +32,9 @@
     {% load staticfiles %}
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl4shlG7ca_SneqGEEOswOyJuxpqA4KKk"></script>
-        <script src="{% static 'assets/googlemaps/js/markerclusterer.js' %}"></script>
-        <script src="{% static 'assets/fullcalendar/core/main.js' %}"></script>
-        <script src="{% static 'assets/fullcalendar/core/locales/nl.js' %}"></script>
-        <script src="{% static 'assets/fullcalendar/daygrid/main.js' %}"></script>
         <script src="{% static 'app/scripts/utils.js' %}"></script>
         <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
         <script src="{% static 'dhk_app/scripts/facets.js' %}"></script>
-        <script src="{% static 'dhk_app/scripts/club.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/workshop.js' %}"></script>
 
 {% endblock %}

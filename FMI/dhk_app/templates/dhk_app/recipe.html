@@ -235,8 +235,8 @@
         </div>
     </div>
     {% csrf_token %}
-	<input type="hidden" name="get_recipe_url" value="{% url 'dhk/get_recipe' %}">
-    <input type="hidden" name="post_recipe_url" value="{% url 'dhk/post_recipe' %}">
+	<input type="hidden" name="get_recipe_url" value="{% url 'dhk:get_recipe' %}">
+    <input type="hidden" name="post_recipe_url" value="{% url 'dhk:post_recipe' %}">
     <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
 
 

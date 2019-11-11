@@ -198,9 +198,9 @@
         </div>
     </div>
     {% csrf_token %}
-	<input type="hidden" name="delete_recipe_url" value="{% url 'dhk/delete_recipe' %}">
-	<input type="hidden" name="upload_file_url" value="{% url 'dhk/upload_file' %}">
-	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk/get_uploaded_files' %}">
+	<input type="hidden" name="delete_recipe_url" value="{% url 'dhk:delete_recipe' %}">
+	<input type="hidden" name="upload_file_url" value="{% url 'dhk:upload_file' %}">
+	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk:get_uploaded_files' %}">
 
 {% endblock %}
 

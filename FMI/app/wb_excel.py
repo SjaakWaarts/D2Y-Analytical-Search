@@ -1859,7 +1859,7 @@ workbooks = {
         'filters'       : {}
         },
     'dhk' : {
-        'url'           : 'dhk/search',
+        'url'           : 'dhk:search',
         'es_index'      : es_indicis['dhk'],
         'display'       : ["title", "excerpt", "categories", "tags", "images.location", "image"],
         'facets'        : ["categories.keyword", "tags.keyword"],
