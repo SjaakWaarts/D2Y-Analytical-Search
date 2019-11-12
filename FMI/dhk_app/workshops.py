@@ -1,4 +1,5 @@
 import json
+from slugify import slugify
 from datetime import datetime, time
 from django.shortcuts import render
 from django.http import HttpRequest
@@ -12,6 +13,10 @@ from FMI.settings import BASE_DIR, ES_HOSTS
 
 # Create your views here.
 
+def json_converter(o):
+    if isinstance(o, datetime):
+        return o.__str__()
+
 workshops = [
     {
         'recipe_id'    : "high-wine-7-pers",
@@ -23,7 +28,7 @@ workshops = [
         'docent'    : "Lieke Waarts",
         'starttime' : "14:30",
         'endtime'   : "16:00",
-        'lessons'   : [{'date': "2019-11-20", 'recipe_id': None, 'title': "les"}],
+        'cooking_clubs'   : [{'cooking_date': datetime.strptime("2019-11-20", '%Y-%m-%d'), 'invitation': None}],
         'cost'      : 25,
         'images'    : [{'location': 'data/dhk/workshops/Bakken in de herfst voor de hele familie.png'}],
         },
@@ -39,12 +44,12 @@ workshops = [
         'docent'    : "Lieke Waarts",
         'starttime' : "9:30",
         'endtime'   : "12:00",
-        'lessons'   : [
-            {'date': "2019-10-2", 'recipe_id': None, 'title': "les"},
-            {'date': "2019-10-30", 'recipe_id': None, 'title': "les"},
-            {'date': "2019-11-21", 'recipe_id': None, 'title': "les"},
-            {'date': "2019-12-11", 'recipe_id': None, 'title': "les"},
-            {'date': "2020-1-8", 'recipe_id': None, 'title': "les"}],
+        'cooking_clubs'   : [
+            {'cooking_date': datetime.strptime("2019-10-2", '%Y-%m-%d'), 'invitation': None},
+            {'cooking_date': datetime.strptime("2019-10-30", '%Y-%m-%d'), 'invitation': None},
+            {'cooking_date': datetime.strptime("2019-11-21", '%Y-%m-%d'), 'invitation': None},
+            {'cooking_date': datetime.strptime("2019-12-11", '%Y-%m-%d'), 'invitation': None},
+            {'cooking_date': datetime.strptime("2020-1-8", '%Y-%m-%d'), 'invitation': None}],
         'cost'      : 155,
         'images'    : [{'location': 'data/dhk/workshops/Culinair met seizoenen.png'}],
         },
@@ -57,7 +62,7 @@ workshops = [
         'docent'    : "Lieke Waarts",
         'starttime' : "13:00",
         'endtime'   : "17:00",
-        'lessons'   : [{'date': "2019-11-20", 'recipe_id': "high-wine-7-pers", 'title': "High Wine"}],
+        'cooking_clubs'   : [{'cooking_date': datetime.strptime("2019-11-29", '%Y-%m-%d'), 'invitation': "High Wine 7 pers"}],
         'cost'      : 25,
         'images'    : [{'location': 'data/dhk/workshops/Culinair met seizoenen.png'}],
         },
@@ -200,6 +205,12 @@ def get_workshops(request):
                 nested = facet_conf['nested']
                 buckets, totals = esm.get_buckets_nesting(field, nested, aggs[facet])
                 workbook['facets'][facet]['buckets'] = buckets
+    for workshop in workshops:
+        for cooking_club in workshop['cooking_clubs']:
+            if cooking_club['invitation'] is not None:
+                cooking_club['recipe_id'] = slugify(cooking_club['invitation'])
+            else:
+                cooking_club['recipe_id'] = None
     context = {
         'workbook' : workbook,
         'pager' : pager,
@@ -207,5 +218,5 @@ def get_workshops(request):
         'aggs'  : aggs,
         'workshops' : workshops
         }
-    return HttpResponse(json.dumps(context), content_type='application/json')
+    return HttpResponse(json.dumps(context, default = json_converter), content_type='application/json')
 

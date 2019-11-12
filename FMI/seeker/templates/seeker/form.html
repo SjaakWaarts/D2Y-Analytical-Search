@@ -28,21 +28,23 @@
                 <input type="text" class="form-control" placeholder="{% trans "Search" %}" name="q" id="q" value="{{ keywords_q }}" autofocus="autofocus" />
             </div>
             <div class="form-actions mb-2">
-                <button type="submit" id="_filter" name="_filter" class="btn btn-primary"
-                        data-toggle="tooltip" title="Start zoek en filters">
+                <button type="submit" id="_filter" name="_filter" class="btn btn-primary" data-toggle="tooltip"
+                        title="Start zoek en filters" v-on:click="search_filter()">
                     <i class="fas fa-search"></i></button>
-                <button type="submit" id="_reset" name="_reset" class="btn btn-info"
-                        data-toggle="tooltip" title="Reset zoek en filters">
+                <a type="button" href="#" id="_reset" name="_reset" class="btn btn-info" data-toggle="tooltip"
+                        title="Reset zoek en filters" v-on:click="search_reset()">
                     <i class="fas fa-undo"></i>
-                </button>
-                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Expand all filters" v-on:click="accordion_collapse(false)">
+                </a>
+                <button type="button" class="btn btn-info" data-toggle="tooltip"
+                        title="Expand all filters" v-on:click="accordion_collapse(false)">
                     <i class="fas fa-caret-down"></i>
                 </button>
-                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Collapse all filters" v-on:click="accordion_collapse(true)">
+                <button type="button" class="btn btn-info" data-toggle="tooltip"
+                        title="Collapse all filters" v-on:click="accordion_collapse(true)">
                     <i class="fas fa-caret-up"></i>
                 </button>
-                <button type="submit" id="_export" name="_export" class="btn btn-info"
-                        data-toggle="tooltip" title="Export resultaten naar file">
+                <button type="submit" id="_export" name="_export" class="btn btn-info" data-toggle="tooltip"
+                        title="Export resultaten naar file">
                     <i class="fas fa-file-export"></i>
                 </button>
             </div>
@@ -51,10 +53,12 @@
                     {% for facet, selected in facets.items %}
                         {% if facet.visible_pos > 0 %}
                             <li name="{{facet.field}}-accordion-item" class="accordion-item">
-                                <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                                <div class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
                                     <div class="accordion_arrow accordion_arrow--open" ></div>
-                                    {{ facet.label|capfirst }}
-                                </span>
+                                    <div data-toggle="tooltip" title="(Multi-)Select or Deselect, next hit Search">
+                                        {{ facet.label|capfirst }}
+                                    </div>
+                                </div>
                                 <div class="accordion-item-content">
                                     <div class="item">
                                         <div class="seeker-facet form-group">
@@ -68,10 +72,12 @@
                     {% for facet_keyword, selected in facets_keyword.items %}
                         {% if facet_keyword.visible_pos > 0 %}
                             <li name="{{facet.field}}-accordion-item" class="accordion-item">
-                                <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
+                                <div class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
                                     <div class="accordion_arrow accordion_arrow--open" ></div>
-                                    {{ facet_keyword.label|capfirst }}
-                                </span>
+                                    <div data-toggle="tooltip" title="Zoekterm(en), next hit Search">
+                                        {{ facet_keyword.label|capfirst }}
+                                    </div>
+                                </div>
                                 <div class="accordion-item-content">
                                     <div class="seeker-facet form-group">
                                         {% seeker_facet facet_keyword results selected %}

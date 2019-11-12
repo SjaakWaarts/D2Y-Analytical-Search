@@ -4,7 +4,7 @@
         <div class="col-xl-8 col-12">
             <div class="recipe-meta">
                 <ul class="list-group list-group-horizontal">
-                    <li class="list-group-item border-0"><a href="#"><i class="far fa-calendar-alt"></i>[[this.recipe.published_date]]</a></li>
+                    <li class="list-group-item border-0"><a href="#"><i class="far fa-calendar-alt"></i>[[print_date(this.recipe.published_date)]]</a></li>
                     <li class="list-group-item border-0"><a href="#"><i class="fas fa-user"></i>[[this.recipe.author]]</a></li>
                     <li class="list-group-item border-0"><a href="#"><i class="fas fa-map-marker-alt"></i>[[this.recipe.city]]</a></li>
                     <li class="list-group-item border-0"><rating v-bind:stars="average_rating" v-bind:rate="false"></rating></li>

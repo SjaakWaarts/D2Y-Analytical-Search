@@ -123,85 +123,6 @@ function facts_norms(stats_df) {
     stats_facets_b.appendChild(txt);
 }
 
-//$("option[value*='^']").click(function () {
-//    $(this).toggleClass('red');
-//    var option = $(this)[0];
-//    option.text = "Contemporaty/1 (101/85)"
-//    option.value = "Contempory^0"
-//});
-
-$("#_reset").click(function () {
-    var url = "?q=";
-    var input = document.getElementsByName("tab")[0];
-    var ul = document.getElementById("tabs");
-    var items = ul.getElementsByTagName("li");
-    for (var i = 0; i < items.length; ++i) {
-        var li = items[i];
-        var c = li.className;
-        if (c == "active") {
-            var anchor = li.getElementsByTagName('a')[0];
-            var href = anchor.href;
-            var n = href.lastIndexOf("#");
-            var tab = href.substr(n, href.length - 1);
-            input.value = tab;
-            var url = url + "&tab=" + encodeURIComponent(tab)
-        }
-    }
-    var workbook_name = getParameterByName("workbook_name");
-    if (workbook_name != null) {
-        url = url + "&workbook_name=" + encodeURIComponent(workbook_name);
-    }
-    var input = document.getElementsByName("dashboard_name")[0];
-    var dashboard_name = input.value;
-    if (dashboard_name != null) {
-        url = url + "&dashboard_name=" + encodeURIComponent(dashboard_name);
-    }
-    document.getElementById("_reset").href = url;
-});
-
-
-// load the hidden input "tab" with the current active tabpage
-$("#_filter").click(function () {
-    var input = document.getElementsByName("tab")[0];
-    var ul = document.getElementById("tabs");
-    var items = ul.getElementsByTagName("li");
-    for (var i = 0; i < items.length; ++i) {
-        var li = items[i];
-        var c = li.className;
-        if (c == "active") {
-            var anchor = li.getElementsByTagName('a')[0];
-            var href = anchor.href;
-            var n = href.lastIndexOf("#");
-            var tab = href.substr(n, href.length - 1);
-            input.value = tab;
-        }
-    }
-});
-
-// do a redraw in case the storyboard tab is shown the first time
-$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    var input = document.getElementsByName("tab")[0];
-    var ul = document.getElementById("tabs");
-    var items = ul.getElementsByTagName("li");
-    for (var i = 0; i < items.length; ++i) {
-        var li = items[i];
-        var c = li.className;
-        if (c == "active") {
-            var anchor = li.getElementsByTagName('a')[0];
-            var href = anchor.href;
-            var n = href.lastIndexOf("#");
-            var tab = href.substr(n, href.length - 1);
-            input.value = tab;
-            if (tab == "#storyboard_tab") {
-                if (typeof g_storyboard != 'undefined') {
-                    draw_dashboard(g_storyboard[g_storyboard_ix], g_charts, "All", g_tiles_select)
-                }
-            }
-        }
-    }
-});
-
-
 // submit the form when a botton is pressed for Keyword load or search
 function keyword_button_submit(button) {
     var input = document.getElementsByName("keyword_button")[0];
@@ -209,24 +130,6 @@ function keyword_button_submit(button) {
     input.form.submit()
 }
 
-
-// the selected keywords are copied to the Search field. This is replaced by the Search button in the keyword input text field.
-$("#_keywords_filter").click(function () {
-    var search = ""
-    var facet_keyword = document.getElementsByName("facet_keyword")[0];
-    var options = facet_keyword.options;
-    for (var i = 0; i < options.length; ++i) {
-        var option = options[i];
-        var selected = option.selected;
-        if (selected == true) {
-            option.selected = false;
-            var key = option.value;
-            if (search == "") {search = key} else {search = search + " OR " + key}
-        }
-    }
-    var q = document.getElementsByName("q")[0];
-    q.value = search
-});
 
 $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip(); 
@@ -245,7 +148,7 @@ var app = new Vue({
             facets: {}},
         hits: [],
         aggs: [],
-        item: {isopen: true}
+        storyboard_redraw: true,
     },
     methods: {
         accordion_collapse: function (hide) {
@@ -279,6 +182,56 @@ var app = new Vue({
                 accordion_item_content_elm.style.display = "block";
             }
         },
+        search_filter() {
+            // load the hidden input "tab" with the current active tabpage
+            var input = document.getElementsByName("tab")[0];
+            var ul = document.getElementById("tabs");
+            var items = ul.getElementsByClassName("nav-link");
+            for (var i = 0; i < items.length; ++i) {
+                var a_elm = items[i];
+                if (a_elm.classList.contains("active")) {
+                    var href = a_elm.href;
+                    var n = href.lastIndexOf("#");
+                    var tab = href.substr(n, href.length - 1);
+                    input.value = tab;
+                }
+            }
+        },
+        search_reset() {
+            var url = "?q=";
+            // load the hidden input "tab" with the current active tabpage
+            var input = document.getElementsByName("tab")[0];
+            var ul = document.getElementById("tabs");
+            var items = ul.getElementsByClassName("nav-link");
+            for (var i = 0; i < items.length; ++i) {
+                var a_elm = items[i];
+                if (a_elm.classList.contains("active")) {
+                    var href = a_elm.href;
+                    var n = href.lastIndexOf("#");
+                    var tab = href.substr(n, href.length - 1);
+                    input.value = tab;
+                    var url = url + "&tab=" + encodeURIComponent(tab);
+                }
+            }
+            var workbook_name = getParameterByName("workbook_name");
+            if (workbook_name != null) {
+                url = url + "&workbook_name=" + encodeURIComponent(workbook_name);
+            }
+            var input = document.getElementsByName("dashboard_name")[0];
+            var dashboard_name = input.value;
+            if (dashboard_name != null) {
+                url = url + "&dashboard_name=" + encodeURIComponent(dashboard_name);
+            }
+            document.getElementById("_reset").href = url;
+        },
+        storyboard_tab_click(event) {
+            if (this.storyboard_redraw) {
+                if (typeof g_storyboard != 'undefined') {
+                    draw_dashboard(g_storyboard[g_storyboard_ix], g_charts, "All", g_tiles_select)
+                }
+                this.storyboard_redraw = false;
+            }
+        }
     },
     computed: {
         isopen : function () {

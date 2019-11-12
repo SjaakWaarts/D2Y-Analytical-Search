@@ -1371,7 +1371,25 @@ tmlo = {
 ### DHK Dashboard
 ###
 
-dhk_dashboard = {}
+dhk_dashboard = {
+    "categories_pie" : {
+        'chart_type': "PieChart",
+        'chart_title' : "Categories",
+        'data_type'  : "facet",
+        'X_facet'     : {
+            'field'   : "categories.keyword",
+            'label'   : "Categories" },
+        },
+    "tags_col" : {
+        'chart_type': "ColumnChart",
+        'chart_title' : "Tags",
+        'controls'    : ['CategoryFilter'],
+        'data_type'  : "facet",
+        'X_facet'     : {
+            'field'   : "tags.keyword",
+            'label'   : "Tags" },
+        },
+    }
 
 ###
 ### DKH Mapping
@@ -1868,7 +1886,9 @@ workbooks = {
         'storyboards'   : {
             'initial' : [
                     {'name'     : 'initial',
-                     'layout'   : OrderedDict([])},
+                     'layout'   : OrderedDict([
+                        ('table1', [["categories_pie"]]),
+                        ('table2', [["tags_col"]])])},
                 ]
             },
         'filters'       : {}

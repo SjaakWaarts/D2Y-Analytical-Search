@@ -25,7 +25,9 @@ function summary_line(sentence, ngram) {
     {% if tabs.summary_tab != 'hide' %}
         <li class=""><a class="nav-link {{ tabs.summary_tab }}" data-toggle="tab" href="#summary_tab">Auto Summary</a></li>
     {% endif %}
-    <li class="nav-item"><a class="nav-link {{ tabs.storyboard_tab }}" data-toggle="tab" href="#storyboard_tab">Storyboard</a></li>
+    <li class="nav-item">
+        <a class="nav-link {{ tabs.storyboard_tab }}" data-toggle="tab" href="#storyboard_tab" v-on:click="storyboard_tab_click()">Storyboard</a>
+    </li>
     {% if tabs.insights_tab != 'hide' %}
         <li class="nav-item"><a class="nav-link {{ tabs.insights_tab }}" data-toggle="tab" href="#insights_tab">Insights/Norms</a></li>
     {% endif %}

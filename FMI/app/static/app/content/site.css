@@ -101,8 +101,15 @@
 
 }
 
-.accordion .item {
+.accordion-item {
     overflow: hidden;
+}
+
+.accordion-item-header {
+    display: flex;
+    flex-direction: row;
+    flex-flow: nowrap;
+    justify-content: flex-start;
 }
 
 .accordion .accordion_arrow {
@@ -423,5 +430,27 @@ a.seeker:hover {color:DarkSlateBlue ;}
     background-color: orange;
 }
 
+/* Workshop */
 
+.workshop {
+
+}
+
+.workshop-form {
+}
+
+.workshop-results {
+}
+
+.workshop-meta {
+}
+
+.workshop-meta i {
+    margin-right: 5px;
+    color: #ff4a52;
+    font-size: 14px;
+}
+
+.workshop-excempt {
+}
       

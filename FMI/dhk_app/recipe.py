@@ -100,7 +100,16 @@ def post_recipe(request):
         for cooking_club in recipe['cooking_clubs']:
             cooking_date = datetime.strptime(cooking_club['cooking_date'], "%Y-%m-%dT%H:%M")
             subject = "Kookclub {0} bij {1}".format(cooking_date.strftime('%m %b %Y - %H:%M'), cooking_club['cook'])
-            message = "Uitnodiging kookclub\n\n{0}\n\nKosten per persoon: € {1}]n\n{2}\n\nAdres\n{3}\n{4}\n{5}".format(
+            message = \
+                """Uitnodiging kookclub\n\n
+                {0}\n\n
+                Kosten per persoon: € {1}]n\n
+                {2}\n\n
+                Adres\n
+                {3}\n
+                {4}\n
+                {5}\n\n
+                Gasten:\n""".format(
                 recipe['title'], cooking_club['cost'], cooking_club['invitation'],
                 cook_user.first_name + " " + cook_user.last_name,
                 cook_user.street + " " + cook_user.housenumber,
@@ -108,6 +117,7 @@ def post_recipe(request):
             to_list = [cooking_club['email']]
             for participant in cooking_club['participants']:
                 to_list.append(participant['email'])
+                message = message + "{0}\t{1}\n".format(participant.user, participant.comment)
             send_mail(subject, message, sender, to_list, fail_silently=True)
     context = {
         'recipe' : recipe

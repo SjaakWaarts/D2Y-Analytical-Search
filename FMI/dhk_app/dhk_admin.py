@@ -430,6 +430,9 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                             style_name = para.style.name
                             if style_name == 'Ingredients':
                                 course['ingredients'].append({'ingredient' : para.text})
+                            if style_name == 'Workshop':
+                                cooking_club = {}
+                                #recipe['cooking_clubs'].append(cooking_club)
                             recipe['description'].append(para.text)
 
 

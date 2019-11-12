@@ -16,18 +16,22 @@
                                 [[workshop.title]]
                             </a>
                         </div>
-                        <div v-bind:id="'accordion_item_'+wix" class="collapse" data-parent="#accordion">
+                        <div v-bind:id="'accordion_item_'+wix"
+                             v-bind:class="(wix==0) ? 'collapse show' : 'collapse'" data-parent="#accordion">
                             <div class="card-body">
-                            <a href="#" v-on:click="jump_to_recipe(workshop.recipe_id)">[[workshop.title]]</a>
-                            <div class="club-modal-header mb-2">
+                                Ga naar gerecht
+                                <a class="text-danger" href="#" v-on:click="jump_to_recipe(workshop.recipe_id)">[[workshop.title]]</a>
+                                en meld je aan!
+                                <br />
+                            <div class="workshop-meta mb-2">
                                 <i class="fas fa-users mr-2"></i>[[workshop.cook]] 
-                                Start<i class="far fa-calendar-alt m-2"></i>[[workshop.lessons[0].date.substr(2, 8)]]
-                                Eind<i class="far fa-calendar-alt m-2"></i>[[workshop.lessons[workshop.lessons.length-1].date.substr(2, 8)]]
+                                Start<i class="far fa-calendar-alt m-2"></i>[[ print_date(workshop.cooking_clubs[0].cooking_date) ]]
+                                Eind<i class="far fa-calendar-alt m-2"></i>[[ print_date(workshop.cooking_clubs[workshop.cooking_clubs.length-1].cooking_date) ]]
                                 Van <i class="far fa-clock m-2"></i>[[workshop.starttime]]
                                 Tot <i class="far fa-clock m-2"></i>[[workshop.endtime]]
                                 <i class="fas fa-euro-sign m-2"></i>[[workshop.cost]]
                             </div>
-                            <p>[[workshop.excempt]]</p>
+                            <p class="workshop-excempt font-italic">[[workshop.excempt]]</p>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-sm">
                                     <thead class="thead-light">
@@ -37,9 +41,9 @@
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr v-for="lesson in workshop.lessons">
-                                          <td style="width:20%">[[lesson.date.substr(2, 8)]]</td>
-                                          <td><a href="#" v-on:click="jump_to_recipe(lession.recipe_id)">[[lesson.title]]</a></td>
+                                      <tr v-for="cooking_club in workshop.cooking_clubs">
+                                          <td style="width:20%">[[print_date(cooking_club.cooking_date)]]</td>
+                                          <td><a href="#" v-on:click="jump_to_recipe(cooking_club.recipe_id)">[[cooking_club.invitation]]</a></td>
                                       </tr>
                                 </table>
                             </div>
