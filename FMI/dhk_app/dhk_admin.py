@@ -11,6 +11,7 @@ import json
 import urllib
 import requests
 from slugify import slugify
+from pandas import Series, DataFrame
 from io import BytesIO
 import zipfile
 import docx
@@ -312,6 +313,62 @@ def get_uploaded_files(request):
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 
+def table_to_df(table, header_styles, key_list, header_key_list):
+    # convert the Word table to a DataFrame and/or a Dictionary
+    # The DataFrame can have a header in case a certain style is used or a row first cell matches the header_key_list.
+    # A Dictionary is filled when the row first cell matches the key list, those rows are not included in the DataFrame.
+    # The style used by the content cells is also returned to indicate the caller on the content
+    df = DataFrame()
+    d = {}
+    style = ""
+    header_row = table.rows[0]
+    header_col = header_row.cells[0]
+    header_para = header_col.paragraphs[0]
+    style_name = header_para.style.name
+    columns = None
+    index = None
+    rows_ix = 0
+    if style_name in header_styles:
+        columns = []
+        rows_ix = 1
+        for cell in header_row.cells:
+            value = ""
+            for para in cell.paragraphs:
+                value = value + para.text
+            columns.append(value)
+    matrix = []
+    for row in table.rows[rows_ix:]:
+        header_col = row.cells[0]
+        header_para = header_col.paragraphs[0]
+        if header_para.text in key_list:
+            col_ix = 1
+        else:
+            index[row_ix] = row_ix
+            col_ix = 0
+        if header_para.text in header_key_list:
+            col_ix = 1
+        row = []
+        d[header_para.text] = ""
+        for cell in row.cells:
+            value = ""
+            for para in cell.paragraphs[col_ix:]:
+                value = value + para.text
+                style = para.style.name
+            if header_para.text in key_list:
+                d[header_para.text] = d[header_para.text] + value
+            else:
+                row.append(value)
+        if header_para.text in key_list:
+            pass
+        else:
+            if header_para.text in header_key_list:
+                columns = row
+            else:
+                matrix.append(row)
+
+    df = DataFrame(matrix, columns=columns, index=index)
+    return df, d, style
+
 def has_image(par):
     """get all of the images in a paragraph 
     :param par: a paragraph object from docx
@@ -423,6 +480,19 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                 recipe['description'].append(para.text)
         elif isinstance(block, Table):
             table = block
+            df, d, style = table_to_df(table, ['Ingredients Header'], ['Studio', 'Start- en Eindtijd'], ['Datum'])
+            if style == 'Workshop':
+                for index, row in df.iterrows():
+                    cooking_club = d
+                    cooking_club['cooking_date'] = row['Datum']
+                    cooking_club['invitation'] = row['Gerecht']
+                    #recipe['cooking_clubs'].append(cooking_club)
+            if style == 'Ingredients':
+                for part in df.columns:
+                    ingredients_parts = {'part' : part, 'ingredients' : []}
+                    for ingr in df[part]:
+                        ingredients_parts['ingredients'].append({'ingredient' : ingr})
+
             for row in table.rows:
                 for cell in row.cells:
                     for para in cell.paragraphs:
@@ -430,9 +500,6 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                             style_name = para.style.name
                             if style_name == 'Ingredients':
                                 course['ingredients'].append({'ingredient' : para.text})
-                            if style_name == 'Workshop':
-                                cooking_club = {}
-                                #recipe['cooking_clubs'].append(cooking_club)
                             recipe['description'].append(para.text)
 
 

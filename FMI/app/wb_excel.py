@@ -1398,6 +1398,18 @@ dhk_dashboard = {
 course = {
     # 'dynamic' : 'strict',
     'title'        : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+    'ingredients_parts'   : {
+        'type'      : 'nested',
+        'properties': {
+            'part'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+            'ingredients'   : {
+                'type'      : 'nested',
+                'properties': {
+                    'ingredient': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+                    }
+                },
+            }
+        },
     'ingredients'   : {
         'type'      : 'nested',
         'properties': {
@@ -1432,6 +1444,7 @@ recipes = {
     'cooking_clubs' : {
         'type'      : 'nested',
         'properties': {
+            'studio'   : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
             'cook'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
             'email': {'type' : 'text'},
             'cooking_date': {'type' : 'date'},
@@ -1439,6 +1452,7 @@ recipes = {
             'position' : {"properties": {"lat": {"type": "float"}, "lng": {"type": "float"}}},
             'invitation': {'type' : 'text'},
             'cost' : {'type': 'float'},
+            'duration' : {'type': 'float'},
             'participants'     : {
                 'type'       : 'nested',
                 'properties' : {
