@@ -48,11 +48,14 @@
                                                             <div class="col-lg-6">
                                                                 <div class="recipe-ingredients">
                                                                     <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Ingredienten</h3>
-                                                                    <div class="recipe-ingredient" v-for="(ingredient, index) in course.ingredients">
-                                                                        <div class="custom-control custom-checkbox mb-3">
-                                                                            <input type="checkbox" class="custom-control-input" v-bind:id="'course'+course_ix+'_ingredient_cb'+index"
-                                                                                   v-on:click="recipe_ingredient_click(event, ingredient.ingredient)">
-                                                                            <label class="custom-control-label" v-bind:for="'course'+course_ix+'_ingredient_cb'+index">[[ ingredient.ingredient ]]</label>
+                                                                    <div class="recipe-ingredients-part" v-for="ingredients_part in course.ingredients_parts">
+                                                                        <div v-if="isNaN(ingredients_part.part)"><b>[[ ingredients_part.part ]]</b></div>       
+                                                                        <div class="recipe-ingredient" v-for="(ingredient, index) in ingredients_part.ingredients">
+                                                                            <div class="custom-control custom-checkbox mb-3">
+                                                                                <input type="checkbox" class="custom-control-input" v-bind:id="'course'+course_ix+'_ingredient_cb'+index"
+                                                                                       v-on:click="recipe_ingredient_click(event, ingredient.ingredient)">
+                                                                                <label class="custom-control-label" v-bind:for="'course'+course_ix+'_ingredient_cb'+index">[[ ingredient.ingredient ]]</label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>

@@ -219,7 +219,7 @@ var app = new Vue({
         },
         post_recipe: function () {
             var csrftoken_cookie = getCookie('csrftoken');
-            var headers = { 'X-CSRFToken': csrftoken_cookie }
+            var headers = { 'X-CSRFToken': csrftoken_cookie };
             this.$http.post(post_recipe_url, {
                 'csrfmiddlewaretoken': csrftoken,
                 'recipe': this.recipe,

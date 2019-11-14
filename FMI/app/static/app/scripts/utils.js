@@ -37,12 +37,33 @@ function print_date(iso_date) {
         month: "short",
         day: "2-digit"
     };
+    if (iso_date == "") {
+        return "";
+    }
     if (typeof iso_date === "string") {
         var date = new Date(iso_date);
     } else {
         var date = iso_date;
     }
     var s = date.toLocaleDateString("nl-NL", options);
+    return s;
+}
+
+function print_time(iso_date) {
+
+    var options = {
+        hour: "2-digit",
+        minute: "2-digit"
+    };
+    if (iso_date == "") {
+        return "";
+    }
+    if (typeof iso_date === "string") {
+        var date = new Date(iso_date);
+    } else {
+        var date = iso_date;
+    }
+    var s = date.toLocaleTimeString("nl-NL", options);
     return s;
 }
 

@@ -187,6 +187,17 @@ types_map = {
     '.zip': 'application/zip',
 }
 
+studios = {
+    'VU'    : {
+        'address' : "De Vaertkant 201, 5171 JW Kaatsheuvel",
+        'position': {'lat' : 51.661111, 'lng' : 5.038312}
+        },
+    'Stuurhuis' : {
+        'address' : "Kerkstraat 19 B, 5253 AN Nieuwkuijk",
+        'position': {'lat' : 51.693787, 'lng' : 5.176763}
+        }
+    }
+
 def get_ext(content_type):
     ext = ""
     for ex, ct in types_map.items():
@@ -321,50 +332,36 @@ def table_to_df(table, header_styles, key_list, header_key_list):
     df = DataFrame()
     d = {}
     style = ""
-    header_row = table.rows[0]
-    header_col = header_row.cells[0]
-    header_para = header_col.paragraphs[0]
-    style_name = header_para.style.name
     columns = None
-    index = None
-    rows_ix = 0
-    if style_name in header_styles:
-        columns = []
-        rows_ix = 1
-        for cell in header_row.cells:
+    index = []
+    table_row_ix = 0
+    df_row_ix = 0
+    matrix = []
+    for table_row in table.rows[table_row_ix:]:
+        header_col = table_row.cells[0]
+        header_para = header_col.paragraphs[0]
+        col_ix = 0
+        key = header_para.text.lower()
+        if key in key_list:
+            d[key] = ""
+            col_ix = 1
+        df_row = []
+        for cell in table_row.cells[col_ix:]:
             value = ""
             for para in cell.paragraphs:
                 value = value + para.text
-            columns.append(value)
-    matrix = []
-    for row in table.rows[rows_ix:]:
-        header_col = row.cells[0]
-        header_para = header_col.paragraphs[0]
-        if header_para.text in key_list:
-            col_ix = 1
-        else:
-            index[row_ix] = row_ix
-            col_ix = 0
-        if header_para.text in header_key_list:
-            col_ix = 1
-        row = []
-        d[header_para.text] = ""
-        for cell in row.cells:
-            value = ""
-            for para in cell.paragraphs[col_ix:]:
-                value = value + para.text
                 style = para.style.name
-            if header_para.text in key_list:
-                d[header_para.text] = d[header_para.text] + value
+            if key in key_list:
+                d[key] = d[key] + value
             else:
-                row.append(value)
-        if header_para.text in key_list:
-            pass
-        else:
-            if header_para.text in header_key_list:
-                columns = row
+                df_row.append(value)
+        if key not in key_list:
+            if key in header_key_list or header_para.style.name in header_styles:
+                columns = df_row
             else:
-                matrix.append(row)
+                matrix.append(df_row)
+                index.append(df_row_ix)
+                df_row_ix = df_row_ix + 1
 
     df = DataFrame(matrix, columns=columns, index=index)
     return df, d, style
@@ -460,7 +457,7 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                     mode = 'recipe'
                     course = {}
                     course['title'] = para.text
-                    course['ingredients'] = []
+                    course['ingredients_parts'] = []
                     course['instructions'] = []
                     recipe['courses'].append(course)
                 if mode == 'dish':
@@ -480,28 +477,25 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                 recipe['description'].append(para.text)
         elif isinstance(block, Table):
             table = block
-            df, d, style = table_to_df(table, ['Ingredients Header'], ['Studio', 'Start- en Eindtijd'], ['Datum'])
+            df, d, style = table_to_df(table, ['Ingredients Header'], ['studio', 'start- en eindtijd'], ['datum'])
             if style == 'Workshop':
                 for index, row in df.iterrows():
                     cooking_club = d
                     cooking_club['cooking_date'] = row['Datum']
+                    cooking_club['cook'] = recipe['author']
                     cooking_club['invitation'] = row['Gerecht']
-                    #recipe['cooking_clubs'].append(cooking_club)
+                    cooking_club['participants'] = []
+                    if cooking_club['studio'] in studios:
+                        for k, v in studios[cooking_club['studio']].items():
+                            cooking_club[k] = v
+                    recipe['cooking_clubs'].append(cooking_club)
             if style == 'Ingredients':
                 for part in df.columns:
-                    ingredients_parts = {'part' : part, 'ingredients' : []}
+                    ingredients_part = {'part' : part, 'ingredients' : []}
                     for ingr in df[part]:
-                        ingredients_parts['ingredients'].append({'ingredient' : ingr})
-
-            for row in table.rows:
-                for cell in row.cells:
-                    for para in cell.paragraphs:
-                        if len(para.text) > 0:
-                            style_name = para.style.name
-                            if style_name == 'Ingredients':
-                                course['ingredients'].append({'ingredient' : para.text})
-                            recipe['description'].append(para.text)
-
+                        if len(ingr) > 0:
+                            ingredients_part['ingredients'].append({'ingredient' : ingr})
+                    course['ingredients_parts'].append(ingredients_part)
 
     log = []
     success = True
@@ -524,7 +518,7 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
         if len(course['instructions']) == 0:
             log.append("Style Recept is missing for course {1}".format(course.title))
             success = False
-        if len(course['ingredients']) == 0:
+        if len(course['ingredients_parts']) == 0:
             log.append("Style Ingredients is missing for course {1}".format(course.title))
             success = False
 
