@@ -40,13 +40,16 @@ var app = new Vue({
             'position': null,
             'invitation': "",
             'cost': 0,
-            'participants': []
+            'participants': [],
         },
+        cc_prev_available: false,
+        cc_next_available: false,
         cooking_club_participant: {
             'user': "",
             'email': "",
             'comment': ""
         },
+        error_messages: {},
         hits: [],
         id: '',
         leave_review: {
@@ -81,13 +84,23 @@ var app = new Vue({
             this.draw_map();
         },
         club_join_marker_click: function (cooking_club) {
-            var textarea_tag = document.getElementById("invitation_textarea");
+            var textarea_tag = document.getElementById("cc_invitation");
             textarea_tag.value = cooking_club.invitation;
-            var button_tag = document.getElementById("organize_button");
-            button_tag.value = "update";
-            button_tag.innerHTML = "UPDATE ETENTJE";
-            button_tag = document.getElementById("cancel_button");
-            button_tag.style.visibility = "visible";
+            var cc_cooking_date_tag = document.getElementById("cc_cooking_date");
+            var cc_create_button_tag = document.getElementById("cc_create_button");
+            var cc_update_button_tag = document.getElementById("cc_update_button");
+            var cc_delete_button_tag = document.getElementById("cc_delete_button");
+            if (cooking_club.cook === user.username) {
+                cc_cooking_date_tag.disabled = true;
+                cc_create_button_tag.style.display = "none";
+                cc_update_button_tag.style.visibility = "visible";
+                cc_delete_button_tag.style.visibility = "visible";
+            } else {
+                cc_cooking_date_tag.disabled = false;
+                cc_create_button_tag.style.display = "block";
+                cc_update_button_tag.style.visibility = "hidden";
+                cc_delete_button_tag.style.visibility = "hidden";
+            }
             this.cooking_club = cooking_club;
             if (user.username != "") {
                 this.cooking_club_participant.user = user.username;;
@@ -102,9 +115,57 @@ var app = new Vue({
             var button_tag = document.getElementById("participate_button");
             button_tag.innerHTML = "AANMELDEN ETENTJE";
             button_tag.value = "new";
+            this.cc_prev_available = false;
+            this.cc_next_available = false;
+            for (var ix = 0; ix < this.recipe.cooking_clubs.length; ix++) {
+                if (cooking_club.cook == this.recipe.cooking_clubs[ix].cook) {
+                    if (cooking_club.cooking_date > this.recipe.cooking_clubs[ix].cooking_date) {
+                        this.cc_prev_available = true;
+                    } else if (cooking_club.cooking_date < this.recipe.cooking_clubs[ix].cooking_date) {
+                        this.cc_next_available = true;
+                    }
+                }
+            }
             var recipe_model_div = document.getElementById('recipe-modal');
             $('#recipe-modal').modal('show');
             var cook = cooking_club.cook;
+        },
+        club_prev_next_click(direction) {
+            var cc = null;
+            if (direction == 'prev') {
+                this.cc_prev_available = false;
+            } else {
+                this.cc_next_available = false;
+            }
+            for (var ix = 0; ix < this.recipe.cooking_clubs.length; ix++) {
+                if (this.cooking_club.cook === this.recipe.cooking_clubs[ix].cook) {
+                    if (this.cooking_club.cooking_date > this.recipe.cooking_clubs[ix].cooking_date && direction === 'prev') {
+                        this.cc_next_available = true;
+                        if (!cc) {
+                            cc = this.recipe.cooking_clubs[ix];
+                        } else {
+                            this.cc_prev_available = true;
+                            if (cc.cooking_date < this.recipe.cooking_clubs[ix].cooking_date) {
+                                cc = this.recipe.cooking_clubs[ix];
+                            }
+                        }
+                    } else if (this.cooking_club.cooking_date < this.recipe.cooking_clubs[ix].cooking_date && direction === 'next') {
+                        this.cc_prev_available = true;
+                        if (!cc) {
+                            cc = this.recipe.cooking_clubs[ix];
+                        } else {
+                            this.cc_next_available = true;
+                            if (cc.cooking_date > this.recipe.cooking_clubs[ix].cooking_date) {
+                                cc = this.recipe.cooking_clubs[ix];
+                            }
+                        }
+                    }
+                }
+            }
+            if (cc) {
+                this.cooking_club = cc;
+                this.cooking_date = cc.cooking_date;
+            }
         },
         club_participant_update_click: function (index) {
             this.cooking_club_participant.user = this.cooking_club.participants[index].user;
@@ -163,24 +224,34 @@ var app = new Vue({
             this.recipe.reviews.push(review)
             this.post_recipe();
         },
-        post_cooking_club_click: function (cancelled) {
-            var textarea_tag = document.getElementById("invitation_textarea");
-            this.cooking_club.cancelled = cancelled;
-            if (cancelled) {
+        post_cooking_club_click: function (crud) {
+            var textarea_tag = document.getElementById("cc_invitation");
+            this.cooking_club.cancelled = (crud === 'delete');
+            if (this.cooking_club.cancelled) {
                 this.cooking_club.invitation = "GEANNULEERD!!\n"+textarea_tag.value;
             } else {
                 this.cooking_club.invitation = textarea_tag.value;
             }
-            var button_tag = document.getElementById("organize_button");
+            this.error_messages = {};
+            if (this.cooking_club.cooking_date == "") {
+                this.error_messages['cooking_date'] = 'Datum EN tijd zijn verplicht!'
+                return;
+            }
+            if (crud === 'create') {
+                if (this.recipe.cooking_clubs.some(cc => cc.cooking_date == this.cooking_club.cooking_date)) {
+                    alert("Kookclub voor die dag en kok bestaat al");
+                    return;
+                }
+            }
             // asynchroon
             var geocoder = new google.maps.Geocoder();
             var position = null;
             geocoder.geocode({ 'address': this.cooking_club.address, 'region': 'nl' }, function (results, status) {
-                if (status == 'OK') {
+                if (status === 'OK') {
                     position = results[0].geometry.location;
                     app.cooking_club.position = position;
-                    if (button_tag.value == "new") {
-                        app.recipe.cooking_clubs.push(app.cooking_club)
+                    if (crud === 'create') {
+                        app.recipe.cooking_clubs.push(app.cooking_club);
                     } else {
                         //var index = parseInt(button_tag.value.split('-')[1]);
                         //this.recipe.cooking_clubs[index] = this.cooking_club;

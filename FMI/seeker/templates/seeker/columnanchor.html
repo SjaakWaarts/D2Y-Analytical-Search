@@ -4,9 +4,9 @@
         <ul>
         {% for li in value %}
             {% if li.2 == True %}
-                <li><a href="{{ li.1 }}" target="_blank" style="color:red;">{{ li.0 }}</a></li>
+                <li><a href="{{ li.1 }}" style="color:red;">{{ li.0 }}</a></li>
             {% else %}
-                <li><a href="{{ li.1 }}" target="_blank">{{ li.0 }}</a></li>
+                <li><a href="{{ li.1 }}">{{ li.0 }}</a></li>
             {% endif %}
         {% endfor %}
         </ul>

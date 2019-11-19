@@ -119,25 +119,25 @@
                                                                 <label>Commentaar *</label>
                                                                 <textarea id="comment_textarea" placeholder="" class="textarea form-control" name="message" rows="3" cols="20"
                                                                           data-error="Message field is required" required=""></textarea>
-                                                                <div class="help-block with-errors"></div>
+                                                                <div class="form-validation-error"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
                                                                 <label>Naam *</label>
                                                                 <input type="text" placeholder="" class="form-control" name="name" data-error="Name field is required" required=""
                                                                        v-model="leave_review.name">
-                                                                <div class="help-block with-errors"></div>
+                                                                <div class="form-validation-error"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
                                                                 <label>E-mail *</label>
                                                                 <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail field is required" required=""
                                                                        v-model="leave_review.email">
-                                                                <div class="help-block with-errors"></div>
+                                                                <div class="form-validation-error"></div>
                                                             </div>
                                                             <div class="col-lg-4 form-group">
                                                                 <label>Website</label>
                                                                 <input type="text" placeholder="" class="form-control" name="website"
                                                                        v-model="leave_review.website">
-                                                                <div class="help-block with-errors"></div>
+                                                                <div class="form-validation-error"></div>
                                                             </div>
                                                             <div class="col-12 form-group mb-0">
                                                                 <button class="item-btn" v-on:click="post_review_click()">
@@ -163,9 +163,9 @@
                                                                 <div class="row">
                                                                     <div class="col-6 form-group">
                                                                         <label>Datum *</label>
-                                                                        <input type="datetime-local" class="form-control" name="date" data-error="Datum is vereist" required=""
+                                                                        <input type="datetime-local" class="form-control" id="cc_cooking_date" data-error="Datum is vereist" required=""
                                                                                v-model="cooking_club.cooking_date">
-                                                                        <div class="help-block with-errors"></div>
+                                                                        <div class="form-validation-error">[[error_messages.cooking_date]]</div>
                                                                     </div>
                                                                     <div class="col-6">
                                                                         <label>Prijs (€) *</label>
@@ -173,34 +173,34 @@
                                                                             <div class="input-group-prepend">
                                                                                <span class="input-group-text">€</span>
                                                                             </div>
-                                                                            <input type="number" class="form-control" name="price" data-error="Prijs is vereist" required=""
+                                                                            <input type="number" class="form-control" id="cc_costs" data-error="Prijs is vereist" required=""
                                                                                    v-model="cooking_club.cost">
                                                                         </div>
-                                                                        <div class="help-block with-errors"></div>
+                                                                        <div class="form-validation-error"></div>
                                                                     </div>
                                                                     <div class="col-12 form-group">
                                                                         <label>Uitnodiging *</label>
-                                                                        <textarea id="invitation_textarea" placeholder="Plaats hier de uitnodiging" class="textarea form-control" name="message" rows="3" cols="10"
+                                                                        <textarea id="cc_invitation" placeholder="Plaats hier de uitnodiging" class="textarea form-control" rows="3" cols="10"
                                                                                   data-error="Vul een uitnodiging in voor de gasten" required=""></textarea>
-                                                                        <div class="help-block with-errors"></div>
+                                                                        <div class="form-validation-error"></div>
                                                                     </div>
                                                                     <div class="col-12 form-group">
                                                                         <label>Naam *</label>
-                                                                        <input type="text" placeholder="" class="form-control" name="name" data-error="Naam is vereist" required=""
+                                                                        <input type="text" placeholder="" class="form-control" id="cc_cook" data-error="Naam is vereist" required=""
                                                                                v-model="cooking_club.cook">
-                                                                        <div class="help-block with-errors"></div>
+                                                                        <div class="form-validation-error"></div>
                                                                     </div>
                                                                     <div class="col-12 form-group" v-if="cooking_club.cook==user.username">
                                                                         <label>E-mail *</label>
-                                                                        <input type="email" placeholder="" class="form-control" name="email" data-error="E-mail is vereist" required=""
+                                                                        <input type="email" placeholder="" class="form-control" id="cc_email" data-error="E-mail is vereist" required=""
                                                                                v-model="cooking_club.email">
-                                                                        <div class="help-block with-errors"></div>
+                                                                        <div class="form-validation-error"></div>
                                                                     </div>
                                                                     <div class="col-12 form-group" v-if="cooking_club.cook==user.username">
                                                                         <label>Adres *</label>
-                                                                        <input type="text" placeholder="Straat Huisnummer, Plaats" class="form-control" name="address"
+                                                                        <input type="text" placeholder="Straat Huisnummer, Plaats" class="form-control" id="cc_address"
                                                                                v-model="cooking_club.address">
-                                                                        <div class="help-block with-errors"></div>
+                                                                        <div class="form-validation-error"></div>
                                                                     </div>
                                                                     <div class="col-12" v-if="user.username!=''">
                                                                         <p><em>{% trans "Je ontvangt een e-mail met de details na je registratie." %}</em></p>
@@ -209,11 +209,15 @@
                                                                         <p><em style="color:red">{% trans "Login om een etentje te kunnen organiseren." %}</em></p>
                                                                     </div>
                                                                     <div class="col-12 form-group mb-0">
-                                                                        <button id="organize_button" class="item-btn" v-on:click="post_cooking_club_click(false)" value="new"
+                                                                        <button id="cc_create_button" class="item-btn" v-on:click="post_cooking_club_click('create')" value="create"
                                                                                 v-bind:disabled="cooking_club.cook!=user.username || user.username==''">
                                                                             ORGANISEER ETENTJE
                                                                         </button>
-                                                                        <button id="cancel_button" style="visibility:hidden" class="item-btn" v-on:click="post_cooking_club_click(true)" value="delete"
+                                                                        <button id="cc_update_button" style="visibility:hidden" class="item-btn" v-on:click="post_cooking_club_click('update')" value="update"
+                                                                                v-bind:disabled="cooking_club.cook!=user.username || user.username==''">
+                                                                            UPDATE ETENTJE
+                                                                        </button>
+                                                                        <button id="cc_delete_button" style="visibility:hidden" class="item-btn" v-on:click="post_cooking_club_click('delete')" value="delete"
                                                                                 v-bind:disabled="cooking_club.cook!=user.username || user.username==''">
                                                                             ANNULEER ETENTJE
                                                                         </button>

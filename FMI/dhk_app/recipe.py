@@ -85,10 +85,9 @@ def post_recipe(request):
     recipe = json_data.get('recipe', None)
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
-    result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
-    # Get the position from the address
     if len(recipe['cooking_clubs']) > 0:
-        cooking_club = recipe['cooking_clubs'][-1]
+        recipe['cooking_clubs'].sort(key=lambda cooking_club: cooking_club['cooking_date'])
+    for cooking_club in recipe['cooking_clubs']:
         cook_user = User.objects.get(username=cooking_club['cook'])
         if 'position'not in cooking_club and len(cooking_club['address']) > 2:
             try:
@@ -96,29 +95,31 @@ def post_recipe(request):
                 cooking_club['position'] = geolocator.geocode(cooking_club['address'])
             except (AttributeError, GeopyError):
                 pass
-        sender = "info@deheerlijkekeuken.nl"
-        for cooking_club in recipe['cooking_clubs']:
-            cooking_date = datetime.strptime(cooking_club['cooking_date'], "%Y-%m-%dT%H:%M")
-            subject = "Kookclub {0} bij {1}".format(cooking_date.strftime('%m %b %Y - %H:%M'), cooking_club['cook'])
-            message = \
-                """Uitnodiging kookclub\n\n
-                {0}\n\n
-                Kosten per persoon: € {1}]n\n
-                {2}\n\n
-                Adres\n
-                {3}\n
-                {4}\n
-                {5}\n\n
-                Gasten:\n""".format(
-                recipe['title'], cooking_club['cost'], cooking_club['invitation'],
-                cook_user.first_name + " " + cook_user.last_name,
-                cook_user.street + " " + cook_user.housenumber,
-                cook_user.zip + " " + cook_user.city)
-            to_list = [cooking_club['email']]
-            for participant in cooking_club['participants']:
-                to_list.append(participant['email'])
-                message = message + "{0}\t{1}\n".format(participant.user, participant.comment)
-            send_mail(subject, message, sender, to_list, fail_silently=True)
+    result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
+
+    sender = "info@deheerlijkekeuken.nl"
+    for cooking_club in recipe['cooking_clubs']:
+        cooking_date = datetime.strptime(cooking_club['cooking_date'], "%Y-%m-%dT%H:%M")
+        subject = "Kookclub {0} bij {1}".format(cooking_date.strftime('%m %b %Y - %H:%M'), cooking_club['cook'])
+        message = \
+            """Uitnodiging kookclub\n\n
+            {0}\n\n
+            Kosten per persoon: € {1}]n\n
+            {2}\n\n
+            Adres\n
+            {3}\n
+            {4}\n
+            {5}\n\n
+            Gasten:\n""".format(
+            recipe['title'], cooking_club['cost'], cooking_club['invitation'],
+            cook_user.first_name + " " + cook_user.last_name,
+            cook_user.street + " " + cook_user.housenumber,
+            cook_user.zip + " " + cook_user.city)
+        to_list = [cooking_club['email']]
+        for participant in cooking_club['participants']:
+            to_list.append(participant['email'])
+            message = message + "{0}\t{1}\n".format(participant.user, participant.comment)
+        send_mail(subject, message, sender, to_list, fail_silently=True)
     context = {
         'recipe' : recipe
         }
