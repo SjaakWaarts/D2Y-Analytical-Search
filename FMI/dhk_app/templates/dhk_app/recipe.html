@@ -25,7 +25,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <!-- Nav tabs -->
-                                        <ul class="nav nav-tabs">
+                                        <ul class="nav nav-tabs" id="tabs">
                                             <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)" v-for="(course, course_ix) in this.recipe.courses">
                                                 <a v-bind:class="{'nav-link':true, 'w-100':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix"><i class="fas fa-utensils mr-2"></i>[[course.title]]</a>
                                             </li>
@@ -259,6 +259,7 @@
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl4shlG7ca_SneqGEEOswOyJuxpqA4KKk"></script>
         <script src="{% static 'assets/googlemaps/js/markerclusterer.js' %}"></script>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/nl_NL/sdk.js#xfbml=1&version=v5.0"></script>
         <script src="{% static 'app/scripts/utils.js' %}"></script>
         <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
         <script src="{% static 'dhk_app/scripts/recipe.js' %}"></script>

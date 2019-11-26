@@ -62,11 +62,15 @@ var app = new Vue({
         shopping_basket: [],
     },
     methods: {
+        bind_recipe_file_url() {
+            var url = get_recipe_url + '?id=' + this.id + '&format=pdf';
+            return encodeURI(url);
+        },
         bind_stream_file_url(url, location) {
             return encodeURI(url + '?location=' + location);
         },
         bind_nav_tab_style(nrtabs) {
-            var tab_width = 100 / nrtabs
+            var tab_width = 100 / nrtabs;
             return "width:" + tab_width.toString() + "%; display:flex";
         },
         club_tab_click: function () {
@@ -195,7 +199,7 @@ var app = new Vue({
             this.cooking_club_participant.comment = "";
         },
         get_recipe: function () {
-            this.$http.get(get_recipe_url, { params: { id: this.id } }).then(response => {
+            this.$http.get(get_recipe_url, { params: { id: this.id, format: 'json'  } }).then(response => {
                 this.recipe = response.body.recipe;
                 this.carousel_images = this.recipe.images;
                 if (this.recipe.reviews.length === 0) {
@@ -327,6 +331,10 @@ var app = new Vue({
             }
             rate_item_tag.classList.add('active');
             this.leave_review.stars = Number(rate_item_tag.id.slice(-1));
+        },
+        tab_activate: function(tab) {
+            var selector = "#tabs a[href='" + tab + "']";
+            $(selector).tab('show');
         },
         draw_map: function () {
             var div_name = 'GoogleMap';

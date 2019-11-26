@@ -6,7 +6,10 @@ from datetime import datetime
 import re
 import sys
 import os
+import subprocess
 import shutil
+import zipfile
+import docx
 import json
 import urllib
 import requests
@@ -14,7 +17,7 @@ from geopy.exc import GeopyError
 from geopy.geocoders import Nominatim
 from django.shortcuts import render
 from django.http import HttpRequest
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
@@ -57,6 +60,7 @@ def recipe_view(request):
 
 def get_recipe(request):
     id = request.GET['id']
+    format = request.GET['format']
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
     search_filters = search_q["query"]["bool"]["filter"]
@@ -74,7 +78,31 @@ def get_recipe(request):
     context = {
         'recipe'  : recipe,
         }
-    return HttpResponse(json.dumps(context), content_type='application/json')
+    if format == 'json':
+        return HttpResponse(json.dumps(context), content_type='application/json')
+    else:
+        recipe_basename = id
+        zip_filename = recipe_basename + '.zip'
+        zip_fullname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', zip_filename)
+        zip_dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', recipe_basename)
+        shutil.make_archive(zip_dirname, 'zip', zip_dirname)
+        recipe_fullname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', recipe_basename + '.docx')
+        pfd_fullname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', recipe_basename + '.pdf')
+        shutil.copy(zip_fullname, recipe_fullname)
+        if sys.platform[0:3] == "win":
+            f = open(recipe_fullname, 'rb')
+            filename = recipe_basename + '.docx'
+        else:
+            cmd = ['soffice', '--headless', '--convert-to', 'pdf', recipe_fullname]
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+            subprocess.Popen(cmd).wait()
+            f = open(pfd_fullname, 'rb')
+            filename = recipe_basename + '.pdf'
+        #os.remove(recipe_fullname)
+        #os.remove(zip_fullname)
+        #response = Response(pdf.read(), content_type='application/pdf')
+        #response.content_disposition = 'inline;filename=' + basename
+        return FileResponse(f, as_attachment=True, filename=filename)
 
 # prevent CsrfViewMiddleware from reading the POST stream
 #@csrf_exempt

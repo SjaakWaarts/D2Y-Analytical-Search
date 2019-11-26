@@ -8,24 +8,26 @@
                     <li class="list-group-item border-0"><a href="#"><i class="fas fa-user"></i>[[this.recipe.author]]</a></li>
                     <li class="list-group-item border-0"><a href="#"><i class="fas fa-map-marker-alt"></i>[[this.recipe.city]]</a></li>
                     <li class="list-group-item border-0"><rating v-bind:stars="average_rating" v-bind:rate="false"></rating></li>
-                    <li class="list-group-item border-0"><a href="#"><i class="fas fa-heart"></i><span>[[recipe.reviews.length]]</span></a></li>
-                    <li class="list-group-item border-0"><a href="#"><i class="fas fa-users"></i><span>[[recipe.cooking_clubs.length]]</span></a></li>
+                    <li class="list-group-item border-0"><a href="#" v-on:click="tab_activate('#reviews')"><i class="fas fa-heart"></i><span>[[recipe.reviews.length]]</span></a></li>
+                    <li class="list-group-item border-0"><a href="#" v-on:click="tab_activate('#kookclub'); club_tab_click()"><i class="fas fa-users"></i><span>[[recipe.cooking_clubs.length]]</span></a></li>
                 </ul>
             </div>
         </div>
         <div class="col-xl-4 col-12">
             <div class="recipe-actions">
-                <div class="recipe-action"><button><i class="fas fa-print"></i></button></div>
-                <div class="recipe-action"><button><i class="fas fa-expand-arrows-alt"></i></button></div>
+                <div class="recipe-action">
+                    <a type="button" v-bind:href="bind_recipe_file_url()" download style="color:black"><i class="fas fa-print"></i></a>
+                </div>
                 <div class="recipe-action recipe-action-hover">
                     <button><i class="fas fa-share-alt"></i></button>
                     <div class="recipe-action-hover-wrap">
-                        <a href="#" title="facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" title="twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" title="linkedin"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="pinterest"><i class="fab fa-pinterest-p"></i></a>
-                        <a href="#" title="skype"><i class="fab fa-skype"></i></a>
-                        <a href="#" title="rss"><i class="fas fa-rss"></i></a>
+                        <a href="#" title="facebook">
+                            <div class="fb-share-button" v-bind:data-href="window.location.href" data-layout="button_count" data-size="small">
+                                <a target="_blank" v-bind:href="'https://www.facebook.com/sharer/sharer.php?u='+encodeURI(window.location.href)+'&amp;src=sdkpreparse'" class="fb-xfbml-parse-ignore">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
