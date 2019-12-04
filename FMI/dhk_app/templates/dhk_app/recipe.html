@@ -33,7 +33,7 @@
                                                 <a class="nav-link w-100" data-toggle="tab" href="#reviews"><i class="far fa-comments mr-2"></i>Reviews</a>
                                             </li>
                                             <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)" v-on:click="club_tab_click()">
-                                                <a class="nav-link w-100" data-toggle="tab" href="#kookclub"><i class="fas fa-users mr-2"></i>Kookclub</a>
+                                                <a v-bind:class="{'nav-link':true, 'w-100':true, active:this.recipe.courses.length==0}" data-toggle="tab" href="#kookclub"><i class="fas fa-users mr-2"></i>Kookclub</a>
                                             </li>
                                         </ul>
                                         <!-- Tab panes -->
@@ -148,7 +148,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane container fade" id="kookclub">
+                                            <div v-bind:class="{'tab-pane':true, 'container':true, active:this.recipe.courses.length==0, fade:this.recipe.courses.length>0}" id="kookclub">
                                                 <div class="club-events">
                                                     <div class="section-heading3 heading-dark">
                                                         <h2 class="item-heading">KOOKCLUB UITJES</h2>

@@ -27,17 +27,6 @@
         </div>
         <div class="accordion" v-if="workbook">
             <ul>
-                <li name="cooking_date-accordion-item" class="accordion-item">
-                    <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
-                        <div class="accordion_arrow accordion_arrow--open" ></div>
-                        Datum
-                    </span>
-                    <div class="accordion-item-content">
-                        <facet-filter facet_name="cooking_date" v-bind:workbook.sync="this.workbook"
-                            v-on:facet-filter="facet_filter('cooking_date')">
-                        </facet-filter>
-                    </div>
-                </li>
                 <li name="category-accordion-item" class="accordion-item">
                     <span class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
                         <div class="accordion_arrow accordion_arrow--open" ></div>

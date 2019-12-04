@@ -82,18 +82,19 @@ def get_recipe(request):
         return HttpResponse(json.dumps(context), content_type='application/json')
     else:
         recipe_basename = id
+        dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes')
         zip_filename = recipe_basename + '.zip'
-        zip_fullname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', zip_filename)
-        zip_dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', recipe_basename)
+        zip_fullname = os.path.join(dirname, zip_filename)
+        zip_dirname = os.path.join(dirname, recipe_basename)
         shutil.make_archive(zip_dirname, 'zip', zip_dirname)
-        recipe_fullname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', recipe_basename + '.docx')
-        pfd_fullname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', recipe_basename + '.pdf')
+        recipe_fullname = os.path.join(dirname, recipe_basename + '.docx')
+        pfd_fullname = os.path.join(dirname, recipe_basename + '.pdf')
         shutil.copy(zip_fullname, recipe_fullname)
         if sys.platform[0:3] == "win":
             f = open(recipe_fullname, 'rb')
             filename = recipe_basename + '.docx'
         else:
-            cmd = ['soffice', '--headless', '--convert-to', 'pdf', recipe_fullname]
+            cmd = ['soffice', '--headless', '--convert-to', 'pdf','--outdir', dirname, recipe_fullname]
             process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             subprocess.Popen(cmd).wait()
             f = open(pfd_fullname, 'rb')

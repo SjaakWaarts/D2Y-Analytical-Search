@@ -401,6 +401,7 @@ def iter_block_items(parent):
             yield Table(child, parent)
 
 def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
+    workshop = False
     es_host = ES_HOSTS[0]
     headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
@@ -410,6 +411,7 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
     doc_type = 'recipes'
     url = "http://" + host + ":9200/" + index_name
 
+    log = []
     recipe = {}
     recipe['id'] = recipe_basename
     recipe['title'] = os.path.splitext(filename)[0]
@@ -477,11 +479,28 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                 recipe['description'].append(para.text)
         elif isinstance(block, Table):
             table = block
-            df, d, style = table_to_df(table, ['Ingredients Header'], ['studio', 'start- en eindtijd'], ['datum'])
+            df, d, style = table_to_df(table, ['Ingredients Header'], ['studio', 'start- en eindtijd', 'kosten'], ['datum'])
             if style == 'Workshop':
+                workshop = True
                 for index, row in df.iterrows():
-                    cooking_club = d
-                    cooking_club['cooking_date'] = row['Datum']
+                    s = d.get('start- en eindtijd', '0:00 - 0:00').split('–')
+                    start_time = s[0].strip()
+                    end_time = s[1].strip()
+                    cooking_club = {}
+                    cooking_club['studio'] = d.get('studio','')
+                    try:
+                        cost_txt = d.get('kosten', '0')
+                        cooking_club['cost'] = float(cost_txt)
+                    except:
+                        log.append("Cooking cost invalid format {0}".format(cost_txt))
+                        cooking_club['cost'] = 0
+                    try:
+                        cooking_date_txt = row['Datum'] + " " + start_time
+                        cooking_date = datetime.strptime(cooking_date_txt, '%Y-%m-%d %H:%M')
+                        cooking_club['cooking_date'] = cooking_date.strftime('%Y-%m-%dT%H:%M')
+                    except:
+                        log.append("Cooking_date invalid format {0}".format(cooking_date_txt))
+                        cooking_club['cooking_date'] = "2000-01-01T00:00"
                     cooking_club['cook'] = recipe['author']
                     cooking_club['invitation'] = row['Gerecht']
                     cooking_club['participants'] = []
@@ -497,7 +516,6 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
                             ingredients_part['ingredients'].append({'ingredient' : ingr})
                     course['ingredients_parts'].append(ingredients_part)
 
-    log = []
     success = True
     if recipe['excerpt'] == "":
         log.append("Style Excerpt is missing")
@@ -505,10 +523,10 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
     if len(recipe['categories']) == 0:
         log.append("Style Categories is missing")
         success = False
-    if len(recipe['tags']) == 0:
+    if len(recipe['tags']) == 0 and not workshop:
         log.append("Style Tags is missing")
         success = False
-    if len(recipe['courses']) == 0:
+    if len(recipe['courses']) == 0 and not workshop:
         log.append("Style Course is missing")
         success = False
     if len(recipe['images']) == 0:
@@ -516,10 +534,10 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
         success = False
     for course in recipe['courses']:
         if len(course['instructions']) == 0:
-            log.append("Style Recept is missing for course {1}".format(course.title))
+            log.append("Style Recept is missing for course {0}".format(course['title']))
             success = False
         if len(course['ingredients_parts']) == 0:
-            log.append("Style Ingredients is missing for course {1}".format(course.title))
+            log.append("Style Ingredients is missing for course {0}".format(course['title']))
             success = False
 
     if success:

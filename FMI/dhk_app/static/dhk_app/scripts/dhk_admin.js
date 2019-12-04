@@ -204,9 +204,9 @@ var app = new Vue({
             var url = this.recipe_url('recipe', id);
             window.location.href = url;
         },
-        delete_recipe(event) {
-            var event_payload = event.event_payload;
-            var selected_items = event.selectedItems;
+        delete_recipe(id) {
+            //var event_payload = event.event_payload;
+            //var selected_items = event.selectedItems;
             if (confirm('Weet je het zeker dat je dit recept wil verwijderen?')) {
                 var csrftoken_cookie = getCookie('csrftoken');
                 var headers = { 'X-CSRFToken': csrftoken_cookie }

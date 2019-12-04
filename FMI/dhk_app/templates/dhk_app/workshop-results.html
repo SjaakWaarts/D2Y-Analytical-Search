@@ -13,11 +13,12 @@
                     <div class="card" v-for="(workshop, wix) in workshops">
                         <div class="card-header">
                             <a class="card-link" data-toggle="collapse" v-bind:href="'#accordion_item_'+wix">
+                                <i visible="false" class="fa fa-angle-double-right"></i>
                                 [[workshop.title]]
                             </a>
                         </div>
                         <div v-bind:id="'accordion_item_'+wix"
-                             v-bind:class="(wix==0) ? 'collapse show' : 'collapse'" data-parent="#accordion">
+                             class='collapse' data-parent="#accordion">
                             <div class="card-body">
                                 Ga naar gerecht
                                 <a class="text-danger" href="#" v-on:click="jump_to_recipe(workshop.recipe_id)">[[workshop.title]]</a>

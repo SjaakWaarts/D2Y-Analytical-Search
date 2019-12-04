@@ -139,19 +139,20 @@ def get_workshops(request):
     ##
     # Add Filters
     ##
-    cooking_date_filter = filter_facets.get('cooking_date', {'start': None, 'end': None})
-    if cooking_date_filter.get('start', None) is None and cooking_date_filter.get('end', None) is None:
-        year = datetime.today().year
-        month = datetime.today().month
-        startdt = "{0}-{1:02d}-01".format(year, month)
-        month = month + 3
-        if month > 12:
-            year = year + 1
-            month = 3
-        enddt = "{0}-{1:02d}-01".format(year, month)
-        filter_facets['cooking_date'] = {'start' : startdt, 'end' : enddt}
+    #cooking_date_filter = filter_facets.get('cooking_date', {'start': None, 'end': None})
+    #if cooking_date_filter.get('start', None) is None and cooking_date_filter.get('end', None) is None:
+    #    year = datetime.today().year
+    #    month = datetime.today().month
+    #    startdt = "{0}-{1:02d}-01".format(year, month)
+    #    month = month + 3
+    #    if month > 12:
+    #        year = year + 1
+    #        month = 3
+    #    enddt = "{0}-{1:02d}-01".format(year, month)
+    #    filter_facets['cooking_date'] = {'start' : startdt, 'end' : enddt}
     search_filters = search_q["query"]["bool"]["filter"]
     search_queries = search_q["query"]["bool"]["must"]
+    filter_facets['categories'] = ['Workshop']
     esm.add_search_filter(search_q, filter_facets, workbook)
     for facet_name in workbook['filters']:
         facet_conf = workbook['facets'][facet_name]
@@ -182,7 +183,7 @@ def get_workshops(request):
     ##
     if q is not None and q != "":
         search_q["query"]["bool"]["must"].append({"query_string": {
-            "query": q, "default_operator": "AND", "fields": ["Identificatiekenmerk", "Namen"]}})
+            "query": q, "default_operator": "AND"}})
     ##
     # Add Page
     ##
@@ -205,6 +206,23 @@ def get_workshops(request):
                 nested = facet_conf['nested']
                 buckets, totals = esm.get_buckets_nesting(field, nested, aggs[facet])
                 workbook['facets'][facet]['buckets'] = buckets
+    workshops = []
+    for hit in hits['hits']:
+        workshop = {}
+        workshop['recipe_id'] = hit['_id']
+        hit = hit['_source']
+        cooking_club = hit['cooking_clubs'][0]
+        workshop['title'] = hit['title']
+        workshop['excempt'] = hit['title']
+        workshop['cook'] = cooking_club['cook']
+        workshop['docent'] = cooking_club['cook']
+        cooking_date = datetime.strptime(cooking_club['cooking_date'], '%Y-%m-%dT%H:%M')
+        workshop['starttime'] = cooking_date.strftime('%H:%M')
+        workshop['endtime'] = ""
+        workshop['cooking_clubs'] = hit['cooking_clubs']
+        workshop['cost'] = cooking_club.get('cost', 0)
+        workshop['images'] = hit['images']
+        workshops.append(workshop)
     for workshop in workshops:
         for cooking_club in workshop['cooking_clubs']:
             if cooking_club['invitation'] is not None:
