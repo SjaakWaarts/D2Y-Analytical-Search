@@ -21,7 +21,7 @@ workshops = [
     {
         'recipe_id'    : "high-wine-7-pers",
         'title'     : "Bakken in de herfst voor de hele familie",
-        'excempt'  : """Wat is er leuker en gezelliger dan op een herfstige dag
+        'excerpt'  : """Wat is er leuker en gezelliger dan op een herfstige dag
                             samen met je (klein)kind lekkere koekjes, taartjes en cakejes te bakken?
                             Deze workshop is voor jong en oud en staat in het teken van de herfst en decemberlekkers!""",
         'cook'      : "Lieke",
@@ -35,7 +35,7 @@ workshops = [
     {
         'recipe_id'    : "high-wine-7-pers",
         'title'     : "Culinair met seizoenen",
-        'excempt'  : """Kooktechnieken en de klassieke keuken dienen als uitgangspunt voor de gerechten en menu’s in deze cursus.
+        'excerpt'  : """Kooktechnieken en de klassieke keuken dienen als uitgangspunt voor de gerechten en menu’s in deze cursus.
                             Iedere bijeenkomst worden een of meerdere technieken toegepast in klassieke gerechten. 
                             bijv. het maken van een mousse of een bavarois en het maken van verschillende sauzen voor vlees of vis.
                             Ook aan het combineren van verschillende gerechten en het samenvoegen van verschillende gerechten 
@@ -56,7 +56,7 @@ workshops = [
     {
         'recipe_id'    : "high-wine-7-pers",
         'title'     : "High Wine",
-        'excempt'   : """Recepten koken in combinatie met de juiste wijn. In deze workshop worden verschillende
+        'excerpt'   : """Recepten koken in combinatie met de juiste wijn. In deze workshop worden verschillende
                             gerechten bereid die ideaal gecombineerd kunnnen worden met een bepaalde wijn.""",
         'cook'      : "Lieke",
         'docent'    : "Lieke Waarts",
@@ -213,7 +213,8 @@ def get_workshops(request):
         hit = hit['_source']
         cooking_club = hit['cooking_clubs'][0]
         workshop['title'] = hit['title']
-        workshop['excempt'] = hit['title']
+        workshop['excerpt'] = hit['excerpt']
+        workshop['excerpt_lines'] = workshop['excerpt'].split('.')
         workshop['cook'] = cooking_club['cook']
         workshop['docent'] = cooking_club['cook']
         cooking_date = datetime.strptime(cooking_club['cooking_date'], '%Y-%m-%dT%H:%M')

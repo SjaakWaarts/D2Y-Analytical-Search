@@ -14,6 +14,7 @@ urlpatterns = [
     path('delete_recipe', dhk_admin.delete_recipe, name='delete_recipe'),
     path('upload_file', dhk_admin.upload_file, name='upload_file'),
     path('get_uploaded_files', dhk_admin.get_uploaded_files, name='get_uploaded_files'),
+    path('sint', dhk_admin.sint_view, name='sint'),
     path('club', club.club_view, name='club'),
     path('get_cooking_clubs', club.get_cooking_clubs, name='get_cooking_clubs'),
     path('kitchen', kitchen.kitchen_view, name='kitchen'),

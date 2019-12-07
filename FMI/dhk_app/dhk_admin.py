@@ -55,6 +55,15 @@ def dhk_admin_view(request):
     else:
         return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
+def sint_view(request):
+    if request.method == 'GET':
+        return render(
+            request,
+            'dhk_app/sint.html',
+            {'site' : FMI.settings.site, 'year':datetime.now().year}
+        )
+    else:
+        return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
 types_map = {
     '.a': 'application/octet-stream',
