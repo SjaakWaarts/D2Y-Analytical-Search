@@ -127,19 +127,9 @@ var app = new Vue({
                     this.pager.nr_pages = Math.ceil(this.pager.nr_hits / this.pager.page_size);
                     this.carousel_images = [];
                     var pathname = window.location.pathname.split('/');
-                    if (pathname[pathname.length - 1] === 'sint') {
-                        for (var wix = 0; wix < this.workshops.length; wix++) {
-                            if (this.workshops[wix].title === "Sint suprise") {
-                                for (var iix = 0; iix < this.workshops[wix].images.length; iix++) {
-                                    this.carousel_images.push(this.workshops[wix].images[iix]);
-                                }
-                            }
-                        }
-                    } else {
-                        for (var wix = 0; wix < this.workshops.length; wix++) {
-                            for (var iix = 0; iix < this.workshops[wix].images.length; iix++) {
-                                this.carousel_images.push(this.workshops[wix].images[iix]);
-                            }
+                    for (var wix = 0; wix < this.workshops.length; wix++) {
+                        for (var iix = 0; iix < this.workshops[wix].images.length; iix++) {
+                            this.carousel_images.push(this.workshops[wix].images[iix]);
                         }
                     }
                 });

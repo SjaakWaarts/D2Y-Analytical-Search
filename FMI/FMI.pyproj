@@ -610,7 +610,6 @@
     <Content Include="app\static\assets\vue\js\vue.js" />
     <Content Include="app\static\assets\vue\js\vue.min.js" />
     <Content Include="app\templates\app\api_csrftoken.html" />
-    <Content Include="dhk_app\templates\dhk_app\sint.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop-form.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop.html" />
     <Content Include="dhk_app\templates\dhk_app\club-results.html" />

@@ -55,16 +55,6 @@ def dhk_admin_view(request):
     else:
         return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
-def sint_view(request):
-    if request.method == 'GET':
-        return render(
-            request,
-            'dhk_app/sint.html',
-            {'site' : FMI.settings.site, 'year':datetime.now().year}
-        )
-    else:
-        return HttpResponse({'status' : 'OK'}, content_type='application/json')
-
 types_map = {
     '.a': 'application/octet-stream',
     '.ai': 'application/postscript',
@@ -574,7 +564,23 @@ def ingest_recipe(username, filename, recipe_fullname):
     return recipe_basename, success, log
 
 def upload_file(request):
-    request_file = request.FILES['file']
+    id = ""
+    log = []
+    context = {
+        'id'  : id,
+        'success' : False,
+        'log' : log
+        }
+    if request.method == 'GET':
+        log.append("Method is GET")
+        return HttpResponse(json.dumps(context), content_type='application/json')
+
+    try:
+        request_file = request.FILES['file']
+    except MultiValueDictKeyError:
+        log.append("request.FILES['file'] MultiValueDictKeyError")
+        return HttpResponse(json.dumps(context), content_type='application/json')
+
     username = request.user.username
     filename = request_file.name
     dropdown_filename = request_file.name
@@ -593,15 +599,15 @@ def upload_file(request):
     except IOError as e:
         id = dropdown_filename
         success = False
-        log = ["Cannot open file {1}, exception {2}".format(dropdown_fullname, e)]
-        return False
+        log.append("Cannot open file {1}, exception {2}".format(dropdown_fullname, e))
+        return HttpResponse(json.dumps(context), content_type='application/json')
+
     if success:
         if dropdown_ext == '.zip':
             zip_dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'recipes', dropdown_basename)
             zip_ref = zipfile.ZipFile(dropdown_fullname, 'r')
             zip_ref.extractall(zip_dirname)
             zip_ref.close()
-            log = []
         elif dropdown_ext == '.docx':
             id, success, log = ingest_recipe(username, filename, dropdown_fullname)
 
