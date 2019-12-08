@@ -147,7 +147,7 @@ def post_recipe(request):
         to_list = [cooking_club['email']]
         for participant in cooking_club['participants']:
             to_list.append(participant['email'])
-            message = message + "{0}\t{1}\n".format(participant.user, participant.comment)
+            message = message + "{0}\t{1}\n".format(participant['user'], participant['comment'])
         send_mail(subject, message, sender, to_list, fail_silently=True)
     context = {
         'recipe' : recipe
