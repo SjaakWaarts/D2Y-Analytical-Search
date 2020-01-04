@@ -42,6 +42,9 @@ var app = new Vue({
             'cost': 0,
             'participants': [],
         },
+        bindings: {
+            participate_button_disabled: false,
+        },
         cc_prev_available: false,
         cc_next_available: false,
         cooking_club_participant: {
@@ -105,15 +108,23 @@ var app = new Vue({
                 cc_update_button_tag.style.visibility = "hidden";
                 cc_delete_button_tag.style.visibility = "hidden";
             }
+            this.bindings.participate_button_disabled = true;
             this.cooking_club = cooking_club;
             if (user.username != "") {
-                this.cooking_club_participant.user = user.username;;
-                this.cooking_club_participant.email = user.email;;
+                this.cooking_club_participant.user = user.username;
+                this.cooking_club_participant.email = user.email;
+                for (var px = 0; px < this.cooking_club.participants.length; px++) {
+                    if (this.cooking_club.participants[px].user == user.username) {
+                        this.bindings.participate_button_disabled = false;
+                    }
+                }
             } else {
                 this.cooking_club_participant.user = "";
                 this.cooking_club_participant.email = "";
+                this.bindings.participate_button_disabled = false;
             }
             this.cooking_club_participant.comment = "";
+
             var textarea_tag = document.getElementById("participant_textarea");
             textarea_tag.value = this.cooking_club_participant.comment;
             var button_tag = document.getElementById("participate_button");
@@ -179,7 +190,8 @@ var app = new Vue({
             textarea_tag.value = this.cooking_club_participant.comment;
             var button_tag = document.getElementById("participate_button");
             button_tag.innerHTML = "UPDATE AANMELDING";
-            button_tag.value = "update-"+index;
+            button_tag.value = "update-" + index;
+            this.bindings.participate_button_disabled = true;
         },
         club_participant_delete_click: function (index) {
             this.cooking_club.participants.splice(index, 1);
@@ -461,7 +473,13 @@ var app = new Vue({
             this.leave_review.email = user.email;
         }
     },
+    updated: function () {
+        if (this.recipe.courses.length === 0) {
+            this.draw_map();
+        }
+    }
 });
+
 
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
