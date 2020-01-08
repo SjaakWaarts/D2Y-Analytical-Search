@@ -150,7 +150,7 @@ def unlock(request):
 
 
 def registrer_complete(request):
-    return render_to_response('registration/register_complete.html')
+    return render(request, 'registration/register_complete.html')
 
 def profile(request):
     # if this is a POST request we need to process the form data

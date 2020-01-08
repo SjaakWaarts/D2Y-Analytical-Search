@@ -6,7 +6,7 @@
   <h1>E-Depot <small>Digitaal Archief</small></h1>
 </div>
 
-{% load staticfiles %}
+{% load static %}
 <form action="" method="post" class="form-horizontal">
     {% csrf_token %}
 
@@ -74,7 +74,7 @@
 
 {% block scripts %}
 
-    {% load staticfiles %}
+    {% load static %}
         <script src="{% static 'app/scripts/insight.js' %}"></script>
 
 {% endblock %}

@@ -6,7 +6,7 @@
   <h1>Market Insights <small>Market Intelligence, News/RSS Feeds, Web Sites {{ es_hosts.0.host }}</small></h1>
 </div>
 
-{% load staticfiles %}
+{% load static %}
 <form action="" method="post" class="form-horizontal">
     {% csrf_token %}
     <input type="hidden" id="workbook_name" name="workbook_name" value="test">
@@ -200,7 +200,7 @@
 
 {% block scripts %}
 
-    {% load staticfiles %}
+    {% load static %}
         <script src="{% static 'app/scripts/insight.js' %}"></script>
 
 {% endblock %}

@@ -6,7 +6,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.views.generic.base import TemplateView
-from django.utils.encoding import python_2_unicode_compatible
 
 # Create your models here.
 import queue

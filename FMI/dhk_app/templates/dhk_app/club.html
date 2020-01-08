@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block css %}
-    {% load staticfiles %}
+    {% load static %}
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/fullcalendar/core/main.css'%}" />
         <link rel="stylesheet" type="text/css" href="{% static 'assets/fullcalendar/daygrid/main.css'%}" />
@@ -31,7 +31,7 @@
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
     </script>
-    {% load staticfiles %}
+    {% load static %}
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl4shlG7ca_SneqGEEOswOyJuxpqA4KKk"></script>

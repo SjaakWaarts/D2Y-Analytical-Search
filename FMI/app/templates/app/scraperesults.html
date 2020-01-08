@@ -129,11 +129,11 @@
 {% block scripts %}
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
-    {% load staticfiles %}
+    {% load static %}
         <script src="{% static 'app/scripts/crossfilter.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.widgets.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.32/dc.js"></script>
-    {% load staticfiles %}
+    {% load static %}
         <script src="{% static 'app/scripts/scraperesults.js' %}"></script>
 {% endblock %}

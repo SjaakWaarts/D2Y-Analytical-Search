@@ -1,7 +1,7 @@
 {% extends "dhk_app/dhk_layout.html" %}
 
 {% block css %}
-    {% load staticfiles %}
+    {% load static %}
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
         <link  rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"  crossorigin="anonymous">
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/dropzone/css/dropzone.min.css'%}" />
@@ -206,7 +206,7 @@
 
 
 {% block scripts %}
-    {% load staticfiles %}
+    {% load static %}
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
         <script  src="https://unpkg.com/vue-bootstrap4-table@1.1.10/dist/vue-bootstrap4-table.min.js"  crossorigin="anonymous"></script>

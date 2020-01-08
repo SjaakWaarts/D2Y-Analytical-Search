@@ -187,6 +187,7 @@
     <Folder Include="dhk_app\static\dhk_app\scripts\" />
     <Folder Include="dhk_app\templates\" />
     <Folder Include="dhk_app\templates\dhk_app\" />
+    <Folder Include="ci-scripts\" />
     <Folder Include="seeker\" />
     <Folder Include="seeker\management\" />
     <Folder Include="seeker\management\commands\" />

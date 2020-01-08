@@ -2,7 +2,7 @@
 Definition of views.
 """
 
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 #from django.core.urlresolvers import reverse
 # django2.0
@@ -12,7 +12,6 @@ from django.template import RequestContext
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import available_attrs
 from functools import wraps
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
@@ -54,14 +53,6 @@ def is_local_request(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip in LOCAL_IPS
-
-def local_ip_required(view_func):
-    def wrapped_view(request, *args, **kwargs):
-        if not is_local_request(request):
-            raise Http404 # or PermissionDenied or redirect
-        return view_func(request, *args, **kwargs)
-    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
-
 
 def home(request):
     """Renders the home page."""

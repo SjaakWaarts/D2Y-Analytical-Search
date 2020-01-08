@@ -1,7 +1,7 @@
 {% extends layout_template %}
 
 {% block css %}
-    {% load staticfiles %}
+    {% load static %}
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
 {% endblock %}
 
@@ -37,7 +37,7 @@
 <script>
     var g_facets_data = {{ facets_data|safe }}
 </script>
-    {% load staticfiles %}
+    {% load static %}
         <script src="{% static 'app/scripts/radarchart.js' %}"></script>
         <script src="{% static 'app/scripts/charts.js' %}"></script>
         <script src="{% static 'app/scripts/card.js' %}"></script>

@@ -23,7 +23,6 @@ import seeker
 import app.workbooks as workbooks
 import app.wb_excel as wb_excel
 
-from django.utils.encoding import python_2_unicode_compatible
 
 client = Elasticsearch(FMI.settings.ES_HOSTS)
 
