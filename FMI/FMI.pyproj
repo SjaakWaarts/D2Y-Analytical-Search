@@ -294,6 +294,11 @@
     <Content Include="app\static\assets\fullcalendar\daygrid\main.js" />
     <Content Include="app\static\assets\fullcalendar\daygrid\main.min.css" />
     <Content Include="app\static\assets\fullcalendar\daygrid\main.min.js" />
+    <Content Include="ci-scripts\ansible-deploy.sh" />
+    <Content Include="ci-scripts\release_upload.sh" />
+    <Content Include="ci-scripts\package.sh">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="dhk_app\static\dhk_app\content\recipe.css" />
     <Content Include="dhk_app\static\dhk_app\content\dhk_site.css" />
     <Content Include="dhk_app\static\dhk_app\media\club_dining_table.jpg" />
