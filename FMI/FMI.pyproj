@@ -34,6 +34,9 @@
     <Compile Include="app\apps.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="art\dhk_comp_test.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="dhk_app\club.py" />
     <Compile Include="dhk_app\recipe.py" />
     <Compile Include="dhk_app\dhk_admin.py" />
@@ -188,6 +191,7 @@
     <Folder Include="dhk_app\templates\" />
     <Folder Include="dhk_app\templates\dhk_app\" />
     <Folder Include="ci-scripts\" />
+    <Folder Include="art\" />
     <Folder Include="seeker\" />
     <Folder Include="seeker\management\" />
     <Folder Include="seeker\management\commands\" />
