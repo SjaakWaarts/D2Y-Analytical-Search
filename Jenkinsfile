@@ -1,6 +1,9 @@
 #!groovy
 //Jenkinsfile (Declarative Pipeline)
 
+boolean defaultExecuteSonarStage = false
+boolean defaultExecuteSecurityStage = false
+
 pipeline {
     agent any
 
@@ -33,7 +36,7 @@ pipeline {
                 sh "echo $REST_API_BUILD_DOCKER_TAG"
                 sh "git rev-parse --short HEAD > src/version"
                 sh "echo $BRANCH_NAME >> src/version"
-                sh "echo $SPRINT_NUMBER >> src/version"
+                // sh "echo $SPRINT_NUMBER >> src/version"
                 sh "echo $BUILD_NUMBER >> src/version"
                 println(params)
 
@@ -57,7 +60,7 @@ pipeline {
                 // sh "docker exec testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER} pytest /usr/src/app/component --verbose --junitxml=/usr/src/app/testresults/componenttests/pytestreport_componenttest.xml"
                 // sh "docker exec testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER} python3 /usr/src/app/component/add_timestamp_to_component.py"
                 // sh "docker cp testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER}:/usr/src/app/testresults/componenttests ./art/testresults/componenttests"
-				sh "python -m pytest art/components/dhk_comp_test.py"
+				sh "python3 -m pytest art/dhk_comp_test.py"
             }
         }
 
