@@ -34,10 +34,10 @@ pipeline {
                 script { env.REST_API_BUILD_DOCKER_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim() }
 
                 sh "echo $REST_API_BUILD_DOCKER_TAG"
-                sh "git rev-parse --short HEAD > src/version"
-                sh "echo $BRANCH_NAME >> src/version"
-                // sh "echo $SPRINT_NUMBER >> src/version"
-                sh "echo $BUILD_NUMBER >> src/version"
+                sh "git rev-parse --short HEAD > art/version"
+                sh "echo $BRANCH_NAME >> art/version"
+                // sh "echo $SPRINT_NUMBER >> art/version"
+                sh "echo $BUILD_NUMBER >> art/version"
                 println(params)
 
                // only execute this stage when the build is nightly (standard is False)
