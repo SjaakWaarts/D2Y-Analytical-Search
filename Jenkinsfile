@@ -46,8 +46,8 @@ pipeline {
                         sh "./docker/cleanup-nightly.sh"
                     }
                 }
-                // sh "./docker/run-jenkins.sh"
-                // sh "docker ps -a"
+                sh "./docker/run-jenkins.sh"
+                sh "docker ps -a"
                 // sh "docker exec testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER} mkdir -p /usr/src/app/testresults"
             }
         }

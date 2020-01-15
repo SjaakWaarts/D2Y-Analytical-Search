@@ -1,0 +1,154 @@
+version: '3.5'
+
+services:
+  httpd:
+    container_name: httpd${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/httpd:${REST_API_BUILD_DOCKER_TAG}
+    ports:
+      - 80
+    networks:
+      - ictu
+    depends_on:
+      - bob
+      - krv
+      - bas
+      - uvid
+      - gdw
+      - rvp
+
+  bob:
+    container_name: bob${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api:${REST_API_BUILD_DOCKER_TAG}
+    ports:
+      - 5000
+    volumes:
+      - "../src:/usr/src/app/src"
+      - "../database:/usr/src/app/database"
+      - "../src/stages/ictu_docker.py:/usr/src/app/src/main_bob/local_settings.py"
+    networks:
+      - ictu
+    command:
+      - /usr/src/app/prepare_and_run_in_docker.sh
+      - bob
+
+  uvid:
+    container_name: uvid${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api:${REST_API_BUILD_DOCKER_TAG}
+    ports:
+      - 5000
+    volumes:
+      - "../src:/usr/src/app/src"
+      - "../database:/usr/src/app/database"
+      - "../src/stages/ictu_docker.py:/usr/src/app/src/main_uvid/local_settings.py"
+    networks:
+      - ictu
+    command:
+      - /usr/src/app/prepare_and_run_in_docker.sh
+      - uvid
+
+  krv:
+    container_name: krv${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api:${REST_API_BUILD_DOCKER_TAG}
+    ports:
+      - 5000
+    volumes:
+      - "../src:/usr/src/app/src"
+      - "../database:/usr/src/app/database"
+      - "../src/stages/ictu_docker.py:/usr/src/app/src/main_krv/local_settings.py"
+    networks:
+      - ictu
+    command:
+      - /usr/src/app/prepare_and_run_in_docker.sh
+      - krv
+
+  gdw:
+    container_name: gdw${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api:${REST_API_BUILD_DOCKER_TAG}
+    ports:
+      - 5000
+    volumes:
+      - "../src:/usr/src/app/src"
+      - "../database:/usr/src/app/database"
+      - "../src/stages/ictu_docker.py:/usr/src/app/src/main_gdw/local_settings.py"
+    networks:
+      - ictu
+    command:
+      - /usr/src/app/prepare_and_run_in_docker.sh
+      - gdw
+
+  rvp:
+    container_name: rvp${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api:${REST_API_BUILD_DOCKER_TAG}
+    ports:
+      - 5000
+    volumes:
+      - "../src:/usr/src/app/src"
+      - "../database:/usr/src/app/database"
+      - "../src/stages/ictu_docker.py:/usr/src/app/src/main_rvp/local_settings.py"
+    networks:
+      - ictu
+    command:
+      - /usr/src/app/prepare_and_run_in_docker.sh
+      - rvp
+
+  bas:
+    container_name: bas${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api-bas:${REST_API_BUILD_DOCKER_TAG}
+    environment:
+       - BASTION_DB_HOST=${BASTION_POOL_HOST}
+    ports:
+      - 5000
+    volumes:
+      - "../src:/usr/src/app/src"
+      - "../database:/usr/src/app/database"
+      - "../src/stages/ictu_docker.py:/usr/src/app/src/main_bas/local_settings.py"
+    networks:
+      - ictu
+    command:
+      - /usr/src/app/prepare_and_run_in_docker.sh
+      - bas
+
+  esb:
+    image: www.docker-registry.vastgoed.ictu:5000/esbmock
+    networks:
+      - ictu
+    environment:
+     - PORT=4000
+    ports:
+     - 4000
+
+  db:
+    container_name: db${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/postgres-db:${REST_API_BUILD_DOCKER_TAG}
+    networks:
+      - ictu
+    ports:
+    - 5432
+
+  vastgoed-swagger:
+    image: www.docker-registry.vastgoed.ictu:5000/vastgoed-swagger:${REST_API_BUILD_DOCKER_TAG}
+    networks:
+      - ictu
+    ports:
+    - 8080
+
+  testsuite:
+    container_name: testsuite${REST_API_BUILD_DOCKER_TAG}
+    image: www.docker-registry.vastgoed.ictu:5000/testsuite:${REST_API_BUILD_DOCKER_TAG}
+    environment:
+       - TEST_ENV=Docker
+       - PYTHONPATH=/usr/src/app
+       - PYTHONDONTWRITEBYTECODE=1
+       - BASTION_DB_HOST=${BASTION_POOL_HOST}
+       - DEFAULT_DATABASE_HOST=db${REST_API_BUILD_DOCKER_TAG}
+       - REST_API_BUILD_DOCKER_TAG=${REST_API_BUILD_DOCKER_TAG}
+       - PYTHONUNBUFFERED=0
+    volumes:
+       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - ictu
+    command: tail -f /dev/null
+
+networks:
+  ictu:
+    name: ictu${REST_API_BUILD_DOCKER_TAG}

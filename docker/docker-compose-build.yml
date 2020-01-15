@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  rest-api:
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api:${REST_API_BUILD_DOCKER_TAG}
+    build:
+      context: ..
+      dockerfile: docker/rest-api/Dockerfile
+
+  rest-api-bas:
+    image: www.docker-registry.vastgoed.ictu:5000/rest-api-bas:${REST_API_BUILD_DOCKER_TAG}
+    build:
+      context: ..
+      dockerfile: docker/rest-api/Dockerfile.oracle
+
+  httpd:
+    image: www.docker-registry.vastgoed.ictu:5000/httpd:${REST_API_BUILD_DOCKER_TAG}
+    build:
+      context: ./httpd
+      dockerfile: Dockerfile
+
+  bob-swagger:
+    image: www.docker-registry.vastgoed.ictu:5000/vastgoed-swagger:${REST_API_BUILD_DOCKER_TAG}
+    build:
+      context: ./swagger
+      dockerfile: Dockerfile
+
+  postgres:
+    image: www.docker-registry.vastgoed.ictu:5000/postgres-db:${REST_API_BUILD_DOCKER_TAG}
+    build:
+      context: ./database_postgres
+      dockerfile: Dockerfile
+
+  testsuite:
+    image: www.docker-registry.vastgoed.ictu:5000/testsuite:${REST_API_BUILD_DOCKER_TAG}
+    build:
+      context: ..
+      dockerfile: docker/art/Dockerfile
