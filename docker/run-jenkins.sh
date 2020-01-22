@@ -19,4 +19,4 @@ export BUILD_NUMBER=$(printenv BUILD_NUMBER)
 export DHK_BUILD_DOCKER_TAG=$(git rev-parse --short HEAD)-${BUILD_NUMBER}
 
 docker-compose -f ${CUR_DIR}/docker-compose-build.yml build
-docker-compose -f ${CUR_DIR}/docker-compose-jenkins.yml --project-name ${REST_API_BUILD_DOCKER_TAG} ${@:-up -d}
+docker-compose -f ${CUR_DIR}/docker-compose-jenkins.yml --project-name ${DHK_BUILD_DOCKER_TAG} ${@:-up -d}

@@ -60,6 +60,7 @@ pipeline {
                 // sh "docker exec testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER} pytest /usr/src/app/component --verbose --junitxml=/usr/src/app/testresults/componenttests/pytestreport_componenttest.xml"
                 // sh "docker exec testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER} python3 /usr/src/app/component/add_timestamp_to_component.py"
                 // sh "docker cp testsuite${env.REST_API_BUILD_DOCKER_TAG}-${env.BUILD_NUMBER}:/usr/src/app/testresults/componenttests ./art/testresults/componenttests"
+                sh "docker exec dhk"
 				sh "python3 -m pytest art/dhk_comp_test.py"
             }
         }
