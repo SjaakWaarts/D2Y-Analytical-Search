@@ -1,0 +1,41 @@
+version: '3.5'
+
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch
+    environment:
+      - pack.ml.enabled=false
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ports:
+      - 9200:9200
+    volumes:
+      - "/var/lib/elasticsearch:/var/lib/elasticsearch"
+      - "/var/log/elasticsearch:/var/log/elasticsearch"      
+    networks:
+      - d2y
+
+  kibana:
+    container_name: kibana
+    image: kibana
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - 5601:5601    
+    networks:
+      - d2y      
+
+  dhk:
+    container_name: dhk
+    image: dhk
+    ports:
+      - 5000
+    volumes:
+      - "../FMI:/usr/src/app/src"
+    networks:
+      - d2y
+
+networks:
+  d2y:
+    name: d2y

@@ -5,7 +5,9 @@
     <Name>FMI</Name>
     <RootNamespace>FMI</RootNamespace>
     <PythonRunWebServerCommandArguments>runserver --settings $(DjangoSettingsModule) %SERVER_PORT% $(CommandLineArguments)</PythonRunWebServerCommandArguments>
-    <InterpreterId>Global|PythonCore|3.6</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.7</InterpreterId>
+    <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -178,6 +180,7 @@
     <Folder Include="app\static\assets\vue-videojs\js\" />
     <Folder Include="app\static\assets\vue\" />
     <Folder Include="app\static\assets\vue\js\" />
+    <Folder Include="ci-scripts\" />
     <Folder Include="dhk_app\" />
     <Folder Include="dhk_app\migrations\" />
     <Folder Include="dhk_app\static\" />
@@ -187,7 +190,10 @@
     <Folder Include="dhk_app\static\dhk_app\scripts\" />
     <Folder Include="dhk_app\templates\" />
     <Folder Include="dhk_app\templates\dhk_app\" />
-    <Folder Include="ci-scripts\" />
+    <Folder Include="docker\" />
+    <Folder Include="docker\dhk\" />
+    <Folder Include="docker\elasticsearch\" />
+    <Folder Include="docker\kibana\" />
     <Folder Include="seeker\" />
     <Folder Include="seeker\management\" />
     <Folder Include="seeker\management\commands\" />
@@ -295,10 +301,8 @@
     <Content Include="app\static\assets\fullcalendar\daygrid\main.min.css" />
     <Content Include="app\static\assets\fullcalendar\daygrid\main.min.js" />
     <Content Include="ci-scripts\ansible-deploy.sh" />
+    <Content Include="ci-scripts\package.sh" />
     <Content Include="ci-scripts\release_upload.sh" />
-    <Content Include="ci-scripts\package.sh">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="dhk_app\static\dhk_app\content\recipe.css" />
     <Content Include="dhk_app\static\dhk_app\content\dhk_site.css" />
     <Content Include="dhk_app\static\dhk_app\media\club_dining_table.jpg" />
@@ -652,6 +656,14 @@
     <Content Include="app\templates\app\product_elastic.html" />
     <Content Include="app\templates\app\scrape.html" />
     <Content Include="app\templates\app\product_insight.html" />
+    <Content Include="docker\dhk\Dockerfile" />
+    <Content Include="docker\docker-compose-build.yml" />
+    <Content Include="docker\docker-compose-jenkins.yml" />
+    <Content Include="docker\elasticsearch\Dockerfile" />
+    <Content Include="docker\elasticsearch\elasticsearch.yml" />
+    <Content Include="docker\elasticsearch\jvm.options" />
+    <Content Include="docker\kibana\Dockerfile" />
+    <Content Include="docker\run-jenkins.sh" />
     <Content Include="seeker\templates\seeker\columntextarea.html" />
     <Content Include="seeker\templates\seeker\columnimg.html" />
     <Content Include="seeker\templates\seeker\columndict.html" />
@@ -716,6 +728,7 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />
+    <InterpreterReference Include="Global|PythonCore|3.7" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 

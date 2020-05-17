@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+  elasticsearch:
+    image: elasticsearch
+    build:
+      context: ..
+      dockerfile: docker/elasticsearch/Dockerfile
+
+  kibana:
+    image: kibana
+    build:
+      context: ..
+      dockerfile: docker/kibana/Dockerfile
+
+  dhk:
+    image: dhk
+    build:
+      context: ..
+      dockerfile: docker/dhk/Dockerfile
