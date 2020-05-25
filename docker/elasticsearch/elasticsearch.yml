@@ -62,6 +62,7 @@ path.logs: /var/log/elasticsearch
 #
 # --------------------------------- Discovery ----------------------------------
 #
+discovery.type: single-node
 # Pass an initial list of hosts to perform discovery when this node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
