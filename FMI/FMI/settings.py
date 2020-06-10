@@ -72,6 +72,7 @@ CORS_ALLOW_HEADERS = default_headers + (
 ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
+ES_BUCKETSIZE = 20
 
 LOGIN_URL = 'accounts/login'
 LOGOUT_REDIRECT_URL = '/'

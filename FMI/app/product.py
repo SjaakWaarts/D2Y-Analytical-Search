@@ -319,7 +319,7 @@ def crawl_fragrantica_data(from_dt, brand_name, brand_variant, perfume_name):
     products_data = []
     perfumes = {}
     designers = {}
-    url = 'https://www.fragrantica.com/search/?q='+perfume_name
+    url = 'https://www.fragrantica.com/search/?query='+perfume_name
     # use headers to mimic a true browser instead of a bot
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'}
 
@@ -351,7 +351,13 @@ def crawl_fragrantica_data(from_dt, brand_name, brand_variant, perfume_name):
     #bs = BeautifulSoup(req_open.read(), "lxml")
 
     bs = BeautifulSoup(driver.page_source, "lxml")
-    hits = bs.find_all("div", class_="ais-infinite-hits--item")
+    ais = bs.find("div", class_="ais-InfiniteHits")
+    if ais:
+        #hits = ais.find_all("div", class_="cell card")
+        #use CSS select for AND on classes
+        hits = ais.select("div.cell.card")
+    else:
+        hits = []
     for hit in hits:
         #perfume_a_tags = hit.find_elements_by_tag_name("a")
         perfume_a_tag = hit.find("a")

@@ -12,7 +12,7 @@ from django.core.files import File
 import glob, os
 from elasticsearch_dsl.utils import AttrList, AttrDict
 from seeker.templatetags.seeker import seeker_format
-from FMI.settings import BASE_DIR, ES_HOSTS
+from FMI.settings import BASE_DIR, ES_HOSTS, ES_BUCKETSIZE
 from seeker.summary import get_ngrams, clean_input
 import seeker.models
 import seeker.dashboard
@@ -668,7 +668,7 @@ class SeekerView (View):
                                     if chart['X_facet']['field'] == facet.field and chart['Y_facet']['field'] == facet2.field:
                                         subaggr = True
                                         extra = {}
-                                        extra = {facet2.name : {'terms': {'field': facet2.field, 'size':40, 'min_doc_count':1}}}
+                                        extra = {facet2.name : {'terms': {'field': facet2.field, 'size':ES_BUCKETSIZE, 'min_doc_count':1}}}
                                         #facet.apply(s, facet.name, self.aggs_stack, aggs=extra)
                                         facet.apply(s, facet.name, self.aggs_stack)
                                         facet2.apply(s, facet.name, self.aggs_stack)
@@ -1014,7 +1014,7 @@ class SeekerView (View):
         d = search.to_dict()
         #results = search[0:0].execute()
         results = elastic_get(self.index, '_search', search[0:0].to_dict())
-        results_count = results.get('hits', {}).get('total', 0)
+        results_count = results.get('hits', {}).get('total', {}).get('value', 0)
         if results_count < offset:
             page = 1
             offset = 0

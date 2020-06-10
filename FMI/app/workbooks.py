@@ -15,7 +15,7 @@ from pandas import DataFrame
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
-from elasticsearch_dsl import DocType, Date, Double, Long, Integer, Boolean
+from elasticsearch_dsl import Date, Double, Long, Integer, Boolean
 from elasticsearch_dsl.connections import connections
 
 import seeker
@@ -2569,7 +2569,7 @@ class SurveyWorkbook:
             'tiles'         : ["country.keyword", "gender.keyword", "age.keyword", "product_form.keyword", "method.keyword", "blindcode.keyword"],
             'charts'        : dashboard_fresh,
             'storyboards'   : {'initial' : storyboard_fresh},
-            'dashboard_data': 'push',
+            'dashboard_data': 'pull',
             'filters'       : {'survey.keyword' : ["fresh and clean"]}
             },
         "link" : {

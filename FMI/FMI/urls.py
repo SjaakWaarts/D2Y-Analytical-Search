@@ -34,7 +34,7 @@ urlpatterns = [
     path('crawl', app.views.crawl_view, name='crawl'),
     path('load', app.views.load_view, name='load'),
     path('facts', app.views.facts_view, name='facts'),
-    path('fmi_admin', app.views.fmi_admin_view, name='fmi_admin'),
+    path('d2y_admin', app.views.d2y_admin_view, name='d2y_admin'),
 
 
     path('scent_emotion', app.views.scent_emotion_view, name='scent_emotion'),

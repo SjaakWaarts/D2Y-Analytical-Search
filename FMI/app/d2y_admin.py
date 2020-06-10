@@ -73,7 +73,6 @@ def create_index_pi():
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
     indices_client.put_mapping(
-        doc_type=models.Review._meta.es_type_name,
         body=models.Review._meta.es_mapping,
         index=index_name
     )
@@ -85,7 +84,6 @@ def create_index_mi():
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
     indices_client.put_mapping(
-        doc_type=models.PostMap._meta.es_type_name,
         body=models.PostMap._meta.es_mapping,
         index=index_name
     )
@@ -98,7 +96,6 @@ def create_index_si_sites():
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
     indices_client.put_mapping(
-        doc_type=models.PageMap._meta.es_type_name,
         body=models.PageMap._meta.es_mapping,
         index=index_name
     )
@@ -112,7 +109,6 @@ def create_index_mi_feedly():
     indices_client.create(index=index_name)
     #put_settings(models.FeedlyMap)
     indices_client.put_mapping(
-        doc_type=models.FeedlyMap._meta.es_type_name,
         body=models.FeedlyMap._meta.es_mapping,
         index=index_name
     )
@@ -124,7 +120,6 @@ def create_index_mail():
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
     indices_client.put_mapping(
-        doc_type=models.MailMap._meta.es_type_name,
         body=models.MailMap._meta.es_mapping,
         index=index_name
     )
@@ -137,7 +132,6 @@ def create_index_scentemotion():
     indices_client.create(index=index_name)
     #put_settings(models.ScentemotionMap)
     indices_client.put_mapping(
-        doc_type=models.ScentemotionMap._meta.es_type_name,
         body=models.ScentemotionMap._meta.es_mapping,
         index=index_name
     )
@@ -149,7 +143,6 @@ def create_index_studies():
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
     indices_client.put_mapping(
-        doc_type=models.StudiesMap._meta.es_type_name,
         body=models.StudiesMap._meta.es_mapping,
         index=index_name
     )
@@ -181,7 +174,6 @@ def create_index_survey():
                         #    }
                         #},
     indices_client.put_mapping(
-        doc_type=models.SurveyMap._meta.es_type_name,
         #body=models.SurveyMap._meta.es_mapping,
         body=es_mapping,
         index=index_name
@@ -194,7 +186,7 @@ def create_index_dhk():
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
     indices_client.put_mapping(
-        doc_type=index_name,
+        # ES7.0 does not support types anymore doc_type=index_name,
         body= {'properties' : wb_excel.recipes},
         index=index_name
     )

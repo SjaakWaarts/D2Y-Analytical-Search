@@ -71,7 +71,7 @@
                     {% endfor %}
                     {% for facet_keyword, selected in facets_keyword.items %}
                         {% if facet_keyword.visible_pos > 0 %}
-                            <li name="{{facet.field}}-accordion-item" class="accordion-item">
+                            <li name="{{facet_keyword.field}}-accordion-item" class="accordion-item">
                                 <div class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
                                     <div class="accordion_arrow accordion_arrow--open" ></div>
                                     <div data-toggle="tooltip" title="Zoekterm(en), next hit Search">

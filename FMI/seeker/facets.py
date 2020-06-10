@@ -5,7 +5,7 @@ from collections import OrderedDict
 import functools
 import operator
 from .mapping import DEFAULT_ANALYZER
-
+from FMI.settings import BASE_DIR, ES_HOSTS, ES_BUCKETSIZE
 
 #
 # FACET FILTERS and AGGREGATES in case the mapping holds NESTED fields (parent - child)
@@ -339,7 +339,7 @@ class TermsFacet (Facet):
         if reverse_nested == False:
             params = {
                 'field': self.field,
-                'size' : 40,
+                'size' : ES_BUCKETSIZE,
                 'min_doc_count': 1
                 }
             params.update(self.kwargs)
@@ -351,7 +351,7 @@ class TermsFacet (Facet):
                     self.field : {
                         'terms' : {
                             "field" : self.field,
-                            "size"  : 40,
+                            "size"  : ES_BUCKETSIZE,
                             "min_doc_count" : 1
                             }
                         }
@@ -377,7 +377,7 @@ class TermsFacet (Facet):
                     reverse_nested = True
             aggs_stack[agg_name].append(self.name)
             sub_agg_name = self.name
-            #aggs_tail.bucket(self.name, 'terms', field=self.field, size=40, min_doc_count=1)
+            #aggs_tail.bucket(self.name, 'terms', field=self.field, size=ES_BUCKETSIZE, min_doc_count=1)
         else:
             aggs_tail = search
             aggs_stack[agg_name] = [agg_name]
@@ -385,7 +385,7 @@ class TermsFacet (Facet):
         aggs_tail.aggs[sub_agg_name] = self._get_aggregation(reverse_nested, **extra)
         #if extra:
         #    aggs_stack[agg_name].append(list(extra['aggs'].keys())[0])
-        #search.aggs.bucket(agg_name, 'terms', field=self.field, size=40, min_doc_count=1)
+        #search.aggs.bucket(agg_name, 'terms', field=self.field, size=ES_BUCKETSIZE, min_doc_count=1)
         d = search.to_dict()
         return search
 
@@ -487,7 +487,7 @@ class NestedFacet (TermsFacet):
         aggs_param[self.field] = {
             'terms'  : {
                 'field' : self.field,
-                 'size'  : 40,
+                 'size'  : ES_BUCKETSIZE,
                  'min_doc_count' : 1
                 }
             }
@@ -713,7 +713,7 @@ class PercFacet (TermsFacet):
                 'val' : {
                     'terms': {
                         'field': self.nestedfield + '.val.keyword',
-                        "size"  : 40,
+                        "size"  : ES_BUCKETSIZE,
                         "min_doc_count" : 1
                         },
                     'aggs': {
@@ -771,7 +771,7 @@ class PercFacet (TermsFacet):
     def _get_facet_aggregation(self, **extra):
         params = {
             'field': self.field,
-            'size' : 40,
+            'size' : ES_BUCKETSIZE,
             'min_doc_count': 1
             }
         params.update(self.kwargs)
@@ -901,7 +901,7 @@ class OptionFacet (TermsFacet):
         #params.update(extra)
         params = {
             'field': self.nestedfield+".answer.keyword",
-            'size' : 40,
+            'size' : ES_BUCKETSIZE,
             'min_doc_count': 1
             }
         params.update(self.kwargs)
@@ -912,7 +912,7 @@ class OptionFacet (TermsFacet):
                 'question' : {
                     'terms': {
                         "field" : self.nestedfield+".question.keyword",
-                        "size"  : 40,
+                        "size"  : ES_BUCKETSIZE,
                         "min_doc_count" : 1
                         },
                     'aggs' : {

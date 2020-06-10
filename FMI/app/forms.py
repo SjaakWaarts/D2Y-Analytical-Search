@@ -140,7 +140,7 @@ class load_form(forms.Form):
             self._errors[NON_FIELD_ERRORS] = self.error_class()
         self._errors[NON_FIELD_ERRORS].append(message)
 
-class fmi_admin_form(forms.Form):
+class d2y_admin_form(forms.Form):
     index_choices = (('conf', 'Configuration'), ('excel', 'Excel Files'), ('pi', 'Product Intelligence'), ('mi', 'MI - Market Intelligence'), ('si_sites', 'SI - Sites'),
                      ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'),
                      ('dhk', 'de Heerlijke Keuken'))

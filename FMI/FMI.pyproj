@@ -8,6 +8,7 @@
     <InterpreterId>Global|PythonCore|3.7</InterpreterId>
     <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
     <TestFramework>Pytest</TestFramework>
+    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -46,7 +47,7 @@
     <Compile Include="app\load.py" />
     <Compile Include="app\r_and_d.py" />
     <Compile Include="app\guide.py" />
-    <Compile Include="app\fmi_admin.py" />
+    <Compile Include="app\d2y_admin.py" />
     <Compile Include="app\crawl.py" />
     <Compile Include="app\azure.py">
       <SubType>Code</SubType>
@@ -641,7 +642,7 @@
     <Content Include="app\templates\app\r_and_dresults.html" />
     <Content Include="app\templates\app\r_and_d.html" />
     <Content Include="app\templates\app\guide.html" />
-    <Content Include="app\templates\app\fmi_admin.html" />
+    <Content Include="app\templates\app\d2y_admin.html" />
     <Content Include="app\templates\app\crawl.html" />
     <Content Include="app\templates\app\loadresults.html" />
     <Content Include="app\templates\app\facts.html" />

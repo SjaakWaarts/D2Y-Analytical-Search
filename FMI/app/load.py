@@ -11,6 +11,7 @@ import pickle
 import urllib
 import requests
 import json
+import pandas as pd
 from urllib.parse import urlparse
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -226,10 +227,10 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name)
     converters['column'] = str
     if excelmap_filename == "":
         excelmap_filename = excel_filename
-    excelmap_file = os.path.join(BASE_DIR, 'data/' + excelmap_filename)
-    excel_file = os.path.join(BASE_DIR, 'data/' + excel_filename)
+    excelmap_file = os.path.join(BASE_DIR, 'data', excelmap_filename)
+    excel_file = os.path.join(BASE_DIR, 'data', excel_filename)
     try:
-        mapping_df = pd.read_excel(excelmap_file, sheetname="mapping", header=0, converters=converters)
+        mapping_df = pd.read_excel(excelmap_file, sheet_name="mapping", header=0, converters=converters)
     except:
         cwd = os.getcwd()
         print("load_excel: working dirtory is: ", cwd)
@@ -341,7 +342,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name)
         header_row = [0, 1]
     else:
         header_row = 0
-    data_df = pd.read_excel(excel_file, sheetname="data", header=header_row, index_col=None, converters=converters)
+    data_df = pd.read_excel(excel_file, sheet_name="data", header=header_row, index_col=None, converters=converters)
     # bug in pandas, first column is stored as index. Copy it back into the dataframe
     if header_defined:
         column_header = (mapping_df.ix[0]['header'], mapping_df.ix[0]['column'])
@@ -719,7 +720,7 @@ def load_survey1(request, survey_filename, map_filename):
         #data = elastic.convert_for_bulk(sl, 'update')
         survey.map_header(request, survey_name, data)
         data['_id'] = survey.map_id(survey_name, data)
-        data = elastic.convert_data_for_bulk(data, 'survey', 'survey', 'update')
+        data = elastic.convert_data_for_bulk(data, 'survey', '_doc', 'update')
         bulk_data.append(data)
         count = count + 1
         if count > 100:

@@ -45,7 +45,7 @@ class Column (object):
         if self.template:
             search_templates.append(self.template)
         for cls in inspect.getmro(view.document):
-            if issubclass(cls, dsl.DocType):
+            if issubclass(cls, dsl.Document):
                 search_templates.append('seeker/%s/%s.html' % (cls._doc_type.name, self.field))
         search_templates.append('seeker/column.html')
         self.template = loader.select_template(search_templates)

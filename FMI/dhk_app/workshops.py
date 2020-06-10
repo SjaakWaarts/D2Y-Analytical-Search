@@ -192,7 +192,7 @@ def get_workshops(request):
     results = esm.search_query(es_host, 'recipes', search_q)
     results = json.loads(results.text)
     hits = results.get('hits', {})
-    pager['nr_hits'] = hits.get('total', 0)
+    pager['nr_hits'] = hits.get('total', {}).get('value', 0)
     aggs = results.get('aggregations', [])
     ##
     # Parse Aggs into Filter values and Charts that contain Aggs

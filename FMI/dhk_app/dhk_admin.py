@@ -301,7 +301,7 @@ def get_uploaded_files(request):
     results = esm.search_query(es_host, 'recipes', search_q)
     results = json.loads(results.text)
     hits = results.get('hits', {})
-    pager['nr_hits'] = hits.get('total', 0)
+    pager['nr_hits'] = hits.get('total', {}).get('value', 0)
     aggs = results.get('aggregations', [])
     ##
     # Parse Aggs into Filter values and Charts that contain Aggs
@@ -541,7 +541,7 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
 
     if success:
         data = json.dumps(recipe)
-        r = requests.put(url + "/" + doc_type + "/" + recipe_basename, headers=headers, data=data)
+        r = requests.put(url + "/_doc/" + recipe_basename, headers=headers, data=data)
         print("load_recipe: written recipe with id", recipe_basename)
     return success, log
 

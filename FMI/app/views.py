@@ -33,7 +33,7 @@ import app.survey as survey
 import app.guide as guide
 import app.facts as facts
 import app.r_and_d as r_and_d
-import app.fmi_admin as fmi_admin
+import app.d2y_admin as d2y_admin
 import app.azure as azure
 import app.wb_excel as wb_excel
 import app.models as models
@@ -60,8 +60,7 @@ def home(request):
     return render(
         request,
         'app/index.html',
-        {'site' : FMI.settings.site, 'year':datetime.now().year,
-        }
+        {'site' : FMI.settings.site, 'year':datetime.now().year, 'keywords_q' : "" }
     )
 
 
@@ -555,10 +554,10 @@ def load_view(request):
         'app/load.html',
         {'site' : FMI.settings.site, 'form': form, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year})
 
-def fmi_admin_view(request):
+def d2y_admin_view(request):
     """Renders the Admin Index page."""
     if request.method == 'POST':
-        form = fmi_admin_form(request.POST)
+        form = d2y_admin_form(request.POST)
         if form.is_valid():
             index_choices = form.cleaned_data['index_choices_field']
             excel_filename = form.cleaned_data['excel_filename_field']
@@ -567,31 +566,31 @@ def fmi_admin_view(request):
             auth_permission_choices = form.cleaned_data['auth_permission_choices_field']
             keyword_filename = form.cleaned_data['keyword_filename_field']
             if 'index_elastic' in form.data:
-                fmi_admin.create_index_elastic(index_choices, excel_filename)
+                d2y_admin.create_index_elastic(index_choices, excel_filename)
             elif 'analyzer' in form.data:
-                fmi_admin.create_analyzer(index_choices)
+                d2y_admin.create_analyzer(index_choices)
             if 'index_azure' in form.data:
                 azure.create_index_azure(index_choices)
             elif 'export_opml' in form.data:
-                if not fmi_admin.export_opml(index_choices, opml_filename):
+                if not d2y_admin.export_opml(index_choices, opml_filename):
                     form.add_form_error("Could not export OPML")
             elif 'import_opml' in form.data:
-                if not fmi_admin.import_opml(index_choices, opml_filename):
+                if not d2y_admin.import_opml(index_choices, opml_filename):
                     form.add_form_error("Could not import OPML")
             elif 'keywords' in form.data:
-                if not fmi_admin.read_keywords(index_choices, keyword_filename):
+                if not d2y_admin.read_keywords(index_choices, keyword_filename):
                     form.add_form_error("Could not read keywords file")
             if 'auth_groups' in form.data:
-                fmi_admin.auth_groups(auth_group_choices)
+                d2y_admin.auth_groups(auth_group_choices)
             if 'auth_permissions' in form.data:
-                fmi_admin.auth_permissions(auth_permission_choices)
+                d2y_admin.auth_permissions(auth_permission_choices)
             if 'auth_hasperm' in form.data:
-                fmi_admin.auth_hasperm(auth_group_choices, auth_permission_choices)
-            return render(request, 'app/fmi_admin.html', {'form': form })
+                d2y_admin.auth_hasperm(auth_group_choices, auth_permission_choices)
+            return render(request, 'app/d2y_admin.html', {'form': form })
     else:
-        form = fmi_admin_form(initial={'index_choices_field':['cosmetic']})
+        form = d2y_admin_form(initial={'index_choices_field':['cosmetic']})
 
-    return render(request, 'app/fmi_admin.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
+    return render(request, 'app/d2y_admin.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def elastic_view(request):
     """Renders the elastic page."""

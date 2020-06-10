@@ -762,7 +762,7 @@ def bind_topline_aggr(seekerview, chart, aggr_name, aggregations, benchmark=None
     if len(benchmark) == 0:
         for hed in dt.index:
             sum = dt.ix[hed][1:].sum()
-            avg = sum / (len(dt._ix[hed]) - 2)
+            avg = sum / (len(dt.ix[hed]) - 2)
             dt.loc[hed, 'Average'] = avg
     if ('q-mean' in X_facet):
         if hit_count == 0:

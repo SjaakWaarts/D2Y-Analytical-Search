@@ -17,7 +17,7 @@ from pandas import DataFrame
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
-from elasticsearch_dsl import DocType, Date, Boolean, Text, Nested, Keyword
+from elasticsearch_dsl import Date, Boolean, Text, Nested, Keyword
 from elasticsearch_dsl.connections import connections
 import seeker
 import app.workbooks as workbooks

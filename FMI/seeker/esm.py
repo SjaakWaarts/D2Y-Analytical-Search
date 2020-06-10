@@ -426,30 +426,26 @@ def setup_search():
     s = Search()
     return s, q
 
-def search_query(es_host, index, q, doc_type=None):
+def search_query(es_host, index, q):
     headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
-    if doc_type is None:
-        doc_type = index
     url = "http://" + host + ":9200" + "/" + index
     data = json.dumps(q)
-    r = requests.post(url + "/" + doc_type + "/_search", headers=headers, data=data)
+    r = requests.post(url + "/_doc/_search", headers=headers, data=data)
     if r.status_code >= 400:
         logging.error('ES search failed, error {}.'.format(r.text))
     return r
 
-def update_doc(es_host, index, id, doc, doc_type=None):
+def update_doc(es_host, index, id, doc):
     headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
-    if doc_type is None:
-        doc_type = index
     url = "http://" + host + ":9200" + "/" + index
     data = json.dumps({'doc' : doc})
-    r = requests.post(url + "/" + doc_type + "/" + id + "/_update", headers=headers, data=data)
+    r = requests.post(url + "/_doc/" + id + "/_update", headers=headers, data=data)
     if r.status_code >= 400:
         logging.error('ES update failed, error {}.'.format(r.text))
     return r

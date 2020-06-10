@@ -15,7 +15,7 @@ from pandas import DataFrame
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
-from elasticsearch_dsl import DocType, Date, Double, Long, Integer, Boolean
+from elasticsearch_dsl import Date, Double, Long, Integer, Boolean
 from elasticsearch_dsl.connections import connections
 
 import seeker

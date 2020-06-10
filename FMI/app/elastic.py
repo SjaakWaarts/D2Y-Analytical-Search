@@ -279,7 +279,7 @@ def convert_for_bulk(objmap, action=None):
         metadata = {
             '_op_type': action,
             "_index": objmap._meta.es_index_name,
-            "_type": objmap._meta.es_type_name,
+            "_type": '_doc',
         }
         data.update(**metadata)
         bulk_data = data
@@ -289,7 +289,7 @@ def convert_for_bulk(objmap, action=None):
         bulkdata = {
             '_op_type': action,
             "_index": objmap._meta.es_index_name,
-            "_type": objmap._meta.es_type_name,
+            "_type": '_doc',
             '_id': id,
             "doc_as_upsert" : 'true',
             "doc" : data

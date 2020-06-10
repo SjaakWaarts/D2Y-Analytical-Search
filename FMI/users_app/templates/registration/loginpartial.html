@@ -9,6 +9,7 @@
         {% endif %}
     </ul>
 </div>
+{% if user.first_name %}
 <script>
     var user = {
         'username' : "{{ user.username }}",
@@ -26,6 +27,7 @@
         user.is_authenticated = false;
     {% endif %}
 </script>
+{% endif %}
 <!-- The Modal -->
 <div class="modal fade" id="login-modal">
     <div class="modal-dialog">
