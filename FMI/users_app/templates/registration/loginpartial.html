@@ -9,7 +9,7 @@
         {% endif %}
     </ul>
 </div>
-{% if user.first_name %}
+{% if user.username %}
 <script>
     var user = {
         'username' : "{{ user.username }}",
@@ -26,6 +26,13 @@
     {% else %}
         user.is_authenticated = false;
     {% endif %}
+</script>
+{% else %}
+<script>
+    var user = {
+        'username' : "",
+        'is_authenticated' : false
+    }
 </script>
 {% endif %}
 <!-- The Modal -->
