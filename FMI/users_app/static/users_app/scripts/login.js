@@ -25,38 +25,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function login_navbar_click() {
-    var login_model_div = document.getElementById('login-modal');
-    $('#login-modal').modal('show');
-}
-
-function login_request_ready(xhr) {
-    document.getElementById("login_message_div").innerHTML = xhr.responseText;
-}
-
-function login_click() {
-    var login_form = document.getElementById('login_form');
-    var username_input = document.getElementById('username_input');
-    var password_input = document.getElementById('password_input');
-    var url = login_url;
-    var csrftoken_cookie = getCookie('csrftoken');
-    var headers = { 'X-CSRFToken': csrftoken_cookie }
-    var xhr = new XMLHttpRequest();
-    //xhr.onreadystatechange = function () {
-    //    if (this.readyState == 4 && this.status == 200) {
-    //        login_request_ready(this);
-    //    }
-    //};
-    xhr.open('POST', login_url, true);
-    xhr.setRequestHeader('X-CSRFToken', csrftoken_cookie);
-    var body = 'csrfmiddlewaretoken=' + csrftoken + '&username=' + username_input.value;
-    var formData = new FormData();
-    formData.append('csrfmiddlewaretoken', csrftoken);
-    formData.append('username', username_input.value);
-    formData.append('password', password_input.value);
-    xhr.send(formData);
-}
-
 function unlock_click() {
     var login_form = document.getElementById('login_form');
     if (login_form.checkValidity()) {
@@ -83,3 +51,60 @@ function unlock_click() {
         login_form.removeChild(tmpSubmit)
     }
 }
+
+var app = new Vue({
+    el: '#login-modal-root',
+    delimiters: ['[[', ']]'],
+    data: {
+        username: "",
+        password: "",
+        is_authenticated: false,
+    },
+    methods: {
+        post_login: function () {
+            var login_modal_div = document.getElementById('login-modal');
+            this.username = document.getElementById('username_input').value;
+            this.password = document.getElementById('password_input').value;
+            var csrftoken_cookie = getCookie('csrftoken');
+            var headers = { 'X-CSRFToken': csrftoken_cookie };
+            this.$http.post(login_url, {
+                'csrfmiddlewaretoken': csrftoken,
+                'username': this.username,
+                'password': this.password,
+            },
+                { 'headers': headers }).then(response => {
+                    this.is_authenticated = response.body.is_authenticated;
+                    var next = response.body.next;
+                    if (this.is_authenticated) {
+                        login_modal_div.classList.remove("show");
+                        window.location.reload(true);
+                    } else {
+                        var login_message_div = document.getElementById('login_message_div');
+                        login_message_div.innerHTML = "Login mislukt";
+                    }
+                });
+        },
+        post_logout: function () {
+            var login_modal_div = document.getElementById('login-modal');
+            var csrftoken_cookie = getCookie('csrftoken');
+            var headers = { 'X-CSRFToken': csrftoken_cookie };
+            this.$http.post(logout_url, {
+                'csrfmiddlewaretoken': csrftoken,
+            },
+                { 'headers': headers }).then(response => {
+                    this.is_authenticated = response.body.is_authenticated;
+                    var next = response.body.next;
+                    if (!this.login) {
+                        login_modal_div.classList.remove("show");
+                        window.location.reload(true);
+                    }
+                });
+        },
+    },
+    computed: {
+    },
+    mounted: function () {
+        this.is_authenticated = user.is_authenticated;
+
+    },
+});

@@ -97,8 +97,9 @@ def register(request):
 
 def login(request):
     if request.method == 'POST':
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
+        json_data = json.loads(request.body)
+        username = json_data.get('username', None)
+        password = json_data.get('password', None)
         if "@" in username:
             users = User.objects.filter(email=username)
         else:
@@ -109,12 +110,15 @@ def login(request):
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            login = True
-            return HttpResponseRedirect(reverse('home'))
+            is_authenticated = True
+            next = reverse('dhk:home')
+            #return HttpResponseRedirect(reverse('dhk:home'))
         else:
-            login = False
+            is_authenticated = False
+            next = ""
         context = {
-            'login' : login
+            'is_authenticated' : is_authenticated,
+            'next' : next
             }
         return HttpResponse(json.dumps(context), content_type='application/json')
     else:
@@ -125,7 +129,8 @@ def login(request):
 def logout(request):
     response = auth.logout(request)
     context = {
-        'logout' : True
+        'is_authenticated' : False,
+        'next' : ""
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 
