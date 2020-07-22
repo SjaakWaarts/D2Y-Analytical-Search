@@ -95,12 +95,12 @@ def get_recipe(request):
             filename = recipe_basename + '.docx'
         else:
             cmd = ['soffice', '--headless', '--convert-to', 'pdf','--outdir', dirname, recipe_fullname]
-            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-            subprocess.Popen(cmd).wait()
+            #process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+            subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE).wait()
             f = open(pfd_fullname, 'rb')
             filename = recipe_basename + '.pdf'
-        #os.remove(recipe_fullname)
-        #os.remove(zip_fullname)
+        os.remove(recipe_fullname)
+        os.remove(zip_fullname)
         #response = Response(pdf.read(), content_type='application/pdf')
         #response.content_disposition = 'inline;filename=' + basename
         return FileResponse(f, as_attachment=True, filename=filename)
