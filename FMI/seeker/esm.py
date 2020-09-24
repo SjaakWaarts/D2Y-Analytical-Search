@@ -407,7 +407,7 @@ def delete_by_query(es_host, index, q, doc_type=None):
         doc_type = index
     url = "http://" + host + ":9200" + "/" + index
     data = json.dumps(q)
-    r = requests.post(url + "/" + doc_type + "/_delete_by_query", headers=headers, data=data)
+    r = requests.post(url + "/_delete_by_query", headers=headers, data=data)
     if r.status_code >= 400:
         logging.error('ES delete_by_query failed, error {}.'.format(r.text))
     return r
