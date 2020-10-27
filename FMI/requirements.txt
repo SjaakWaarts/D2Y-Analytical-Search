@@ -20,7 +20,7 @@ cmislib3==1.0.8
 colorama==0.4.3
 contextvars==2.4
 cookiecutter==1.7.2
-cryptography==2.9.2
+cryptography==3.2
 cycler==0.10.0
 dateutils==0.6.8
 defusedxml==0.6.0
