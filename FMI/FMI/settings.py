@@ -214,6 +214,7 @@ AUTH_USER_MODEL = 'users_app.User'
 #LOGIN_REDIRECT_URL = 'profile'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+SAML_FOLDER = os.path.join(BASE_DIR, 'users_app/saml')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

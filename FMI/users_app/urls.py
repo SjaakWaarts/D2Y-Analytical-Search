@@ -16,5 +16,9 @@ urlpatterns = [
     path("unlock/", views.unlock, name='users_app/unlock'),
     #path('accounts/register/', views.register, name='register'),
     path('register_complete/', views.registrer_complete, name='users_app/register_complete'),
-    path("profile/", views.profile, name='users_app/profile')
+    path("profile/", views.profile, name='users_app/profile'),
+    # SAML
+    path('saml/index', views.saml_index, name='users_app/saml/index'),
+    path('saml/attrs', views.saml_attrs, name='users_app/saml/attrs'),
+    path('saml/metadata', views.saml_metadata, name='users_app/saml/metadata')
 ]

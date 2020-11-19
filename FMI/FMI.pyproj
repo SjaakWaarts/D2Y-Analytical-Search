@@ -217,6 +217,8 @@
     <Folder Include="FMI\" />
     <Folder Include="users_app\" />
     <Folder Include="users_app\migrations\" />
+    <Folder Include="users_app\saml\" />
+    <Folder Include="users_app\saml\certs\" />
     <Folder Include="users_app\static\" />
     <Folder Include="users_app\static\users_app\" />
     <Folder Include="users_app\static\users_app\scripts\" />
@@ -675,6 +677,12 @@
     <Content Include="seeker\templates\seeker\facets\percterms.html" />
     <Content Include="seeker\templates\seeker\facets\optionterms.html" />
     <Content Include="seeker\templates\seeker\facets\nestedterms.html" />
+    <Content Include="users_app\saml\advanced_settings.json">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="users_app\saml\settings.json">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="users_app\static\users_app\scripts\login.js" />
     <Content Include="users_app\templates\registration\register_complete.html" />
     <Content Include="seeker\.spyderproject" />
