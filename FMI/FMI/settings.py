@@ -12,8 +12,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ALLOWED_HOSTS = (
-    'localhost','108.61.167.27','172.22.66.5','naazedssv1', '10.20.33.102',
-    'www.deheerlijkekeuken.nl', '52.28.96.52'
+    'localhost','18.184.194.51',
+    'www.deheerlijkekeuken.nl', 'deheerlijkekeuken.nl'
 )
 
 ADMINS = (
@@ -48,8 +48,7 @@ INSIGHT_API = {'url': ''}
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost',
-    'http://iff.com'
+    'http://localhost', 'http://deheerlijkeuken.nl'
     )
 CORS_ALLOW_METHODS = default_methods + (
     'POST',
@@ -67,8 +66,8 @@ CORS_ALLOW_HEADERS = default_headers + (
 #ES_HOSTS = [{'host': '10.35.58.89'}]
 
 # AWS OpenSUSE Leap 43.3, Python 3.6, ElasticSearch 6.2.2
-ES_HOSTS = [{'host': '52.28.96.52'}]
-#ES_HOSTS = [{'host': 'localhost'}]
+#ES_HOSTS = [{'host': '52.28.96.52'}]
+ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01', 'http_auth': ('elastic', 'changeme')}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
 ES_BUCKETSIZE = 20

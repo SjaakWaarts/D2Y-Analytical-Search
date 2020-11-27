@@ -16,7 +16,7 @@
     "privateKey": ""
   },
   "idp": {
-    "entityId": "https://app.onelogin.com/saml/metadata/<onelogin_connector_id>",
+    "entityId": "https://portal.sso.eu-central-1.amazonaws.com/saml/assertion/MzI3MDU4OTU1Njc1X2lucy0yZTM3YmQ4NzhlN2IxMWM2",
     "singleSignOnService": {
       "url": "https://portal.sso.eu-central-1.amazonaws.com/saml/assertion/MzI3MDU4OTU1Njc1X2lucy0yZTM3YmQ4NzhlN2IxMWM2",
       "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"

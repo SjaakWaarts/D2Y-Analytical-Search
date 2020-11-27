@@ -11,6 +11,7 @@
 *.vscode
 __pychache__
 
+/venv
 /bin
 /FMI/bin
 /obj
