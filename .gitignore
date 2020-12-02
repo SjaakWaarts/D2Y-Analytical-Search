@@ -30,3 +30,4 @@ __pychache__
 /FMI/seeker/migrations/__pycache__
 /FMI/FMI/local_settings.py
 /FMI/dhk_app/Python Scripts
+/FMI/FMI/database.cnf

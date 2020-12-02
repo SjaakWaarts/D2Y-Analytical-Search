@@ -5,10 +5,11 @@
     <Name>FMI</Name>
     <RootNamespace>FMI</RootNamespace>
     <PythonRunWebServerCommandArguments>runserver --settings $(DjangoSettingsModule) %SERVER_PORT% $(CommandLineArguments)</PythonRunWebServerCommandArguments>
-    <InterpreterId>Global|PythonCore|3.7</InterpreterId>
+    <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
     <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
     <TestFramework>Pytest</TestFramework>
     <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -667,6 +668,7 @@
     <Content Include="docker\elasticsearch\jvm.options" />
     <Content Include="docker\kibana\Dockerfile" />
     <Content Include="docker\run-jenkins.sh" />
+    <Content Include="FMI\database.cnf" />
     <Content Include="seeker\templates\seeker\columntextarea.html" />
     <Content Include="seeker\templates\seeker\columnimg.html" />
     <Content Include="seeker\templates\seeker\columndict.html" />
@@ -737,6 +739,17 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="..\venv\">
+      <Id>venv</Id>
+      <Version>3.7</Version>
+      <Description>venv (Python 3.7 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 
