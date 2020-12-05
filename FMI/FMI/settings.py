@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ALLOWED_HOSTS = (
-    'localhost','18.184.194.51',
+    'localhost','52.59.239.214',
     'www.deheerlijkekeuken.nl', 'deheerlijkekeuken.nl'
 )
 
@@ -189,6 +189,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
