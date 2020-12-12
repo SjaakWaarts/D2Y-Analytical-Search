@@ -34,6 +34,7 @@ urlpatterns = [
     path('crawl', app.views.crawl_view, name='crawl'),
     path('load', app.views.load_view, name='load'),
     path('facts', app.views.facts_view, name='facts'),
+    path('mail_tester', app.views.mail_tester_view, name='mail_tester'),
     path('d2y_admin', app.views.d2y_admin_view, name='d2y_admin'),
 
 

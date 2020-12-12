@@ -263,7 +263,10 @@ except ImportError:
 
 
 # Email settings
-EMAIL_HOST = 'smtp.deheerlijkekeuken.nl'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = '25'
+EMAIL_BACKEND = 'django_ses.SESBackend'
+AWS_SES_REGION_NAME = 'eu-west-1'
+AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
+#EMAIL_HOST = 'smtp.deheerlijkekeuken.nl'
+#EMAIL_HOST_USER = ''
+#EMAIL_HOST_PASSWORD = ''
+#EMAIL_PORT = '25'

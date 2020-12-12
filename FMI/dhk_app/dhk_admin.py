@@ -257,7 +257,7 @@ def get_uploaded_files(request):
     ##
     # Add Filters
     ##
-    if not request.user.is_admin:
+    if not request.user.is_staff:
         filter_facets['author'] = [request.user.username]
     search_filters = search_q["query"]["bool"]["filter"]
     search_queries = search_q["query"]["bool"]["must"]

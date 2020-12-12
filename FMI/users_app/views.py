@@ -96,7 +96,10 @@ def register(request):
 
    # No post data availabe, let's just show the page.
     else:
-        form = RegisterForm()
+        if request.user.is_authenticated:
+            return redirect("users_app/profile")
+        else:
+            form = RegisterForm()
 
     return render(request, template, {'form': form})
 
@@ -202,24 +205,27 @@ def profile(request):
 
    # No post data availabe, let's just show the page.
     else:
-        initial = {
-            'username'      : request.user.username,
-            'first_name'    : request.user.first_name,
-            'last_name'     : request.user.last_name,          
-            'email'         : request.user.email,
-            'street'        : request.user.street,
-            'housenumber'   : request.user.housenumber,
-            'zip'           : request.user.zip, 
-            'city'          : request.user.city,
-            'country'       : request.user.country,
-            'phone_number'  : request.user.phone_number,             
-            'is_active'     : request.user.is_active,
-            'is_admin'      : request.user.is_admin,
-            'date_of_birth' : request.user.date_of_birth, 
-            'date_joined'   : request.user.date_joined,
-            'last_login'    : request.user.last_login,
-        }
-        form = ProfileForm(initial=initial)
+        if request.user.is_authenticated:
+            initial = {
+                'username'      : request.user.username,
+                'first_name'    : request.user.first_name,
+                'last_name'     : request.user.last_name,          
+                'email'         : request.user.email,
+                'street'        : request.user.street,
+                'housenumber'   : request.user.housenumber,
+                'zip'           : request.user.zip, 
+                'city'          : request.user.city,
+                'country'       : request.user.country,
+                'phone_number'  : request.user.phone_number,             
+                'is_active'     : request.user.is_active,
+                'is_admin'      : request.user.is_admin,
+                'date_of_birth' : request.user.date_of_birth, 
+                'date_joined'   : request.user.date_joined,
+                'last_login'    : request.user.last_login,
+            }
+            form = ProfileForm(initial=initial)
+        else:
+            return redirect("users_app/register")
 
     return render(request, template, {'form': form})  
 

@@ -395,7 +395,7 @@ def platform_admin_view(request):
     if request.method == 'POST':
         if 'scrape' in request.POST:
             return redirect('scrape')
-        elif 'elastic' in request.POST:
+        elif 'mail_tester' in request.POST:
             return redirect('product_elastic')
     return render(request, 'app/platform_admin.html', 
                   {'site' : FMI.settings.site, 'es_hosts' : FMI.settings.ES_HOSTS, 'year':datetime.now().year})
@@ -630,6 +630,14 @@ def autocomplete_view(request):
     data = json.dumps(perfumes)
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def mail_tester_view(request):
+    recipe = {'title' : "Test mail"}
+    cooking_club = {}
+    return render(
+        request, 'dhk_app/cooking_club_mail.html',
+                  {'recipe': recipe, 'cooking_club': cooking_club})
 
 def contact(request):
     """Renders the contact page."""

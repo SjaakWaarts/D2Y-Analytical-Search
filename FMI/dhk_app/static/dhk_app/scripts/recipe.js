@@ -108,14 +108,14 @@ var app = new Vue({
                 cc_update_button_tag.style.visibility = "hidden";
                 cc_delete_button_tag.style.visibility = "hidden";
             }
-            this.bindings.participate_button_disabled = true;
+            this.bindings.participate_button_disabled = false;
             this.cooking_club = cooking_club;
             if (user.username != "") {
                 this.cooking_club_participant.user = user.username;
                 this.cooking_club_participant.email = user.email;
                 for (var px = 0; px < this.cooking_club.participants.length; px++) {
                     if (this.cooking_club.participants[px].user == user.username) {
-                        this.bindings.participate_button_disabled = false;
+                        this.bindings.participate_button_disabled = true;
                     }
                 }
             } else {

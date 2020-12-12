@@ -307,6 +307,7 @@
     <Content Include="ci-scripts\ansible-deploy.sh" />
     <Content Include="ci-scripts\package.sh" />
     <Content Include="ci-scripts\release_upload.sh" />
+    <Content Include="dhk_app\static\dhk_app\content\dhk_mail.css" />
     <Content Include="dhk_app\static\dhk_app\content\recipe.css" />
     <Content Include="dhk_app\static\dhk_app\content\dhk_site.css" />
     <Content Include="dhk_app\static\dhk_app\media\club_dining_table.jpg" />
@@ -624,6 +625,8 @@
     <Content Include="app\static\assets\vue\js\vue.js" />
     <Content Include="app\static\assets\vue\js\vue.min.js" />
     <Content Include="app\templates\app\api_csrftoken.html" />
+    <Content Include="dhk_app\templates\dhk_app\cooking_club_mail.html" />
+    <Content Include="dhk_app\templates\dhk_app\dhk_mail_layout.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop-form.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop.html" />
     <Content Include="dhk_app\templates\dhk_app\club-results.html" />

@@ -19,7 +19,7 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from django.http import HttpResponse, FileResponse
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
+from django.template import RequestContext, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -148,7 +148,9 @@ def post_recipe(request):
         for participant in cooking_club['participants']:
             to_list.append(participant['email'])
             message = message + "{0}\t{1}\n".format(participant['user'], participant['comment'])
-        send_mail(subject, message, sender, to_list, fail_silently=True)
+        html_message = loader.render_to_string('dhk_app/cooking_club_mail.html',
+                                               {'recipe': recipe, 'cooking_club': cooking_club})
+        send_mail(subject, message, sender, to_list, html_message=html_message, fail_silently=True)
     context = {
         'recipe' : recipe
         }

@@ -1,0 +1,46 @@
+﻿
+/* DHK MAIL */
+
+body {
+    margin: 0;
+    padding: 0;
+    min-width: 100% !important;
+}
+
+img {
+    height: auto;
+}
+
+.content {
+    width: 100%;
+    max-width: 600px;
+}
+
+.header {
+    padding: 40px 30px 20px 30px;
+}
+
+.subhead {
+    font-size: 15px;
+    color: #ffffff;
+    font-family: sans-serif;
+    letter-spacing: 10px;
+}
+
+.h1, .h2 {
+    color: #153643;
+    font-family: sans-serif;
+}
+
+.h1 {
+    font-size: 33px;
+    line-height: 38px;
+    font-weight: bold;
+}
+
+.h2 {
+    padding: 0 0 15px 0;
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: bold;
+}

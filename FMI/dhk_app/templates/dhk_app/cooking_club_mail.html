@@ -1,0 +1,67 @@
+﻿{% extends "dhk_app/dhk_mail_layout.html" %}
+{% load i18n %}
+
+{% block css %}
+    {% load static %}
+{% endblock %}
+
+{% block content %}
+	<div class="row d-flex flex-row">
+        <div class="col-3">
+            <img class="fix" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/icon.gif" width="70" height="70" border="0" alt="" />
+        </div>
+        <div class="col-9">
+            <h1>KOOKCLUB</h1>
+            <h2>de Heerlijke Keuken</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <h3>Uitnodiging voor de KOOKCLUB!</h3>
+        </div>
+        <div class="col-3">
+            <h1>{{ recipe.title }}</h1>
+        </div>
+    </div>
+    <div class="row d-flex flex-row">
+        <div class="col-3">
+            <img class="fix" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/article1.png" width="115" height="115" border="0" alt="" />
+        </div>
+        <div class="col-6">
+            {{ recipe.excerpt }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            Je hebt je opgegeven om deel te nemen aan een gezellige maaltijd. Hierbij meer
+            informatie van de gastheer en wie je dis genoten zijn.
+            <ul>
+                <li>Gastheer : {{ cooking_club.cook }}</li>
+                <li>Datum en tijd : {{ cooking_club.cooking_date }}</li>
+                <li>Kosten pp : {{ cooking_club.cost }}</li>
+                <li>Uitnodiging : {{ cooking_club.invitation }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% if cooking_club.participants %}
+                De volgende gasten zullen aanschuiven.
+                <ul>
+                    {% for participant in cooking_club.participants %}
+                        <li>Gast : {{ participant.user }}</li>
+                        <li>Opmerking : {{ participant.comment }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                Er hebben zich tot nu toe nog geen gasten aangemeld !!
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+{% endblock %}
