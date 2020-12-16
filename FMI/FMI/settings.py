@@ -13,7 +13,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = (
     'localhost','52.59.239.214',
-    'www.deheerlijkekeuken.nl', 'deheerlijkekeuken.nl'
+    'www.deheerlijkekeuken.nl', 'deheerlijkekeuken.nl', 'kookclub.deheerlijkekeuken.nl',
 )
 
 ADMINS = (
@@ -262,7 +262,7 @@ except ImportError:
     sys.stderr.write('local_settings.py not set; using default settings\n')
 
 
-# Email settings
+# AWS settings
 EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_SES_REGION_NAME = 'eu-west-1'
 AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
@@ -270,3 +270,12 @@ AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
 #EMAIL_HOST_USER = ''
 #EMAIL_HOST_PASSWORD = ''
 #EMAIL_PORT = '25'
+
+AWS_STORAGE_BUCKET_NAME = 'deheerlijkekeuken'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+
+

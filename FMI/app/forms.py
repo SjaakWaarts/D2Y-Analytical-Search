@@ -66,15 +66,8 @@ class r_and_d_form(forms.Form):
             self._errors[NON_FIELD_ERRORS] = self.error_class()
         self._errors[NON_FIELD_ERRORS].append(message)
 
-class facts_form(forms.Form):
-    survey_field = forms.CharField(label='Survey', max_length=40, required = True, initial = '', help_text='Survey for which to create Facts and Norms')
-    facts_choices = (('emotion', 'Emotion'), ('concept', 'Concept'), ('suitable_product', 'Suitable Product'), ('suitable_stage', 'Suitable Stage'),
-                     ('intensity', 'Intensity'), ('freshness', 'Freshness'), ('cleanliness', 'Cleanliness'), ('lastingness', 'Lastingness'),
-                     ('liking.keyword', 'Linking/Hedonics'))
-    facts_choices_field = forms.MultipleChoiceField(label='Facts', choices=facts_choices, widget=forms.CheckboxSelectMultiple, required=True)
-    norms_choices = (('country', 'Country'), ('gender', 'Gender'), ('children', 'Children'), ('education', 'Education'), ('income', 'Income'),
-                     ('age', 'Age groups'), ('ethnics', 'Ethnics'))
-    norms_choices_field = forms.MultipleChoiceField(label='Norms', choices=norms_choices, widget=forms.CheckboxSelectMultiple, required=True)
+class product_form(forms.Form):
+    product_field = forms.CharField(label='Product', max_length=40, required = False, initial = '', help_text='Index this product')
     def add_form_error(self, message):
         if not self._errors:
             self._errors = ErrorDict()
@@ -82,8 +75,9 @@ class facts_form(forms.Form):
             self._errors[NON_FIELD_ERRORS] = self.error_class()
         self._errors[NON_FIELD_ERRORS].append(message)
 
-class product_form(forms.Form):
-    product_field = forms.CharField(label='Product', max_length=40, required = False, initial = '', help_text='Index this product')
+class aws_form(forms.Form):
+    s3_choices = (('deheerlijkekeuken', 'deheerlijkekeuken'), ('media', 'media'))
+    s3_choices_field = forms.MultipleChoiceField(label='S3', choices=s3_choices, widget=forms.CheckboxSelectMultiple, required=False)
     def add_form_error(self, message):
         if not self._errors:
             self._errors = ErrorDict()
@@ -142,7 +136,7 @@ class load_form(forms.Form):
 
 class d2y_admin_form(forms.Form):
     index_choices = (('conf', 'Configuration'), ('excel', 'Excel Files'), ('pi', 'Product Intelligence'), ('mi', 'MI - Market Intelligence'), ('si_sites', 'SI - Sites'),
-                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('studies', 'CI/SE Studies'), ('survey', 'CI Survey'),
+                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('survey', 'CI Survey'),
                      ('dhk', 'de Heerlijke Keuken'))
     index_choices_field = forms.MultipleChoiceField(label='ES Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=False)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'ecosystem.xlsx')

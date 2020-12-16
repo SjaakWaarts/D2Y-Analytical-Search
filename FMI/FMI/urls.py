@@ -33,14 +33,13 @@ urlpatterns = [
     path('platform_admin', app.views.platform_admin_view, name='platform_admin'),
     path('crawl', app.views.crawl_view, name='crawl'),
     path('load', app.views.load_view, name='load'),
-    path('facts', app.views.facts_view, name='facts'),
+    path('aws', app.views.aws_view, name='aws'),
     path('mail_tester', app.views.mail_tester_view, name='mail_tester'),
     path('d2y_admin', app.views.d2y_admin_view, name='d2y_admin'),
 
 
     path('scent_emotion', app.views.scent_emotion_view, name='scent_emotion'),
     path('search_scentemotion', models.ScentemotionSeekerView.as_view(), name='search_scentemotion'),
-    path('search_studies', models.StudiesSeekerView.as_view(), name='search_studies'),
 
     path('product_insight', app.views.product_insight_view, name='product_insight'),
     path('search_pi/', models.PerfumeSeekerView.as_view(), name='search_pi'),

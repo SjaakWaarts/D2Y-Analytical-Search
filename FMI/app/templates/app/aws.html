@@ -3,12 +3,9 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>Facts and Norms {{ title }} <small>From a CI Studie to Scent Emotion</small></h1>
+  <h1>Amazon {{ title }} <small>Load data from AWS Service</small></h1>
     <p>
-        The Survey which are conducted on behalf of a CI Studie and used to generate a Scent Emotion dataset.
-        From the different questions asked in a survey the facts are generated. A fact being the percentile score
-        of the possible answers within a question. These facts are determined for different norms, this are the
-        different users groups that participate in the survey (country, age, gender)
+        Select the instance service from which you want to load data
     </p>
 </div>
 
@@ -18,24 +15,12 @@
             {% csrf_token %}
             <div class="form-group row">
                 <div class="col-md-4">
-                    {{ form.facts_choices_field.label_tag }} {{ form.facts_choices_field }}
-                </div>
-                <div class="col-md-4">
-                    {{ form.norms_choices_field.label_tag }} {{ form.norms_choices_field }}
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-4">
-                    {{ form.survey_field.label_tag }} {{ form.survey_field }}
-                    <span onmouseover="Enter Survey name"></span>
+                    {{ form.s3_choices_field.label_tag }} {{ form.s3_choices_field }}
                 </div>
             </div>
             <div class="form-group row">
                 <div class="offset-md-3 col-md-9">
-                    <button type="submit" name="facts" class="btn btn-primary">Facts
-                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                    </button>
-                    <button type="submit" name="norms" class="btn btn-primary">Norms
+                    <button type="submit" name="s3" class="btn btn-primary">S3
                         <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                     </button>
                 </div>

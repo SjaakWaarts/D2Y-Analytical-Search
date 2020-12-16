@@ -169,7 +169,6 @@ platformseekers = {
     'Cosmetica'             : (models.PageSeekerView, "search_si_sites"),
     'Feedly'                : (models.FeedlySeekerView, "search_feedly"),
     'Scent Emotion (Ingr)'  : (models.ScentemotionSeekerView, "search_scentemotion"),
-    #'Scent Emotion (Studies)' : (models.StudiesSeekerView, "search_studies"),
     #'CI Surveys'            : (models.SurveySeekerView, "search_survey"),
     }
 

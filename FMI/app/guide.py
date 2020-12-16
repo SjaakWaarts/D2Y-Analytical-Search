@@ -760,7 +760,6 @@ country2geochart = {
 
 #dataset_gallery = [
 #    ('CI Survey', '/static/app/media/CI2.jpg'),
-#    ('SE Studies', '/static/app/media/CFT_CI.jpg'),
 #    ('SDM', '/static/app/media/SDM.jpg'),
 #    ]
 
@@ -793,7 +792,6 @@ country2geochart = {
 #        'decisionstep' : {
 #            'Fresh and Clean'   : 'fresh_and_clean_profile_dest',
 #            'Orange Beverages'  : 'orange_bevarages_profile_dest',
-#            'SE Studies'        : 'studies_profile_dest',
 #            'SDM'               : 'SDM_storyboard_dest'}
 #        },
 #    'fresh_and_clean_profile_dest'   : {
@@ -807,13 +805,6 @@ country2geochart = {
 #        'type'      : 'destination',
 #        'url'       : '/search_survey?workbook_name=orange+beverages&survey.keyword=orange+beverages',
 #        'seeker'    : 'SurveySeekerView',
-#        'tab'       : 'storyboard',
-#        'dashboard' : 'profile',
-#        },
-#    'studies_profile_dest'   : {
-#        'type'      : 'destination',
-#        'url'       : '/search_studies',
-#        'seeker'    : 'StudiesSeekerView',
 #        'tab'       : 'storyboard',
 #        'dashboard' : 'profile',
 #        },
@@ -847,7 +838,6 @@ site2seeker = {
     'route_ci'      : (models.SurveySeekerView, ''),
     'route_sdm'     : (models.SurveySeekerView, ''),
     'SurveySeekerView' : (models.SurveySeekerView, ''),
-    'StudiesSeekerView' : (models.StudiesSeekerView, ''),
     }
 
 

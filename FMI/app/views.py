@@ -31,7 +31,7 @@ import app.cmis as cmis
 import app.crawl as crawl
 import app.survey as survey
 import app.guide as guide
-import app.facts as facts
+import app.aws as aws
 import app.r_and_d as r_and_d
 import app.d2y_admin as d2y_admin
 import app.azure as azure
@@ -335,21 +335,17 @@ def guide_view(request):
     return render(request, 'app/guide.html', context )
 
 
-def facts_view(request):
+def aws_view(request):
     """Renders the facts page."""
     if request.method == 'POST':
-        form = facts_form(request.POST)
+        form = aws_form(request.POST)
         if form.is_valid():
-            facts_choices = form.cleaned_data['facts_choices_field']
-            norms_choices = form.cleaned_data['norms_choices_field']
-            survey_field = form.cleaned_data['survey_field']
-            facts_d = facts.facts_survey(survey_field, facts_choices, norms_choices)
-            load.load_studies_facts(survey_field, facts_d)
-            return render(request, 'app/factsresults.html', {'facts_d' : facts_d } )
+            s3_choices = form.cleaned_data['s3_choices_field']
+            return render(request, 'app/awsresults.html', {} )
     else:
-        form = facts_form(initial={'facts_choices_field':['emotions'],'norms_choices_field':['age']})
+        form = aws_form(initial={'s3_choices_field':['deheerlijkekeuken']})
 
-    return render(request, 'app/facts.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
+    return render(request, 'app/aws.html', {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def consumer_insight_view(request):
     "Renders the consumer_insight page."

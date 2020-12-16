@@ -49,12 +49,6 @@ class AppConfig (django.apps.AppConfig):
         models.ScentemotionSeekerView.document = models.ScentemotionDoc
         models.ScentemotionSeekerView.es_mapping = models.ScentemotionMap._meta.es_mapping
 
-        #models.StudiesDoc = seeker.mapping.document_from_model(models.Studies, index="studies", using=models.client)
-        es_index = {'document' : 'studies', 'index' : 'studies', 'doc_type' : 'doc', 'properties' : models.StudiesMap._meta.es_mapping}
-        models.StudiesDoc = seeker.mapping.document_from_index(es_index, using=models.client)
-        models.StudiesSeekerView.document = models.StudiesDoc
-        models.StudiesSeekerView.es_mapping = models.StudiesMap._meta.es_mapping
-
         #models.SurveyDoc = seeker.mapping.document_from_model(models.Survey, index="survey", using=models.client)
         es_index = {'document' : 'survey', 'index' : 'survey', 'doc_type' : 'doc', 'properties' : models.SurveyMap._meta.es_mapping}
         models.SurveyDoc = seeker.mapping.document_from_index(es_index, using=models.client)

@@ -65,7 +65,7 @@
     <Compile Include="app\models.py" />
     <Compile Include="app\scrape_ds.py" />
     <Compile Include="app\sentiment.py" />
-    <Compile Include="app\facts.py" />
+    <Compile Include="app\aws.py" />
     <Compile Include="app\survey.py">
       <SubType>Code</SubType>
     </Compile>
@@ -651,8 +651,8 @@
     <Content Include="app\templates\app\d2y_admin.html" />
     <Content Include="app\templates\app\crawl.html" />
     <Content Include="app\templates\app\loadresults.html" />
-    <Content Include="app\templates\app\facts.html" />
-    <Content Include="app\templates\app\factsresults.html" />
+    <Content Include="app\templates\app\aws.html" />
+    <Content Include="app\templates\app\awsresults.html" />
     <Content Include="app\templates\app\platform_admin.html" />
     <Content Include="app\templates\app\edepot.html" />
     <Content Include="app\templates\app\scent_emotion.html" />

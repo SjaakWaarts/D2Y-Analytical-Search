@@ -136,17 +136,6 @@ def create_index_scentemotion():
         index=index_name
     )
 
-def create_index_studies():
-    indices_client = IndicesClient(models.client)
-    index_name = models.StudiesMap._meta.es_index_name
-    if indices_client.exists(index_name):
-        indices_client.delete(index=index_name)
-    indices_client.create(index=index_name)
-    indices_client.put_mapping(
-        body=models.StudiesMap._meta.es_mapping,
-        index=index_name
-    )
-
 def create_index_survey():
     indices_client = IndicesClient(models.client)
     index_name = models.SurveyMap._meta.es_index_name
@@ -210,8 +199,6 @@ def create_index_elastic(index_choices, excel_filename):
             create_index_mail()
         elif index_choice == 'scentemotion':
             create_index_scentemotion()
-        elif index_choice == 'studies':
-            create_index_studies()
         elif index_choice == 'survey':
             create_index_survey()
         elif index_choice == 'dhk':
