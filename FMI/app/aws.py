@@ -7,7 +7,7 @@ from email import policy
 import mimetypes
 from slugify import slugify
 import dhk_app.recipe as recipe
-from FMI.settings import BASE_DIR
+from FMI.settings import BASE_DIR, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 def add_review_to_recipe(id):
     recipe_es = recipe.get_recipe_es(id)
@@ -42,7 +42,8 @@ def add_review_to_recipe(id):
 
 def list_s3(buckets):
     bucket_objects = []
-    s3 = boto3.resource('s3')
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = session.resource('s3')
     for bucket_name in buckets:
         bucket = s3.Bucket(bucket_name)
         for bo in bucket.objects.all():
