@@ -22,7 +22,6 @@ from datetime import datetime, time
 import FMI.settings
 import app.elastic as elastic
 import app.scrape_ds as scrape_ds
-import app.excitometer as excitometer
 import app.sentiment as sentiment
 import app.product as product
 import app.market as market
@@ -32,9 +31,7 @@ import app.crawl as crawl
 import app.survey as survey
 import app.guide as guide
 import app.aws as aws
-import app.r_and_d as r_and_d
 import app.d2y_admin as d2y_admin
-import app.azure as azure
 import app.wb_excel as wb_excel
 import app.models as models
 import app.survey
@@ -76,26 +73,6 @@ def product_insight_view(request):
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
-def r_and_d_view(request):
-    """Renders the R&D page."""
-    if request.method == 'POST':
-        form = r_and_d_form(request.POST)
-        if form.is_valid():
-            ipc_field = '00000000' + form.cleaned_data['ipc_field']
-            ipc_field = ipc_field[-6:]
-            molecule_d = r_and_d.molecules(ipc_field)
-            if molecule_d:
-                models.molecules_d[ipc_field] = molecule_d
-                return render(request, 'app/r_and_dresults.html', {'molecules_d' : models.molecules_d } )
-            else:
-                form.add_form_error("Molecule properties and/or image could not be read from R&D")
-    else:
-        form = r_and_d_form(initial={'ipc_field':'100154'})
-
-    return render(
-        request,
-        'app/r_and_d.html',
-        {'site' : FMI.settings.site, 'form': form, 'year':datetime.now().year})
 
 def set_workbook(workbook_name):
     workbook = wb_excel.workbooks[workbook_name]
@@ -149,55 +126,6 @@ def search_workbook(request):
     #return redirect('search_excel')
     return HttpResponseRedirect(url + "?%s" % params)
 
-
-def excitometer_view(request):
-    """Renders the Excitometer page."""
-    correlation_li = []
-    chart_data = []
-    facets_data = {}
-    tiles_d = {}
-    tiles_select = {}
-
-    if request.method == 'POST':
-        form = excitometer_form(request.POST)
-        if form.is_valid():
-            uptake_field = form.cleaned_data['uptake_field']
-            IPC_field = form.cleaned_data['IPC_field']
-            correlations_field = form.cleaned_data['correlations_field']
-            FITTE_norm_field = form.cleaned_data['FITTE_norm_field']
-            CIU_field = form.cleaned_data['CIU_field']
-            regions_field = form.cleaned_data['regions_field']
-            type_field = form.cleaned_data['type_field']
-            regulator_field = form.cleaned_data['regulator_field']
-            if 'uptake' in form.data:
-                correlation_li = excitometer.correlate(uptake_field, IPC_field, correlations_field, FITTE_norm_field,
-                                                       CIU_field, regions_field, type_field, regulator_field)
-                tiles_d = excitometer.uptake(correlations_field)
-                if correlation_li is None or tiles_d is None:
-                    form.add_form_error("Uptake failed, first retrieve ingr molecules data")
-            if 'retrieve_ingredients' in form.data:
-                if excitometer.retrieve_ingredients() == False:
-                    form.add_form_error("Failed to read the correlation master data file")
-            #return render(request, 'app/excitometer.html', {'form': form, 'correlation_li' : correlation_li, 'chart_data' : chart_data } )
-    else:
-        form = excitometer_form(initial={'type_field':['Vanilla'],'regulator_field':['Nat']})
- 
-    context = {
-        'site' : FMI.settings.site,
-        'year':datetime.now().year,
-        'form': form,
-        'correlation_li' : correlation_li,
-        'chart_data' : chart_data,
-        'facets_data': json.dumps(facets_data),
-        'tiles_select': json.dumps(tiles_select),
-        'tiles_d': json.dumps(tiles_d),
-        'storyboard' : json.dumps(excitometer.storyboard),
-        'dashboard_name' : 'Uptake',
-        'dashboard': json.dumps(excitometer.dashboard),
-        }
-
-    return render(request, 'app/excitometer.html', context)
-
 def scent_emotion_view(request):
     if request.method == 'POST':
         if 'search_scentemotion' in request.POST:
@@ -208,16 +136,6 @@ def scent_emotion_view(request):
     return render(
         request,
         'app/scent_emotion.html',
-        {'site' : FMI.settings.site, 'year':datetime.now().year}
-    )
-
-@login_required
-#@user_passes_test(lambda u: u.has_perm('auth.edepot'))
-@permission_required('auth.edepot', raise_exception=True)
-def edepot_view(request):
-    return render(
-        request,
-        'app/edepot.html',
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
@@ -341,7 +259,8 @@ def aws_view(request):
         form = aws_form(request.POST)
         if form.is_valid():
             s3_choices = form.cleaned_data['s3_choices_field']
-            return render(request, 'app/awsresults.html', {} )
+            bucket_objects = aws.list_s3(s3_choices)
+            return render(request, 'app/awsresults.html', {'bucket_objects' : bucket_objects} )
     else:
         form = aws_form(initial={'s3_choices_field':['deheerlijkekeuken']})
 
@@ -565,9 +484,7 @@ def d2y_admin_view(request):
                 d2y_admin.create_index_elastic(index_choices, excel_filename)
             elif 'analyzer' in form.data:
                 d2y_admin.create_analyzer(index_choices)
-            if 'index_azure' in form.data:
-                azure.create_index_azure(index_choices)
-            elif 'export_opml' in form.data:
+            if 'export_opml' in form.data:
                 if not d2y_admin.export_opml(index_choices, opml_filename):
                     form.add_form_error("Could not export OPML")
             elif 'import_opml' in form.data:

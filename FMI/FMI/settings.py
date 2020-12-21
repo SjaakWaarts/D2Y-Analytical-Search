@@ -211,6 +211,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'corsheaders',
+    'djangosaml2',
 )
 
 AUTH_USER_MODEL = 'users_app.User'

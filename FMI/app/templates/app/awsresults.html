@@ -9,10 +9,27 @@
   <h1>AWS S3 details {{ title }} </h1>
 </div>
 
+<table>
+    <thead>
+        <tr>
+            <td>To</td>
+            <td>From</td>
+            <td>Subject</td>
+            <td>Body</td>
+        </tr>
+    </thead>
+   {% for bo in bucket_objects %}
+       <tr>
+           <td>{{bo.to}}</td>
+           <td>{{bo.from}}</td>
+           <td>{{bo.subject}}</td>
+           <td>{{bo.body}}</td>
+       </tr>
+   {% endfor %}
+</table>
 
 
 {% endblock %}
-
 
 
 {% block scripts %}

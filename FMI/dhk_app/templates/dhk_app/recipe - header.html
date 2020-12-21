@@ -16,18 +16,22 @@
         <div class="col-xl-4 col-12">
             <div class="recipe-actions">
                 <div class="recipe-action">
-                    <a type="button" v-bind:href="bind_recipe_file_url()" download style="color:black"><i class="fas fa-print"></i></a>
+                    <a type="button" v-bind:href="bind_recipe_file_url()" data-toggle="tooltip" title="Print als PDF" download style="color:black"><i class="fas fa-print"></i></a>
+                </div>
+                <div class="recipe-action">
+                    <a type="button" v-bind:href="bind_recipe_file_url()" data-toggle="tooltip" title="Save als PDF" download style="color:black"><i class="fas fa-file-pdf-o"></i></a>
+                </div>
+                <div class="recipe-action">
+                    <a type="button" v-bind:href="bind_recipe_mail_review_url()" data-toggle="tooltip" title="Mail Review" download style="color:black"><i class="fas fa-envelope"></i></a>
                 </div>
                 <div class="recipe-action recipe-action-hover">
-                    <button><i class="fas fa-share-alt"></i></button>
+                    <a data-toggle="tooltip" title="Share"><i class="fas fa-share-square"></i></a>
                     <div class="recipe-action-hover-wrap">
-                        <a href="#" title="facebook">
-                            <div class="fb-share-button" v-bind:data-href="window.location.href" data-layout="button_count" data-size="small">
-                                <a target="_blank" v-bind:href="'https://www.facebook.com/sharer/sharer.php?u='+encodeURI(window.location.href)+'&amp;src=sdkpreparse'" class="fb-xfbml-parse-ignore">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                            </div>
-                        </a>
+                        <div class="fb-share-button" v-bind:data-href="window.location.href" data-layout="button_count" data-size="small">
+                            <a target="_blank" v-bind:href="'https://www.facebook.com/sharer/sharer.php?u='+encodeURI(window.location.href)+'&amp;src=sdkpreparse'" class="fb-xfbml-parse-ignore">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

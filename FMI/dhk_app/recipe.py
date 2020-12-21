@@ -13,6 +13,7 @@ import docx
 import json
 import urllib
 import requests
+from slugify import slugify
 from geopy.exc import GeopyError
 from geopy.geocoders import Nominatim
 from django.shortcuts import render
@@ -58,9 +59,7 @@ def recipe_view(request):
         context
     )
 
-def get_recipe(request):
-    id = request.GET['id']
-    format = request.GET['format']
+def get_recipe_es(id):
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
     search_filters = search_q["query"]["bool"]["filter"]
@@ -75,6 +74,18 @@ def get_recipe(request):
     hits = results.get('hits', {})
     hit = hits.get('hits', [{}])[0]
     recipe = hit.get('_source', {})
+    return recipe
+
+def put_recipe_es(recipe):
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
+    return result
+
+def get_recipe(request):
+    id = request.GET['id']
+    format = request.GET['format']
+    recipe = get_recipe_es(id)
     context = {
         'recipe'  : recipe,
         }
@@ -99,7 +110,7 @@ def get_recipe(request):
             subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE).wait()
             f = open(pfd_fullname, 'rb')
             filename = recipe_basename + '.pdf'
-        os.remove(recipe_fullname)
+            os.remove(recipe_fullname)
         os.remove(zip_fullname)
         #response = Response(pdf.read(), content_type='application/pdf')
         #response.content_disposition = 'inline;filename=' + basename
@@ -112,8 +123,6 @@ def post_recipe(request):
     # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
     json_data = json.loads(request.body)
     recipe = json_data.get('recipe', None)
-    es_host = ES_HOSTS[0]
-    s, search_q = esm.setup_search()
     if len(recipe['cooking_clubs']) > 0:
         recipe['cooking_clubs'].sort(key=lambda cooking_club: cooking_club['cooking_date'])
     for cooking_club in recipe['cooking_clubs']:
@@ -124,7 +133,7 @@ def post_recipe(request):
                 cooking_club['position'] = geolocator.geocode(cooking_club['address'])
             except (AttributeError, GeopyError):
                 pass
-    result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
+    result = put_recipe_es(recipe)
 
     sender = "info@deheerlijkekeuken.nl"
     for cooking_club in recipe['cooking_clubs']:

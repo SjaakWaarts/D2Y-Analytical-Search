@@ -23,26 +23,6 @@ class BootstrapAuthenticationForm(AuthenticationForm):
                                    'class': 'form-control',
                                    'placeholder':'Password'}))
 
-class excitometer_form(forms.Form):
-    uptake_field = forms.CharField(label='Uptake', max_length=18, required = False, initial = 'one')
-    IPC_field = forms.CharField(label='new IPC', max_length=18, required = True, initial = '')
-    correlations_field = forms.IntegerField(label='Nr of Top Correlations', initial = 3)
-    FITTE_norm_field = forms.FloatField(label='FITTE', initial = 0)
-    CIU_field = forms.FloatField(label='CIU', initial = 0)
-    regions_field = forms.IntegerField(label='Nr of Regions', initial = 0)
-    type_choices = (('Brown', 'Brown'), ('Citrus', 'Citrus'), ('Cooling', 'Cooling'), ('Dairy/Cheese', 'Dairy/Cheese'), ('Fruit-General', 'Fruit-General'),
-                    ('Fruit-Tropical', 'Fruit-Tropical'), ('Mint/Herb', 'Mint/Herb'), ('Modulator-Experience', 'Modulator-Experience'), ('Modulator-Fatty', 'Modulator-Fatty'),
-                    ('Modulator-Masking', 'Modulator-Masking'), ('Modulator-Sweet', 'Modulator-Sweet'), ('Savory-Meat', 'Savory-Meat'), ('Savory-Non-Meat', 'Savory-Non-Meat'),
-                    ('Savory-Salt/Umami', 'Savory-Salt/Umami'), ('Tea', 'Tea'), ('Vanilla', 'Vanilla'))
-    type_field = forms.ChoiceField(label='Bucket/Type', choices=type_choices)
-    regulator_choices = (('Nat', 'Natural'), ('Art', 'Artificial'), ('Nat Art', 'Natural/Artificial'))
-    regulator_field = forms.ChoiceField(label='Regulator', choices=regulator_choices)
-    def add_form_error(self, message):
-        if not self._errors:
-            self._errors = ErrorDict()
-        if not NON_FIELD_ERRORS in self._errors:
-            self._errors[NON_FIELD_ERRORS] = self.error_class()
-        self._errors[NON_FIELD_ERRORS].append(message)
 
 class scrape_form(forms.Form):
     site_choices = (('fragrantica', 'Fragrantica'), ('amazon', 'Amazon'), ('sephora', 'Sephora'), ('bbw', 'BBW'), ('fotw', 'Fragrances of the World'))
@@ -57,14 +37,6 @@ class scrape_form(forms.Form):
             self._errors[NON_FIELD_ERRORS] = self.error_class()
         self._errors[NON_FIELD_ERRORS].append(message)
 
-class r_and_d_form(forms.Form):
-    ipc_field = forms.CharField(label='IPC', max_length=40, required = True, initial = '', help_text='IPC for which to retrieve the models')
-    def add_form_error(self, message):
-        if not self._errors:
-            self._errors = ErrorDict()
-        if not NON_FIELD_ERRORS in self._errors:
-            self._errors[NON_FIELD_ERRORS] = self.error_class()
-        self._errors[NON_FIELD_ERRORS].append(message)
 
 class product_form(forms.Form):
     product_field = forms.CharField(label='Product', max_length=40, required = False, initial = '', help_text='Index this product')
@@ -86,8 +58,6 @@ class aws_form(forms.Form):
         self._errors[NON_FIELD_ERRORS].append(message)
 
 class crawl_form(forms.Form):
-    #index_choices = (('elastic', 'Elastic Index/Search'), ('azure', 'Azure Index/Search'))
-    #index_choices_field = forms.MultipleChoiceField(label='Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=True)
     from_dt = forms.DateField(label='From Date (DD/MM/YYYY)', required=False)
     nrpages_field = forms.IntegerField(label='Number of Pages to Scrape', initial = 50)
     site_choices = (('cosmetics', 'Cosmetics'), ('apf', 'APF'), ('contagious', 'Contagious'), ('mit', 'MIT Media Lab'), ('gci', 'GCI magazine'))

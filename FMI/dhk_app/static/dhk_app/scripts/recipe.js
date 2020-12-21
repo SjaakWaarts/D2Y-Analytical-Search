@@ -69,6 +69,10 @@ var app = new Vue({
             var url = get_recipe_url + '?id=' + this.id + '&format=pdf';
             return encodeURI(url);
         },
+        bind_recipe_mail_review_url() {
+            var url = "mailto:review@deheerlijkekeuken.nl?subject=" + this.id + "&body=<Plaats hier uw review EN foto's...>%0D%0A%0D%0AVoor een correcte verwerking, verander het Onderwerp niet!%0D%0ABedankt voor u review.";
+            return url;
+        },
         bind_stream_file_url(url, location) {
             return encodeURI(url + '?location=' + location);
         },

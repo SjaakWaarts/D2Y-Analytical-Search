@@ -44,8 +44,6 @@ urlpatterns = [
     path('product_insight', app.views.product_insight_view, name='product_insight'),
     path('search_pi/', models.PerfumeSeekerView.as_view(), name='search_pi'),
     path('product_elastic', app.product.ProductElasticView.as_view(), name='product_elastic'),
-    path('r_and_d', app.views.r_and_d_view, name='r_and_d'),
-    path('excitometer', app.views.excitometer_view, name='excitometer'),
 
     path('scrape', app.views.scrape_view, name='scrape'),
 
@@ -75,8 +73,6 @@ urlpatterns = [
 
     path('customer/', app.views.home, name='customer'),
     path('market_insight', app.views.market_insight_view, name='market_insight'),
-
-    path('edepot', app.views.edepot_view, name='edepot'),
 
     path('elastic/', app.views.elastic_view, name='elastic'),
     path('autocomplete/', app.views.autocomplete_view, name='autocomplete-view'),

@@ -53,36 +53,6 @@
                     <div class="col-md-5">
 		                <div class="info-card">
 				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "app/media/r_and_d.jpg" %}">
-				                </div>
-			                <div class="info-card-back">
-				                <h3>R&D Specs</h3>
-				                <p>
-                                    For the specified IPCs, the molecule properties and image are retrieved from the R&D systems.
-                                    This data is listed as a table.
-				                </p>
-			                </div>
-		                </div>
-                    </div>
-                    <div class="col-md-7">
-                        <p>
-                            Analyze the R&D molecules
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'r_and_d' %}">R&D Molecules &raquo;</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-5 iff-dataset">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-		                <div class="info-card">
-				                <div class="info-card-front">
 					                <img class="card-image" src="{% static "app/media/patents.jpg" %}">
 				                </div>
 			                <div class="info-card-back">
@@ -103,40 +73,6 @@
                         <p>
                             <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=patents&storyboard_name=initial&dashboard_name=initial">
                                 Patents &raquo;</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-5 iff-dataset">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-		                <div class="info-card">
-				                <div class="info-card-front">
-					                <img class="card-image" src="{% static "app/media/excitometer.jpg" %}">
-				                </div>
-			                <div class="info-card-back">
-				                <h3>Uptake of new Ingredients</h3>
-				                <p>
-                                    This dataset contains the results of the Peer Company patent and article review.
-                                    Thomson Innovation is used for the patents and Chemical Abstracts for the articles.
-				                </p>
-			                </div>
-		                </div>
-                    </div>
-                    <div class="col-md-7">
-                        <p>
-                            Predict the future uptake of new ingredients. This is done by first finding similair ingredients and based on the historical
-                            usage of those similar ingredients, the usage or uptake of the new ingredient is predicted.
-                            Similar ingredients are found by correlating the characteristics of the new ingredient with the same characteristics of
-                            existing ingredients. The characteristics used for this correlation are: classification, used in formulas, sold in regions,
-                            cost, natural
-                        </p>
-                        <p>
-                            <a class="btn btn-primary" href="{% url 'excitometer' %}">Excito-Meter &raquo;</a>
-                            <a class="btn btn-primary" href="{% url 'search_workbook'%}?workbook_name=ingr_molecules&storyboard_name=initial&dashboard_name=molecules">
-                                Ingr Molecules &raquo;</a>
                         </p>
                     </div>
                 </div>
