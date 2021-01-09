@@ -3,6 +3,8 @@ Definition of api-views.
 """
 
 import sys
+import io
+import requests
 #import magic
 from pandas import Series, DataFrame
 from django.shortcuts import render
@@ -367,7 +369,12 @@ def stream_file(request):
     # for media.deheerlijkekeuken.nl use the redirect approach since Chrome doesn't support mixed content (http and https).
     # a static website from S3 doesn't support https
     if location[:4] == 'http':
-        return HttpResponseRedirect(location)
+        response = requests.get(location)
+        content_type = response.headers['Content-Type']
+        bytes_io = io.BytesIO()
+        bytes_io.write(response.content)
+        bytes_io.seek(0)
+        response = HttpResponse(bytes_io, content_type=content_type)
     else:
         if sys.platform[0:3] == "win":
             location = location.replace('/', '\\')
@@ -383,10 +390,9 @@ def stream_file(request):
             with open(filename, "rb") as f:
                 response = HttpResponse(f.read(), content_type=content_type)
             #response._headers['Content-Disposition'] = "attachment; filename=" + basename
-            return response
         else:
             response = HttpResponse(content_type="image/jpeg")
-            return response
+    return response
 
 
 
