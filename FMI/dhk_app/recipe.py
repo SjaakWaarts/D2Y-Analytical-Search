@@ -13,6 +13,7 @@ import docx
 import json
 import urllib
 import requests
+import boto3
 from slugify import slugify
 from geopy.exc import GeopyError
 from geopy.geocoders import Nominatim
@@ -28,8 +29,8 @@ from django.core.mail import send_mail
 from users_app.models import User
 import seeker.esm as esm
 import FMI.settings
-from FMI.settings import BASE_DIR, ES_HOSTS
-
+from FMI.settings import BASE_DIR, ES_HOSTS, MEDIA_BUCKET, MEDIA_URL
+from FMI.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 def recipe_view(request):
     """Renders dhk page."""
@@ -59,6 +60,25 @@ def recipe_view(request):
         context
     )
 
+def get_recipe_reviews_s3(id):
+    reviews = []
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = session.resource('s3')
+    bucket = s3.Bucket(MEDIA_BUCKET)
+    folder_name = 'reviews/{}/'.format(slugify(id))
+    #kwargs = {'Bucket': bucket}
+    #kwargs['Prefix'] = folder_name
+    #kwargs['Suffix'] = 'jpeg'
+    #resp = s3.list_objects_v2(**kwargs)
+    objects = bucket.objects.filter(Prefix=folder_name)
+    for o in objects:
+        if o.key[-4:].lower() == 'jpeg':
+            reviews.append({
+                'type'     : 'media',
+                'location' : "{}{}".format(MEDIA_URL, o.key)
+                })
+    return reviews
+
 def get_recipe_es(id):
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
@@ -86,8 +106,10 @@ def get_recipe(request):
     id = request.GET['id']
     format = request.GET['format']
     recipe = get_recipe_es(id)
+    reviews = get_recipe_reviews_s3(id)
     context = {
         'recipe'  : recipe,
+        'reviews' : reviews
         }
     if format == 'json':
         return HttpResponse(json.dumps(context), content_type='application/json')

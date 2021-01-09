@@ -217,7 +217,8 @@ var app = new Vue({
         get_recipe: function () {
             this.$http.get(get_recipe_url, { params: { id: this.id, format: 'json'  } }).then(response => {
                 this.recipe = response.body.recipe;
-                this.carousel_images = this.recipe.images;
+                this.reviews = response.body.reviews;
+                this.carousel_images = this.recipe.images.concat(this.reviews);
                 if (this.recipe.reviews.length === 0) {
                     this.average_rating = 0;
                 } else {
