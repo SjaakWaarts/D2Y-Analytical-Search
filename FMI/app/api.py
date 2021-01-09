@@ -364,24 +364,29 @@ def scrape_reviews_api(request):
 
 def stream_file(request):
     location = request.GET.get('location', None)
-    if sys.platform[0:3] == "win":
-        location = location.replace('/', '\\')
+    # for media.deheerlijkekeuken.nl use the redirect approach since Chrome doesn't support mixed content (http and https).
+    # a static website from S3 doesn't support https
+    if location[:4] == 'http':
+        return HttpResponseRedirect(location)
     else:
-        location = location.replace('\\', '/')
-    filename = os.path.join(BASE_DIR, location)
-    if os.path.isfile(filename):
-        #mime = magic.Magic(mime=True)
-        #content_type = mime.from_file(filename)
-        splitext = os.path.splitext(filename)
-        basename = os.path.basename(filename)
-        content_type = types_map[splitext[1]]
-        with open(filename, "rb") as f:
-            response = HttpResponse(f.read(), content_type=content_type)
-        #response._headers['Content-Disposition'] = "attachment; filename=" + basename
-        return response
-    else:
-        response = HttpResponse(content_type="image/jpeg")
-        return response
+        if sys.platform[0:3] == "win":
+            location = location.replace('/', '\\')
+        else:
+            location = location.replace('\\', '/')
+        filename = os.path.join(BASE_DIR, location)
+        if os.path.isfile(filename):
+            #mime = magic.Magic(mime=True)
+            #content_type = mime.from_file(filename)
+            splitext = os.path.splitext(filename)
+            basename = os.path.basename(filename)
+            content_type = types_map[splitext[1]]
+            with open(filename, "rb") as f:
+                response = HttpResponse(f.read(), content_type=content_type)
+            #response._headers['Content-Disposition'] = "attachment; filename=" + basename
+            return response
+        else:
+            response = HttpResponse(content_type="image/jpeg")
+            return response
 
 
 

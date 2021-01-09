@@ -15,12 +15,7 @@
                 <div class="carousel-inner">
                     <div class="carousel-item" v-bind:class="{active : image_ix==0}" style="background: grey"
                             v-for="(image, image_ix) in this.carousel_images">
-                        <div v-if="image.type=='media'">
-                            <img v-bind:src="image.location" alt=field width="auto" height="256px" style="margin: 5px">
-                        </div>
-                        <div v-else>
-                           <img v-bind:src="bind_stream_file_url(api_stream_file_url, image.location)" alt=field width="auto" height="256px" style="margin: 5px">
-                        </div>
+                        <img v-bind:src="bind_stream_file_url(api_stream_file_url, image.location)" alt=field width="auto" height="256px" style="margin: 5px">
                     </div>
                 </div>
                 <!-- Left and right controls -->
