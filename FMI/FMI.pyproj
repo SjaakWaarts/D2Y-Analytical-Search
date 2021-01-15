@@ -39,6 +39,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="dhk_app\club.py" />
+    <Compile Include="dhk_app\images.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="dhk_app\recipe.py" />
     <Compile Include="dhk_app\dhk_admin.py" />
     <Compile Include="app\cmis.py" />
@@ -69,7 +72,6 @@
     <Compile Include="dhk_app\apps.py" />
     <Compile Include="dhk_app\migrations\__init__.py" />
     <Compile Include="dhk_app\models.py" />
-    <Compile Include="dhk_app\tests.py" />
     <Compile Include="dhk_app\urls.py" />
     <Compile Include="dhk_app\kitchen.py" />
     <Compile Include="dhk_app\workshops.py" />
@@ -191,6 +193,7 @@
     <Content Include="dhk_app\static\dhk_app\scripts\components.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\club.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\facets.js" />
+    <Content Include="dhk_app\static\dhk_app\scripts\recipe_edit.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\workshop.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\recipe.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\dhk_admin.js" />
@@ -230,6 +233,7 @@
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="dhk_app\templates\dhk_app\cooking_club_mail.html" />
     <Content Include="dhk_app\templates\dhk_app\dhk_mail_layout.html" />
+    <Content Include="dhk_app\templates\dhk_app\recipe_edit.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop-form.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop.html" />
     <Content Include="dhk_app\templates\dhk_app\club-results.html" />

@@ -5,9 +5,9 @@
 //Set url and csrf variables
 //var csrf_token = $("input[name=csrf_token]").val();
 var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
-var get_recipe_url = $("input[name=get_recipe_url]").val();
+var recipe_get_url = $("input[name=recipe_get_url]").val();
 var get_cooking_clubs_url = $("input[name=get_cooking_clubs_url]").val();
-var post_recipe_url = $("input[name=post_recipe_url]").val();
+var recipe_post_url = $("input[name=recipe_post_url]").val();
 
 function yyyymmdd(dateIn) {
     var yyyy = dateIn.getFullYear();

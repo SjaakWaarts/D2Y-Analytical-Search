@@ -258,9 +258,9 @@ function draw_dashboard_layout(chart_name, chart, facet_value) {
 
     var div_card = document.createElement("div");
     var div_card = document.createElement("div");
-    div_card.setAttribute("class", "iff-card-6");
+    div_card.setAttribute("class", "d2y-card-6");
     var div_card_header = document.createElement("div");
-    div_card_header.setAttribute("class", "iff-card-header");
+    div_card_header.setAttribute("class", "d2y-card-header");
     div_card_header.setAttribute("id", div_name + "_title");
     div_card.appendChild(div_card_header);
     div_card_header.innerHTML = "<b>" + chart['chart_title'] + "</b>";
@@ -270,7 +270,7 @@ function draw_dashboard_layout(chart_name, chart, facet_value) {
     }
     card_header(div_card_header, chart_name);
     var div_card_body = document.createElement("div");
-    div_card_body.setAttribute("class", "iff-card-body");
+    div_card_body.setAttribute("class", "d2y-card-body");
     div_card.appendChild(div_card_body);
 
     var div_db = document.createElement("div");
@@ -337,7 +337,7 @@ function draw_dashboard(dashboard, charts, facet_value, tiles_select) {
         for (var rownr = 0; rownr < layout.length; rownr++) {
             var row = layout[rownr];
             var div_row = document.createElement("div");
-            div_row.setAttribute("class", "row iff-margin-t15");
+            div_row.setAttribute("class", "row d2y-margin-t15");
             dashboard_div.appendChild(div_row);
             var l_width = 12 / row.length;
             for (var chartnr = 0; chartnr < row.length; chartnr++) {

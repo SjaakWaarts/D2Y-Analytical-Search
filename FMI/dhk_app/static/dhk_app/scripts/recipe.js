@@ -20,8 +20,9 @@
 //Set url and csrf variables
 //var csrf_token = $("input[name=csrf_token]").val();
 var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
-var get_recipe_url = $("input[name=get_recipe_url]").val();
-var post_recipe_url = $("input[name=post_recipe_url]").val();
+var recipe_get_url = $("input[name=recipe_get_url]").val();
+var recipe_edit_url = $("input[name=recipe_edit_url]").val();
+var recipe_post_url = $("input[name=recipe_post_url]").val();
 var api_stream_file_url = $("input[name=api_stream_file_url]").val();
 
 //Vue part
@@ -65,8 +66,12 @@ var app = new Vue({
         shopping_basket: [],
     },
     methods: {
-        bind_recipe_file_url() {
-            var url = get_recipe_url + '?id=' + this.id + '&format=pdf';
+        bind_recipe_edit_url() {
+            var url = recipe_edit_url + '?id=' + this.id;
+            return encodeURI(url);
+        },
+        bind_recipe_get_url() {
+            var url = recipe_get_url + '?id=' + this.id + '&format=pdf';
             return encodeURI(url);
         },
         bind_recipe_mail_review_url() {
@@ -207,15 +212,15 @@ var app = new Vue({
             var button_tag = document.getElementById("participate_button");
             button_tag.innerHTML = "AANMELDEN ETENTJE";
             button_tag.value = "new";
-            this.post_recipe();
+            this.recipe_post();
         },
         club_participant_me_click: function () {
             this.cooking_club_participant.user = user.username;
             this.cooking_club_participant.email = user.email;
             this.cooking_club_participant.comment = "";
         },
-        get_recipe: function () {
-            this.$http.get(get_recipe_url, { params: { id: this.id, format: 'json'  } }).then(response => {
+        recipe_get: function () {
+            this.$http.get(recipe_get_url, { params: { id: this.id, format: 'json'  } }).then(response => {
                 this.recipe = response.body.recipe;
                 this.reviews = response.body.reviews;
                 this.carousel_images = this.recipe.images.concat(this.reviews);
@@ -230,7 +235,7 @@ var app = new Vue({
                 }
             });
         },
-        post_review_click: function () {
+        review_post_click: function () {
             var review = {};
             var textarea_tag = document.getElementById("comment_textarea");
             var today = new Date();
@@ -243,7 +248,7 @@ var app = new Vue({
             review.review = textarea_tag.value;
             review.stars = this.leave_review.stars;
             this.recipe.reviews.push(review)
-            this.post_recipe();
+            this.recipe_post();
         },
         post_cooking_club_click: function (crud) {
             var textarea_tag = document.getElementById("cc_invitation");
@@ -277,7 +282,7 @@ var app = new Vue({
                         //var index = parseInt(button_tag.value.split('-')[1]);
                         //this.recipe.cooking_clubs[index] = this.cooking_club;
                     }
-                    app.post_recipe();
+                    app.recipe_post();
                 } else {
                     alert('Geocoding: "' + cooking_club.address + '", kan adres niet vinden, status: ' + status);
                 }
@@ -307,12 +312,12 @@ var app = new Vue({
                 var index = parseInt(button_tag.value.split('-')[1]);
                 this.cooking_club.participants[index] = participant;
             }
-            this.post_recipe();
+            this.recipe_post();
         },
-        post_recipe: function () {
+        recipe_post: function () {
             var csrftoken_cookie = getCookie('csrftoken');
             var headers = { 'X-CSRFToken': csrftoken_cookie };
-            this.$http.post(post_recipe_url, {
+            this.$http.post(recipe_post_url, {
                 'csrfmiddlewaretoken': csrftoken,
                 'recipe': this.recipe,
             },
@@ -469,7 +474,7 @@ var app = new Vue({
     mounted: function () {
         var urlParams = new URLSearchParams(window.location.search);
         this.id = decodeURI(urlParams.has('id') ? urlParams.get('id') : '');
-        this.get_recipe();
+        this.recipe_get();
         if (user.username != "") {
             this.cooking_club.cook = user.username;
             this.cooking_club.email = user.email;

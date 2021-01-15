@@ -5,7 +5,7 @@
 //Set url and csrf variables
 //var csrf_token = $("input[name=csrf_token]").val();
 var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
-var get_recipe_url = $("input[name=get_recipe_url]").val();
+var recipe_get_url = $("input[name=recipe_get_url]").val();
 var get_workshops_url = $("input[name=get_workshops_url]").val();
 var api_stream_file_url = $("input[name=api_stream_file_url]").val();
 

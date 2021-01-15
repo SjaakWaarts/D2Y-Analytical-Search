@@ -12,18 +12,18 @@
 {% block content %}
 
     <div id="root" class="content">
-        <div class="iff-pane-border content-form">
+        <div class="d2y-pane-border content-form">
             {% include "dhk_app/club-form.html" %}
         </div>
-        <div class="iff-pane-border content-results">
+        <div class="d2y-pane-border content-results">
             {% include "dhk_app/club-results.html" %}
         </div>
     </div>
 
     {% csrf_token %}
     <input type="hidden" name="get_cooking_clubs_url" value="{% url 'dhk:get_cooking_clubs' %}">
-	<input type="hidden" name="get_recipe_url" value="{% url 'dhk:get_recipe' %}">
-    <input type="hidden" name="post_recipe_url" value="{% url 'dhk:post_recipe' %}">
+	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
+    <input type="hidden" name="recipe_post_url" value="{% url 'dhk:recipe_post' %}">
   
 {% endblock %}
 

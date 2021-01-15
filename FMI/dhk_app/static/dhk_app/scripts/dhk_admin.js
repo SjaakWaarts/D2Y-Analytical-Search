@@ -197,8 +197,8 @@ var app = new Vue({
             }
             selected_items.push(selected_item);
         },
-        // edit_recipe(event) {
-        edit_recipe(id) {
+        // recipe_edit(event) {
+        recipe_edit(id) {
             //var event_payload = event.event_payload;
             //var selected_items = event.selectedItems;
             var url = this.recipe_url('recipe', id);

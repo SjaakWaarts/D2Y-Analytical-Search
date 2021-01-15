@@ -162,7 +162,7 @@
                                                     <td style="width:10%;">[[ hit._source.published_date ]]</td>
                                                     <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.title ]]</a></td>
                                                     <td style="width:20%;" class="text-center">
-                                                        <a href="#" v-on:click="edit_recipe(hit._source.id)"><i class="fa fa-check" title="Check"></i></a>
+                                                        <a href="#" v-on:click="recipe_edit(hit._source.id)"><i class="fa fa-check" title="Check"></i></a>
                                                         <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye" title="Bekijk" aria-hidden="true"></i></a>
                                                         <a href="#" v-on:click="delete_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
                                                     </td>
@@ -179,7 +179,7 @@
                     <div class="row">
                         <div class="col-12">
                             <vue-bootstrap4-table :rows="rows" :columns="columns" :actions="actions" :config="config"
-                                                  @on-edit="edit_recipe" @on-delete="delete_recipe" @on-select-row="select_recipe">
+                                                  @on-edit="recipe_edit" @on-delete="delete_recipe" @on-select-row="select_recipe">
                                 <template slot="sort-asc-icon">
                                     <i class="fas fa-sort-up"></i>
                                 </template>

@@ -10,7 +10,7 @@ import dhk_app.recipe as recipe
 from FMI.settings import BASE_DIR, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 def add_review_to_recipe(id):
-    recipe_es = recipe.get_recipe_es(id)
+    recipe_es = recipe.recipe_get_es(id)
     dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'reviews', slugify(id))
     if os.path.isdir(dirname):
         recipe_es_changed = False
@@ -38,7 +38,7 @@ def add_review_to_recipe(id):
                     recipe_es['reviews'].append(new_review)
                     recipe_es_changed = True
         if recipe_es_changed:
-            result = recipe.put_recipe_es(recipe_es)
+            result = recipe.recipe_put_es(recipe_es)
 
 def list_s3(buckets):
     bucket_objects = []

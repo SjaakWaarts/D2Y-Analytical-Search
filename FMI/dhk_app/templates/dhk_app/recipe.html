@@ -19,7 +19,7 @@
                         [[ this.recipe.excerpt ]]
                     </div>
                     <div class="row">
-                        <div class="col-lg-8">
+                        <div class="col-lg-9">
                             <div class="recipe">
                                 {% include 'dhk_app/recipe - header.html' %}
                                 <div class="row">
@@ -30,7 +30,7 @@
                                                 <a v-bind:class="{'nav-link':true, 'w-100':true, active:course_ix==0}" data-toggle="tab" v-bind:href="'#course'+course_ix"><i class="fas fa-utensils mr-2"></i>[[course.title]]</a>
                                             </li>
                                             <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)">
-                                                <a class="nav-link w-100" data-toggle="tab" href="#reviews"><i class="far fa-comments mr-2"></i>Reviews</a>
+                                                <a class="nav-link w-100" data-toggle="tab" href="#reviews"><i class="fas fa-comments mr-2"></i>Reviews</a>
                                             </li>
                                             <li class="nav-item" v-bind:style="bind_nav_tab_style(recipe.courses.length+2)" v-on:click="club_tab_click()">
                                                 <a v-bind:class="{'nav-link':true, 'w-100':true, active:this.recipe.courses.length==0}" data-toggle="tab" href="#kookclub"><i class="fas fa-users mr-2"></i>Kookclub</a>
@@ -140,7 +140,7 @@
                                                                 <div class="form-validation-error"></div>
                                                             </div>
                                                             <div class="col-12 form-group mb-0">
-                                                                <button class="item-btn" v-on:click="post_review_click()">
+                                                                <button class="item-btn" v-on:click="review_post_click()">
                                                                     BOEK REVIEW
                                                                 </button>
                                                             </div>
@@ -233,7 +233,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 sidebar">
+                        <div class="col-lg-3 sidebar">
                             {% include 'dhk_app/recipe - sidebar.html' %}
                         </div>
                     </div>
@@ -242,8 +242,9 @@
         </div>
     </div>
     {% csrf_token %}
-	<input type="hidden" name="get_recipe_url" value="{% url 'dhk:get_recipe' %}">
-    <input type="hidden" name="post_recipe_url" value="{% url 'dhk:post_recipe' %}">
+	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
+	<input type="hidden" name="recipe_edit_url" value="{% url 'dhk:recipe_edit' %}">
+    <input type="hidden" name="recipe_post_url" value="{% url 'dhk:recipe_post' %}">
     <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
 
 

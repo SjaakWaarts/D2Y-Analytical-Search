@@ -1,0 +1,145 @@
+{% extends "dhk_app/dhk_layout.html" %}
+{% load i18n %}
+
+{% block css %}
+    {% load static %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'dhk_app/content/recipe.css' %}" />
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-lg-12">
+            <div id="root" class="row">
+                {% include 'dhk_app/recipe - modal.html' %}
+                <div class="col-lg-12" v-if="this.recipe">
+                    <div class="jumbotron" style="padding: 2rem 1rem; margin-bottom: 1rem">
+                        <h2>[[ this.recipe.title ]]</h2>
+                        [[ this.recipe.excerpt ]]
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <div class="recipe">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs" id="tabs">
+                                            <li class="nav-item">
+                                                <a class="nav-link w-100 active" data-toggle="tab" href="#media"><i class="fas fa-images mr-2"></i>Media</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a v-bind:class="{'nav-link':true, 'w-100':true}" data-toggle="tab" href="#categorie"><i class="fas fa-tags mr-2"></i>Categorie</a>
+                                            </li>
+                                        </ul>
+                                        <!-- Tab panes -->
+                                        <div class="tab-content border border-top-0 p-2">
+                                            <div class="tab-pane container fade active show" id="media">
+                                                <div class="recipe-images-search">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon" v-on:click="recipe_images_search_click()"><i class="fas fa-search"></i></span>
+                                                                <input type="text" id="search_text" class="form-control" placeholder="Search" name="search" v-bind:value="this.recipe.title">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="recipe-images">
+                                                            <div class="recipe-image" v-for="(image_url, image_url_ix) in this.image_urls">
+                                                                <img v-bind:src="image_url" style="width:128px;height:128px">
+                                                                <div class="toolbar-actions">
+                                                                    <div class="toolbar-action">
+                                                                        <div class="checkbox">
+				                                                            <input type="checkbox" v-bind:id="'image_url_'+image_url_ix" value="" v-on:click="recipe_image_checkbox_click(image_url_ix)">
+			                                                            </div>
+                                                                    </div>
+                                                                    <div class="toolbar-action">
+                                                                        <a data-toggle="tooltip" title="Rotate" v-on:click="recipe_image_checkbox_click(image_url_ix)"><i class="fas fa-redo"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="recipe-images">
+                                                            <div class="recipe-image" v-for="(image_url, image_url_ix) in this.image_urls">
+                                                                <img v-bind:src="image_url" style="width:128px;height:128px">
+                                                                <div class="toolbar-actions">
+                                                                    <div class="toolbar-action">
+                                                                        <div class="checkbox">
+				                                                            <input type="checkbox" v-bind:id="'image_url_'+image_url_ix" value="" v-on:click="recipe_image_checkbox_click(image_url_ix)">
+			                                                            </div>
+                                                                    </div>
+                                                                    <div class="toolbar-action">
+                                                                        <a data-toggle="tooltip" title="Rotate" v-on:click="recipe_image_checkbox_click(image_url_ix)"><i class="fas fa-redo"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane container fade" id="categorie">
+                                                <div class="club-events">
+                                                    <div class="section-heading3 heading-dark">
+                                                        <h2 class="item-heading">CATEGORIE</h2>
+                                                        <p>
+                                                            Voeg de juiste Categorie en Tags toe.
+                                                        </p>                                                   
+                                                    </div>
+                                                    <div class="club-map-event">
+                                                        <div class="club-event">
+                                                            <div class="leave-form-box">
+                                                                <div class="row">
+                                                                    <div class="col-6 form-group">
+                                                                        <div class="recipe-categories">
+                                                                            <div class="recipe-category" v-for="category in this.recipe.categories">
+                                                                                <a href="#">[[category]]</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="recipe-tags">
+                                                                            <div class="recipe-tag" v-for="tag in this.recipe.tags">
+                                                                                <a href="#">[[tag]]</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 sidebar">
+                            {% include 'dhk_app/recipe - sidebar.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% csrf_token %}
+	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
+	<input type="hidden" name="recipe_edit_url" value="{% url 'dhk:recipe_edit' %}">
+    <input type="hidden" name="recipe_post_url" value="{% url 'dhk:recipe_post' %}">
+    <input type="hidden" name="recipe_images_search_url" value="{% url 'dhk:recipe_images_search' %}">
+    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script type="text/javascript">
+        var static_assets_url = "{% static 'assets' %}";
+    </script>
+    {% load static %}
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/recipe_edit.js' %}"></script>
+{% endblock %}

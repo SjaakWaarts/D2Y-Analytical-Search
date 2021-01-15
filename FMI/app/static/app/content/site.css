@@ -207,9 +207,9 @@ Forces carousel image to be 100% width and not max width of 100%
 }
 */
 
-/*select polymer-element with class iff-box-header and descents of class iffbox*/
+/*select polymer-element with class d2y-box-header and descents of class iffbox*/
 
-.iff-box {
+.d2y-box {
   flex: 0 1 auto;
   /* The above is shorthand for:
   flex-grow: 0,
@@ -299,7 +299,7 @@ Forces carousel image to be 100% width and not max width of 100%
     padding-right: 15px;
 }
 
-.iff-pane-border {
+.d2y-pane-border {
     border: 1px; 
     border-style: solid;
     border-radius: 5px;
@@ -307,59 +307,55 @@ Forces carousel image to be 100% width and not max width of 100%
     padding: 5px;
 }
 
-.iff-button {
-    border : 1px solid black;
-}
-
-.iff-dataset {
+.d2y-dataset {
     border:2px solid lightblue;
     padding:15px;
     margin:15px
 }
 
-.iff-padding-30 {
+.d2y-padding-30 {
     padding-left:30px;
     padding-right:30px;
     margin:0px
 }
-.iff-padding-15 {
+.d2y-padding-15 {
     padding-left:15px;
     padding-right:15px;
 }
-.iff-padding-6 {
+.d2y-padding-6 {
     padding-left:6px;
     padding-right:6px;
 }
-.iff-padding-l6 {
+.d2y-padding-l6 {
     padding-left:6px;
     padding-right:0px;
 }
-.iff-padding-0 {
+.d2y-padding-0 {
     padding-left:0px;
     padding-right:0px;
 }
 
-.iff-margin-0 {
+.d2y-margin-0 {
     margin-left:0px;
     margin-right:0px;
 }
 
-.iff-margin-t15 {
+.d2y-margin-t15 {
     margin-top:15px;
 }
 
-.iff-card-6 {
+.d2y-card-6 {
     box-shadow: 6px 6px 5px grey;
     margin: 3px;
 }
 
-.iff-card-header {
+.d2y-card-header {
     background-color: lightblue;
     font-size: 12px;
     padding: 2px;
 }
 
-.iff-card-body {
+.d2y-card-body {
     padding: 3px;
 }
 
@@ -433,27 +429,47 @@ a.seeker:hover {color:DarkSlateBlue ;}
     background-color: orange;
 }
 
-/* Workshop */
+/* Toolbar */
 
-.workshop {
-
+.toolbar-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
-.workshop-form {
+    .toolbar-actions .toolbar-action {
+        display: inline-block;
+        padding: 0.75rem 0.75rem;
+        border-right: 1px solid #d5d5d5;
+        line-height: 1;
+    }
+
+.toolbar-action-hover {
+    position: relative;
 }
 
-.workshop-results {
+    .toolbar-action-hover:hover div {
+        display: block !important;
+    }
+
+.toolbar-action-hover-wrap {
+    position: absolute;
+    z-index: 5;
+    display: none;
+    top: 40px;
+    padding-top: 10px;
+    left: 0;
+    text-align: center;
+    overflow: hidden;
+    transition: all 0.9s ease-in-out;
 }
 
-.workshop-meta {
-}
+    .toolbar-action-hover-wrap a {
+        color: #ffffff;
+        background-color: #ff4a52;
+        display: block;
+        padding: 10px 12px;
+    }
 
-.workshop-meta i {
-    margin-right: 5px;
-    color: #ff4a52;
-    font-size: 14px;
-}
-
-.workshop-excerpt {
-}
       

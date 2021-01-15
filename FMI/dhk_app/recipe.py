@@ -31,6 +31,7 @@ import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS, MEDIA_BUCKET, MEDIA_URL
 from FMI.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+import dhk_app.images as images
 
 def recipe_view(request):
     """Renders dhk page."""
@@ -57,10 +58,40 @@ def recipe_view(request):
     return render(
         request,
         'dhk_app/recipe.html',
-        context
+        context,
+        content_type='text/html'
     )
 
-def get_recipe_reviews_s3(id):
+def recipe_edit_view(request):
+    """Renders dhk page."""
+    id = request.GET['id']
+    es_host = ES_HOSTS[0]
+    s, search_q = esm.setup_search()
+    search_filters = search_q["query"]["bool"]["filter"]
+    field = 'id.keyword'
+    terms = [id]
+    terms_filter = {"terms": {field: terms}}
+    search_filters.append(terms_filter)
+    search_aggs = search_q["aggs"]
+
+    results = esm.search_query(es_host, 'recipes', search_q)
+    results = json.loads(results.text)
+    hits = results.get('hits', {})
+    hit = hits.get('hits', [{}])[0]
+    recipe = hit.get('_source', {})
+    context = {
+        'site' : FMI.settings.site,
+        'year':datetime.now().year,
+        'recipe'  : recipe,
+        }
+    return render(
+        request,
+        'dhk_app/recipe_edit.html',
+        context,
+        content_type='text/html'
+    )
+
+def recipe_get_reviews_s3(id):
     reviews = []
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
     s3 = session.resource('s3')
@@ -79,7 +110,7 @@ def get_recipe_reviews_s3(id):
                 })
     return reviews
 
-def get_recipe_es(id):
+def recipe_get_es(id):
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
     search_filters = search_q["query"]["bool"]["filter"]
@@ -96,17 +127,17 @@ def get_recipe_es(id):
     recipe = hit.get('_source', {})
     return recipe
 
-def put_recipe_es(recipe):
+def recipe_put_es(recipe):
     es_host = ES_HOSTS[0]
     s, search_q = esm.setup_search()
     result = esm.update_doc(es_host, 'recipes', recipe['id'], recipe)
     return result
 
-def get_recipe(request):
+def recipe_get(request):
     id = request.GET['id']
     format = request.GET['format']
-    recipe = get_recipe_es(id)
-    reviews = get_recipe_reviews_s3(id)
+    recipe = recipe_get_es(id)
+    reviews = recipe_get_reviews_s3(id)
     context = {
         'recipe'  : recipe,
         'reviews' : reviews
@@ -138,10 +169,21 @@ def get_recipe(request):
         #response.content_disposition = 'inline;filename=' + basename
         return FileResponse(f, as_attachment=True, filename=filename)
 
+def recipe_images_search(request):
+    id = request.GET['id']
+    q = request.GET['q']
+    image_urls = images.fetch_image_urls(q, 10)
+    #for image_url in image_urls:
+    #    persist_image('images', image_url)
+    context = {
+        'image_urls' : image_urls
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
 # prevent CsrfViewMiddleware from reading the POST stream
 #@csrf_exempt
 @requires_csrf_token
-def post_recipe(request):
+def recipe_post(request):
     # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
     json_data = json.loads(request.body)
     recipe = json_data.get('recipe', None)
@@ -155,7 +197,7 @@ def post_recipe(request):
                 cooking_club['position'] = geolocator.geocode(cooking_club['address'])
             except (AttributeError, GeopyError):
                 pass
-    result = put_recipe_es(recipe)
+    result = recipe_put_es(recipe)
 
     sender = "info@deheerlijkekeuken.nl"
     for cooking_club in recipe['cooking_clubs']:

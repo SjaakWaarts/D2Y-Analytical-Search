@@ -10,17 +10,17 @@
 {% block content %}
 
     <div id="root" class="content workshop">
-        <div class="iff-pane-border content-form workshop-form">
+        <div class="d2y-pane-border content-form workshop-form">
             {% include "dhk_app/workshop-form.html" %}
         </div>
-        <div class="iff-pane-border content-results workshop-results">
+        <div class="d2y-pane-border content-results workshop-results">
             {% include "dhk_app/workshop-results.html" %}
         </div>
     </div>
 
     {% csrf_token %}
     <input type="hidden" name="get_workshops_url" value="{% url 'dhk:get_workshops' %}">
-	<input type="hidden" name="get_recipe_url" value="{% url 'dhk:get_recipe' %}">
+	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
     <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
 
 {% endblock %}
