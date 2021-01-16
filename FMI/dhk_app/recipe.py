@@ -14,6 +14,9 @@ import json
 import urllib
 import requests
 import boto3
+import io
+import hashlib
+from PIL import Image
 from slugify import slugify
 from geopy.exc import GeopyError
 from geopy.geocoders import Nominatim
@@ -91,7 +94,7 @@ def recipe_edit_view(request):
         content_type='text/html'
     )
 
-def recipe_get_reviews_s3(id):
+def recipe_reviews_get_s3(id):
     reviews = []
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
     s3 = session.resource('s3')
@@ -109,6 +112,29 @@ def recipe_get_reviews_s3(id):
                 'location' : "{}{}".format(MEDIA_URL, o.key)
                 })
     return reviews
+
+def recipe_reviews_put_s3(recipe, carousel):
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = boto3.client('s3') # client instead of resource !!
+    folder_name = 'reviews/{}/'.format(slugify(recipe['id']))
+    for slide in carousel:
+        if slide['source'] == 'search' and slide['checked']:
+            try:
+                image_content = requests.get(slide['location']).content
+            except Exception as e:
+                print(f"ERROR - Could not download {url} - {e}")
+            image_file = io.BytesIO(image_content)
+            image = Image.open(image_file).convert('RGB')
+            filename = hashlib.sha1(image_content).hexdigest()[:10] + '.jpg'
+            s3.put_object(Bucket=MEDIA_BUCKET, Key=(folder_name))
+            bytes_io = io.BytesIO()
+            image.save(bytes_io, format='JPEG')
+            bytes_io.seek(0)
+            object_name = folder_name + filename
+            s3.upload_fileobj(bytes_io, MEDIA_BUCKET, object_name, ExtraArgs={'ContentType': 'image/jpeg'})
+        if slide['source'] == 'review' and not slide['checked']:
+            pass
+            # delete from S3
 
 def recipe_get_es(id):
     es_host = ES_HOSTS[0]
@@ -137,7 +163,7 @@ def recipe_get(request):
     id = request.GET['id']
     format = request.GET['format']
     recipe = recipe_get_es(id)
-    reviews = recipe_get_reviews_s3(id)
+    reviews = recipe_reviews_get_s3(id)
     context = {
         'recipe'  : recipe,
         'reviews' : reviews
@@ -179,6 +205,17 @@ def recipe_images_search(request):
         'image_urls' : image_urls
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
+
+# prevent CsrfViewMiddleware from reading the POST stream
+#@csrf_exempt
+@requires_csrf_token
+def recipe_carousel_post(request):
+    # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
+    json_data = json.loads(request.body)
+    recipe = json_data.get('recipe', None)
+    carousel = json_data.get('carousel', None)
+    recipe_reviews_put_s3(recipe, carousel)
+    result = recipe_put_es(recipe)
 
 # prevent CsrfViewMiddleware from reading the POST stream
 #@csrf_exempt
@@ -228,5 +265,3 @@ def recipe_post(request):
         'recipe' : recipe
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
-
-

@@ -164,14 +164,12 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    background-color: aliceblue;
+    justify-content: flex-start;
     margin: 1rem;
 }
 
 .recipe-image {
     padding: 5px;
-    background-color: aliceblue;
 }
 
 .recipe-reviews {

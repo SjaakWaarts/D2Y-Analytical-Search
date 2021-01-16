@@ -32,7 +32,7 @@ var app = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         average_rating: 0,
-        carousel_images: null,
+        carousel: null,
         cooking_club: {
             'cook': "",
             'email': "",
@@ -223,7 +223,7 @@ var app = new Vue({
             this.$http.get(recipe_get_url, { params: { id: this.id, format: 'json'  } }).then(response => {
                 this.recipe = response.body.recipe;
                 this.reviews = response.body.reviews;
-                this.carousel_images = this.recipe.images.concat(this.reviews);
+                this.carousel = this.recipe.images.concat(this.reviews);
                 if (this.recipe.reviews.length === 0) {
                     this.average_rating = 0;
                 } else {

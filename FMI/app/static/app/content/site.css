@@ -198,25 +198,6 @@
 .carousel-indicators {
     top: 0px;
 }
-/*
-Forces carousel image to be 100% width and not max width of 100%
-
-.carousel-item img {
-    width: 100%;
-    height: auto;
-}
-*/
-
-/*select polymer-element with class d2y-box-header and descents of class iffbox*/
-
-.d2y-box {
-  flex: 0 1 auto;
-  /* The above is shorthand for:
-  flex-grow: 0,
-  flex-shrink: 1,
-  flex-basis: auto
-  */
-}
 
 .card-section {
     padding: 2% 5%;
@@ -299,6 +280,16 @@ Forces carousel image to be 100% width and not max width of 100%
     padding-right: 15px;
 }
 
+/* D2Y flex */
+
+.d2y-flex-row-wrap-start {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* horizontal alignment */
+    align-items: flex-start; /* vertical alignment */
+}
+
 .d2y-pane-border {
     border: 1px; 
     border-style: solid;
@@ -314,34 +305,14 @@ Forces carousel image to be 100% width and not max width of 100%
 }
 
 .d2y-padding-30 {
-    padding-left:30px;
-    padding-right:30px;
-    margin:0px
+    padding-left: 30px;
+    padding-right: 30px;
+    margin: 0px
 }
-.d2y-padding-15 {
-    padding-left:15px;
-    padding-right:15px;
-}
-.d2y-padding-6 {
-    padding-left:6px;
-    padding-right:6px;
-}
-.d2y-padding-l6 {
-    padding-left:6px;
-    padding-right:0px;
-}
+
 .d2y-padding-0 {
-    padding-left:0px;
-    padding-right:0px;
-}
-
-.d2y-margin-0 {
-    margin-left:0px;
-    margin-right:0px;
-}
-
-.d2y-margin-t15 {
-    margin-top:15px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .d2y-card-6 {

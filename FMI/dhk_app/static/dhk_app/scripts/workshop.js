@@ -36,7 +36,7 @@ var app = new Vue({
         workbook: null,
         hits: [],
         aggs: [],
-        carousel_images : null,
+        carousel : null,
         workshops: null,
     },
     methods: {
@@ -125,11 +125,11 @@ var app = new Vue({
                     this.pager.nr_hits = response.body.hits.total;
                     // nr_pages needed to call computed component.page_nrs
                     this.pager.nr_pages = Math.ceil(this.pager.nr_hits / this.pager.page_size);
-                    this.carousel_images = [];
+                    this.carousel = [];
                     var pathname = window.location.pathname.split('/');
                     for (var wix = 0; wix < this.workshops.length; wix++) {
                         for (var iix = 0; iix < this.workshops[wix].images.length; iix++) {
-                            this.carousel_images.push(this.workshops[wix].images[iix]);
+                            this.carousel.push(this.workshops[wix].images[iix]);
                         }
                     }
                 });

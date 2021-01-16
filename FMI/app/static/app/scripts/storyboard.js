@@ -337,7 +337,7 @@ function draw_dashboard(dashboard, charts, facet_value, tiles_select) {
         for (var rownr = 0; rownr < layout.length; rownr++) {
             var row = layout[rownr];
             var div_row = document.createElement("div");
-            div_row.setAttribute("class", "row d2y-margin-t15");
+            div_row.setAttribute("class", "row mt:15px");
             dashboard_div.appendChild(div_row);
             var l_width = 12 / row.length;
             for (var chartnr = 0; chartnr < row.length; chartnr++) {

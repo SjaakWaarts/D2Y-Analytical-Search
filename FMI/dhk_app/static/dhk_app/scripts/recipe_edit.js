@@ -9,6 +9,7 @@ var recipe_get_url = $("input[name=recipe_get_url]").val();
 var recipe_edit_url = $("input[name=recipe_edit_url]").val();
 var recipe_post_url = $("input[name=recipe_post_url]").val();
 var recipe_images_search_url = $("input[name=recipe_images_search_url]").val();
+var recipe_carousel_post_url = $("input[name=recipe_carousel_post_url]").val();
 var api_stream_file_url = $("input[name=api_stream_file_url]").val();
 
 //Vue part
@@ -17,11 +18,11 @@ var app = new Vue({
     el: '#root',
     delimiters: ['[[', ']]'],
     data: {
-        carousel_images: null,
+        carousel: [],
+        featured_ix: null,
         error_messages: {},
         hits: [],
         id: '',
-        image_urls: [],
         recipe: null,
         shopping_basket: [],
     },
@@ -41,20 +42,70 @@ var app = new Vue({
             this.$http.get(recipe_get_url, { params: { id: this.id, format: 'json'  } }).then(response => {
                 this.recipe = response.body.recipe;
                 this.reviews = response.body.reviews;
-                this.carousel_images = this.recipe.images.concat(this.reviews);
+                for (var ix = 0; ix < this.recipe.images.length; ix++) {
+                    var slide = {
+                        'source': 'word',
+                        'location': this.recipe.images[ix].location,
+                        'featured': (this.recipe.images[ix].type === 'featured') ? true : false,
+                        'checked': true,
+                        'type': this.recipe.images[ix].type
+                    }
+                    this.carousel.push(slide)
+                    if (slide.featured) { this.featured_ix = ix }
+                }
+                for (var ix = 0; ix < this.reviews.length; ix++) {
+                    var slide = {
+                        'source': 'review',
+                        'location': this.reviews[ix].location,
+                        'featured': false,
+                        'checked': true,
+                        'type': 'image'
+                    }
+                    this.carousel.push(slide)
+                }
             });
         },
-        recipe_image_checkbox_click(image_url_ix) {
-            var checkbox_tag = document.getElementById("image_url_" + image_url_ix);
-            var checked = checkbox_tag.checked;
+        recipe_image_radio_click(slide_ix) {
+            if (this.featured_ix != null) { this.carousel[this.featured_ix].featured = false; }
+            this.featured_ix = slide_ix;
+            this.carousel[this.featured_ix].featured = true;
+        },
+        recipe_image_rotate_click(slide_ix) {
         },
         recipe_images_search_click: function () {
             var review = {};
             var textarea_tag = document.getElementById("search_text");
             var q = textarea_tag.value;
+            textarea_tag.value = "Zoeken loopt...";
             this.$http.get(recipe_images_search_url, { params: { id: this.id, q: q } }).then(response => {
-                this.image_urls = response.body.image_urls;
+                var image_urls = response.body.image_urls;
+                textarea_tag.value = q;
+                this.carousel = this.carousel.filter(function (slide) {
+                    return slide.source != 'search' && slide.checked == true;
+                });
+                for (var ix = 0; ix < image_urls.length; ix++) {
+                    var slide = {
+                        'source': 'search',
+                        'location': image_urls[ix],
+                        'featured': false,
+                        'checked': false,
+                        'type' : 'image'
+                    }
+                    this.carousel.push(slide)
+                }
             });
+        },
+        recipe_carousel_post: function () {
+            var csrftoken_cookie = getCookie('csrftoken');
+            var headers = { 'X-CSRFToken': csrftoken_cookie };
+            this.$http.post(recipe_carousel_post_url, {
+                'csrfmiddlewaretoken': csrftoken,
+                'recipe': this.recipe,
+                'carousel' : this.carousel,
+            },
+                { 'headers': headers }).then(response => {
+                    this.recipe = response.body.recipe;
+                });
         },
         recipe_post: function () {
             var csrftoken_cookie = getCookie('csrftoken');
@@ -65,7 +116,6 @@ var app = new Vue({
             },
                 { 'headers': headers }).then(response => {
                     this.recipe = response.body.recipe;
-                    this.draw_map();
                 });
         },
     },

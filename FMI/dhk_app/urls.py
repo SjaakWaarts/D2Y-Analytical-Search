@@ -23,6 +23,7 @@ urlpatterns = [
     path('recipe_edit', recipe.recipe_edit_view, name='recipe_edit'),
     path('recipe_get', recipe.recipe_get, name='recipe_get'),
     path('recipe_images_search', recipe.recipe_images_search, name='recipe_images_search'),
+    path('recipe_carousel_post', recipe.recipe_carousel_post, name='recipe_carousel_post'),
     path('recipe_post', recipe.recipe_post, name='recipe_post'),
     path('search', models.ExcelSeekerView.as_view(), name='search'),
 ]

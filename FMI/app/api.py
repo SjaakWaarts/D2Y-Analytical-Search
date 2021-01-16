@@ -370,7 +370,10 @@ def stream_file(request):
     # a static website from S3 doesn't support https
     if location[:4] == 'http':
         response = requests.get(location)
-        content_type = response.headers['Content-Type']
+        if 'Content-Type' in response.headers:
+            content_type = response.headers['Content-Type']
+        else:
+            content_type = 'image/jpeg'
         bytes_io = io.BytesIO()
         bytes_io.write(response.content)
         bytes_io.seek(0)
