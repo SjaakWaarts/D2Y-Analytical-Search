@@ -1,6 +1,10 @@
 ﻿import os
+import io
 from datetime import datetime
+import requests
 import boto3
+from PIL import Image
+import hashlib
 import email
 from email.parser import Parser
 from email import policy
@@ -8,9 +12,10 @@ import mimetypes
 from slugify import slugify
 import dhk_app.recipe as recipe
 from FMI.settings import BASE_DIR, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+from FMI.settings import MEDIA_BUCKET, MEDIA_URL
 
 def add_review_to_recipe(id):
-    recipe_es = recipe.recipe_get_es(id)
+    recipe_es = recipe.recipe_es_get(id)
     dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'reviews', slugify(id))
     if os.path.isdir(dirname):
         recipe_es_changed = False
@@ -38,9 +43,9 @@ def add_review_to_recipe(id):
                     recipe_es['reviews'].append(new_review)
                     recipe_es_changed = True
         if recipe_es_changed:
-            result = recipe.recipe_put_es(recipe_es)
+            result = recipe.recipe_es_put(recipe_es)
 
-def list_s3(buckets):
+def s3_list_mails(buckets):
     bucket_objects = []
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
     s3 = session.resource('s3')
@@ -88,3 +93,44 @@ def list_s3(buckets):
                 add_review_to_recipe(subject)
             bucket_objects.append({'key' : bo.key, 'to' : to_addr, 'from' : from_addr, 'subject': subject, 'body': body})
     return bucket_objects
+
+def s3_delete(bucketname, key):
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = session.resource('s3')
+    bucket = s3.Bucket(bucketname)
+    response = bucket.Object(key).delete()
+    return response
+
+def s3_list_images(bucketname, foldername):
+    keys = []
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = session.resource('s3')
+    bucket = s3.Bucket(bucketname)
+    objs = bucket.objects.filter(Prefix=foldername)
+    for obj in objs:
+        if os.path.splitext(obj.key)[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.pdf']:
+            keys.append(obj.key)
+    return keys
+
+def s3_put_image(bucketname, foldername, filename, url):
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = boto3.client('s3') # client instead of resource !!
+    try:
+        image_content = requests.get(url).content
+    except Exception as e:
+        print(f"ERROR - Could not download {url} - {e}")
+        return None
+    image_file = io.BytesIO(image_content)
+    if not filename:
+        filename = hashlib.sha1(image_content).hexdigest()[:10] + '.jpg'
+    image = Image.open(image_file).convert('RGB')
+    s3.put_object(Bucket=bucketname, Key=foldername)
+    bytes_io = io.BytesIO()
+    image.save(bytes_io, format='JPEG')
+    bytes_io.seek(0)
+    key = foldername + filename
+    s3.upload_fileobj(bytes_io, MEDIA_BUCKET, key, ExtraArgs={'ContentType': 'image/jpeg'})
+    return key
+
+
+

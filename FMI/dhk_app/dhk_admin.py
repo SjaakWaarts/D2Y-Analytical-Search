@@ -431,14 +431,7 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
     recipe['author'] = username
     recipe['published_date'] = core_properties.created.strftime('%Y-%m-%d')
 
-    image_type = "featured"
-    #for name in namelist:
-    #    if name.startswith('word/media/'):
-    #        image_location = os.path.join('data', 'dhk', 'recipes', recipe_basename, 'word', 'media', name[11:])
-    #        image = {'type' : image_type, 'location' : image_location}
-    #        recipe['images'].append(image)
-    #        image_type = "image"
-    # the shapes within the document \ header and footer
+    image_type = "image"
     for shape in doc.inline_shapes:
         rId = shape._inline.graphic.graphicData.pic.blipFill.blip.embed
         image_part = doc.part.related_parts[rId]
@@ -447,7 +440,6 @@ def load_recipe(username, filename, recipe_fullname, recipe_basename, namelist):
             image_location = os.path.join('data', 'dhk', 'recipes', recipe_basename, 'word', 'media', partname[12:])
             image = {'type' : image_type, 'location' : image_location}
             recipe['images'].append(image)
-            image_type = "image"
 
     for block in iter_block_items(doc):
         if isinstance(block, docx.text.paragraph.Paragraph):

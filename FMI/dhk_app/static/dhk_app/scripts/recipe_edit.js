@@ -8,7 +8,7 @@ var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
 var recipe_get_url = $("input[name=recipe_get_url]").val();
 var recipe_edit_url = $("input[name=recipe_edit_url]").val();
 var recipe_post_url = $("input[name=recipe_post_url]").val();
-var recipe_images_search_url = $("input[name=recipe_images_search_url]").val();
+var recipe_carousel_images_search_url = $("input[name=recipe_carousel_images_search_url]").val();
 var recipe_carousel_post_url = $("input[name=recipe_carousel_post_url]").val();
 var api_stream_file_url = $("input[name=api_stream_file_url]").val();
 
@@ -19,7 +19,7 @@ var app = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         carousel: [],
-        featured_ix: null,
+        featured_ix : null,
         error_messages: {},
         hits: [],
         id: '',
@@ -44,52 +44,44 @@ var app = new Vue({
                 this.reviews = response.body.reviews;
                 for (var ix = 0; ix < this.recipe.images.length; ix++) {
                     var slide = {
-                        'source': 'word',
                         'location': this.recipe.images[ix].location,
-                        'featured': (this.recipe.images[ix].type === 'featured') ? true : false,
+                        'featured': (ix === 0) ? true : false,
                         'checked': true,
                         'type': this.recipe.images[ix].type
                     }
-                    this.carousel.push(slide)
-                    if (slide.featured) { this.featured_ix = ix }
+                    if (slide.featured) { this.carousel.unshift(slide) } else { this.carousel.push(slide) }
                 }
-                for (var ix = 0; ix < this.reviews.length; ix++) {
-                    var slide = {
-                        'source': 'review',
-                        'location': this.reviews[ix].location,
-                        'featured': false,
-                        'checked': true,
-                        'type': 'image'
-                    }
-                    this.carousel.push(slide)
-                }
+                this.featured_ix = 0
             });
         },
         recipe_image_radio_click(slide_ix) {
-            if (this.featured_ix != null) { this.carousel[this.featured_ix].featured = false; }
-            this.featured_ix = slide_ix;
-            this.carousel[this.featured_ix].featured = true;
+            this.carousel[0].featured = false;
+            const slide = this.carousel.splice(slide_ix, 1)[0];
+            slide.featured = true;
+            this.carousel.splice(0, 0, slide)
+            // repeat in updated hook to force the radio button to be set
+            this.featured_ix = 0
         },
         recipe_image_rotate_click(slide_ix) {
+            this.featured_ix = slide_ix
         },
-        recipe_images_search_click: function () {
+        recipe_carousel_images_search_click: function () {
             var review = {};
             var textarea_tag = document.getElementById("search_text");
             var q = textarea_tag.value;
             textarea_tag.value = "Zoeken loopt...";
-            this.$http.get(recipe_images_search_url, { params: { id: this.id, q: q } }).then(response => {
+            this.$http.get(recipe_carousel_images_search_url, { params: { id: this.id, q: q } }).then(response => {
                 var image_urls = response.body.image_urls;
                 textarea_tag.value = q;
                 this.carousel = this.carousel.filter(function (slide) {
-                    return slide.source != 'search' && slide.checked == true;
+                    return slide.type != 'search' || slide.checked == true;
                 });
                 for (var ix = 0; ix < image_urls.length; ix++) {
                     var slide = {
-                        'source': 'search',
                         'location': image_urls[ix],
                         'featured': false,
                         'checked': false,
-                        'type' : 'image'
+                        'type' : 'search'
                     }
                     this.carousel.push(slide)
                 }
@@ -100,7 +92,7 @@ var app = new Vue({
             var headers = { 'X-CSRFToken': csrftoken_cookie };
             this.$http.post(recipe_carousel_post_url, {
                 'csrfmiddlewaretoken': csrftoken,
-                'recipe': this.recipe,
+                'id': this.recipe.id,
                 'carousel' : this.carousel,
             },
                 { 'headers': headers }).then(response => {
@@ -127,6 +119,9 @@ var app = new Vue({
         this.recipe_get();
         if (user.username != "") {
         }
+    },
+    updated: function () {
+        this.featured_ix = 0;
     },
 });
 

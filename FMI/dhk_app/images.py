@@ -8,14 +8,14 @@ from PIL import Image
 
 global wd
 
-def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interactions: int = 1):
+def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interactions: float = 0.1):
     def scroll_to_end(wd):
         wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(sleep_between_interactions)
 
     options = webdriver.ChromeOptions()
-    options.add_argument('headless')
-    wd = webdriver.Chrome(chrome_options=options)
+    options.add_argument("--headless")
+    wd = webdriver.Chrome(options=options)
     # build the google query
     search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img"
 
@@ -66,6 +66,7 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interact
         # move the result startpoint further down
         results_start = len(thumbnail_results)
 
+    wd.close()
     wd.quit()
     return image_urls
 

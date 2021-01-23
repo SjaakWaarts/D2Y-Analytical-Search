@@ -259,7 +259,7 @@ def aws_view(request):
         form = aws_form(request.POST)
         if form.is_valid():
             s3_choices = form.cleaned_data['s3_choices_field']
-            bucket_objects = aws.list_s3(s3_choices)
+            bucket_objects = aws.s3_list_mails(s3_choices)
             return render(request, 'app/awsresults.html', {'bucket_objects' : bucket_objects} )
     else:
         form = aws_form(initial={'s3_choices_field':['deheerlijkekeuken']})

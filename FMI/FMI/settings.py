@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ALLOWED_HOSTS = (
-    'localhost','52.59.239.214',
+    'localhost','127.0.0.1', '52.59.239.214',
     'www.deheerlijkekeuken.nl', 'deheerlijkekeuken.nl', 'kookclub.deheerlijkekeuken.nl',
 )
 

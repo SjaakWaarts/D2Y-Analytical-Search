@@ -36,7 +36,7 @@
                                                         <div class="col-12">
                                                             <div class="input-group">
                                                                 <div class="input-group-btn">
-                                                                    <button class="btn btn-primary" v-on:click="recipe_images_search_click()">
+                                                                    <button class="btn btn-primary" v-on:click="recipe_carousel_images_search_click()">
                                                                         <span class="fas fa-search"></span>
                                                                     </button>
                                                                 </div>
@@ -55,7 +55,7 @@
                                                                     <div class="toolbar-actions">
                                                                         <div class="toolbar-action">
                                                                             <div class="radio">
-				                                                                <input type="radio" v-bind:id="'ci_radio_'+slide_ix" name="featured" v-bind:checked="slide.featured" v-on:click="recipe_image_radio_click(slide_ix)">
+				                                                                <input type="radio" v-bind:value="slide_ix" v-model.lazy="featured_ix" v-on:click="recipe_image_radio_click(slide_ix)">
 			                                                                </div>
                                                                         </div>
                                                                         <div class="toolbar-action">
@@ -134,7 +134,7 @@
 	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
 	<input type="hidden" name="recipe_edit_url" value="{% url 'dhk:recipe_edit' %}">
     <input type="hidden" name="recipe_post_url" value="{% url 'dhk:recipe_post' %}">
-    <input type="hidden" name="recipe_images_search_url" value="{% url 'dhk:recipe_images_search' %}">
+    <input type="hidden" name="recipe_carousel_images_search_url" value="{% url 'dhk:recipe_carousel_images_search' %}">
     <input type="hidden" name="recipe_carousel_post_url" value="{% url 'dhk:recipe_carousel_post' %}">
     <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
 
