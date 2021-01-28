@@ -2,6 +2,8 @@
 import io
 from datetime import datetime
 import requests
+from urllib.request import urlopen
+import logging
 import boto3
 from PIL import Image
 import hashlib
@@ -13,6 +15,8 @@ from slugify import slugify
 import dhk_app.recipe as recipe
 from FMI.settings import BASE_DIR, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 from FMI.settings import MEDIA_BUCKET, MEDIA_URL
+
+logger = logging.getLogger(__name__)
 
 def add_review_to_recipe(id):
     recipe_es = recipe.recipe_es_get(id)
@@ -45,14 +49,15 @@ def add_review_to_recipe(id):
         if recipe_es_changed:
             result = recipe.recipe_es_put(recipe_es)
 
-def s3_list_mails(buckets):
+def s3_list_mails(bucket_names):
+    logger.debug(f"Obtain mails from '{bucket_names}'")
     bucket_objects = []
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-    s3 = session.resource('s3')
-    for bucket_name in buckets:
-        bucket = s3.Bucket(bucket_name)
-        for bo in bucket.objects.all():
-            emailRawString = bo.get()['Body'].read()
+    s3r = session.resource('s3')
+    for bucket_name in bucket_names:
+        b3r = s3r.Bucket(bucket_name)
+        for o3r in b3r.objects.all():
+            emailRawString = o3r.get()['Body'].read()
             parser = Parser()
             msg = parser.parsestr(emailRawString.decode("utf-8"))
             to_addr = email.utils.parseaddr(msg['to'])[1]
@@ -91,46 +96,76 @@ def s3_list_mails(buckets):
                         body = part.get_payload()
             if "review@deheerlijkekeuken.nl" == to_addr:
                 add_review_to_recipe(subject)
-            bucket_objects.append({'key' : bo.key, 'to' : to_addr, 'from' : from_addr, 'subject': subject, 'body': body})
+            bucket_objects.append({'key' : o3r.key, 'to' : to_addr, 'from' : from_addr, 'subject': subject, 'body': body})
     return bucket_objects
 
-def s3_delete(bucketname, key):
+def s3_delete(bucket_name, key):
+    logger.debug(f"Delete from bucket '{bucket_name}' key '{key}'")
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-    s3 = session.resource('s3')
-    bucket = s3.Bucket(bucketname)
-    response = bucket.Object(key).delete()
+    s3r = session.resource('s3')
+    b3r = s3r.Bucket(bucket_name)
+    response = b3r.Object(key).delete()
     return response
 
-def s3_list_images(bucketname, foldername):
-    keys = []
+def s3_list_images(bucket_name, folder_name):
+    logger.debug(f"List images from bucket '{bucket_name}' folder '{folder_name}'")
+    images = []
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-    s3 = session.resource('s3')
-    bucket = s3.Bucket(bucketname)
-    objs = bucket.objects.filter(Prefix=foldername)
-    for obj in objs:
-        if os.path.splitext(obj.key)[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.pdf']:
-            keys.append(obj.key)
-    return keys
+    s3r = session.resource('s3')
+    s3c = s3r.meta.client
+    b3r = s3r.Bucket(bucket_name)
+    o3rs = b3r.objects.filter(Prefix=folder_name)
+    for o3r in o3rs:
+        response = s3c.get_object_tagging(Bucket=bucket_name, Key=o3r.key)
+        tagset = response.get('TagSet', None)
+        tags = {}
+        for tag in tagset:
+            tags[tag['Key']] = tag['Value']
+        if os.path.splitext(o3r.key)[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.pdf']:
+            images.append({'location' : o3r.key, 'tags': tags})
+    return images
 
-def s3_put_image(bucketname, foldername, filename, url):
+def s3_put_image(bucket_name, folder_name, file_name, src, tags=None):
+    logger.debug(f"Put image with name '{file_name}' and src '{src}'")
+    #s3c = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY) # client instead of resource !!
     session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-    s3 = boto3.client('s3') # client instead of resource !!
-    try:
-        image_content = requests.get(url).content
-    except Exception as e:
-        print(f"ERROR - Could not download {url} - {e}")
-        return None
+    s3r = session.resource('s3')
+    s3c = s3r.meta.client
+    b3r = s3r.Bucket(bucket_name)
+    if src[0:4] == 'http':
+        try:
+            image_content = requests.get(url).content
+        except Exception as e:
+            logger.error(f"Put image with name '{file_name}' and url '{url}' failed - {e}")
+            return None
+    if src[0:5] == 'data:':
+        with urlopen(src) as response:
+            image_content = response.read()
+
     image_file = io.BytesIO(image_content)
-    if not filename:
-        filename = hashlib.sha1(image_content).hexdigest()[:10] + '.jpg'
+    if not file_name:
+        file_name = hashlib.sha1(image_content).hexdigest()[:10] + '.jpg'
     image = Image.open(image_file).convert('RGB')
-    s3.put_object(Bucket=bucketname, Key=foldername)
     bytes_io = io.BytesIO()
     image.save(bytes_io, format='JPEG')
     bytes_io.seek(0)
-    key = foldername + filename
-    s3.upload_fileobj(bytes_io, MEDIA_BUCKET, key, ExtraArgs={'ContentType': 'image/jpeg'})
+    key = folder_name + file_name
+    #s3c.put_object(Bucket=bucket_name, Key=folder_name)
+    #s3c.upload_fileobj(bytes_io, MEDIA_BUCKET, key, ExtraArgs={'ContentType': 'image/jpeg'})
+    b3r.upload_fileobj(bytes_io, key, ExtraArgs={'ContentType': 'image/jpeg'})
+    if tags:
+        tags = [{'Key': k, 'Value': v} for k, v in tags.items() ]
+        put_tags_response = s3c.put_object_tagging(Bucket=bucket_name, Key=key, Tagging={'TagSet': tags})
     return key
 
+def s3_update_tags(bucket_name, key, tags):
+    logger.debug(f"Update tag for key '{key}' with tages '{tags}'")
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3r = session.resource('s3')
+    s3c = s3r.meta.client
+    b3r = s3r.Bucket(bucket_name)
+    tags = [{'Key': k, 'Value': v} for k, v in tags.items() ]
+    response = s3c.put_object_tagging(Bucket=bucket_name, Key=key, Tagging={'TagSet': tags})
+    return response
 
 

@@ -8,12 +8,13 @@ from PIL import Image
 
 global wd
 
-def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interactions: float = 0.1):
+def fetch_thumbnails(query: str, max_links_to_fetch: int, sleep_between_interactions: float = 0.1):
     def scroll_to_end(wd):
         wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(sleep_between_interactions)
 
     options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
     options.add_argument("--headless")
     wd = webdriver.Chrome(options=options)
     # build the google query
@@ -22,7 +23,7 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interact
     # load the page
     wd.get(search_url.format(q=query))
 
-    image_urls = []
+    thumbnails = []
     image_count = 0
     results_start = 0
     while image_count < max_links_to_fetch:
@@ -36,26 +37,34 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interact
             f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
 
         for img in thumbnail_results[results_start:number_results]:
-            # try to click every thumbnail such that we can get the real image behind it
-            try:
-                img.click()
-                time.sleep(sleep_between_interactions)
-            except Exception:
-                continue
+            ## try to click every thumbnail such that we can get the real image behind it
+            #try:
+            #    img.click()
+            #    time.sleep(sleep_between_interactions)
+            #except Exception:
+            #    continue
 
-            # extract image urls
-            actual_images = wd.find_elements_by_css_selector('img.n3VNCb')
-            for actual_image in actual_images:
-                if actual_image.get_attribute('src') and 'http' in actual_image.get_attribute('src'):
-                    image_urls.append(actual_image.get_attribute('src'))
+            ## extract image urls
+            #actual_images = wd.find_elements_by_css_selector('img.n3VNCb')
+            #for actual_image in actual_images:
+            #    if actual_image.get_attribute('src') and 'http' in actual_image.get_attribute('src'):
+            #        thumbnails.append(actual_image.get_attribute('src'))
 
-            image_count = len(image_urls)
+            if img.get_attribute('src'):
+                thumbnail = {}
+                thumbnail['src'] = img.get_attribute('src')
+                thumbnail['alt'] = img.get_attribute('alt')
+                thumbnail['width'] = img.get_attribute('width')
+                thumbnail['height'] = img.get_attribute('height')
+                thumbnails.append(thumbnail)
 
-            if len(image_urls) >= max_links_to_fetch:
-                print(f"Found: {len(image_urls)} image links, done!")
+            image_count = len(thumbnails)
+
+            if len(thumbnails) >= max_links_to_fetch:
+                print(f"Found: {len(thumbnails)} image links, done!")
                 break
         else:
-            print("Found:", len(image_urls),
+            print("Found:", len(thumbnails),
                   "image links, looking for more ...")
             time.sleep(30)
             return
@@ -68,7 +77,7 @@ def fetch_image_urls(query: str, max_links_to_fetch: int, sleep_between_interact
 
     wd.close()
     wd.quit()
-    return image_urls
+    return thumbnails
 
 
 def persist_image(folder_path: str, url: str):

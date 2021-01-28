@@ -1,7 +1,7 @@
 <!-- The Modal -->
 <div class="modal fade" id="recipe-modal">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" v-if="this.cooking_club && this.recipe">
+        <div class="modal-content" v-if="cooking_club && recipe">
       
             <!-- Modal Header -->
             <div class="modal-header">
@@ -38,7 +38,7 @@
                                 <th>Opmerking</th>
                                 <th></th>
                             </tr>
-                            <tr v-for="(participant, index) in this.cooking_club.participants">
+                            <tr v-for="(participant, index) in cooking_club.participants">
                                 <td>[[participant.user]]</td>
                                 <td>[[participant.comment]]</td>
                                 <td>

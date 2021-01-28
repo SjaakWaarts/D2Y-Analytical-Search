@@ -169,7 +169,19 @@
 }
 
 .recipe-image {
-    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+
+.recipe-image-label {
+    text-decoration: underline;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 12px;
+    letter-spacing: .2px;
+    line-height: 20px;
 }
 
 .recipe-reviews {

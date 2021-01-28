@@ -16,6 +16,7 @@ import io
 import hashlib
 from PIL import Image
 from slugify import slugify
+import logging
 from geopy.exc import GeopyError
 from geopy.geocoders import Nominatim
 from django.shortcuts import render
@@ -35,6 +36,7 @@ from FMI.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 import dhk_app.images as images
 import app.aws as aws
 
+logger = logging.getLogger(__name__)
 
 class Recipe():
     recipe = {}
@@ -55,20 +57,36 @@ class Recipe():
     def carousel_get(self):
         folder_name = 'reviews/{}/'.format(slugify(self.recipe['id']))
         update = False
-        urls = aws.s3_list_images(MEDIA_BUCKET, folder_name)
-        for url in urls:
-            location = "{}{}".format(MEDIA_URL, url)
+        images_s3 = aws.s3_list_images(MEDIA_BUCKET, folder_name)
+        for image_s3 in images_s3:
+            location = "{}{}".format(MEDIA_URL, image_s3['location'])
+            try:
+                slide_nr = int(image_s3['tags']['slide_nr'])
+            except:
+                slide_nr = -1
             found = False
+            image_nr = 0
             for image in self.recipe['images']:
                 if location == image['location']:
                     found = True
                     break
+                image_nr = image_nr + 1
             if not found:
                 update = True
                 self.recipe['images'].append({
                     'type'     : 'media',
                     'location' : location
                     })
+            image_s3['slide_nr'] = slide_nr if slide_nr > -1 else image_nr
+            image_s3['image_nr'] = image_nr
+        images_s3.sort(key=lambda x :x['slide_nr'])
+        # Put slide in the right sequence
+        for image_s3 in images_s3:
+            if image_s3['slide_nr'] != image_s3['image_nr']:
+                update = True
+                slide = self.recipe['images'].pop(image_s3['image_nr'])
+                self.recipe['images'].insert(image_s3['slide_nr'], slide)
+
         # Save in ES in case images/reviews have been added since last word reload
         if update:
             self.put()
@@ -78,22 +96,21 @@ class Recipe():
         images = []
         # type: image - from upload, media - from reviews, search - from web search. First image is featured image
         for slide in carousel:
-            if slide['type'] in ['image', 'featured']:
-                images.append({
-                    'type'     : 'image',
-                    'location' : slide['location']
-                    })
+            if slide['type'] in ['image']:
+                images.append({'type': slide['type'], 'location' : slide['location']})
             elif slide['type'] == 'media':
-               if not slide['checked']:
-                   key = slide['location'][len(MEDIA_URL):]
-                   aws.s3_delete(MEDIA_BUCKET, key)
+                key = slide['location'][len(MEDIA_URL):]
+                if not slide['checked']:
+                    aws.s3_delete(MEDIA_BUCKET, key)
+                else:
+                    tags = {'slide_nr' : str(len(images))}
+                    aws.s3_update_tags(MEDIA_BUCKET, key, tags)
+                    images.append({'type': slide['type'], 'location' : slide['location']})
             elif slide['type'] == 'search':
-               if slide['checked']:
-                    key = aws.s3_put_image(MEDIA_BUCKET, folder_name, None, slide['location'])
-                    images.append({
-                        'type'     : 'media',
-                        'location' : "{}{}".format(MEDIA_URL, key)
-                        })
+                if slide['checked']:
+                    tags = {'slide_nr' : str(len(images))}
+                    key = aws.s3_put_image(MEDIA_BUCKET, folder_name, None, slide['src'], tags=tags)
+                    images.append({'type' : 'media', 'location' : "{}{}".format(MEDIA_URL, key)})
         self.recipe['images'] = images
         result = self.put()
 
@@ -169,6 +186,7 @@ def recipe_edit_view(request):
 def recipe_get(request):
     id = request.GET['id']
     format = request.GET['format']
+    logger.info(f"Obtain recipe for id '{id}'")
     recipe = Recipe(id)
     context = {
         'recipe'  : recipe.recipe,
@@ -247,11 +265,11 @@ def recipe_post(request):
 def recipe_carousel_images_search(request):
     id = request.GET['id']
     q = request.GET['q']
-    image_urls = images.fetch_image_urls(q, 10)
+    thumbnails = images.fetch_thumbnails(q, 20)
     #for image_url in image_urls:
     #    persist_image('images', image_url)
     context = {
-        'image_urls' : image_urls
+        'thumbnails' : thumbnails
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 

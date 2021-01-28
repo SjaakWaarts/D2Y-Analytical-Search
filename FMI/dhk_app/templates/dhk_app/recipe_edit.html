@@ -12,11 +12,12 @@
 	<div class="row">
         <div class="col-lg-12">
             <div id="root" class="row">
-                <div class="col-lg-12" v-if="this.recipe">
-                    <h2>[[ this.recipe.title ]]</h2>
+                <div class="col-lg-12" v-if="recipe">
+                    <h2>[[ recipe.title ]]</h2>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="recipe">
+                                {% include 'dhk_app/recipe - header.html' %}
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <!-- Nav tabs -->
@@ -30,7 +31,7 @@
                                         </ul>
                                         <!-- Tab panes -->
                                         <div class="tab-content border border-top-0 p-2">
-                                            <div class="tab-pane container fade active show" id="media">
+                                            <div class="tab-pane fade active show" id="media">
                                                 <div class="recipe-images-search">
                                                     <div class="row">
                                                         <div class="col-12">
@@ -39,58 +40,63 @@
                                                                     <button class="btn btn-primary" v-on:click="recipe_carousel_images_search_click()">
                                                                         <span class="fas fa-search"></span>
                                                                     </button>
+                                                                    <button class="btn btn-primary" v-on:click="image_search = recipe['title']">
+                                                                        <span class="fas fa-history"></span>
+                                                                    </button>
                                                                 </div>
-                                                                <input type="text" class="form-control" placeholder="Search" id="search_text" v-bind:value="this.recipe.title"/>
+                                                                <input type="text" class="form-control" placeholder="Search" id="search_text" v-bind:value="image_search"/>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="d2y-flex-row-wrap-start">
-                                                        <div style="align-self:center">
-                                                            <button class="btn btn-primary" v-on:click="recipe_carousel_post()">Laadt Carousel</button>
+                                                    <div class="d2y-flex-row-nowrap-start">
+                                                        <div class="d2y-flex-column-nowrap-start mt-3">
+                                                            <div class="">
+                                                                <button class="btn btn-primary" v-on:click="recipe_carousel_post()">Laadt Carousel</button>
+                                                            </div>
+                                                            <div class="alert alert-info mt-3" v-if="alert">
+                                                                <strong>[[alert]]</strong>
+                                                            </div>
                                                         </div>
                                                         <div class="recipe-images">
-                                                            <div v-for="(slide, slide_ix) in this.carousel">
-                                                                <div v-if="slide.checked" class="recipe-image">
-                                                                    <img v-bind:src="bind_stream_file_url(api_stream_file_url, slide.location)" style="width:128px;height:128px">
-                                                                    <div class="toolbar-actions">
-                                                                        <div class="toolbar-action">
-                                                                            <div class="radio">
-				                                                                <input type="radio" v-bind:value="slide_ix" v-model.lazy="featured_ix" v-on:click="recipe_image_radio_click(slide_ix)">
-			                                                                </div>
-                                                                        </div>
-                                                                        <div class="toolbar-action">
-                                                                            <div class="checkbox">
-				                                                                <input type="checkbox" v-bind:id="'ci_cb_'+slide_ix" v-model="slide.checked" v-bind:disabled="slide.featured">
-			                                                                </div>
-                                                                        </div>
-                                                                        <div class="toolbar-action">
-                                                                            <a data-toggle="tooltip" title="Rotate" v-on:click="recipe_image_rotate_click(slide_ix)"><i class="fas fa-redo"></i></a>
-                                                                        </div>
+                                                            <div class="recipe-image" v-for="(slide, slide_ix) in carousel_checked">
+                                                                <img v-bind:src="slide.src" style="width:156px;height:128px">
+                                                                <div class="toolbar-actions">
+                                                                    <div class="toolbar-action">
+                                                                        <div class="radio">
+				                                                            <input type="radio" v-bind:value="slide_ix" v-model.lazy="m_featured_ix" v-on:click="recipe_image_radio_click(slide_ix)">
+			                                                            </div>
+                                                                    </div>
+                                                                    <div class="toolbar-action" v-if="slide_ix > 0">
+                                                                        <a data-toggle="tooltip" title="Unselect" v-on:click="recipe_image_select_click(slide_ix, slide.select)">
+                                                                        <i class="fas fa-arrow-down"></i></a>		                                                            
+                                                                    </div>
+                                                                    <div class="toolbar-action" v-if="slide_ix > 0">
+                                                                        <a data-toggle="tooltip" title="Links" v-on:click="recipe_image_shift_click(slide_ix, 'left')" v-bind:disabled="slide.featured">
+                                                                        <i class="fas fa-arrow-left"></i></a>
+                                                                    </div>
+                                                                    <div class="toolbar-action" v-if="slide_ix < carousel_checked.length-1">
+                                                                        <a data-toggle="tooltip" title="Rechts" v-on:click="recipe_image_shift_click(slide_ix, 'right')" v-bind:disabled="slide.featured">
+                                                                        <i class="fas fa-arrow-right"></i></a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="d2y-flex-row-wrap-start">
-                                                        <div v-for="(slide, slide_ix) in this.carousel">
-                                                            <div v-if="!slide.checked" class="recipe-image">
-                                                                <img v-bind:src="bind_stream_file_url(api_stream_file_url, slide.location)" style="width:128px;height:128px">
-                                                                <div class="toolbar-actions">
-                                                                    <div class="toolbar-action">
-                                                                        <div class="checkbox">
-				                                                            <input type="checkbox" v-bind:id="'ci_cb_'+slide_ix" v-model="slide.checked">
-			                                                            </div>
-                                                                    </div>
-                                                                    <div class="toolbar-action">
-                                                                        <a data-toggle="tooltip" title="Rotate" v-on:click="recipe_image_rotate_click(slide_ix)"><i class="fas fa-redo"></i></a>
-                                                                    </div>
+                                                    <div class="recipe-images">
+                                                        <div class="recipe-image" style="width:156px" v-for="(slide, slide_ix) in carousel_unchecked">
+                                                            <img v-bind:src="slide.src" data-toggle="tooltip" v-bind:title="slide.alt" style="width:156px;height:128px">
+                                                                <div class="recipe-image-label"> [[slide.alt]] </div>
+                                                            <div class="toolbar-actions">
+                                                                <div class="toolbar-action">
+                                                                    <a data-toggle="tooltip" title="Select" v-on:click="recipe_image_select_click(slide_ix, slide.select)">
+                                                                    <i class="fas fa-arrow-up"></i></a>		
                                                                 </div>
                                                             </div>
                                                         </div>                    
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane container fade" id="categorie">
+                                            <div class="tab-pane fade" id="categorie">
                                                 <div class="club-events">
                                                     <div class="section-heading3 heading-dark">
                                                         <h2 class="item-heading">CATEGORIE</h2>
@@ -104,12 +110,12 @@
                                                                 <div class="row">
                                                                     <div class="col-6 form-group">
                                                                         <div class="recipe-categories">
-                                                                            <div class="recipe-category" v-for="category in this.recipe.categories">
+                                                                            <div class="recipe-category" v-for="category in recipe.categories">
                                                                                 <a href="#">[[category]]</a>
                                                                             </div>
                                                                         </div>
                                                                         <div class="recipe-tags">
-                                                                            <div class="recipe-tag" v-for="tag in this.recipe.tags">
+                                                                            <div class="recipe-tag" v-for="tag in recipe.tags">
                                                                                 <a href="#">[[tag]]</a>
                                                                             </div>
                                                                         </div>

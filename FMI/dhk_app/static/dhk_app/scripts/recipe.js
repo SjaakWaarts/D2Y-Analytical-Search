@@ -70,7 +70,7 @@ var app = new Vue({
             var url = recipe_edit_url + '?id=' + this.id;
             return encodeURI(url);
         },
-        bind_recipe_get_url() {
+        bind_recipe_get_url(format='json') {
             var url = recipe_get_url + '?id=' + this.id + '&format=pdf';
             return encodeURI(url);
         },

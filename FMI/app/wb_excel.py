@@ -1745,7 +1745,7 @@ es_indicis = {
             ],
         'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
         'display'       : ["title", "url"],
-        'sort'          : [],
+        'sort'          : ["published_date"],
         'summary'       : [],
         'sumheader'     : [],
         'SUMMARY_URL'   : "../dhk/recipe?id={}",

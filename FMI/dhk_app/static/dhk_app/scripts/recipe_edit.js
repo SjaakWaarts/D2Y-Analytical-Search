@@ -18,11 +18,15 @@ var app = new Vue({
     el: '#root',
     delimiters: ['[[', ']]'],
     data: {
-        carousel: [],
-        featured_ix : null,
+        alert: null,
+        average_rating: null,
+        carousel_checked: [],
+        carousel_unchecked: [],
         error_messages: {},
+        image_search : '',
         hits: [],
         id: '',
+        m_featured_ix: 0,
         recipe: null,
         shopping_basket: [],
     },
@@ -31,9 +35,13 @@ var app = new Vue({
             var url = recipe_edit_url + '?id=' + this.id;
             return encodeURI(url);
         },
-        bind_recipe_get_url() {
+        bind_recipe_get_url(format = 'json') {
             var url = recipe_get_url + '?id=' + this.id + '&format=pdf';
             return encodeURI(url);
+        },
+        bind_recipe_mail_review_url() {
+            var url = "mailto:review@deheerlijkekeuken.nl?subject=" + this.id + "&body=<Plaats hier uw review EN foto's...>%0D%0A%0D%0AVoor een correcte verwerking, verander het Onderwerp niet!%0D%0ABedankt voor u review.";
+            return url;
         },
         bind_stream_file_url(url, location) {
             return encodeURI(url + '?location=' + location);
@@ -43,60 +51,90 @@ var app = new Vue({
                 this.recipe = response.body.recipe;
                 this.reviews = response.body.reviews;
                 for (var ix = 0; ix < this.recipe.images.length; ix++) {
+                    var src = this.recipe.images[ix].location;
+                    if (['image'].includes(this.recipe.images[ix].type)) {
+                        src = encodeURI(api_stream_file_url + '?location=' + this.recipe.images[ix].location)
+                    }
                     var slide = {
                         'location': this.recipe.images[ix].location,
+                        'src' : src,
                         'featured': (ix === 0) ? true : false,
                         'checked': true,
                         'type': this.recipe.images[ix].type
                     }
-                    if (slide.featured) { this.carousel.unshift(slide) } else { this.carousel.push(slide) }
+                    this.carousel_checked.push(slide)
                 }
-                this.featured_ix = 0
+                this.image_search = this.recipe.title;
             });
         },
         recipe_image_radio_click(slide_ix) {
-            this.carousel[0].featured = false;
-            const slide = this.carousel.splice(slide_ix, 1)[0];
+            this.carousel_checked[0].featured = false;
+            const slide = this.carousel_checked.splice(slide_ix, 1)[0];
             slide.featured = true;
-            this.carousel.splice(0, 0, slide)
+            this.carousel_checked.splice(0, 0, slide)
             // repeat in updated hook to force the radio button to be set
-            this.featured_ix = 0
+            this.m_featured_ix = 0
         },
-        recipe_image_rotate_click(slide_ix) {
-            this.featured_ix = slide_ix
+        recipe_image_select_click(slide_ix, checked) {
+            if (checked) {
+                var slide = this.carousel_checked.splice(slide_ix, 1)[0]
+                slide.checked = false;
+                this.carousel_unchecked.push(slide)
+            } else {
+                var slide = this.carousel_unchecked.splice(slide_ix, 1)[0]
+                slide.checked = true;
+                this.carousel_checked.push(slide);
+            }
+        },
+        recipe_image_shift_click(slide_ix, direction) {
+            const slide = this.carousel_checked.splice(slide_ix, 1)[0];
+            var offset = (direction == 'right') ? 1 : -1;
+            this.carousel_checked.splice(slide_ix + offset, 0, slide);
+            if (slide_ix + offset == 0) {
+                this.carousel_checked[1].featured = false;
+                this.carousel_checked[0].featured = true;
+                this.m_featured_ix = 0
+            }
         },
         recipe_carousel_images_search_click: function () {
             var review = {};
             var textarea_tag = document.getElementById("search_text");
-            var q = textarea_tag.value;
-            textarea_tag.value = "Zoeken loopt...";
-            this.$http.get(recipe_carousel_images_search_url, { params: { id: this.id, q: q } }).then(response => {
-                var image_urls = response.body.image_urls;
-                textarea_tag.value = q;
-                this.carousel = this.carousel.filter(function (slide) {
-                    return slide.type != 'search' || slide.checked == true;
-                });
-                for (var ix = 0; ix < image_urls.length; ix++) {
+            this.image_search = textarea_tag.value;
+            this.alert = "Zoekt...";
+            this.$http.get(recipe_carousel_images_search_url, { params: { id: this.id, q: this.image_search } }).then(response => {
+                var thumbnails = response.body.thumbnails;
+                if (thumbnails) {
+                    this.alert = null
+                } else {
+                    this.alert = "Fout!"
+                    return;
+                };
+                this.carousel_unchecked = this.carousel_unchecked.filter(function (slide) {return slide.type != 'search'});
+                for (var ix = 0; ix < thumbnails.length; ix++) {
                     var slide = {
-                        'location': image_urls[ix],
+                        'location': null,
+                        'src': thumbnails[ix]['src'],
+                        'alt': thumbnails[ix]['alt'],
                         'featured': false,
                         'checked': false,
                         'type' : 'search'
                     }
-                    this.carousel.push(slide)
+                    this.carousel_unchecked.push(slide)
                 }
             });
         },
         recipe_carousel_post: function () {
             var csrftoken_cookie = getCookie('csrftoken');
             var headers = { 'X-CSRFToken': csrftoken_cookie };
+            this.alert = "Save...";
             this.$http.post(recipe_carousel_post_url, {
                 'csrfmiddlewaretoken': csrftoken,
                 'id': this.recipe.id,
-                'carousel' : this.carousel,
+                'carousel' : this.carousel_checked,
             },
                 { 'headers': headers }).then(response => {
                     this.recipe = response.body.recipe;
+                    this.alert = null;
                 });
         },
         recipe_post: function () {
@@ -121,7 +159,7 @@ var app = new Vue({
         }
     },
     updated: function () {
-        this.featured_ix = 0;
+        this.m_featured_ix = 0;
     },
 });
 

@@ -323,8 +323,8 @@ class SeekerView (View):
             return field_name
         if field_name in self.sort_fields:
             return self.sort_fields[field_name]
-        if field_name in self.es_mapping:
-            dsl_field = self.es_mapping[field_name]
+        if field_name in self.es_mapping['properties']:
+            dsl_field = self.es_mapping['properties'][field_name]
             if isinstance(dsl_field, (dsl.Object, dsl.Nested)):
                 return None
 #            if not isinstance(dsl_field, dsl.String):

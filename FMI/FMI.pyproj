@@ -80,6 +80,9 @@
     <Compile Include="FMI\local_settings.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FMI\logging.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="seeker\admin.py" />
     <Compile Include="seeker\apps.py" />
     <Compile Include="seeker\cards.py" />

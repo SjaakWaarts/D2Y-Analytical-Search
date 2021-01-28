@@ -55,27 +55,6 @@ class ExcelSeekerView (seeker.SeekerView):
         }
     tabs = {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': 'hide'}
 
-###
-### Fragrantica
-###
-
-# Class name has to match the name of the mapping in ES (doc_type)
-#class Perfume(models.Model):
-#    site = models.TextField()
-#    brand_name = models.TextField()
-#    brand_variant = models.TextField()
-#    perfume = models.TextField()
-#    review_date = models.DateField()
-#    review = models.TextField()
-#    label = models.TextField()
-#    accords = models.TextField()
-#    notespyramid = models.TextField()
-#    moods = models.TextField()
-#    notes = models.TextField()
-#    longevity = models.TextField()
-#    sillage = models.TextField()
-#    ratings = models.TextField()
-#    img_src = models.TextField()
 
 class Review(models.Model):
     reviewid = models.IntegerField()

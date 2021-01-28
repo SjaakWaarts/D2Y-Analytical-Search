@@ -52,12 +52,6 @@
 
 /* With arrow tabs */
 
-.nav-item.show {
-    color: $nav-tabs-link-active-color;
-    background-color: $nav-tabs-link-active-bg;
-    border-color: $nav-tabs-link-active-border-color;
-}
-
 .with-arrow .nav-link.active {
     position: relative;
 }
@@ -286,6 +280,22 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: flex-start; /* horizontal alignment */
+    align-items: flex-start; /* vertical alignment */
+}
+
+.d2y-flex-row-nowrap-start {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start; /* horizontal alignment */
+    align-items: flex-start; /* vertical alignment */
+}
+
+.d2y-flex-column-nowrap-start {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
     justify-content: flex-start; /* horizontal alignment */
     align-items: flex-start; /* vertical alignment */
 }
