@@ -35,8 +35,36 @@ from FMI.settings import BASE_DIR, ES_HOSTS, MEDIA_BUCKET, MEDIA_URL
 from FMI.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 import dhk_app.images as images
 import app.aws as aws
+import app.wb_excel as wb_excel
 
 logger = logging.getLogger(__name__)
+
+class Categories():
+    workbook = wb_excel.workbooks['dhk']
+    categories = []
+
+    def get(self):
+        return self.es_get()
+
+    def es_get(self, id):
+        es_host = ES_HOSTS[0]
+        s, search_q = esm.setup_search()
+        search_filters = search_q["query"]["bool"]["filter"]
+        field = 'id.keyword'
+        terms = [id]
+        terms_filter = {"terms": {field: terms}}
+        search_filters.append(terms_filter)
+        search_aggs = search_q["aggs"]
+
+
+        results = esm.search_query(es_host, 'recipes', search_q)
+        results = json.loads(results.text)
+        hits = results.get('hits', {})
+        hit = hits.get('hits', [{}])[0]
+        recipe = hit.get('_source', {})
+        return recipe
+
+
 
 class Recipe():
     recipe = {}

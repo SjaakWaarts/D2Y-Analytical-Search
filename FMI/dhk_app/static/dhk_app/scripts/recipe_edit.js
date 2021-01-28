@@ -52,7 +52,7 @@ var app = new Vue({
                 this.reviews = response.body.reviews;
                 for (var ix = 0; ix < this.recipe.images.length; ix++) {
                     var src = this.recipe.images[ix].location;
-                    if (['image'].includes(this.recipe.images[ix].type)) {
+                    if (['image', 'media'].includes(this.recipe.images[ix].type)) {
                         src = encodeURI(api_stream_file_url + '?location=' + this.recipe.images[ix].location)
                     }
                     var slide = {
