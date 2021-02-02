@@ -39,32 +39,34 @@ import app.wb_excel as wb_excel
 
 logger = logging.getLogger(__name__)
 
-class Categories():
-    workbook = wb_excel.workbooks['dhk']
-    categories = []
+class Workbook():
+    es_index = None
+    workbook = None
+    es_index = None
 
-    def get(self):
-        return self.es_get()
+    def __init__(self, es_index):
+        self.es_index = es_index
+        self.workbook = wb_excel.workbooks[es_index]
+        self.es_index = self.workbook['es_index']
 
-    def es_get(self, id):
+    def aggs(self, facets):
         es_host = ES_HOSTS[0]
         s, search_q = esm.setup_search()
         search_filters = search_q["query"]["bool"]["filter"]
-        field = 'id.keyword'
-        terms = [id]
-        terms_filter = {"terms": {field: terms}}
-        search_filters.append(terms_filter)
         search_aggs = search_q["aggs"]
-
-
-        results = esm.search_query(es_host, 'recipes', search_q)
+        search_q['size'] = 0
+        for facet, facet_conf in facets.items():
+            field = facet
+            if facet_conf.get('keyword', True):
+                field = field + '.keyword'
+            options = facet_conf.get('options', {})
+            terms_agg = {'terms': {"field": field, **options}}
+            nested = facet_conf.get('nested', None)
+            search_aggs[facet] = esm.add_agg_nesting(field, nested, terms_agg)
+        results = esm.search_query(es_host, self.es_index['index'], search_q)
         results = json.loads(results.text)
-        hits = results.get('hits', {})
-        hit = hits.get('hits', [{}])[0]
-        recipe = hit.get('_source', {})
-        return recipe
-
-
+        aggs = results.get('aggregations', {})
+        return aggs
 
 class Recipe():
     recipe = {}
@@ -142,7 +144,13 @@ class Recipe():
         self.recipe['images'] = images
         result = self.put()
 
-    def clubs_put(self, clubs):
+    def cats_set(self, categories):
+        self.recipe['categories'] = categories
+
+    def tags_set(self, tags):
+        self.recipe['tags'] = tags
+
+    def clubs_set(self, clubs):
         if len(clubs) > 0:
             clubs.sort(key=lambda club: club['cooking_date'])
         for club in clubs:
@@ -199,10 +207,20 @@ def recipe_edit_view(request):
     """Renders dhk page."""
     id = request.GET['id']
     recipe = Recipe(id)
+    dhk_wb = Workbook('dhk')
+    facets = {
+        'categories' : {'keyword' : True, 'nested' : None, 'options' : {'size' : 100, 'order' : {'_key' : 'asc' }}},
+        'tags' : {'keyword' : True, 'nested' : None, 'options' : {'size' : 100, 'order' : {'_key' : 'asc' }}},
+        }
+    aggs = dhk_wb.aggs(facets)
+    cats_buckets = aggs['categories']['buckets']
+    tags_buckets = aggs['tags']['buckets']
     context = {
         'site' : FMI.settings.site,
         'year':datetime.now().year,
         'recipe'  : recipe.recipe,
+        'cats_buckets' : cats_buckets,
+        'tags_buckets' : tags_buckets,
         }
     return render(
         request,
@@ -256,7 +274,9 @@ def recipe_post(request):
     json_data = json.loads(request.body)
     recipe_new = json_data.get('recipe', None)
     recipe = Recipe(recipe_new['id'])
-    recipe.clubs_put(recipe_new['cooking_clubs'])
+    recipe.clubs_set(recipe_new['cooking_clubs'])
+    recipe.cats_set(recipe_new['categories'])
+    recipe.tags_set(recipe_new['tags'])
     result = recipe.put()
 
     sender = "info@deheerlijkekeuken.nl"

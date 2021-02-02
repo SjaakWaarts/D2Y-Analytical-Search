@@ -22,6 +22,7 @@ var app = new Vue({
         average_rating: null,
         carousel_checked: [],
         carousel_unchecked: [],
+        cats: [],
         error_messages: {},
         image_search : '',
         hits: [],
@@ -29,6 +30,7 @@ var app = new Vue({
         m_featured_ix: 0,
         recipe: null,
         shopping_basket: [],
+        tags: [],
     },
     methods: {
         bind_recipe_edit_url() {
@@ -148,12 +150,21 @@ var app = new Vue({
                     this.recipe = response.body.recipe;
                 });
         },
+        recipe_save: function () {
+            var csrftoken_cookie = getCookie('csrftoken');
+            var headers = { 'X-CSRFToken': csrftoken_cookie };
+            this.recipe.categories = this.cats;
+            this.recipe.tags = this.tags;
+            this.recipe_post();
+        },
     },
     computed: {
     },
     mounted: function () {
         var urlParams = new URLSearchParams(window.location.search);
         this.id = decodeURI(urlParams.has('id') ? urlParams.get('id') : '');
+        this.cats = recipe.categories;
+        this.tags = recipe.tags;
         this.recipe_get();
         if (user.username != "") {
         }

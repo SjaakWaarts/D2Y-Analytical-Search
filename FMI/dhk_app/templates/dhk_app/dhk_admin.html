@@ -118,60 +118,54 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Mijn Recepten</h3>
-                                </div>
-                                <div class="box-body">
-                                    <div class="table-responsive">
-                                        <table id="recipe_datatable" class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th><a href="#" v-on:click="get_uploaded_files(sort='author')">Van<i class="fas fa-sort ml-2"></i></a></th>
-                                                    <th><a href="#" v-on:click="get_uploaded_files(sort='published_date')">Datum<i class="fas fa-sort ml-2"></i></a></th>
-                                                    <th>Naam</th>
-                                                    <th class="text-center">Acties</th>
-                                                </tr>
-                                                <tr v-if="this.workbook">
-                                                    <th>
-                                                        <facet-filter facet_name="author" v-bind:workbook.sync="this.workbook"
-                                                            v-on:facet-filter="facet_filter('author')">
-                                                        </facet-filter>
-                                                    </th>
-                                                    <th>
-                                                        <facet-filter facet_name="published_date" v-bind:workbook.sync="this.workbook"
-                                                            v-on:facet-filter="facet_filter('published_date')">
-                                                        </facet-filter>
-                                                    </th>
-                                                    <th>
-                                                        <facet-filter facet_name="title" v-bind:workbook.sync="this.workbook"
-                                                            v-on:facet-filter="facet_filter('title')">
-                                                        </facet-filter>
-                                                    </th>
-                                                    <th class="text-center">
-                                                        <a href="#" class="text-info" v-on:click="get_uploaded_files()"><i class="fas fa-search" title="Zoek" aria-hidden="true"></i></a>
-                                                        <a href="#" class="text-info" v-on:click="reset_search()"><i class="fas fa-undo" title="Reset"></i></a>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="hit in hits"
-                                                    v-on:click="current_recipe = hit"
-                                                    v-bind:class="{active : current_recipe==hit}">
-                                                    <td style="width:10%;">[[ hit._source.author ]]</td>
-                                                    <td style="width:10%;">[[ hit._source.published_date ]]</td>
-                                                    <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.title ]]</a></td>
-                                                    <td style="width:20%;" class="text-center">
-                                                        <a href="#" v-on:click="recipe_edit(hit._source.id)"><i class="fa fa-check" title="Check"></i></a>
-                                                        <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye" title="Bekijk" aria-hidden="true"></i></a>
-                                                        <a href="#" v-on:click="delete_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <pager v-bind:pager.sync="this.pager" v-on:pager="get_uploaded_files()"></pager>
-                                    </div>
-                                </div>
+                            <h3 class="box-title">Mijn Recepten</h3>
+                            <div class="table-responsive">
+                                <table id="recipe_datatable" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th><a href="#" v-on:click="get_uploaded_files(sort='author')">Van<i class="fas fa-sort ml-2"></i></a></th>
+                                            <th><a href="#" v-on:click="get_uploaded_files(sort='published_date')">Datum<i class="fas fa-sort ml-2"></i></a></th>
+                                            <th>Naam</th>
+                                            <th class="text-center">Acties</th>
+                                        </tr>
+                                        <tr v-if="this.workbook">
+                                            <th>
+                                                <facet-filter facet_name="author" v-bind:workbook.sync="this.workbook"
+                                                    v-on:facet-filter="facet_filter('author')">
+                                                </facet-filter>
+                                            </th>
+                                            <th>
+                                                <facet-filter facet_name="published_date" v-bind:workbook.sync="this.workbook"
+                                                    v-on:facet-filter="facet_filter('published_date')">
+                                                </facet-filter>
+                                            </th>
+                                            <th>
+                                                <facet-filter facet_name="title" v-bind:workbook.sync="this.workbook"
+                                                    v-on:facet-filter="facet_filter('title')">
+                                                </facet-filter>
+                                            </th>
+                                            <th class="text-center">
+                                                <a href="#" class="text-info" v-on:click="get_uploaded_files()"><i class="fas fa-search" title="Zoek" aria-hidden="true"></i></a>
+                                                <a href="#" class="text-info" v-on:click="reset_search()"><i class="fas fa-undo" title="Reset"></i></a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="hit in hits"
+                                            v-on:click="current_recipe = hit"
+                                            v-bind:class="{active : current_recipe==hit}">
+                                            <td style="width:10%;">[[ hit._source.author ]]</td>
+                                            <td style="width:10%;">[[ hit._source.published_date ]]</td>
+                                            <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.title ]]</a></td>
+                                            <td style="width:20%;" class="text-center">
+                                                <a href="#" v-on:click="recipe_edit(hit._source.id)"><i class="fa fa-check" title="Check"></i></a>
+                                                <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye" title="Bekijk" aria-hidden="true"></i></a>
+                                                <a href="#" v-on:click="delete_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <pager v-bind:pager.sync="this.pager" v-on:pager="get_uploaded_files()"></pager>
                             </div>
                         </div>
                     </div>

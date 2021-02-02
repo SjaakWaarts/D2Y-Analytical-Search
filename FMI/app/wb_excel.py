@@ -65,89 +65,6 @@ ecosystem_dashboard = {
     }
 
 ###
-### IngrMolecules
-###
-
-ingr_molecules_dashboard = {
-    'bucket_col' : {
-        'chart_type'  : "ColumnChart",
-        'chart_title' : "Flavor Class",
-        'data_type'  : "aggr",
-        'controls'    : ['CategoryFilter'],
-        'X_facet'     : {
-            'field'   : "bucket.keyword",
-            'label'   : "Flavor Class",
-            },
-        'options'   : {
-            #'hAxis'     : {'title': 'Flavor Class',  'textStyle' : { 'fontSize': 7}},
-            'vAxis'     : {'title': 'Molecules #'}
-            }
-        },
-    "regulator_pie" : {
-        'chart_type': "PieChart",
-        'chart_title' : "Regulator",
-        'data_type'  : "facet",
-        'controls'    : ['CategoryFilter'],
-        'X_facet'     : {
-            'field'   : "regulator.keyword",
-            'label'   : "Regulator" },
-        },
-    "year_line" : {
-        'chart_type'  : "ColumnChart",
-        'chart_title' : "Year Ingr Created",
-        'data_type'  : "aggr",
-        'controls'    : ['CategoryFilter'],
-        'X_facet'     : {
-            'field'   : "year",
-            'label'   : "Year",
-            'total'   : False,
-            },
-        'options'   : {
-            #'hAxis'     : {'title': 'Year'},
-            'vAxis'     : {'title': 'Molecules #'}
-            },
-
-        },
-    "keyword_pie" : {
-        'chart_type': "PieChart",
-        'chart_title' : "Keyword Doc Count",
-        'data_type'  : "facet",
-        'controls'    : ['CategoryFilter'],
-        'X_facet'     : {
-            'field'   : "facet_keyword",
-            'label'   : "Keywords" },
-        },
-    "uptake_line" : {
-        'chart_type': "ComboChart",
-        'chart_title' : "Excito-Meter",
-        'data_type'  : "card_uptake",
-        #'controls'    : ['CategoryFilter'],
-        'controls'    : ['NumberRangeFilter'],
-        'listener'    : {'select' : {'colsort': None}},
-        'X_facet'     : {
-            'field'   : "periods",
-            'label'   : "Years since inception",
-            'total'   : False,
-            },
-        'Y_facet'     : {
-            'field'   : "uptake",
-            'label'   : "Uptake",
-            },
-        'options'   : {
-            "seriesType" : 'line',
-            #"series"  : {0: {"type": 'bars'},},
-            "series"  : {0: {"type": 'line', 'lineWidth': 6 },},
-            'curveType' : 'function',
-            'legend'    : { 'position': 'right' },
-            'height'    : 600,
-            'hAxis'     : {'title': 'Years since inception'},
-            #'vAxis'    : {'viewWindow' : {'min': 0.0, 'max': 1.0}}
-            'vAxis'     : {'viewWindow' : {'min': 0.0}, 'title': 'Percent Uptake'}
-            },
-        }
-    }
-
-###
 ### Patents Dashboard
 ###
 
@@ -1530,53 +1447,6 @@ es_indicis = {
         'urlfields'     : {"company" : ""},
         'tabs'          : {'results_tab': 'active', 'summary_tab': '', 'storyboard_tab': '', 'insights_tab': 'hide'},
         },
-    'ingr_molecules' : {
-        'document'      : "ingr_molecules",
-        #'using'        : client,
-        'index'         : "excel_ingr_molecules",
-        'doc_type'      : "ingr_molecules",
-        'properties' : {
-            'IPC'           : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'name'          : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'uptake'        : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'year'          : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'nr_of_IPCs'    : {'type' : 'integer'},
-            'nr_of_IPCs_SC' : {'type' : 'integer'},
-            'selling_IPCs'  : {'type' : 'integer'},
-            'FITTE_score'   : {'type' : 'float'},
-            'FITTE_norm'    : {'type' : 'float'},
-            'regions'       : {'type' : 'integer'},
-            'flavor_classes' : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'sales_val'     : {'type' : 'float'},
-            'sales_vol'     : {'type' : 'float'},
-            'tech_vol'      : {'type' : 'float'},
-            'bucket'        : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'cost'          : {'type' : 'float'},
-            'use_level'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            'low_medium_high' : {'type' : 'float'},
-            'CIU'           : {'type' : 'float'},
-            'regulator'     : {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
-            },
-        # SEEKER
-        'page_size'     :30,
-        'facets'        : [
-            seeker.TermsFacet("IPC.keyword", label = "IPC", visible_pos=0),
-            seeker.TermsFacet("name.keyword", label = "Name", visible_pos=0),
-            seeker.TermsFacet("uptake.keyword", label = "Uptake", visible_pos=0),
-            seeker.TermsFacet("year.keyword", label = "Year", visible_pos=0, order={"_key":"asc"}),
-            seeker.TermsFacet("bucket.keyword", label = "Bucket", visible_pos=0),
-            seeker.TermsFacet("flavor_classes.keyword", label = "Flavor Classes", visible_pos=0),
-            seeker.TermsFacet("regulator.keyword", label = "Regulator", visible_pos=0),
-            ],
-        'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
-        'display'       : ["IPC", "name", "year", "bucket", "FITTE_norm", "CIU", "regulator"],
-        'sort'          : [],
-        'summary'       : [],
-        'sumheader'     : [],
-        'SUMMARY_URL'   : "{}",
-        'urlfields'     : {},
-        'tabs'          : {'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
-        },
     'patents' : {
         'document'      : "patents",
         'index'         : "excel_patents",
@@ -1768,26 +1638,6 @@ workbooks = {
                      'layout'   : OrderedDict([
                         ('table1', [["aop_pie", "keyword_pie"], ["role_col"]]),
                         ('table2', [["company_keyword_table"]])])}
-                ]
-            },
-        'filters'       : {}
-        },
-    'ingr_molecules' : {
-        'es_index'      : es_indicis['ingr_molecules'],
-        'display'       : ["IPC", "name", "uptake", "year", "bucket", "FITTE_norm", "CIU", "regulator"],
-        'facets'        : ["IPC.keyword", "name.keyword", "uptake.keyword", "year.keyword", "bucket.keyword", "flavor_classes.keyword", "regulator.keyword"],
-        'tiles'         : ["year.keyword", "regulator.keyword", "bucket.keyword", "flavor_classes.keyword"],
-        'charts'        : ingr_molecules_dashboard,
-        'dashboard_data': 'pull',
-        'storyboards'   : {
-            'initial' : [
-                    {'name'     : 'molecules',
-                     'layout'   : OrderedDict([
-                         ('table1', [["year_line", "bucket_col"]]),
-                         ('table2', [["regulator_pie", "keyword_pie"]])])},
-                    {'name'     : 'excito-meter',
-                    'layout'    : OrderedDict([
-                        ('table', [['uptake_line']])])}
                 ]
             },
         'filters'       : {}

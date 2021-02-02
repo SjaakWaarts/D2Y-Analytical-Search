@@ -26,30 +26,29 @@
                                                 <a class="nav-link w-100 active" data-toggle="tab" href="#media"><i class="fas fa-images mr-2"></i>Media</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a v-bind:class="{'nav-link':true, 'w-100':true}" data-toggle="tab" href="#categorie"><i class="fas fa-tags mr-2"></i>Categorie</a>
+                                                <a v-bind:class="{'nav-link':true, 'w-100':true}" data-toggle="tab" href="#classify"><i class="fas fa-tags mr-2"></i>Classify</a>
                                             </li>
                                         </ul>
                                         <!-- Tab panes -->
                                         <div class="tab-content border border-top-0 p-2">
                                             <div class="tab-pane fade active show" id="media">
-                                                <div class="recipe-images-search">
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <div class="input-group">
-                                                                <div class="input-group-btn">
-                                                                    <button class="btn btn-primary" v-on:click="recipe_carousel_images_search_click()">
-                                                                        <span class="fas fa-search"></span>
-                                                                    </button>
-                                                                    <button class="btn btn-primary" v-on:click="image_search = recipe['title']">
-                                                                        <span class="fas fa-history"></span>
-                                                                    </button>
-                                                                </div>
-                                                                <input type="text" class="form-control" placeholder="Search" id="search_text" v-bind:value="image_search"/>
-                                                            </div>
+                                                <div class="recipe-media">
+                                                    <h4>Zoek en selecteer de carousel slides</h4>
+                                                    Nieuwe slides kunnen worden gezocht en vervolgens toegevoegd aan de carousel. De eerste slide wordt
+                                                    getoond in het zoek scherm.
+                                                    <div class="input-group mt-3 mb-3">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-primary" v-on:click="recipe_carousel_images_search_click()">
+                                                                <span class="fas fa-search"></span>
+                                                            </button>
+                                                            <button class="btn btn-primary" v-on:click="image_search = recipe['title']">
+                                                                <span class="fas fa-history"></span>
+                                                            </button>
                                                         </div>
+                                                        <input type="text" class="form-control" placeholder="Search" id="search_text" v-bind:value="image_search"/>
                                                     </div>
                                                     <div class="d2y-flex-row-nowrap-start">
-                                                        <div class="d2y-flex-column-nowrap-start mt-3">
+                                                        <div class="d2y-flex-column-nowrap-start mr-3">
                                                             <div class="">
                                                                 <button class="btn btn-primary" v-on:click="recipe_carousel_post()">Laadt Carousel</button>
                                                             </div>
@@ -57,8 +56,8 @@
                                                                 <strong>[[alert]]</strong>
                                                             </div>
                                                         </div>
-                                                        <div class="recipe-images">
-                                                            <div class="recipe-image" v-for="(slide, slide_ix) in carousel_checked">
+                                                        <div class="recipe-media-images">
+                                                            <div class="recipe-media-image" v-for="(slide, slide_ix) in carousel_checked">
                                                                 <img v-bind:src="slide.src" style="width:156px;height:128px">
                                                                 <div class="toolbar-actions">
                                                                     <div class="toolbar-action">
@@ -82,10 +81,10 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="recipe-images">
-                                                        <div class="recipe-image" style="width:156px" v-for="(slide, slide_ix) in carousel_unchecked">
+                                                    <div class="recipe-media-images">
+                                                        <div class="recipe-media-image" style="width:156px" v-for="(slide, slide_ix) in carousel_unchecked">
                                                             <img v-bind:src="slide.src" data-toggle="tooltip" v-bind:title="slide.alt" style="width:156px;height:128px">
-                                                                <div class="recipe-image-label"> [[slide.alt]] </div>
+                                                                <div class="recipe-media-image-label"> [[slide.alt]] </div>
                                                             <div class="toolbar-actions">
                                                                 <div class="toolbar-action">
                                                                     <a data-toggle="tooltip" title="Select" v-on:click="recipe_image_select_click(slide_ix, slide.checked)">
@@ -96,30 +95,29 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane fade" id="categorie">
-                                                <div class="club-events">
-                                                    <div class="section-heading3 heading-dark">
-                                                        <h2 class="item-heading">CATEGORIE</h2>
-                                                        <p>
-                                                            Voeg de juiste Categorie en Tags toe.
-                                                        </p>                                                   
-                                                    </div>
-                                                    <div class="club-map-event">
-                                                        <div class="club-event">
-                                                            <div class="leave-form-box">
-                                                                <div class="row">
-                                                                    <div class="col-6 form-group">
-                                                                        <div class="recipe-categories">
-                                                                            <div class="recipe-category" v-for="category in recipe.categories">
-                                                                                <a href="#">[[category]]</a>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="recipe-tags">
-                                                                            <div class="recipe-tag" v-for="tag in recipe.tags">
-                                                                                <a href="#">[[tag]]</a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                            <div class="tab-pane fade" id="classify">
+                                                <div class="recipe-classify">
+                                                    <h4>Rubriceer naar Categorie en Tags</h4>
+                                                    De categorieen zijn weer gegroepeerd in groepen die als filters beschikbaar zijn
+                                                    in het zoek scherm. Tags verschijnen in de tag cloud die ook als filter gebruikt kunnen worden.
+                                                    <div class="recipe-classify-cats-tags">
+                                                        <div class="recipe-classify-cats">
+                                                            <h5>Categories</h5>
+                                                            <div class="recipe-classify-checkboxes">
+                                                                <div class="form-check" v-for="bucket in cats_buckets">
+                                                                  <label class="form-check-label" v-bind:for="bucket.key">
+                                                                    <input type="checkbox" class="form-check-input" v-bind:id="bucket.key" v-bind:value="bucket.key"  v-model="cats">[[bucket.key]] ([[bucket.doc_count]])
+                                                                  </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="recipe-classify-tags">
+                                                            <h5>Tags</h5>
+                                                            <div class="recipe-classify-checkboxes">
+                                                                <div class="form-check" v-for="bucket in tags_buckets">
+                                                                  <label class="form-check-label" v-bind:for="bucket.key">
+                                                                    <input type="checkbox" class="form-check-input" v-bind:id="bucket.key" v-bind:value="bucket.key"  v-model="tags">[[bucket.key]] ([[bucket.doc_count]])
+                                                                  </label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -151,6 +149,9 @@
 {% block scripts %}
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
+        var recipe = {{ recipe|safe }}
+        var cats_buckets = {{ cats_buckets|safe }}
+        var tags_buckets = {{ tags_buckets|safe }}
     </script>
     {% load static %}
         <script src="{% static 'app/scripts/utils.js' %}"></script>

@@ -59,7 +59,6 @@ urlpatterns = [
     path('api/scrape_reviews', app.api.scrape_reviews_api, name='scrape_reviews_api'),
     path('api/stream_file', app.api.stream_file, name='api/stream_file'),
 
-    #path('ingr_molecules', app.views.ingr_molecules, name='ingr_molecules'),
     path('search_workbook', app.views.search_workbook, name='search_workbook'),
     path('search_mi', models.PostSeekerView.as_view(), name='search_mi'),
     path('search_feedly', models.FeedlySeekerView.as_view(), name='search_feedly'),

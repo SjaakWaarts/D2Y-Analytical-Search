@@ -38,6 +38,11 @@
 }
 
 .recipe-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between; /* horizontal alignment */
+    align-items: center; /* vertical alignment */
 }
 
 .recipe-meta {
@@ -159,22 +164,74 @@
     font-size: 18px;
 }
 
-.recipe-images {
+.recipe-classify {
+    padding: 1rem;
+}
+
+.recipe-classify-cats-tags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start; /* horizontal alignment */
+    align-items: flex-start; /* vertical alignment */
+}
+
+.recipe-classify-cats {
+    padding: 1rem;
+    width: 50%;
+}
+
+.recipe-classify-tags {
+    padding: 1rem;
+    width: 50%;
+
+}
+
+.recipe-classify-checkboxes {
+    height: 500px;
+    overflow-y: scroll;
+}
+
+.recipe-clubs {
+    padding: 1rem;
+    background-color: aliceblue;
+    margin-bottom: 2rem;
+}
+
+    .recipe-clubs .recipe-club-map-events {
+        display: flex;
+        flex-direction: row;
+    }
+
+        .recipe-clubs .recipe-club-map-events .club-map {
+            width: 50%;
+        }
+
+        .recipe-clubs .recipe-club-map-events .club-event {
+            width: 50%;
+            margin-left: 1rem;
+        }
+
+.recipe-media {
+    padding: 1rem;
+}
+
+.recipe-media-images {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
-    margin: 1rem;
 }
 
-.recipe-image {
+.recipe-media-image {
     display: flex;
     flex-direction: column;
-    margin: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
 }
 
-.recipe-image-label {
+.recipe-media-image-label {
     text-decoration: underline;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -248,26 +305,6 @@
 .recipe-leave-review {
     padding: 5rem;
     background-color: aliceblue;
-}
-
-.club-events {
-    padding: 1rem;
-    background-color: aliceblue;
-    margin-bottom: 2rem;
-}
-
-.club-events .club-map-event {
-    display: flex;
-    flex-direction: row;
-}
-
-.club-events .club-map-event .club-map {
-    width: 50%;
-}
-
-.club-events .club-map-event .club-event {
-    width: 50%;
-    margin-left: 1rem;
 }
 
 .club-modal {

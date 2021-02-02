@@ -264,7 +264,6 @@
     <Content Include="app\templates\app\awsresults.html" />
     <Content Include="app\templates\app\platform_admin.html" />
     <Content Include="app\templates\app\scent_emotion.html" />
-    <Content Include="app\templates\app\excitometer.html" />
     <Content Include="app\templates\app\scraperesults.html" />
     <Content Include="app\templates\app\market_insight.html" />
     <Content Include="app\templates\app\consumer_insight.html" />

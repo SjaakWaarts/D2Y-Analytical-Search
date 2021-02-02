@@ -102,8 +102,6 @@ def set_workbook(workbook_name):
 
 def search_workbook(request):
     # prepare search_excel with the right
-    #models.ExcelDoc2 = seeker.mapping.document_from_model(models.ingr_molecules, index="excel_ingr_molecules", using=models.client)
-    #seeker.register(models.ExcelDoc)
     user = request.user
     workbook_name = request.GET.get('workbook_name', '').strip()
     storyboard_name = request.GET.get('storyboard_name', 'initial').strip()

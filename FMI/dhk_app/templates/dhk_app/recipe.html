@@ -38,51 +38,45 @@
                                         </ul>
                                         <!-- Tab panes -->
                                         <div class="tab-content border border-top-0 p-2">        
-                                            <div v-bind:class="{'tab-pane':true, 'container':true, active : course_ix==0}" v-bind:id="'course'+course_ix" v-for="(course, course_ix) in recipe.courses">
-                                                <div class="box">
-                                                    <div class="box-header">
-                                                        <h3 class="box-title">[[ course.title ]]</h3>
-                                                    </div>
-                                                    <div class="box-body">
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="recipe-ingredients">
-                                                                    <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Ingredienten</h3>
-                                                                    <div class="recipe-ingredients-part" v-for="ingredients_part in course.ingredients_parts">
-                                                                        <div v-if="isNaN(ingredients_part.part)"><b>[[ ingredients_part.part ]]</b></div>       
-                                                                        <div class="recipe-ingredient" v-for="(ingredient, index) in ingredients_part.ingredients">
-                                                                            <div class="custom-control custom-checkbox mb-3">
-                                                                                <input type="checkbox" class="custom-control-input" v-bind:id="'course'+course_ix+'_ingredient_cb'+index"
-                                                                                       v-on:click="recipe_ingredient_click(event, ingredient.ingredient)">
-                                                                                <label class="custom-control-label" v-bind:for="'course'+course_ix+'_ingredient_cb'+index">[[ ingredient.ingredient ]]</label>
-                                                                            </div>
-                                                                        </div>
+                                            <div v-bind:class="{'tab-pane':true, active : course_ix==0}" v-bind:id="'course'+course_ix" v-for="(course, course_ix) in recipe.courses">
+                                                <h3 class="box-title">[[ course.title ]]</h3>
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="recipe-ingredients">
+                                                            <h3 class="recipe-ingredients-title"><i class="fas fa-list-ul"></i>Ingredienten</h3>
+                                                            <div class="recipe-ingredients-part" v-for="ingredients_part in course.ingredients_parts">
+                                                                <div v-if="isNaN(ingredients_part.part)"><b>[[ ingredients_part.part ]]</b></div>       
+                                                                <div class="recipe-ingredient" v-for="(ingredient, index) in ingredients_part.ingredients">
+                                                                    <div class="custom-control custom-checkbox mb-3">
+                                                                        <input type="checkbox" class="custom-control-input" v-bind:id="'course'+course_ix+'_ingredient_cb'+index"
+                                                                                v-on:click="recipe_ingredient_click(event, ingredient.ingredient)">
+                                                                        <label class="custom-control-label" v-bind:for="'course'+course_ix+'_ingredient_cb'+index">[[ ingredient.ingredient ]]</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="recipe-instructions">
-                                                                    <h3 class="recipe-instructions-title"><i class="fas fa-info"></i>Instructies</h3>
-                                                                    <div class="recipe-instruction" v-for="(instruction, index) in course.instructions">
-                                                                        <div class="serial-number">
-                                                                            <h4>[[ index + 1 ]]</h4>
-                                                                            <span>Stap</span>
-                                                                        </div>
-                                                                        <div class="recipe-instruction-instruction">
-                                                                            <span class="recipe-instruction-time">
-                                                                                <i class="far fa-clock"></i>
-                                                                                Mins
-                                                                            </span>
-                                                                            <p>[[ instruction.instruction ]]</p>
-                                                                        </div>
-                                                                    </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="recipe-instructions">
+                                                            <h3 class="recipe-instructions-title"><i class="fas fa-info"></i>Instructies</h3>
+                                                            <div class="recipe-instruction" v-for="(instruction, index) in course.instructions">
+                                                                <div class="serial-number">
+                                                                    <h4>[[ index + 1 ]]</h4>
+                                                                    <span>Stap</span>
+                                                                </div>
+                                                                <div class="recipe-instruction-instruction">
+                                                                    <span class="recipe-instruction-time">
+                                                                        <i class="far fa-clock"></i>
+                                                                        Mins
+                                                                    </span>
+                                                                    <p>[[ instruction.instruction ]]</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane container fade" id="reviews">
+                                            <div class="tab-pane fade" id="reviews">
                                                 <div class="recipe-reviews">
                                                     <div class="section-heading3 heading-dark">
                                                         <h2 class="item-heading">RECIPE REVIEWS</h2>
@@ -148,15 +142,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div v-bind:class="{'tab-pane':true, 'container':true, active:recipe.courses.length==0, fade:recipe.courses.length>0}" id="kookclub">
-                                                <div class="club-events">
+                                            <div v-bind:class="{'tab-pane':true, active:recipe.courses.length==0, fade:recipe.courses.length>0}" id="kookclub">
+                                                <div class="recipe-clubs">
                                                     <div class="section-heading3 heading-dark">
                                                         <h2 class="item-heading">KOOKCLUB UITJES</h2>
                                                         <p>
                                                             Kijk waar dit gerecht wordt bereid en schuif aan.
                                                         </p>                                                   
                                                     </div>
-                                                    <div class="club-map-event">
+                                                    <div class="recipe-club-map-events">
                                                         <div id="GoogleMap" class="club-map"></div>
                                                         <div class="club-event">
                                                             <div class="leave-form-box">

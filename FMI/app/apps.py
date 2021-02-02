@@ -9,10 +9,6 @@ class AppConfig (django.apps.AppConfig):
         import seeker
         import app.models as models
 
-        #models.ExcelDoc = seeker.mapping.document_from_model(models.ecosystem, index="excel", using=models.client)
-        #seeker.register(models.ExcelDoc)
-        #models.ExcelSeekerView.document = models.ExcelDoc
-
         #models.PostDoc = seeker.mapping.document_from_model(models.Post, index="post", using=models.client)
         es_index = {'document' : 'post', 'index' : 'post', 'doc_type' : 'doc', 'properties' : models.PostMap._meta.es_mapping}
         models.PostDoc = seeker.mapping.document_from_index(es_index, using=models.client)
