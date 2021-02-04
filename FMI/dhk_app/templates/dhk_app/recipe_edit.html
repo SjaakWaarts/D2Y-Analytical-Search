@@ -28,6 +28,9 @@
                                             <li class="nav-item">
                                                 <a v-bind:class="{'nav-link':true, 'w-100':true}" data-toggle="tab" href="#classify"><i class="fas fa-tags mr-2"></i>Classify</a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a v-bind:class="{'nav-link':true, 'w-100':true}" data-toggle="tab" href="#scrape"><i class="fas fa-globe mr-2"></i>Scrape</a>
+                                            </li>
                                         </ul>
                                         <!-- Tab panes -->
                                         <div class="tab-content border border-top-0 p-2">
@@ -114,13 +117,27 @@
                                                         <div class="recipe-classify-tags">
                                                             <h5>Tags</h5>
                                                             <div class="recipe-classify-checkboxes">
-                                                                <div class="form-check" v-for="bucket in tags_buckets">
+                                                                <div class="form-check" v-for="(bucket, bucket_ix) in tags_buckets">
                                                                   <label class="form-check-label" v-bind:for="bucket.key">
                                                                     <input type="checkbox" class="form-check-input" v-bind:id="bucket.key" v-bind:value="bucket.key"  v-model="tags">[[bucket.key]] ([[bucket.doc_count]])
                                                                   </label>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="scrape">
+                                                <div class="recipe-classify">
+                                                    <h4>Scrape een Recept</h4>
+                                                    Scrape een recept om het op te nemen in de zoek machine.
+                                                    <div class="input-group mt-3 mb-3">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-primary" v-on:click="recipe_scrape_click()">
+                                                                <span class="fas fa-globe"></span>
+                                                            </button>
+                                                        </div>
+                                                        <input type="text" class="form-control" placeholder="Web page" id="scrape_text" v-model="m_page_scrape"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -135,13 +152,13 @@
         </div>
     </div>
     {% csrf_token %}
-	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
-	<input type="hidden" name="recipe_edit_url" value="{% url 'dhk:recipe_edit' %}">
-    <input type="hidden" name="recipe_post_url" value="{% url 'dhk:recipe_post' %}">
+    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
     <input type="hidden" name="recipe_carousel_images_search_url" value="{% url 'dhk:recipe_carousel_images_search' %}">
     <input type="hidden" name="recipe_carousel_post_url" value="{% url 'dhk:recipe_carousel_post' %}">
-    <input type="hidden" name="api_stream_file_url" value="{% url 'api/stream_file' %}">
-
+	<input type="hidden" name="recipe_edit_url" value="{% url 'dhk:recipe_edit' %}">
+	<input type="hidden" name="recipe_get_url" value="{% url 'dhk:recipe_get' %}">
+    <input type="hidden" name="recipe_post_url" value="{% url 'dhk:recipe_post' %}">
+    <input type="hidden" name="recipe_scrape_url" value="{% url 'dhk:recipe_scrape' %}">
 
 {% endblock %}
 

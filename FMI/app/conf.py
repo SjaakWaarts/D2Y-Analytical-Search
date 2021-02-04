@@ -12,7 +12,7 @@ import elasticsearch_dsl as dsl
 
 import app.models as models
 import app.survey as survey
-import app.workbooks as workbooks
+import app.workbook as workbook
 
 
 # A site consists of tree of menu items pointing to a site item.

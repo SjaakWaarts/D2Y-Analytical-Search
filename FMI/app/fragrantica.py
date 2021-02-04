@@ -198,7 +198,7 @@ def scrape_fragrantica_product(product, purl, scrape_choices):
     return [purl, accords, votes, notes, reviews, img_src]
 
 
-def scrape_ds(site_choices, scrape_choices, brand_name_field):
+def fragrantica(site_choices, scrape_choices, brand_name_field):
     global driver
 
     scrape_d = {}

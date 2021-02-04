@@ -12,6 +12,14 @@
     </div>
     <div class="toolbar-actions" style="text-align:right">
         <div class="toolbar-action" v-if="window.location.href.indexOf('recipe_edit') > -1">
+            <a type="button" href="{% url 'dhk:recipe' %}?id={{recipe.id}}" data-toggle="tooltip" title="Bekijk" style="color:black"><i class="fas fa-eye"></i></a>
+        </div>
+        <div v-else>
+            <div class="toolbar-action" v-if="recipe.author==user.username && user.username!=''">
+                <a type="button" v-bind:href="bind_recipe_edit_url()" data-toggle="tooltip" title="Edit" style="color:black"><i class="fas fa-edit"></i></a>
+            </div>
+        </div>
+        <div class="toolbar-action" v-if="window.location.href.indexOf('recipe_edit') > -1">
             <a type="button" href="#" v-on:click="recipe_save()" data-toggle="tooltip" title="Bewaar" style="color:black"><i class="fas fa-save"></i></a>
         </div>
         <div class="toolbar-action">
@@ -22,14 +30,6 @@
         </div>
         <div class="toolbar-action">
             <a type="button" v-bind:href="bind_recipe_mail_review_url()" data-toggle="tooltip" title="Mail Review" style="color:black"><i class="fas fa-envelope"></i></a>
-        </div>
-        <div class="toolbar-action" v-if="window.location.href.indexOf('recipe_edit') > -1">
-            <a type="button" href="{% url 'dhk:recipe' %}?id={{recipe.id}}" data-toggle="tooltip" title="Bekijk" style="color:black"><i class="fas fa-eye"></i></a>
-        </div>
-        <div v-else>
-            <div class="toolbar-action" v-if="recipe.author==user.username && user.username!=''">
-                <a type="button" v-bind:href="bind_recipe_edit_url()" data-toggle="tooltip" title="Edit" style="color:black"><i class="fas fa-edit"></i></a>
-            </div>
         </div>
         <div class="toolbar-action toolbar-action-hover">
             <a data-toggle="tooltip" title="Share"><i class="fas fa-share-square"></i></a>

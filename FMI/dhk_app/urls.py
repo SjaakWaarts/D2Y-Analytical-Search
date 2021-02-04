@@ -5,6 +5,7 @@ from dhk_app import dhk_admin
 from dhk_app import club
 from dhk_app import kitchen
 from dhk_app import recipe
+from dhk_app import recipe_scrape
 from dhk_app import workshops
 
 app_name='dhk'
@@ -20,10 +21,11 @@ urlpatterns = [
     path('workshops', workshops.workshops_view, name='workshops'),
     path('get_workshops', workshops.get_workshops, name='get_workshops'),
     path('recipe', recipe.recipe_view, name='recipe'),
+    path('recipe_carousel_images_search', recipe.recipe_carousel_images_search, name='recipe_carousel_images_search'),
+    path('recipe_carousel_post', recipe.recipe_carousel_post, name='recipe_carousel_post'),
     path('recipe_edit', recipe.recipe_edit_view, name='recipe_edit'),
     path('recipe_get', recipe.recipe_get, name='recipe_get'),
     path('recipe_post', recipe.recipe_post, name='recipe_post'),
-    path('recipe_carousel_images_search', recipe.recipe_carousel_images_search, name='recipe_carousel_images_search'),
-    path('recipe_carousel_post', recipe.recipe_carousel_post, name='recipe_carousel_post'),
+    path('recipe_scrape', recipe_scrape.recipe_scrape, name='recipe_scrape'),
     path('search', models.ExcelSeekerView.as_view(), name='search'),
 ]

@@ -21,7 +21,7 @@ import urllib
 from datetime import datetime, time
 import FMI.settings
 import app.elastic as elastic
-import app.scrape_ds as scrape_ds
+import app.fragrantica as fragrantica
 import app.sentiment as sentiment
 import app.product as product
 import app.market as market
@@ -146,7 +146,7 @@ def scrape_view(request):
             scrape_choices = form.cleaned_data['scrape_choices_field']
             brand_name_field = form.cleaned_data['brand_name_field']
             if 'scrape' in form.data:
-                models.scrape_li = scrape_ds.scrape_ds(site_choices, scrape_choices, brand_name_field)
+                models.scrape_li = fragrantica.fragrantica(site_choices, scrape_choices, brand_name_field)
                 if not product.scrape_save(brand_name_field):
                     form.add_form_error("Could not save scrape results")
             if 'retrieve' in form.data:

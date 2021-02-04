@@ -33,40 +33,12 @@ import seeker.esm as esm
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS, MEDIA_BUCKET, MEDIA_URL
 from FMI.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-import dhk_app.images as images
+import dhk_app.recipe_scrape as recipe_scrape
 import app.aws as aws
+import app.workbook as workbook
 import app.wb_excel as wb_excel
 
 logger = logging.getLogger(__name__)
-
-class Workbook():
-    es_index = None
-    workbook = None
-    es_index = None
-
-    def __init__(self, es_index):
-        self.es_index = es_index
-        self.workbook = wb_excel.workbooks[es_index]
-        self.es_index = self.workbook['es_index']
-
-    def aggs(self, facets):
-        es_host = ES_HOSTS[0]
-        s, search_q = esm.setup_search()
-        search_filters = search_q["query"]["bool"]["filter"]
-        search_aggs = search_q["aggs"]
-        search_q['size'] = 0
-        for facet, facet_conf in facets.items():
-            field = facet
-            if facet_conf.get('keyword', True):
-                field = field + '.keyword'
-            options = facet_conf.get('options', {})
-            terms_agg = {'terms': {"field": field, **options}}
-            nested = facet_conf.get('nested', None)
-            search_aggs[facet] = esm.add_agg_nesting(field, nested, terms_agg)
-        results = esm.search_query(es_host, self.es_index['index'], search_q)
-        results = json.loads(results.text)
-        aggs = results.get('aggregations', {})
-        return aggs
 
 class Recipe():
     recipe = {}
@@ -207,7 +179,7 @@ def recipe_edit_view(request):
     """Renders dhk page."""
     id = request.GET['id']
     recipe = Recipe(id)
-    dhk_wb = Workbook('dhk')
+    dhk_wb = workbook.Workbook('dhk')
     facets = {
         'categories' : {'keyword' : True, 'nested' : None, 'options' : {'size' : 100, 'order' : {'_key' : 'asc' }}},
         'tags' : {'keyword' : True, 'nested' : None, 'options' : {'size' : 100, 'order' : {'_key' : 'asc' }}},
@@ -228,6 +200,33 @@ def recipe_edit_view(request):
         context,
         content_type='text/html'
     )
+
+def recipe_carousel_images_search(request):
+    id = request.GET['id']
+    q = request.GET['q']
+    thumbnails = recipe_scrape.carousel_scrape(q, 20)
+    #for image_url in image_urls:
+    #    persist_image('images', image_url)
+    context = {
+        'thumbnails' : thumbnails
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
+# prevent CsrfViewMiddleware from reading the POST stream
+#@csrf_exempt
+@requires_csrf_token
+def recipe_carousel_post(request):
+    # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
+    json_data = json.loads(request.body)
+    id = json_data.get('id', None)
+    carousel = json_data.get('carousel', None)
+    recipe = Recipe(id)
+    recipe.carousel_put(carousel)
+    context = {
+        'recipe' : recipe.recipe,
+        'reviews' : recipe.reviews
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
 
 def recipe_get(request):
     id = request.GET['id']
@@ -310,29 +309,3 @@ def recipe_post(request):
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 
-def recipe_carousel_images_search(request):
-    id = request.GET['id']
-    q = request.GET['q']
-    thumbnails = images.fetch_thumbnails(q, 20)
-    #for image_url in image_urls:
-    #    persist_image('images', image_url)
-    context = {
-        'thumbnails' : thumbnails
-        }
-    return HttpResponse(json.dumps(context), content_type='application/json')
-
-# prevent CsrfViewMiddleware from reading the POST stream
-#@csrf_exempt
-@requires_csrf_token
-def recipe_carousel_post(request):
-    # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
-    json_data = json.loads(request.body)
-    id = json_data.get('id', None)
-    carousel = json_data.get('carousel', None)
-    recipe = Recipe(id)
-    recipe.carousel_put(carousel)
-    context = {
-        'recipe' : recipe.recipe,
-        'reviews' : recipe.reviews
-        }
-    return HttpResponse(json.dumps(context), content_type='application/json')

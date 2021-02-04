@@ -15,14 +15,13 @@ from elasticsearch_dsl.utils import AttrList, AttrDict
 import app.models as models
 import app.views
 import app.survey as survey
-import app.workbooks as workbooks
 import app.wb_excel as wb_excel
 
 
 # A site consists of tree of menu items pointing to a site item.
 # A site item can be a data selecter: 
 
-storyboard_link = workbooks.SurveyWorkbook.storyboard_link
+storyboard_link = models.SurveyWorkbook.storyboard_link
 
 site_views = {
     ## SELECTORS

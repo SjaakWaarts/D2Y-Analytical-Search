@@ -164,6 +164,10 @@
     font-size: 18px;
 }
 
+.recipe-scrape {
+    padding: 1rem;
+}
+
 .recipe-classify {
     padding: 1rem;
 }
@@ -188,6 +192,11 @@
 }
 
 .recipe-classify-checkboxes {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* horizontal alignment */
+    align-items: flex-start; /* vertical alignment */
     height: 500px;
     overflow-y: scroll;
 }

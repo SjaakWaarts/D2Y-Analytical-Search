@@ -5,12 +5,13 @@
 //Set url and csrf variables
 //var csrf_token = $("input[name=csrf_token]").val();
 var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
-var recipe_get_url = $("input[name=recipe_get_url]").val();
-var recipe_edit_url = $("input[name=recipe_edit_url]").val();
-var recipe_post_url = $("input[name=recipe_post_url]").val();
+var api_stream_file_url = $("input[name=api_stream_file_url]").val();
 var recipe_carousel_images_search_url = $("input[name=recipe_carousel_images_search_url]").val();
 var recipe_carousel_post_url = $("input[name=recipe_carousel_post_url]").val();
-var api_stream_file_url = $("input[name=api_stream_file_url]").val();
+var recipe_edit_url = $("input[name=recipe_edit_url]").val();
+var recipe_get_url = $("input[name=recipe_get_url]").val();
+var recipe_post_url = $("input[name=recipe_post_url]").val();
+var recipe_scrape_url = $("input[name=recipe_scrape_url]").val();
 
 //Vue part
 //Vue.http.headers.common['X-CSRF-TOKEN'] = csrftoken;
@@ -28,6 +29,7 @@ var app = new Vue({
         hits: [],
         id: '',
         m_featured_ix: 0,
+        m_page_scrape : '',
         recipe: null,
         shopping_basket: [],
         tags: [],
@@ -149,6 +151,12 @@ var app = new Vue({
                 { 'headers': headers }).then(response => {
                     this.recipe = response.body.recipe;
                 });
+        },
+        recipe_scrape_click: function () {
+            this.alert = "Scrape...";
+            this.$http.get(recipe_scrape_url, { params: { id: this.id, page: this.m_page_scrape } }).then(response => {
+                var recipe = response.body.recipe;
+            });
         },
         recipe_save: function () {
             var csrftoken_cookie = getCookie('csrftoken');

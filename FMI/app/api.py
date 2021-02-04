@@ -21,10 +21,10 @@ import app.models as models
 import app.guide as guide
 import app.conf as conf
 import app.wb_excel as wb_excel
-import app.workbooks as workbooks
+import app.workbook as workbook
 from FMI.settings import BASE_DIR, ES_HOSTS
 
-from .scrape_ds import *
+from .fragrantica import *
 
 types_map = {
     '.a': 'application/octet-stream',
