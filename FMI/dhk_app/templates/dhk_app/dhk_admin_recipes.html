@@ -1,0 +1,209 @@
+{% extends "dhk_app/dhk_layout.html" %}
+
+{% block css %}
+    {% load static %}
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+	    <link rel="stylesheet" type="text/css" href="{% static 'assets/dropzone/css/dropzone.min.css'%}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'app/content/dropzone.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <p>
+                Via <i>Voeg documenten toe</i> kun je (meerdere) documenten op je computere selecteren die je wilt laden.
+                <i>Start opname</i> om het laden daadwerkelijk te starten. Het succes en de status van het laad proces wordt daarna voor
+                ieder geselecteerd document getoond. Igv foutmeldingen, corrigeer de fout en laad het document opnieuw!
+            </p>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div id="actions" class="row">
+                        <div class="col-lg-12">
+                            <!-- The fileinput-button span is used to style the file input field as button -->
+                            <span class="btn fileinput-button btn-primary">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                <span>Voeg documenten toe</span>
+                            </span>
+                            <button id="start_opnamen_btn" type="submit" class="btn start btn-success">
+                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                <span>Start opname</span>
+                            </button>
+                            <button type="reset" class="btn cancel btn-warning">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                <span>Annuleer opname</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="table table-striped files" id="previews">
+                            <div id="template" class="file-row">
+                                <!-- This is used as the file preview template -->
+                                <div width="5%">
+                                    <span class="preview"><img data-dz-thumbnail /></span>
+                                </div>
+                                <div width="30%">
+                                    <p class="name" data-dz-name></p>
+                                    <strong class="error text-danger" data-dz-errormessage></strong>
+                                </div>
+                                <div width="30%">
+                                    <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                        <span class="size" data-dz-size></span>
+                                        <div class="progress-bar progress-bar-success" data-dz-uploadprogress></div>
+                                    </div>
+                                </div>
+                                <div width="25%">
+                                    <button style="display: none;" class="btn btn-primary start">
+                                        <i class="fa fa-upload" aria-hidden="true"></i>
+                                        <span>Opname</span>
+                                    </button>
+                                    <button data-dz-remove class="btn cancel btn-warning">
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        <span>Annuleer</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="root" class="row" style="height: 90%">
+                <div class="col-12">
+                    <div class="row" v-if="dropzone_files.length > 0">
+                        <div class="col-12">
+                            <h3 class="box-title">Status Opname</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Naam</th>
+                                            <th>Log</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="dropzone_file in dropzone_files">
+                                            <td>
+                                                <div v-if="dropzone_file.success">
+                                                    <a v-bind:href="recipe_url('recipe', dropzone_file.id)">[[ dropzone_file.name ]]</a>
+                                                </div>
+                                                <div v-else>
+                                                    [[ dropzone_file.name ]]
+                                                </div>
+                                            </td>
+                                            <td>[[ dropzone_file.log ]]</td>
+                                            <td>
+                                                <div v-if="dropzone_file.success">
+                                                    <i class="fa fa-check" title="Goed"></i>
+                                                </div>
+                                                <div v-else>
+                                                    <i class="fa fa-times" title="Fout"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="box-title">Mijn Recepten</h3>
+                            <div class="table-responsive">
+                                <table id="recipe_datatable" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th><a href="#" v-on:click="get_uploaded_files(sort='author')">Van<i class="fas fa-sort ml-2"></i></a></th>
+                                            <th><a href="#" v-on:click="get_uploaded_files(sort='published_date')">Datum<i class="fas fa-sort ml-2"></i></a></th>
+                                            <th>Naam</th>
+                                            <th class="text-center">Acties</th>
+                                        </tr>
+                                        <tr v-if="this.workbook">
+                                            <th>
+                                                <facet-filter facet_name="author" v-bind:workbook.sync="this.workbook"
+                                                    v-on:facet-filter="facet_filter('author')">
+                                                </facet-filter>
+                                            </th>
+                                            <th>
+                                                <facet-filter facet_name="published_date" v-bind:workbook.sync="this.workbook"
+                                                    v-on:facet-filter="facet_filter('published_date')">
+                                                </facet-filter>
+                                            </th>
+                                            <th>
+                                                <facet-filter facet_name="title" v-bind:workbook.sync="this.workbook"
+                                                    v-on:facet-filter="facet_filter('title')">
+                                                </facet-filter>
+                                            </th>
+                                            <th class="text-center">
+                                                <a href="#" class="text-info" v-on:click="get_uploaded_files()"><i class="fas fa-search" title="Zoek" aria-hidden="true"></i></a>
+                                                <a href="#" class="text-info" v-on:click="reset_search()"><i class="fas fa-undo" title="Reset"></i></a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="hit in hits"
+                                            v-on:click="current_recipe = hit"
+                                            v-bind:class="{active : current_recipe==hit}">
+                                            <td style="width:10%;">[[ hit._source.author ]]</td>
+                                            <td style="width:10%;">[[ hit._source.published_date ]]</td>
+                                            <td style="width:60%;"><a v-bind:href="recipe_url('recipe', hit._source.id)">[[ hit._source.title ]]</a></td>
+                                            <td style="width:20%;" class="text-center">
+                                                <a href="#" v-on:click="recipe_edit(hit._source.id)"><i class="fa fa-check" title="Check"></i></a>
+                                                <a v-bind:href="recipe_url('recipe', hit._source.id)"><i class="fa fa-eye" title="Bekijk" aria-hidden="true"></i></a>
+                                                <a href="#" v-on:click="delete_recipe(hit._source.id)"><i class="fa fa-trash" title="Verwijder"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <pager v-bind:pager.sync="this.pager" v-on:pager="get_uploaded_files()"></pager>
+                            </div>
+                        </div>
+                    </div>
+<!-- bootstrap4-table is not useful because multiple rows can be selected
+                    <div class="row">
+                        <div class="col-12">
+                            <vue-bootstrap4-table :rows="rows" :columns="columns" :actions="actions" :config="config"
+                                                  @on-edit="recipe_edit" @on-delete="delete_recipe" @on-select-row="select_recipe">
+                                <template slot="sort-asc-icon">
+                                    <i class="fas fa-sort-up"></i>
+                                </template>
+                                <template slot="sort-desc-icon">
+                                    <i class="fas fa-sort-down"></i>
+                                </template>
+                                <template slot="no-sort-icon">
+                                    <i class="fas fa-sort"></i>
+                                </template>
+                            </vue-bootstrap4-table>
+                        </div>
+                    </div>
+                </div>
+-->
+            </div>
+        </div>
+    </div>
+    </div>
+    {% csrf_token %}
+	<input type="hidden" name="delete_recipe_url" value="{% url 'dhk:delete_recipe' %}">
+	<input type="hidden" name="upload_file_url" value="{% url 'dhk:upload_file' %}">
+	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk:get_uploaded_files' %}">
+
+{% endblock %}
+
+
+{% block scripts %}
+    {% load static %}
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+        <script  src="https://unpkg.com/vue-bootstrap4-table@1.1.10/dist/vue-bootstrap4-table.min.js"  crossorigin="anonymous"></script>
+        <script src="{% static 'assets/dropzone/js/dropzone.min.js' %}"></script>
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/facets.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/dhk_admin_recipes.js' %}"></script>
+        {% if not user.is_authenticated %}
+            <script>
+                login_navbar_click();
+            </script>
+        {% endif %}
+{% endblock %}

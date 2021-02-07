@@ -3,8 +3,6 @@
 
 {% block css %}
     {% load static %}
-	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'dhk_app/content/recipe.css' %}" />
 {% endblock %}
 
@@ -44,7 +42,7 @@
                                                             <button class="btn btn-primary" v-on:click="recipe_carousel_images_search_click()">
                                                                 <span class="fas fa-search"></span>
                                                             </button>
-                                                            <button class="btn btn-primary" v-on:click="image_search = recipe['title']">
+                                                            <button class="btn btn-primary mr-1" v-on:click="image_search = recipe['title']">
                                                                 <span class="fas fa-history"></span>
                                                             </button>
                                                         </div>
@@ -133,7 +131,7 @@
                                                     Scrape een recept om het op te nemen in de zoek machine.
                                                     <div class="input-group mt-3 mb-3">
                                                         <div class="input-group-btn">
-                                                            <button class="btn btn-primary" v-on:click="recipe_scrape_click()">
+                                                            <button class="btn btn-primary mr-1" v-on:click="recipe_scrape_click()">
                                                                 <span class="fas fa-globe"></span>
                                                             </button>
                                                         </div>

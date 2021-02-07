@@ -1,12 +1,96 @@
 ﻿// script.js
+
 'use strict';
 
+//import VueBootstrap4Table from 'vue-bootstrap4-table'
+
+// JQuery
+
+//Set url and csrf variables
 //var csrf_token = $("input[name=csrf_token]").val();
 var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
 var upload_file_url = $("input[name=upload_file_url]").val();
 var delete_recipe_url = $("input[name=delete_recipe_url]").val();
 var get_uploaded_files_url = $("input[name=get_uploaded_files_url]").val();
-var recipe_scrape_url = $("input[name=recipe_scrape_url]").val();
+
+var previewNode = document.querySelector("#template");
+previewNode.id = "";
+var previewTemplate = previewNode.parentNode.innerHTML;
+previewNode.parentNode.removeChild(previewNode);
+
+var ingest_zip_total = 0;
+var ingest_zip_dropzone = 0;
+var ingest_zip_bewaar = 0;
+var ingest_zip_cnt = 0;
+var dropzone_files = [];
+
+Dropzone.autoDiscover = false;
+var myDropzone = new Dropzone(document.body, {
+    url: upload_file_url,
+    thumbnailWidth: 80,
+    thumbnailHeight: 80,
+    parallelUploads: 20,
+    previewTemplate: previewTemplate,
+    autoQueue: false,
+    previewsContainer: "#previews",
+    clickable: ".fileinput-button",
+    params: { 'csrfmiddlewaretoken' : csrftoken },
+    headers: { 'X-CSRF-Token': csrftoken },
+    acceptedFiles: ".zip,.docx",
+    maxFilesize: 500, // MB
+    timeout: 0
+});
+
+myDropzone.on('success', function (file, response) {
+    var args = Array.prototype.slice.call(arguments);
+    app.get_uploaded_files();
+    dropzone_files.push({ 'name': file.name, 'id' : response.id, 'success' : response.success, 'log': response.log });
+});
+
+myDropzone.on("addedfile", function (file) {
+    ingest_zip_dropzone++;
+    file.previewElement.querySelector(".start").onclick = function () {
+        myDropzone.enqueueFile(file);
+    };
+});
+
+myDropzone.on("removedfile", function (file) {
+    ingest_zip_dropzone--;
+});
+
+myDropzone.on("totaluploadprogress", function (progress) {
+    //document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+});
+
+myDropzone.on("sending", function (file) {
+    console.log(file);
+    //document.querySelector("#total-progress").style.opacity = "1";
+    file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+});
+
+myDropzone.on("queuecomplete", function (progress) {
+    //document.querySelector("#total-progress").style.opacity = "0";
+    app.get_uploaded_files();
+});
+
+myDropzone.on("complete", function (file) {
+    myDropzone.removeFile(file);
+    app.get_uploaded_files();
+});
+
+document.querySelector("#actions .start").onclick = function () {
+    myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+    ingest_zip_total = ingest_zip_dropzone;
+    ingest_zip_cnt = 0;
+    dropzone_files = [];
+};
+
+document.querySelector("#actions .cancel").onclick = function () {
+    myDropzone.removeAllFiles(true);
+    ingest_zip_dropzone = 0;
+    ingest_zip_total = 0;
+    app.get_uploaded_files();
+};
 
 //Vue part
 //Vue.http.headers.common['X-CSRF-TOKEN'] = csrftoken;
@@ -26,8 +110,6 @@ var app = new Vue({
         aggs: [],
         current_recipe: '',
         current_recipeIX: null,
-        m_page_scrape: '',
-        recipe: null,
         rows: [
             {
                 "id": 1,
@@ -191,11 +273,6 @@ var app = new Vue({
                     }
                 });
         },
-        recipe_scrape_click: function () {
-            this.$http.get(recipe_scrape_url, { params: { id: null, page: this.m_page_scrape } }).then(response => {
-                var recipe = response.body.recipe;
-            });
-        },
         recipe_url(url, id) {
             return url + '?id=' + id;
         },
@@ -211,6 +288,7 @@ var app = new Vue({
     computed: {
     },
     mounted: function () {
+        this.get_uploaded_files();
     },
 
 });

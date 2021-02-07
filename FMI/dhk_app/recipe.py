@@ -41,11 +41,17 @@ import app.wb_excel as wb_excel
 logger = logging.getLogger(__name__)
 
 class Recipe():
+    id = None
+    new = False
     recipe = {}
     reviews = []
 
-    def __init__(self, id=None):
-        if id:
+    def __init__(self, id, recipe=None):
+        self.id = id
+        if recipe:
+            self.recipe = recipe
+            self.new = True;
+        else:
             self.get(id)
 
     def get(self, id):
@@ -137,10 +143,26 @@ class Recipe():
     
     def es_get(self, id):
         es_host = ES_HOSTS[0]
+        results = esm.get_doc(es_host, 'recipes', id)
+        results = json.loads(results.text)
+        recipe = results.get('_source', {})
+        return recipe
+
+    def es_put(self):
+        es_host = ES_HOSTS[0]
+        s, search_q = esm.setup_search()
+        if self.new:
+            result = esm.create_doc(es_host, 'recipes', self.id, self.recipe)
+        else:
+            result = esm.update_doc(es_host, 'recipes', self.id, self.recipe)
+        return result
+
+    def es_filter_one(self, field_name, field_value):
+        es_host = ES_HOSTS[0]
         s, search_q = esm.setup_search()
         search_filters = search_q["query"]["bool"]["filter"]
-        field = 'id.keyword'
-        terms = [id]
+        field = field_name + '.keyword'
+        terms = [field_value]
         terms_filter = {"terms": {field: terms}}
         search_filters.append(terms_filter)
         search_aggs = search_q["aggs"]
@@ -151,12 +173,6 @@ class Recipe():
         hit = hits.get('hits', [{}])[0]
         recipe = hit.get('_source', {})
         return recipe
-
-    def es_put(self):
-        es_host = ES_HOSTS[0]
-        s, search_q = esm.setup_search()
-        result = esm.update_doc(es_host, 'recipes', self.recipe['id'], self.recipe)
-        return result
 
 
 def recipe_view(request):
@@ -178,7 +194,7 @@ def recipe_view(request):
 def recipe_edit_view(request):
     """Renders dhk page."""
     id = request.GET['id']
-    recipe = Recipe(id)
+    recipe_obj = Recipe(id)
     dhk_wb = workbook.Workbook('dhk')
     facets = {
         'categories' : {'keyword' : True, 'nested' : None, 'options' : {'size' : 100, 'order' : {'_key' : 'asc' }}},
@@ -190,7 +206,7 @@ def recipe_edit_view(request):
     context = {
         'site' : FMI.settings.site,
         'year':datetime.now().year,
-        'recipe'  : recipe.recipe,
+        'recipe'  : recipe_obj.recipe,
         'cats_buckets' : cats_buckets,
         'tags_buckets' : tags_buckets,
         }
@@ -220,11 +236,11 @@ def recipe_carousel_post(request):
     json_data = json.loads(request.body)
     id = json_data.get('id', None)
     carousel = json_data.get('carousel', None)
-    recipe = Recipe(id)
-    recipe.carousel_put(carousel)
+    recipe_obj = Recipe(id)
+    recipe_obj.carousel_put(carousel)
     context = {
-        'recipe' : recipe.recipe,
-        'reviews' : recipe.reviews
+        'recipe' : recipe_obj.recipe,
+        'reviews' : recipe_obj.reviews
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 
@@ -232,10 +248,10 @@ def recipe_get(request):
     id = request.GET['id']
     format = request.GET['format']
     logger.info(f"Obtain recipe for id '{id}'")
-    recipe = Recipe(id)
+    recipe_obj = Recipe(id)
     context = {
-        'recipe'  : recipe.recipe,
-        'reviews' : recipe.reviews
+        'recipe'  : recipe_obj.recipe,
+        'reviews' : recipe_obj.reviews
         }
     if format == 'json':
         return HttpResponse(json.dumps(context), content_type='application/json')
@@ -272,14 +288,14 @@ def recipe_post(request):
     # set breakpoint AFTER reading the request.body. The debugger will otherwise already consume the stream!
     json_data = json.loads(request.body)
     recipe_new = json_data.get('recipe', None)
-    recipe = Recipe(recipe_new['id'])
-    recipe.clubs_set(recipe_new['cooking_clubs'])
-    recipe.cats_set(recipe_new['categories'])
-    recipe.tags_set(recipe_new['tags'])
-    result = recipe.put()
+    recipe_obj = Recipe(recipe_new['id'])
+    recipe_obj.clubs_set(recipe_new['cooking_clubs'])
+    recipe_obj.cats_set(recipe_new['categories'])
+    recipe_obj.tags_set(recipe_new['tags'])
+    result = recipe_obj.put()
 
     sender = "info@deheerlijkekeuken.nl"
-    for club in recipe.recipe['cooking_clubs']:
+    for club in recipe_obj.recipe['cooking_clubs']:
         cooking_date = datetime.strptime(club['cooking_date'], "%Y-%m-%dT%H:%M")
         subject = "Kookclub {0} bij {1}".format(cooking_date.strftime('%m %b %Y - %H:%M'), club['cook'])
         message = \
@@ -301,11 +317,11 @@ def recipe_post(request):
             to_list.append(participant['email'])
             message = message + "{0}\t{1}\n".format(participant['user'], participant['comment'])
         html_message = loader.render_to_string('dhk_app/club_mail.html',
-                                               {'recipe': recipe.recipe, 'club': club})
+                                               {'recipe': recipe_obj.recipe, 'club': club})
         send_mail(subject, message, sender, to_list, html_message=html_message, fail_silently=True)
     context = {
-        'recipe' : recipe.recipe,
-        'reviews' : recipe.reviews
+        'recipe' : recipe_obj.recipe,
+        'reviews' : recipe_obj.reviews
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
 

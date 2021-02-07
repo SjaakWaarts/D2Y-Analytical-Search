@@ -1,0 +1,69 @@
+{% extends "dhk_app/dhk_layout.html" %}
+{% load i18n %}
+
+{% block css %}
+    {% load static %}
+
+{% endblock %}
+
+{% block content %}
+<div id="root" class="row">
+    <div class="col-lg-12">
+        <h2>Scrape je Site in de Zoek machine</h2>
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="tabs">
+                    <li class="nav-item">
+                        <a class="nav-link w-100 active"  data-toggle="tab" href="#scrape"><i class="fas fa-globe mr-2"></i>Scrape</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link w-100"  data-toggle="tab" href="#parser"><i class="fas fa-globe mr-2"></i>Parser</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content border border-top-0 p-2">
+                    <div class="tab-pane fade active show" id="scrape">
+                        <div class="recipe-classify">
+                            <h4>Scrape een Recept</h4>
+                            Scrape een recept om het op te nemen in de zoek machine.
+                            <div class="input-group mt-3 mb-3">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary mr-1" v-on:click="recipe_scrape_click()">
+                                        <span class="fas fa-globe"></span>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Web page" id="scrape_text" v-model="m_page_scrape"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="parser">
+                        <div class="recipe-classify">
+                            <h4>Site Parser</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    {% csrf_token %}
+	<input type="hidden" name="delete_recipe_url" value="{% url 'dhk:delete_recipe' %}">
+	<input type="hidden" name="upload_file_url" value="{% url 'dhk:upload_file' %}">
+	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk:get_uploaded_files' %}">
+    <input type="hidden" name="recipe_scrape_url" value="{% url 'dhk:recipe_scrape' %}">
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script type="text/javascript">
+        var static_assets_url = "{% static 'assets' %}";
+    </script>
+    {% load static %}
+        <script src="{% static 'app/scripts/utils.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/components.js' %}"></script>
+        <script src="{% static 'dhk_app/scripts/dhk_admin.js' %}"></script>
+{% endblock %}

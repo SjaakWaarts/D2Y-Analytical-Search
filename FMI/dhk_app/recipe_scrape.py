@@ -1,5 +1,7 @@
 import os
 import time
+from datetime import datetime
+from dateutil.parser import parse
 import io
 import json
 import hashlib
@@ -15,6 +17,7 @@ from django.http import HttpResponseRedirect
 import app.aws as aws
 import app.workbook as workbook
 import app.wb_excel as wb_excel
+import dhk_app.recipe as recipe
 from FMI.settings import BASE_DIR
 
 logger = logging.getLogger(__name__)
@@ -22,34 +25,52 @@ logger = logging.getLogger(__name__)
 global wd
 wd = None
 
-def parse_part(ix):
-    return ix
+#Selector	Example
+#Type selector          h1 {  }
+#Universal selector     * {  }
+#Class selector         .box {  }
+#id selector            #unique { }
+#Attribute selector     a[title] {  }, a{href="abc"] { }
+#Attribute selector     p[class~="special"] (contains value), div[lang|="zh"] (begins with)
+#Pseudo-class selectors p:first-child { }
+#Pseudo-element selectors   p::first-line { }
+#Descendant combinator  article p
+#Child combinator       article > p
+#Adjacent sibling       combinator	h1 + p
+#General sibling        combinator	h1 ~ p
+#
+# added evaluater, starts with =
 
 parser_site_recipe = {
     "www.leukerecepten.nl" : {
+    'id'            : {'type': str, 'selectors' : ""},
     'title'         : {'type': str, 'selectors' : [".page-content__title"]},
-    'published_date': {'type': str, 'selectors' : []},
+    'published_date': {'type': datetime, 'selectors' : ["meta[property='article:modified_time']", "=.get_attribute('content')"]},
     'author'        : {'type': str, 'selectors' : []},
-    'excerpt'       : {'type': str, 'selectors' : []},
+    'excerpt'       : {'type': str, 'selectors' : ["meta[name='description']", "=.get_attribute('content')"]},
     'description'   : {'type': str, 'selectors' : []},
     'categories'    : {'type': list, 'selectors' : []},
     'cuisiness'     : {'type': list, 'selectors' : []},
     'tags'          : {'type': list, 'selectors' : []},
     'images'        : {
         'properties' : {
-            'image'     : {'type': str, 'selectors' : []},
-            'location'  : {'type': str, 'selectors' : []},
+            'image'     : {'type': str, 'selectors' : "image"},
+            'location'  : {'type': str, 'selectors' : ["meta[property='og:image']", "=.get_attribute('content')"]},
             },
         },
-    'reviews'       : None,
+    'reviews'       : {
+        'properties' : {
+            'review'    : None,
+            }
+        },
     'nutrition'     : None,
     'cooking_times' : None,
     'courses'       : {
         'properties' : {
-            'title'        : {'type': str, 'selectors' : []},
+            'title'        : {'type': str, 'selectors' : [".page-content__title"]},
             'ingredients_parts'   : {
                 'properties'    : {
-                    'part'          : {'type': int, 'selectors' : [], 'exit' : parse_part},
+                    'part'          : {'type': int, 'selectors' : ["=0"]},
                     'ingredients'   : {
                         'selectors' : ["ul.page-content__ingredients-list"],
                         'properties' : {
@@ -79,6 +100,18 @@ def webdriver_start():
         options.add_argument("--headless")
         wd = webdriver.Chrome(options=options)
     return wd
+
+def webdriver_get(page):
+    global wd
+    
+    wd.get(page)
+    # wait for the element to load
+    try:
+        webdriver.support.ui.WebDriverWait(wd, 5).until(lambda s: s.find_element_by_tag_name("body").is_displayed())
+        return wd
+    except TimeoutException:
+        print("TimeoutException: Element not found")
+        return None
 
 
 def webdriver_stop():
@@ -174,6 +207,8 @@ def scrape_init_field(field_type):
         field_value = []
     elif field_type == int:
         field_value = 0
+    elif field_type == datetime:
+        field_value = datetime.now().strftime('%Y-%m-%d')
     else:
         field_value = ""
     return field_value
@@ -183,23 +218,35 @@ def scrape_find_elms_values(root_elm, field_name, field_parser):
     selectors = field_parser.get('selectors', [])
     child_elms = []
     child_value = scrape_init_field(field_type)
+    if type(selectors) == str:
+        return [root_elm], selectors
     if len(selectors) == 0:
         return [root_elm], child_value
     stack = [(root_elm, 0)]
     while len(stack):
         node = stack.pop()
-        elms = node[0].find_elements_by_css_selector(selectors[node[1]])
-        for elm in elms:
-            if node[1] == len(selectors) - 1:
-                child_elms.append(elm)
-                if field_type == str:
-                    child_value = child_value + elm.text
-                elif field_type == dict:
-                    child_value.append({field_name : elm.text})
-                else:
-                    child_value.append(elm.text)
+        root_elm = node[0]
+        selector = selectors[node[1]]
+        if selector[0] == '=':
+            if selector[1] == '.':
+                child_value = eval('root_elm' + selector[1:])
             else:
-                stack.append((elm, node[1] + 1))
+                child_value = eval(selector[1:])
+        else:
+            elms = root_elm.find_elements_by_css_selector(selector)
+            for elm in elms:
+                if node[1] == len(selectors) - 1:
+                    child_elms.append(elm)
+                    if field_type == str:
+                        child_value = child_value + elm.text
+                    elif field_type == dict:
+                        child_value.append({field_name : elm.get_attribute('textContent')})
+                    elif field_type == datetime:
+                        child_value = datetime.parse(elm.text).strftime('%Y-%m-%d')
+                    else:
+                        child_value.append(elm.get_attribute('textContent'))
+                else:
+                    stack.append((elm, node[1] + 1))
     return child_elms, child_value
 
 def recipe_parse(root_elm, parser_recipe, path = ""):
@@ -217,11 +264,11 @@ def recipe_parse(root_elm, parser_recipe, path = ""):
         if field_type_es == 'nested':
             elms, _ = scrape_find_elms_values(root_elm, field_name, field_parser)
             for elm in elms:
-                field_value = recipe_parse(elm, field_parser['properties'], field_name_full)
+                elm_value = recipe_parse(elm, field_parser['properties'], field_name_full)
+                if len(elm_value) > 0:
+                    field_value.append(elm_value)
         else:
             elms, field_value = scrape_find_elms_values(root_elm, field_name, field_parser)
-            if 'exit' in field_parser:
-                field_value = field_parser['exit'](field_value)
         if field_type == dict:
             recipe = field_value
         else:
@@ -248,19 +295,28 @@ def recipe_scrape(request):
         #    page_source = f.read()
         #    f.close()
         wd.get(filename_full)
+        time.sleep(3)
         page_source = wd.page_source
     else:
-        wd.get(page)
+        webdriver_get(page)
         page_source = wd.page_source
         with open(filename_full, 'w', encoding='utf-8') as f:
             f.write(page_source)
             f.close()
     root_elm = wd.find_element_by_tag_name('html')
-    recipe = recipe_parse(root_elm, parser_site_recipe[site])
-    recipe['id'] = filename
-    webdriver_stop()
+    recipe_new = recipe_parse(root_elm, parser_site_recipe[site])
+    recipe_new['id'] = page
+    # leave the driver running
+    # webdriver_stop()
+
+    if id == '':
+        id = slugify(page)
+        recipe_obj = recipe.Recipe(id, recipe=recipe_new)
+        recipe_obj.put()
+    else:
+        recipe_obj = recipe.Recipe(id)
 
     context = {
-        'recipe'  : recipe,
+        'recipe'  : recipe_obj.recipe,
         }
     return HttpResponse(json.dumps(context), content_type='application/json')

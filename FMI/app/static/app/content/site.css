@@ -274,6 +274,29 @@
     padding-right: 15px;
 }
 
+/* DHK Site */
+
+.dhk-admin-mijn {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 1rem;
+    border-top: solid;
+    border-width: 1px;
+    padding: 1rem;
+}
+
+.dhk-admin-mijn-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: space-around;
+    min-width: 180px !important;
+    min-height: 100px !important;
+    border: solid;
+    border-width: 1px;
+}
+
 /* D2Y flex */
 
 .d2y-flex-row-wrap-start {

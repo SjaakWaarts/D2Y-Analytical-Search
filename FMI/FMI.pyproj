@@ -193,6 +193,7 @@
     <Content Include="dhk_app\static\dhk_app\media\workshop_hands.jpg" />
     <Content Include="dhk_app\static\dhk_app\scripts\components.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\club.js" />
+    <Content Include="dhk_app\static\dhk_app\scripts\dhk_admin_recipes.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\facets.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\recipe_edit.js" />
     <Content Include="dhk_app\static\dhk_app\scripts\workshop.js" />
@@ -233,7 +234,9 @@
     <Content Include="app\static\app\scripts\product.js" />
     <Content Include="app\templates\app\api_csrftoken.html" />
     <Content Include="dhk_app\templates\dhk_app\cooking_club_mail.html" />
+    <Content Include="dhk_app\templates\dhk_app\dhk_admin_recipes.html" />
     <Content Include="dhk_app\templates\dhk_app\dhk_mail_layout.html" />
+    <Content Include="dhk_app\templates\dhk_app\dhk_admin_sites.html" />
     <Content Include="dhk_app\templates\dhk_app\recipe_edit.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop-form.html" />
     <Content Include="dhk_app\templates\dhk_app\workshop.html" />
