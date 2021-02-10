@@ -151,10 +151,7 @@ class Recipe():
     def es_put(self):
         es_host = ES_HOSTS[0]
         s, search_q = esm.setup_search()
-        if self.new:
-            result = esm.create_doc(es_host, 'recipes', self.id, self.recipe)
-        else:
-            result = esm.update_doc(es_host, 'recipes', self.id, self.recipe)
+        result = esm.put_doc(es_host, 'recipes', self.id, self.recipe)
         return result
 
     def es_filter_one(self, field_name, field_value):

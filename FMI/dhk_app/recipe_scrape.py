@@ -25,40 +25,58 @@ logger = logging.getLogger(__name__)
 global wd
 wd = None
 
-#Selector	Example
+#CSS SELECTOR	Example
 #Type selector          h1 {  }
 #Universal selector     * {  }
 #Class selector         .box {  }
 #id selector            #unique { }
 #Attribute selector     a[title] {  }, a{href="abc"] { }
 #Attribute selector     p[class~="special"] (contains value), div[lang|="zh"] (begins with)
-#Pseudo-class selectors p:first-child { }
-#Pseudo-element selectors   p::first-line { }
+#Pseudo-class sels p:first-child { }
+#Pseudo-element sels   p::first-line { }
 #Descendant combinator  article p
 #Child combinator       article > p
 #Adjacent sibling       combinator	h1 + p
 #General sibling        combinator	h1 ~ p
 #
+#XPATH SELECTOR
+#Expression	Description
+#nodename	Selects all nodes with the name "nodename"
+#path /	Selects from the root node
+#path //	Selects nodes in the document from the current node that match the selection no matter where they are
+#path .	Selects the current node
+#path ..	Selects the parent of the current node
+#path @	Selects attributes
+#
 # added evaluater, starts with =
 
 parser_site_recipe = {
     "www.leukerecepten.nl" : {
-    'id'            : {'type': str, 'selectors' : ""},
-    'title'         : {'type': str, 'selectors' : [".page-content__title"]},
-    'published_date': {'type': datetime, 'selectors' : ["meta[property='article:modified_time']", "=.get_attribute('content')"]},
-    'author'        : {'type': str, 'selectors' : []},
-    'excerpt'       : {'type': str, 'selectors' : ["meta[name='description']", "=.get_attribute('content')"]},
-    'description'   : {'type': str, 'selectors' : []},
-    'categories'    : {'type': list, 'selectors' : []},
-    'cuisiness'     : {'type': list, 'selectors' : []},
-    'tags'          : {'type': list, 'selectors' : []},
+    'id'            : {'type': 'text', 'sels' : ""},
+    'title'         : {'type': 'text', 'sels' : [".page-content__title"]},
+    'published_date': {'type': 'date', 'sels' : ["meta[property='article:modified_time']"], 'con' : "=.get_attribute('content')"},
+    'author'        : {'type': 'text', 'sels' : []},
+    'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']"], 'con' : "=.get_attribute('content')"},
+    'description'   : {'type': 'text', 'sels' : []},
+    'categories'    : {'type': 'text-array', 'sels' : ["ul.page-content__meta li"]},
+    'cuisiness'     : {'type': 'text-array', 'sels' : []},
+    'tags'          : {'type': 'text-array', 'sels' : []},
     'images'        : {
+        'type'       : 'nested',
+        'sels'       : ["meta[property='og:image']"],
         'properties' : {
-            'image'     : {'type': str, 'selectors' : "image"},
-            'location'  : {'type': str, 'selectors' : ["meta[property='og:image']", "=.get_attribute('content')"]},
+            'image'     : {'type': 'text', 'sels' : ["path=."], 'con' : "image"},
+            'location'  : {'type': 'text', 'sels' : ["path=."], 'con' : "=.get_attribute('content')"},
             },
         },
+    'cooking_clubs' : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
     'reviews'       : {
+        'type'       : 'nested',
         'properties' : {
             'review'    : None,
             }
@@ -66,23 +84,29 @@ parser_site_recipe = {
     'nutrition'     : None,
     'cooking_times' : None,
     'courses'       : {
+        'type'       : 'nested',
+        'sels'       : ["path=/html"],
         'properties' : {
-            'title'        : {'type': str, 'selectors' : [".page-content__title"]},
+            'title'        : {'type': 'text', 'sels' : [".page-content__title"]},
             'ingredients_parts'   : {
+                'type'          : 'nested',
+                'sels'       : ["ul.page-content__ingredients-list"],
                 'properties'    : {
-                    'part'          : {'type': int, 'selectors' : ["=0"]},
+                    'part'          : {'type': 'integer', 'sels' : ["path=."], 'con' : "=0"},
                     'ingredients'   : {
-                        'selectors' : ["ul.page-content__ingredients-list"],
+                        'type'      : 'nested',
+                        'sels' : ["label"],
                         'properties' : {
-                            'ingredient' : {'type': dict, 'selectors' : ["label"]},
+                            'ingredient' : {'type': 'text', 'sels' : ["path=."]},
                             }
                         }
                     }
                 },
             'instructions'  : {
-                'selectors' : [".page-content__recipe"],
+                'type'       : 'nested',
+                'sels'       : [".page-content__recipe p"],
                 'properties' : {
-                    'instruction' : {'type': dict, 'selectors' : [".step"]}
+                    'instruction' : {'type': 'text', 'sels' : ["path=."]}
                     }
                 }
             }
@@ -197,57 +221,71 @@ def persist_image(folder_path: str, url: str):
     except Exception as e:
         print(f"ERROR - Could not save {url} - {e}")
 
-def scrape_init_field(field_type):
+def scrape_init_value(field_type):
     field_value = ""
     if field_type == 'nested':
         field_value = []
-    elif field_type == list:
+    elif field_type == 'text-array':
         field_value = []
-    elif field_type == dict:
-        field_value = []
-    elif field_type == int:
+    elif field_type == 'integer':
         field_value = 0
-    elif field_type == datetime:
+    elif field_type == 'date':
         field_value = datetime.now().strftime('%Y-%m-%d')
     else:
         field_value = ""
     return field_value
 
-def scrape_find_elms_values(root_elm, field_name, field_parser):
-    field_type = field_parser.get('type', 'nested')
-    selectors = field_parser.get('selectors', [])
+def scrape_values(elm, field_parser, field_value):
+    field_type = field_parser.get('type', None)
+    if 'con' in field_parser:
+        con = field_parser['con']
+        if con[0] == '=':
+            if con[1] == '.':
+                elm_text = eval('elm' + con[1:])
+            else:
+                elm_text = eval(con[1:])
+        else:
+            elm_text = con
+    else:
+        elm_text = elm.text
+        if elm.text == "": # lazy read or not visible
+            elm_text = elm.get_attribute('textContent').strip()
+    if field_type == 'nested':
+        field_value.append(elm_text)
+    elif field_type == 'text-array':
+        field_value.append(elm_text)
+    elif field_type == 'integer':
+        try:
+            field_value = int(elm_text)
+        except:
+            field_value = 0
+    elif field_type == 'date':
+        field_value = datetime.parse(elm_text).strftime('%Y-%m-%d')
+    else:
+        field_value = field_value + elm_text
+    return field_value
+
+def scrape_elements(root_elm, field_name, field_parser):
+    field_type = field_parser.get('type', None)
+    sels = field_parser.get('sels', [])
     child_elms = []
-    child_value = scrape_init_field(field_type)
-    if type(selectors) == str:
-        return [root_elm], selectors
-    if len(selectors) == 0:
-        return [root_elm], child_value
+    if len(sels) == 0:
+        return []
     stack = [(root_elm, 0)]
     while len(stack):
         node = stack.pop()
         root_elm = node[0]
-        selector = selectors[node[1]]
-        if selector[0] == '=':
-            if selector[1] == '.':
-                child_value = eval('root_elm' + selector[1:])
-            else:
-                child_value = eval(selector[1:])
+        sel = sels[node[1]]
+        if sel[0:5] == 'path=':
+            elms = root_elm.find_elements_by_xpath(sel[5:])
         else:
-            elms = root_elm.find_elements_by_css_selector(selector)
-            for elm in elms:
-                if node[1] == len(selectors) - 1:
-                    child_elms.append(elm)
-                    if field_type == str:
-                        child_value = child_value + elm.text
-                    elif field_type == dict:
-                        child_value.append({field_name : elm.get_attribute('textContent')})
-                    elif field_type == datetime:
-                        child_value = datetime.parse(elm.text).strftime('%Y-%m-%d')
-                    else:
-                        child_value.append(elm.get_attribute('textContent'))
-                else:
-                    stack.append((elm, node[1] + 1))
-    return child_elms, child_value
+            elms = root_elm.find_elements_by_css_selector(sel)
+        for elm in elms:
+            if node[1] == len(sels) - 1:
+                child_elms.append(elm)
+            else:
+                stack.append((elm, node[1] + 1))
+    return child_elms
 
 def recipe_parse(root_elm, parser_recipe, path = ""):
     global wd
@@ -257,22 +295,23 @@ def recipe_parse(root_elm, parser_recipe, path = ""):
     for field_name, field_parser in parser_recipe.items():
         if field_parser is None:
             continue
+        if type(field_parser.get('sels', None)) == str:
+            recipe[field_name] = field_parser['sels']
+            continue
         field_name_full = field_name if not path else path + '.' + field_name
         field_type_es = dhk_wb.get_field_type(field_name_full)
-        field_type = field_parser.get('type', 'nested')
-        field_value = scrape_init_field(field_type)
-        if field_type_es == 'nested':
-            elms, _ = scrape_find_elms_values(root_elm, field_name, field_parser)
+        field_type = field_parser.get('type', None)
+        field_value = scrape_init_value(field_type)
+        elms = scrape_elements(root_elm, field_name, field_parser)
+        if field_type == 'nested':
             for elm in elms:
                 elm_value = recipe_parse(elm, field_parser['properties'], field_name_full)
                 if len(elm_value) > 0:
                     field_value.append(elm_value)
         else:
-            elms, field_value = scrape_find_elms_values(root_elm, field_name, field_parser)
-        if field_type == dict:
-            recipe = field_value
-        else:
-            recipe[field_name] = field_value
+            for elm in elms:
+                field_value = scrape_values(elm, field_parser, field_value)
+        recipe[field_name] = field_value
     return recipe
 
 

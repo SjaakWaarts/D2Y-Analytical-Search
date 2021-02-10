@@ -438,18 +438,6 @@ def search_query(es_host, index, q):
         logging.error('ES search failed, error {}.'.format(r.text))
     return r
 
-def update_doc(es_host, index, id, doc):
-    headers = {'Content-Type': 'application/json'}
-    if 'http_auth' in es_host:
-        headers['http_auth'] = es_host['http_auth']
-    host = es_host['host']
-    url = "http://" + host + ":9200" + "/" + index
-    data = json.dumps({'doc' : doc})
-    r = requests.post(url + "/_doc/" + id + "/_update", headers=headers, data=data)
-    if r.status_code >= 400:
-        logging.error('ES update failed, error {}.'.format(r.text))
-    return r
-
 def create_doc(es_host, index, id, doc):
     headers = {'Content-Type': 'application/json'}
     if 'http_auth' in es_host:
@@ -473,3 +461,14 @@ def get_doc(es_host, index, id):
         logging.error('ES get failed for {}, error {}.'.format(id, r.text))
     return r
 
+def put_doc(es_host, index, id, doc):
+    headers = {'Content-Type': 'application/json'}
+    if 'http_auth' in es_host:
+        headers['http_auth'] = es_host['http_auth']
+    host = es_host['host']
+    url = "http://" + host + ":9200" + "/" + index
+    data = json.dumps({'doc' : doc})
+    r = requests.put(url + "/_doc/" + id, headers=headers, data=data)
+    if r.status_code >= 400:
+        logging.error('ES put failed, error {}.'.format(r.text))
+    return r

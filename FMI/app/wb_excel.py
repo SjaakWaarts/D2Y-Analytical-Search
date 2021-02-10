@@ -1329,7 +1329,7 @@ course = {
     'instructions'  : {
         'type'       : 'nested',
         'properties' : {
-            'instruction': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+            'instruction': {'type' : 'text'}
             }
         }
     }
