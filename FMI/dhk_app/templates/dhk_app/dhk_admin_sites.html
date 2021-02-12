@@ -33,7 +33,7 @@
                                         <span class="fas fa-globe"></span>
                                     </button>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Web site page" id="scrape_text" v-model="m_recipe_site_scrape"/>
+                                <input type="text" class="form-control" placeholder="Web site page" id="scrape_site_text" v-model="m_recipe_site_scrape"/>
                             </div>
                             <h4>Scrape een Recept</h4>
                             Scrape een recept om het op te nemen in de zoek machine.
@@ -53,12 +53,16 @@
                                             <thead>
                                                 <tr>
                                                     <th>Pagina</th>
+                                                    <th>Errors</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="page in pages_scraped">
+                                                <tr v-for="recipe_scrape_result in recipe_scrape_results">
                                                     <td>
-                                                        <a v-bind:href="page">[[page]]</a>
+                                                        <a v-bind:href="recipe_scrape_result[0]">[[ recipe_scrape_result[0] ]]</a>
+                                                    </td>
+                                                    <td>
+                                                        [[ recipe_scrape_result[1] ]]
                                                     </td>
                                                 </tr>
                                             </tbody>

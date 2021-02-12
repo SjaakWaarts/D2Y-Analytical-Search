@@ -1321,7 +1321,9 @@ course = {
             'ingredients'   : {
                 'type'      : 'nested',
                 'properties': {
-                    'ingredient': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
+                    'ingredient': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}},
+                    'value': {'type' : 'text'},
+                    'measure': {'type' : 'text', 'fields' : {'keyword' : {'type' : 'keyword', 'ignore_above' : 256}}}
                     }
                 },
             }

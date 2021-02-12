@@ -29,8 +29,8 @@ var app = new Vue({
         current_recipeIX: null,
         m_recipe_scrape: '',
         m_recipe_site_scrape: '',
-        pages_scraped: [],
         recipe: null,
+        recipe_scrape_results: [],
         rows: [
             {
                 "id": 1,
@@ -198,14 +198,14 @@ var app = new Vue({
             this.pages_scraped = []
             this.$http.get(recipe_site_scrape_url, { params: { id: null, page: this.m_recipe_site_scrape } }).then(response => {
                 var recipe = response.body.recipe;
-                this.pages_scraped = response.body.pages_scraped;
+                this.recipe_scrape_results = response.body.recipe_scrape_results;
             });
         },
         recipe_scrape_click: function () {
             this.pages_scraped = []
             this.$http.get(recipe_scrape_url, { params: { id: null, page: this.m_recipe_scrape } }).then(response => {
                 var recipe = response.body.recipe;
-                this.pages_scraped = response.body.pages_scraped;
+                this.recipe_scrape_results = response.body.recipe_scrape_results;
             });
         },
         recipe_url(url, id) {
