@@ -467,7 +467,7 @@ def put_doc(es_host, index, id, doc):
         headers['http_auth'] = es_host['http_auth']
     host = es_host['host']
     url = "http://" + host + ":9200" + "/" + index
-    data = json.dumps({'doc' : doc})
+    data = json.dumps(doc)
     r = requests.put(url + "/_doc/" + id, headers=headers, data=data)
     if r.status_code >= 400:
         logging.error('ES put failed, error {}.'.format(r.text))

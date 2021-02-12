@@ -29,7 +29,7 @@ var app = new Vue({
         hits: [],
         id: '',
         m_featured_ix: 0,
-        m_page_scrape : '',
+        m_recipe_scrape : '',
         recipe: null,
         shopping_basket: [],
         tags: [],
@@ -154,7 +154,7 @@ var app = new Vue({
         },
         recipe_scrape_click: function () {
             this.alert = "Scrape...";
-            this.$http.get(recipe_scrape_url, { params: { id: this.id, page: this.m_page_scrape } }).then(response => {
+            this.$http.get(recipe_scrape_url, { params: { id: this.id, page: this.m_recipe_scrape } }).then(response => {
                 var recipe = response.body.recipe;
             });
         },

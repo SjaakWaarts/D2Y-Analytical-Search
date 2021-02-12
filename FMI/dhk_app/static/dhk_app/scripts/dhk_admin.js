@@ -6,6 +6,7 @@ var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
 var upload_file_url = $("input[name=upload_file_url]").val();
 var delete_recipe_url = $("input[name=delete_recipe_url]").val();
 var get_uploaded_files_url = $("input[name=get_uploaded_files_url]").val();
+var recipe_site_scrape_url = $("input[name=recipe_site_scrape_url]").val();
 var recipe_scrape_url = $("input[name=recipe_scrape_url]").val();
 
 //Vue part
@@ -26,7 +27,9 @@ var app = new Vue({
         aggs: [],
         current_recipe: '',
         current_recipeIX: null,
-        m_page_scrape: '',
+        m_recipe_scrape: '',
+        m_recipe_site_scrape: '',
+        pages_scraped: [],
         recipe: null,
         rows: [
             {
@@ -191,9 +194,18 @@ var app = new Vue({
                     }
                 });
         },
-        recipe_scrape_click: function () {
-            this.$http.get(recipe_scrape_url, { params: { id: null, page: this.m_page_scrape } }).then(response => {
+        recipe_site_scrape_click: function () {
+            this.pages_scraped = []
+            this.$http.get(recipe_site_scrape_url, { params: { id: null, page: this.m_recipe_site_scrape } }).then(response => {
                 var recipe = response.body.recipe;
+                this.pages_scraped = response.body.pages_scraped;
+            });
+        },
+        recipe_scrape_click: function () {
+            this.pages_scraped = []
+            this.$http.get(recipe_scrape_url, { params: { id: null, page: this.m_recipe_scrape } }).then(response => {
+                var recipe = response.body.recipe;
+                this.pages_scraped = response.body.pages_scraped;
             });
         },
         recipe_url(url, id) {

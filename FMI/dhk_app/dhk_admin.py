@@ -18,6 +18,7 @@ import mimetypes
 import docx
 from docx.table import _Cell, Table
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -45,7 +46,7 @@ def delete_recipe(request):
     results = esm.delete_by_query(es_host, 'recipes', search_q)
     return HttpResponse( {'succes': 'Bestand succesvol geüpload'}, content_type='application/json')
 
-
+@login_required
 def dhk_admin_view(request):
     """Renders dhk page."""
     if request.method == 'GET':
@@ -57,7 +58,7 @@ def dhk_admin_view(request):
     else:
         return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
-
+@login_required
 def dhk_admin_kookclubs_view(request):
     """Renders dhk page."""
     if request.method == 'GET':
@@ -69,7 +70,7 @@ def dhk_admin_kookclubs_view(request):
     else:
         return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
-
+@login_required
 def dhk_admin_sites_view(request):
     """Renders dhk page."""
     if request.method == 'GET':
@@ -81,7 +82,7 @@ def dhk_admin_sites_view(request):
     else:
         return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
-
+@login_required
 def dhk_admin_reviews_view(request):
     """Renders dhk page."""
     if request.method == 'GET':
@@ -93,7 +94,7 @@ def dhk_admin_reviews_view(request):
     else:
         return HttpResponse({'status' : 'OK'}, content_type='application/json')
 
-
+@login_required
 def dhk_admin_recipes_view(request):
     """Renders dhk page."""
     if request.method == 'GET':

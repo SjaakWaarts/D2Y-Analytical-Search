@@ -25,6 +25,16 @@
                 <div class="tab-content border border-top-0 p-2">
                     <div class="tab-pane fade active show" id="scrape">
                         <div class="recipe-classify">
+                            <h4>Scrape een Site</h4>
+                            Scrape de site recepten om het op te nemen in de zoek machine.
+                            <div class="input-group mt-3 mb-3">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary mr-1" v-on:click="recipe_site_scrape_click()">
+                                        <span class="fas fa-globe"></span>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Web site page" id="scrape_text" v-model="m_recipe_site_scrape"/>
+                            </div>
                             <h4>Scrape een Recept</h4>
                             Scrape een recept om het op te nemen in de zoek machine.
                             <div class="input-group mt-3 mb-3">
@@ -33,7 +43,28 @@
                                         <span class="fas fa-globe"></span>
                                     </button>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Web page" id="scrape_text" v-model="m_page_scrape"/>
+                                <input type="text" class="form-control" placeholder="Web recipe page" id="scrape_text" v-model="m_recipe_scrape"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h3 class="box-title">Mijn Recepten</h3>
+                                    <div class="table-responsive">
+                                        <table id="recipe_datatable" class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pagina</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="page in pages_scraped">
+                                                    <td>
+                                                        <a v-bind:href="page">[[page]]</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -53,6 +84,7 @@
 	<input type="hidden" name="delete_recipe_url" value="{% url 'dhk:delete_recipe' %}">
 	<input type="hidden" name="upload_file_url" value="{% url 'dhk:upload_file' %}">
 	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk:get_uploaded_files' %}">
+    <input type="hidden" name="recipe_site_scrape_url" value="{% url 'dhk:recipe_site_scrape' %}">
     <input type="hidden" name="recipe_scrape_url" value="{% url 'dhk:recipe_scrape' %}">
 
 {% endblock %}

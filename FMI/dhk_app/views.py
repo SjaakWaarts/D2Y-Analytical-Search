@@ -1,5 +1,6 @@
 from datetime import datetime, time
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 import FMI.settings
 
 # Create your views here.

@@ -130,7 +130,7 @@ def login(request):
             }
         return HttpResponse(json.dumps(context), content_type='application/json')
     else:
-        template = 'registration/register.html'
+        template = 'registration/login.html'
         form = RegisterForm()
         return render(request, template, {'form': form})
 

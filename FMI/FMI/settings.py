@@ -76,7 +76,7 @@ ES_HOSTS = [{'host': 'localhost'}]
 #ES_HOSTS = [{'host': 'bobj-app-dev01'}]
 ES_BUCKETSIZE = 20
 
-LOGIN_URL = 'accounts/login'
+LOGIN_URL = 'users_app/login'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -230,7 +230,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 
 site = 'IFF'
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 # Import Local settings
 try:
     from FMI.local_settings import *

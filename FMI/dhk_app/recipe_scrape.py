@@ -50,12 +50,21 @@ wd = None
 #
 # added evaluater, starts with =
 
+parser_site_index = {
+    "lekkersimpel.com" : {
+        'links'     : {'type': 'text-array', 'sels' : ["a.post-item__anchor"], 'con' : "=.get_attribute('href')"}
+    },
+    "leukerecepten.nl" : {
+        'links'     : {'type': 'text-array', 'sels' : ["a.full-link"], 'con' : "=.get_attribute('href')"}
+    },
+}
+
 parser_site_recipe = {
-    "www.leukerecepten.nl" : {
-    'id'            : {'type': 'text', 'sels' : ""},
+    "lekkersimpel.com" : {
+    'id'            : {'type': 'text', 'con' : ""},
     'title'         : {'type': 'text', 'sels' : [".page-content__title"]},
     'published_date': {'type': 'date', 'sels' : ["meta[property='article:modified_time']"], 'con' : "=.get_attribute('content')"},
-    'author'        : {'type': 'text', 'sels' : []},
+    'author'        : {'type': 'text', 'con' : "leukerecepten.nl"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']"], 'con' : "=.get_attribute('content')"},
     'description'   : {'type': 'text', 'sels' : []},
     'categories'    : {'type': 'text-array', 'sels' : ["ul.page-content__meta li"]},
@@ -65,7 +74,68 @@ parser_site_recipe = {
         'type'       : 'nested',
         'sels'       : ["meta[property='og:image']"],
         'properties' : {
-            'image'     : {'type': 'text', 'sels' : ["path=."], 'con' : "image"},
+            'image'     : {'type': 'text', 'con' : "image"},
+            'location'  : {'type': 'text', 'sels' : ["path=."], 'con' : "=.get_attribute('content')"},
+            },
+        },
+    'cooking_clubs' : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'reviews'       : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'nutrition'     : None,
+    'cooking_times' : None,
+    'courses'       : {
+        'type'       : 'nested',
+        'sels'       : ["path=/html"],
+        'properties' : {
+            'title'        : {'type': 'text', 'sels' : [".page-content__title"]},
+            'ingredients_parts'   : {
+                'type'          : 'nested',
+                'sels'       : ["ul.page-content__ingredients-list"],
+                'properties'    : {
+                    'part'          : {'type': 'integer', 'sels' : ["path=."], 'con' : "=0"},
+                    'ingredients'   : {
+                        'type'      : 'nested',
+                        'sels' : ["label"],
+                        'properties' : {
+                            'ingredient' : {'type': 'text', 'sels' : ["path=."]},
+                            }
+                        }
+                    }
+                },
+            'instructions'  : {
+                'type'       : 'nested',
+                'sels'       : [".page-content__recipe p"],
+                'properties' : {
+                    'instruction' : {'type': 'text', 'sels' : ["path=."]}
+                    }
+                }
+            }
+        }
+    },
+    "leukerecepten.nl" : {
+    'id'            : {'type': 'text', 'con' : ""},
+    'title'         : {'type': 'text', 'sels' : [".page-content__title"]},
+    'published_date': {'type': 'date', 'sels' : ["meta[property='article:modified_time']"], 'con' : "=.get_attribute('content')"},
+    'author'        : {'type': 'text', 'con' : "leukerecepten.nl"},
+    'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']"], 'con' : "=.get_attribute('content')"},
+    'description'   : {'type': 'text', 'sels' : []},
+    'categories'    : {'type': 'text-array', 'sels' : ["ul.page-content__meta li"]},
+    'cuisiness'     : {'type': 'text-array', 'sels' : []},
+    'tags'          : {'type': 'text-array', 'sels' : []},
+    'images'        : {
+        'type'       : 'nested',
+        'sels'       : ["meta[property='og:image']"],
+        'properties' : {
+            'image'     : {'type': 'text', 'con' : "image"},
             'location'  : {'type': 'text', 'sels' : ["path=."], 'con' : "=.get_attribute('content')"},
             },
         },
@@ -260,14 +330,12 @@ def scrape_values(elm, field_parser, field_value):
         except:
             field_value = 0
     elif field_type == 'date':
-        field_value = datetime.parse(elm_text).strftime('%Y-%m-%d')
+        field_value = parse(elm_text).strftime('%Y-%m-%d')
     else:
         field_value = field_value + elm_text
     return field_value
 
-def scrape_elements(root_elm, field_name, field_parser):
-    field_type = field_parser.get('type', None)
-    sels = field_parser.get('sels', [])
+def scrape_elements(root_elm, sels):
     child_elms = []
     if len(sels) == 0:
         return []
@@ -295,14 +363,14 @@ def recipe_parse(root_elm, parser_recipe, path = ""):
     for field_name, field_parser in parser_recipe.items():
         if field_parser is None:
             continue
-        if type(field_parser.get('sels', None)) == str:
-            recipe[field_name] = field_parser['sels']
+        if field_parser.get('sels', None) is None and field_parser.get('con', None) is not None:
+            recipe[field_name] = field_parser['con']
             continue
         field_name_full = field_name if not path else path + '.' + field_name
         field_type_es = dhk_wb.get_field_type(field_name_full)
         field_type = field_parser.get('type', None)
         field_value = scrape_init_value(field_type)
-        elms = scrape_elements(root_elm, field_name, field_parser)
+        elms = scrape_elements(root_elm, field_parser.get('sels', []))
         if field_type == 'nested':
             for elm in elms:
                 elm_value = recipe_parse(elm, field_parser['properties'], field_name_full)
@@ -323,27 +391,26 @@ def recipe_scrape(request):
     logger.info(f"Scrape recipe for id '{id}' with page '{page}'")
 
     site = urllib.parse.urlparse(page).netloc.split(':')[0]
-    if site not in parser_site_recipe:
+    domain = '.'.join(site.split('.')[-2:])
+    if domain not in parser_site_recipe:
         return None
     webdriver_start()
     dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'scrape')
     filename = slugify(page) + '.html'
     filename_full = os.path.join(dirname, filename)
     if os.path.isfile(filename_full):
-        #with open(filename_full, 'r', encoding='utf-8') as f:
-        #    page_source = f.read()
-        #    f.close()
         wd.get(filename_full)
-        time.sleep(3)
+        time.sleep(1)
         page_source = wd.page_source
     else:
         webdriver_get(page)
+        time.sleep(1)
         page_source = wd.page_source
-        with open(filename_full, 'w', encoding='utf-8') as f:
-            f.write(page_source)
-            f.close()
+        #with open(filename_full, 'w', encoding='utf-8') as f:
+        #    f.write(page_source)
+        #    f.close()
     root_elm = wd.find_element_by_tag_name('html')
-    recipe_new = recipe_parse(root_elm, parser_site_recipe[site])
+    recipe_new = recipe_parse(root_elm, parser_site_recipe[domain])
     recipe_new['id'] = page
     # leave the driver running
     # webdriver_stop()
@@ -356,6 +423,47 @@ def recipe_scrape(request):
         recipe_obj = recipe.Recipe(id)
 
     context = {
+        'pages_scraped'  : [page],
         'recipe'  : recipe_obj.recipe,
+        }
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
+def recipe_site_parse(root_elm, parser_site, path = ""):
+    global wd
+
+    pages = []
+    field_parser = parser_site['links']
+    elms = scrape_elements(root_elm, field_parser.get('sels', []))
+    for elm in elms:
+        pages = scrape_values(elm, field_parser, pages)
+    return pages
+
+
+def recipe_site_scrape(request):
+    global wd
+
+    id = request.GET['id']
+    page = request.GET['page']
+    logger.info(f"Scrape site '{page}'")
+
+    site = urllib.parse.urlparse(page).netloc.split(':')[0]
+    if site not in parser_site_index:
+        return None
+    webdriver_start()
+    webdriver_get(page)
+    root_elm = wd.find_element_by_tag_name('html')
+    pages = recipe_site_parse(root_elm, parser_site_index[site])
+    for page in pages:
+        logger.info(f"Scrape site recipe '{page}'")
+        webdriver_get(page)
+        root_elm = wd.find_element_by_tag_name('html')
+        recipe_new = recipe_parse(root_elm, parser_site_recipe[site])
+        id = slugify(page)
+        recipe_new['id'] = page
+        recipe_obj = recipe.Recipe(id, recipe=recipe_new)
+        recipe_obj.put()
+
+    context = {
+        'pages_scraped'  : pages,
         }
     return HttpResponse(json.dumps(context), content_type='application/json')
