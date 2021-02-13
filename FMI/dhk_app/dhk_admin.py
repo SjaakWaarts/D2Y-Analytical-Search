@@ -27,6 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 import seeker.esm as esm
+import dhk_app.recipe_scrape as recipe_scrape
 import FMI.settings
 from FMI.settings import BASE_DIR, ES_HOSTS
 
@@ -73,14 +74,12 @@ def dhk_admin_kookclubs_view(request):
 @login_required
 def dhk_admin_sites_view(request):
     """Renders dhk page."""
-    if request.method == 'GET':
-        return render(
-            request,
-            'dhk_app/dhk_admin_sites.html',
-            {'site' : FMI.settings.site, 'year':datetime.now().year}
-        )
-    else:
-        return HttpResponse({'status' : 'OK'}, content_type='application/json')
+    context = {
+        'parser_site' : json.dumps(recipe_scrape.parser_site),
+        'site' : FMI.settings.site,
+        'year':datetime.now().year
+        }
+    return render(request, 'dhk_app/dhk_admin_sites.html', context)
 
 @login_required
 def dhk_admin_reviews_view(request):

@@ -1608,6 +1608,7 @@ es_indicis = {
         'facets' : [
             seeker.TermsFacet("categories.keyword", label="Categories"),
             seeker.TermsFacet("tags.keyword", label="Tags"),
+            seeker.TermsFacet("author.keyword", label="Site"),
             ],
         'facets_keyword' : [seeker.KeywordFacet("facet_keyword", label = "Keywords", input="keywords_k")],
         'display'       : ["title", "url"],
@@ -1739,7 +1740,7 @@ workbooks = {
         'url'           : 'dhk:search',
         'es_index'      : es_indicis['dhk'],
         'display'       : ["title", "excerpt", "categories", "tags", "images.location", "image"],
-        'facets'        : ["categories.keyword", "tags.keyword"],
+        'facets'        : ["categories.keyword", "tags.keyword", "author.keyword"],
         'tiles'         : [],
         'charts'        : dhk_dashboard,
         'storyboards'   : {

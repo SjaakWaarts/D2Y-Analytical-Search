@@ -80,11 +80,6 @@ def sharepoint_bi():
     user = 'GLOBAL\\abc1234'
     pswrd = 'xxxxxx'
     url =  'https://teamsites.iff.com/corporate/it/AppDev/BI/_api/web/'
-
-#    r = requests.get("https://teamsites.iff.com/_api/web/title", auth=HTTPBasicAuth(user, pswrd), headers=headers)
-#    r = requests.get("https://teamsites.iff.com/_api/web/title", auth=HttpNtlmAuth(user, pswrd), headers=headers)
-#    r = requests.get("https://teamsites.iff.com/_api/web/lists", auth=HttpNtlmAuth(user, pswrd), headers=headers)
-#    r = requests.get(url + "lists/getByTitle('SalesRepComments')/fields", auth=HttpNtlmAuth(user, pswrd), headers=headers)
     r = requests.get(url + "lists/getByTitle('SalesRepComments')/items", auth=HttpNtlmAuth(user, pswrd), headers=headers)
     select = "$select=SalesRep,Comment"
     filter = "$filter=Cycle eq '009.2012'"

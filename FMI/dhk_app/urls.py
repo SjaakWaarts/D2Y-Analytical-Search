@@ -31,6 +31,5 @@ urlpatterns = [
     path('recipe_get', recipe.recipe_get, name='recipe_get'),
     path('recipe_post', recipe.recipe_post, name='recipe_post'),
     path('recipe_scrape', recipe_scrape.recipe_scrape, name='recipe_scrape'),
-    path('recipe_site_scrape', recipe_scrape.recipe_site_scrape, name='recipe_site_scrape'),
     path('search', models.ExcelSeekerView.as_view(), name='search'),
 ]

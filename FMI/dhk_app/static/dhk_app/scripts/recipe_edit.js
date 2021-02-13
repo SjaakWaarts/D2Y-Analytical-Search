@@ -29,7 +29,7 @@ var app = new Vue({
         hits: [],
         id: '',
         m_featured_ix: 0,
-        m_recipe_scrape : '',
+        m_recipe_scrape: '',
         recipe: null,
         shopping_basket: [],
         tags: [],

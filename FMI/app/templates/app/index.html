@@ -4,19 +4,19 @@
 {% block content %}
 
 <div class="jumbotron" style="padding: 2rem 1rem; margin-top: 1rem">
-    {% if site == "IFF" %}
-        <h1>IFF Insight Platform</h1>
-    {% else %}
+    {% if site == "D2Y" %}
         <h1>D2Y Insight Platform</h1>
+    {% else %}
+        <h1>DHK Insight Platform</h1>
     {% endif %}
     <p class="lead">Discover meaningful, creative and actionable Insights</p>
 </div>
 <div>
-    {% if site == "IFF" %}
-        {% include "app/index_IFF.html" %}
-    {% endif %}
     {% if site == "D2Y" %}
         {% include "app/index_D2Y.html" %}
+    {% endif %}
+    {% if site == "DHK" %}
+        {% include "app/index_DHK.html" %}
     {% endif %}
 </div>
 

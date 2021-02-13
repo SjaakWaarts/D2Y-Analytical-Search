@@ -1,7 +1,22 @@
 ﻿
 /* DHK */
 
+.dhk-admin-scrape {
+}
 
+.dhk-admin-sites-select {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 1rem;
+}
+
+.dhk-errors {
+    color: lightgray;
+    border-style:solid;
+    border-color: black;
+}
 
 /* Site Menu */
 

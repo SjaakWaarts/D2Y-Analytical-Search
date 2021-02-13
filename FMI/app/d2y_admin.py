@@ -264,14 +264,12 @@ def read_keywords(index_choices, keyword_filename):
 
 def auth_groups(auth_group_choices):
     for auth_group_choice in auth_group_choices:
-        if auth_group_choice == 'iff':
-            group = Group.objects.create(name='iff')
+        if auth_group_choice == 'd2y':
+            group = Group.objects.create(name='d2y')
         elif auth_group_choice == 'divault':
             group = Group.objects.create(name='divault')
         elif auth_group_choice == 'dhk':
             group = Group.objects.create(name='dhk')
-        elif auth_group_choice == 'd2y':
-            group = Group.objects.create(name='d2y')
 
 def auth_permissions(auth_permission_choices):
     ct = ContentType.objects.get(app_label='auth', model='user')

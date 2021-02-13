@@ -111,7 +111,7 @@ class d2y_admin_form(forms.Form):
     index_choices_field = forms.MultipleChoiceField(label='ES Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=False)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'ecosystem.xlsx')
     opml_filename_field = forms.CharField(label='OPML file', max_length=40, required = False, initial = '')
-    auth_group_choices = (('iff', 'IFF'), ('divault', 'DiVault'), ('dhk', 'de Heerlijke Keuken'), ('d2y', 'DOUBLE2YY'))
+    auth_group_choices = (('d2y', 'DOUBLE2YY'), ('divault', 'DiVault'), ('dhk', 'de Heerlijke Keuken'))
     auth_group_choices_field = forms.MultipleChoiceField(label='Groups', choices=auth_group_choices, widget=forms.CheckboxSelectMultiple, required=False)
     auth_permission_choices = (('mi', 'Market Intelligence'), ('pi', 'Product Intelligence'), ('ci', 'Consumer Intelligence'),
                                ('se', 'Scent Emotion'), ('edepot', 'E-Depot'))

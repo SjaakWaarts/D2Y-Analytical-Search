@@ -6,7 +6,6 @@ var csrftoken = $("input[name=csrfmiddlewaretoken]").val();
 var upload_file_url = $("input[name=upload_file_url]").val();
 var delete_recipe_url = $("input[name=delete_recipe_url]").val();
 var get_uploaded_files_url = $("input[name=get_uploaded_files_url]").val();
-var recipe_site_scrape_url = $("input[name=recipe_site_scrape_url]").val();
 var recipe_scrape_url = $("input[name=recipe_scrape_url]").val();
 
 //Vue part
@@ -15,6 +14,7 @@ var app = new Vue({
     el: '#root',
     delimiters: ['[[', ']]'],
     data: {
+        errors: [],
         filter_facets: {
             author: [],
             published_date: ""
@@ -27,8 +27,9 @@ var app = new Vue({
         aggs: [],
         current_recipe: '',
         current_recipeIX: null,
-        m_recipe_scrape: '',
-        m_recipe_site_scrape: '',
+        m_page: '',
+        m_page_type: null,
+        m_site: null,
         recipe: null,
         recipe_scrape_results: [],
         rows: [
@@ -194,16 +195,17 @@ var app = new Vue({
                     }
                 });
         },
-        recipe_site_scrape_click: function () {
-            this.pages_scraped = []
-            this.$http.get(recipe_site_scrape_url, { params: { id: null, page: this.m_recipe_site_scrape } }).then(response => {
-                var recipe = response.body.recipe;
-                this.recipe_scrape_results = response.body.recipe_scrape_results;
-            });
-        },
         recipe_scrape_click: function () {
             this.pages_scraped = []
-            this.$http.get(recipe_scrape_url, { params: { id: null, page: this.m_recipe_scrape } }).then(response => {
+            this.errors = []
+            if (this.m_site == null) {
+                this.errors.push('Selecteer een site')
+            }
+            if (this.m_page_type == null) {
+                this.errors.push('Selecteer een pagina type')
+            }
+            if (this.errors.length > 0) { return }
+            this.$http.get(recipe_scrape_url, { params: { page_type : this.m_page_type, page: this.m_page } }).then(response => {
                 var recipe = response.body.recipe;
                 this.recipe_scrape_results = response.body.recipe_scrape_results;
             });

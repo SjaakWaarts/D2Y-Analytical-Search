@@ -61,14 +61,6 @@ CORS_ALLOW_HEADERS = default_headers + (
     'csrftoken',
     )
 
-# iffcloud AWS SUSE 12.2, Python 3.4, ElasticSearch 6.2.2
-#ES_HOSTS = [{'host': '10.20.33.102'}]
-# iffcloud AWS SUSE 12.2, Python 3.5, ElasticSearch 6.2.2
-#ES_HOSTS = [{'host': '10.20.47.154'}]
-
-# iffdatalake AWS SUSE 12.3, Python 3.6, ElasticSearch 6.1.1c
-#ES_HOSTS = [{'host': '10.35.58.89'}]
-
 # AWS OpenSUSE Leap 43.3, Python 3.6, ElasticSearch 6.2.2
 #ES_HOSTS = [{'host': '18.184.194.51'}]
 ES_HOSTS = [{'host': 'localhost'}]
@@ -229,7 +221,7 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 
-site = 'IFF'
+site = 'D2Y'
 LOG_LEVEL = 'INFO'
 # Import Local settings
 try:

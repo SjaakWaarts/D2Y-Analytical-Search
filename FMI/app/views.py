@@ -54,6 +54,8 @@ def is_local_request(request):
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
+    if FMI.settings.site == 'DHK':
+        return redirect('dhk:home')
     return render(
         request,
         'app/index.html',

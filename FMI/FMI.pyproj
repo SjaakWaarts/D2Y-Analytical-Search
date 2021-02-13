@@ -176,6 +176,7 @@
   <ItemGroup>
     <Content Include="app\static\app\content\dashboard.css" />
     <Content Include="app\static\app\content\dropzone.css" />
+    <Content Include="app\templates\app\index_DHK.html" />
     <Content Include="ci-scripts\ansible-deploy.sh" />
     <Content Include="ci-scripts\package.sh" />
     <Content Include="ci-scripts\release_upload.sh" />
@@ -254,7 +255,6 @@
     <Content Include="dhk_app\templates\dhk_app\recipe.html" />
     <Content Include="dhk_app\templates\dhk_app\dhk_admin.html" />
     <Content Include="app\templates\app\index_D2Y.html" />
-    <Content Include="app\templates\app\index_IFF.html" />
     <Content Include="app\templates\app\load.html" />
     <Content Include="app\templates\app\guide.html" />
     <Content Include="app\templates\app\d2y_admin.html" />

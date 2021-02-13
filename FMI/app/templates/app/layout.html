@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if site == "IFF" %}
-        <title>IFF - Insight Platform</title>
-    {% elif site == "D2Y" %}
+    {% if site == "D2Y" %}
         <title>D2Y - Insight Platform</title>
+    {% elif site == "DHK" %}
+        <title>DHK - Insight Platform</title>
     {% else %}
         <title>Insight Platform</title>
     {% endif %}
@@ -20,8 +20,8 @@
 
 <body class="d-flex flex-column">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-static-top mb-3">
-        {% if site == "IFF" %}
-            <a class="navbar-brand" href="{% url 'home' %}">IFF Insight Platform</a>
+        {% if site == "D2Y" %}
+            <a class="navbar-brand" href="{% url 'home' %}">D2Y Insight Platform</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb1" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -34,8 +34,8 @@
                 {% include 'registration/loginpartial.html' %}
             </div>
         {% endif %}
-        {% if site == "D2Y" %}
-            <a class="navbar-brand" href="{% url 'home' %}">D2Y Insight Platform</a>
+        {% if site == "DHK" %}
+            <a class="navbar-brand" href="{% url 'home' %}">DHK Insight Platform</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navb2" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -55,12 +55,7 @@
         </div>
     </div>
     <div class="bg-dark text-white fixed-bottom">
-        {% if site == "IFF" %}
-            <p class="mb-0">&copy; - Powered by Data Science</p>
-        {% endif %}
-        {% if site == "D2Y" %}
-            <p class="mb-0">&copy; - Powered by D2Y</p>
-        {% endif %}
+        <p class="mb-0">&copy; - Powered by D2Y</p>
     </div>
 
     <script src="{% static 'assets/jquery/js/jquery.min.js' %}"></script>

@@ -24,26 +24,35 @@
                 <!-- Tab panes -->
                 <div class="tab-content border border-top-0 p-2">
                     <div class="tab-pane fade active show" id="scrape">
-                        <div class="recipe-classify">
-                            <h4>Scrape een Site</h4>
-                            Scrape de site recepten om het op te nemen in de zoek machine.
-                            <div class="input-group mt-3 mb-3">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-primary mr-1" v-on:click="recipe_site_scrape_click()">
-                                        <span class="fas fa-globe"></span>
-                                    </button>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Web site page" id="scrape_site_text" v-model="m_recipe_site_scrape"/>
+                        <div class="dhk-admin-scrape">
+                            <div v-if="errors.length" class="dhk-errors">
+                                <b>Corrigeer de volgende fout(en):</b>
+                                <ul>
+                                    <li v-for="error in errors">[[ error ]]</li>
+                                </ul>
                             </div>
-                            <h4>Scrape een Recept</h4>
-                            Scrape een recept om het op te nemen in de zoek machine.
+                            <div class="dhk-admin-sites-select">
+                                <div class="form-group" style="width:45%">
+                                  <label for="select_site">Select site</label>
+                                  <select class="form-control" id="select_site" v-model="m_site">
+                                    <option v-for="(parser, site) in parser_site" v-bind:value="site">[[site]]</option>
+                                  </select>
+                                </div>
+                                <div class="form-group" style="width:45%">
+                                  <label for="select_page_type">Select page type</label>
+                                  <select class="form-control" id="select_page_type" v-model="m_page_type">
+                                    <option v-for="(parser, page_type) in parser_site[m_site]" v-bind:value="page_type">[[page_type]]</option>
+                                  </select>
+                                </div>
+                            </div>
+                            De web (sub) site die ingelezen wordt
                             <div class="input-group mt-3 mb-3">
                                 <div class="input-group-btn">
                                     <button class="btn btn-primary mr-1" v-on:click="recipe_scrape_click()">
                                         <span class="fas fa-globe"></span>
                                     </button>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Web recipe page" id="scrape_text" v-model="m_recipe_scrape"/>
+                                <input type="text" class="form-control" placeholder="Web recipe page" id="scrape_text" v-model="m_page"/>
                             </div>
                             <div class="row">
                                 <div class="col-12">
@@ -59,7 +68,7 @@
                                             <tbody>
                                                 <tr v-for="recipe_scrape_result in recipe_scrape_results">
                                                     <td>
-                                                        <a v-bind:href="recipe_scrape_result[0]">[[ recipe_scrape_result[0] ]]</a>
+                                                        <a v-bind:href="recipe_scrape_result[0]" target="_blank">[[ recipe_scrape_result[0] ]]</a>
                                                     </td>
                                                     <td>
                                                         [[ recipe_scrape_result[1] ]]
@@ -80,7 +89,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -88,15 +96,14 @@
 	<input type="hidden" name="delete_recipe_url" value="{% url 'dhk:delete_recipe' %}">
 	<input type="hidden" name="upload_file_url" value="{% url 'dhk:upload_file' %}">
 	<input type="hidden" name="get_uploaded_files_url" value="{% url 'dhk:get_uploaded_files' %}">
-    <input type="hidden" name="recipe_site_scrape_url" value="{% url 'dhk:recipe_site_scrape' %}">
     <input type="hidden" name="recipe_scrape_url" value="{% url 'dhk:recipe_scrape' %}">
 
 {% endblock %}
 
-
 {% block scripts %}
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
+        var parser_site = {{ parser_site|safe }}
     </script>
     {% load static %}
         <script src="{% static 'app/scripts/utils.js' %}"></script>
