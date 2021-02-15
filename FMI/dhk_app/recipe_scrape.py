@@ -52,15 +52,38 @@ wd = None
 #
 # added evaluater, starts with =
 
+def con_categories_culy(elm, elm_text):
+    try:
+        elm_text = elm.get_attribute('content')
+        elm_text = elm_text.split('/')
+    except:
+        elm_text = ""
+    return elm_text
+
+def con_instruction_lekkerensimpel(elm, elm_text):
+    try:
+        if 'pinterest' in elm_text.lower():
+            elm_text = ''
+    except:
+        elm_text = ""
+    return elm_text
+
+def con_title(elm, elm_text):
+    try:
+        elm_text = elm_text[0].upper() + elm_text[1:].lower()
+    except:
+        elm_text = ""
+    return elm_text
+
 parser_site_recipe = {
 "culy.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
-    'title'         : {'type': 'text', 'sels' : ["h1.article__title"]},
+    'title'         : {'type': 'text', 'sels' : ["h1.article__title"], 'con' : "=con_title(elm, elm_text)"},
     'published_date': {'type': 'date', 'sels' : ["meta[property='article:published_time']"], 'con' : "=.get_attribute('content')"},
     'author'        : {'type': 'text', 'con' : "culy.nl"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[property='og:description']", "h1.article__title"], 'con' : "=.get_attribute('content')"},
     'description'   : {'type': 'text', 'sels' : []},
-    'categories'    : {'type': 'text-array', 'sels' : ["div.hide-for-small-only span.recipe__meta-title"]},
+    'categories'    : {'type': 'text-array', 'sels' : ["meta[name='cXenseParse:Taxonomy']"], 'con' : "=con_categories_culy(elm, elm_text)"},
     'cuisiness'     : {'type': 'text-array', 'sels' : []},
     'tags'          : {'type': 'text-array', 'sels' : ["meta[name='cXenseParse:mhu-article_tag']"], 'con' : "=.get_attribute('content')"},
     'images'        : {
@@ -89,15 +112,15 @@ parser_site_recipe = {
         'type'       : 'nested',
         'sels'       : ["path=/html"],
         'properties' : {
-            'title'        : {'type': 'text', 'sels' : ["h1.hero__title"]},
+            'title'        : {'type': 'text', 'sels' : ["h1.article__title"], 'con' : "=con_title(elm, elm_text)"},
             'ingredients_parts'   : {
                 'type'          : 'nested',
-                'sels'       : ["div.recipe__necessities", "div.entry__content ul"],
+                'sels'       : ["div.ingredients ul"],
                 'properties'    : {
                     'part'          : {'type': 'integer', 'sels' : ["path=."], 'con' : "=0"},
                     'ingredients'   : {
                         'type'      : 'nested',
-                        'sels' : ["li"],
+                        'sels' : ["li[itemprop='ingredients']"],
                         'properties' : {
                             'ingredient' : {'type': 'text', 'sels' : ["path=."]},
                             'value': {'type' : 'text', 'sels' : ["span.value"], 'cardinality' : '0-1'},
@@ -108,7 +131,7 @@ parser_site_recipe = {
                 },
             'instructions'  : {
                 'type'       : 'nested',
-                'sels'       : ["div.entry__content > p:nth-child(n+4)"],
+                'sels'       : [".article__content:first-child > h2 ~ p"],
                 'properties' : {
                     'instruction' : {'type': 'text', 'sels' : ["path=."]}
                     }
@@ -118,7 +141,7 @@ parser_site_recipe = {
     },
 "lekkerensimpel.com" : {
     'id'            : {'type': 'text', 'con' : ""},
-    'title'         : {'type': 'text', 'sels' : ["h1.hero__title"]},
+    'title'         : {'type': 'text', 'sels' : ["h1.hero__title"], 'con' : "=con_title(elm, elm_text)"},
     'published_date': {'type': 'date', 'sels' : ["meta[property='article:modified_time']"], 'con' : "=.get_attribute('content')"},
     'author'        : {'type': 'text', 'con' : "lekkersimpel.com"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']", "h1.hero__title"], 'con' : "=.get_attribute('content')"},
@@ -152,7 +175,7 @@ parser_site_recipe = {
         'type'       : 'nested',
         'sels'       : ["path=/html"],
         'properties' : {
-            'title'        : {'type': 'text', 'sels' : ["h1.hero__title"]},
+            'title'        : {'type': 'text', 'sels' : ["h1.hero__title"], 'con' : "=con_title(elm, elm_text)"},
             'ingredients_parts'   : {
                 'type'          : 'nested',
                 'sels'       : ["div.recipe__necessities", "div.entry__content ul"],
@@ -173,7 +196,7 @@ parser_site_recipe = {
                 'type'       : 'nested',
                 'sels'       : ["div.entry__content > p:nth-child(n+4)"],
                 'properties' : {
-                    'instruction' : {'type': 'text', 'sels' : ["path=."]}
+                    'instruction' : {'type': 'text', 'sels' : ["path=."], 'con' : "=con_instruction_lekkerensimpel(elm, elm_text)", 'cardinality' : '0-1'}
                     }
                 }
             }
@@ -181,7 +204,7 @@ parser_site_recipe = {
     },
 "leukerecepten.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
-    'title'         : {'type': 'text', 'sels' : [".page-content__title"]},
+    'title'         : {'type': 'text', 'sels' : [".page-content__title"], 'con' : "=con_title(elm, elm_text)"},
     'published_date': {'type': 'date', 'sels' : ["meta[property='article:modified_time']", "meta[itemprop='datePublished']"], 'con' : "=.get_attribute('content')"},
     'author'        : {'type': 'text', 'con' : "leukerecepten.nl"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']"], 'con' : "=.get_attribute('content')"},
@@ -215,7 +238,7 @@ parser_site_recipe = {
         'type'       : 'nested',
         'sels'       : ["path=/html"],
         'properties' : {
-            'title'        : {'type': 'text', 'sels' : [".page-content__title"]},
+            'title'        : {'type': 'text', 'sels' : [".page-content__title"], 'con' : "=con_title(elm, elm_text)"},
             'ingredients_parts'   : {
                 'type'          : 'nested',
                 'sels'       : ["ul.page-content__ingredients-list"],
@@ -236,7 +259,70 @@ parser_site_recipe = {
                 'type'       : 'nested',
                 'sels'       : ["div.page-content__recipe div.step", "div.page-content__recipe p:nth-child(n+2)"],
                 'properties' : {
-                    'instruction' : {'type': 'text', 'sels' : ["path=."]}
+                    'instruction' : {'type': 'text', 'sels' : ["path=."], 'cardinality' : '0-1'}
+                    }
+                }
+            }
+        }
+    },
+"24kitchen.nl" : {
+    'id'            : {'type': 'text', 'con' : ""},
+    'title'         : {'type': 'text', 'sels' : [".page-content__title"], 'con' : "=con_title(elm, elm_text)"},
+    'published_date': {'type': 'date', 'sels' : ["meta[property='article:modified_time']", "meta[itemprop='datePublished']"], 'con' : "=.get_attribute('content')"},
+    'author'        : {'type': 'text', 'con' : "leukerecepten.nl"},
+    'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']"], 'con' : "=.get_attribute('content')"},
+    'description'   : {'type': 'text', 'sels' : []},
+    'categories'    : {'type': 'text-array', 'sels' : ["ul.page-content__meta li:nth-child(-n+3)"]},
+    'cuisiness'     : {'type': 'text-array', 'sels' : []},
+    'tags'          : {'type': 'text-array', 'sels' : []},
+    'images'        : {
+        'type'       : 'nested',
+        'sels'       : ["meta[property='og:image']"],
+        'properties' : {
+            'image'     : {'type': 'text', 'con' : "image"},
+            'location'  : {'type': 'text', 'sels' : ["path=."], 'con' : "=.get_attribute('content')"},
+            },
+        },
+    'cooking_clubs' : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'reviews'       : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'nutrition'     : None,
+    'cooking_times' : None,
+    'courses'       : {
+        'type'       : 'nested',
+        'sels'       : ["path=/html"],
+        'properties' : {
+            'title'        : {'type': 'text', 'sels' : [".page-content__title"], 'con' : "=con_title(elm, elm_text)"},
+            'ingredients_parts'   : {
+                'type'          : 'nested',
+                'sels'       : ["ul.page-content__ingredients-list"],
+                'properties'    : {
+                    'part'          : {'type': 'integer', 'sels' : ["path=."], 'con' : "=0"},
+                    'ingredients'   : {
+                        'type'      : 'nested',
+                        'sels' : ["label"],
+                        'properties' : {
+                            'ingredient' : {'type': 'text', 'sels' : ["path=."]},
+                            'value': None,
+                            'measure': None
+                            }
+                        }
+                    }
+                },
+            'instructions'  : {
+                'type'       : 'nested',
+                'sels'       : ["div.page-content__recipe div.step", "div.page-content__recipe p:nth-child(n+2)"],
+                'properties' : {
+                    'instruction' : {'type': 'text', 'sels' : ["path=."], 'cardinality' : '0-1'}
                     }
                 }
             }
@@ -245,6 +331,14 @@ parser_site_recipe = {
 }
 
 parser_site = {
+    "24kitchen.nl" : {
+            'recipe_page' : parser_site_recipe["24kitchen.nl"],
+        },
+    "culy.nl" : {
+            'categorie_page' : {'type': 'text-array', 'sels' : ["a.list__link"], 'con' : "=.get_attribute('href')",
+                                'next_page' : ["a.next.page-numbers"]},
+            'recipe_page' : parser_site_recipe["culy.nl"],
+        },
     "lekkerensimpel.com" : {
             'index_page' : {'type': 'text-array', 'sels' : ["div.category-item a"], 'con' : "=.get_attribute('href')"},
             'categorie_page' : {'type': 'text-array', 'sels' : ["a.post-item__anchor"], 'con' : "=.get_attribute('href')"},
@@ -344,25 +438,6 @@ def carousel_scrape(query: str, max_links_to_fetch: int, sleep_between_interacti
     webdriver_stop()
     return thumbnails
 
-
-def persist_image(folder_path: str, url: str):
-    try:
-        image_content = requests.get(url).content
-
-    except Exception as e:
-        print(f"ERROR - Could not download {url} - {e}")
-
-    try:
-        image_file = io.BytesIO(image_content)
-        image = Image.open(image_file).convert('RGB')
-        file_path = os.path.join(folder_path, hashlib.sha1(
-            image_content).hexdigest()[:10] + '.jpg')
-        with open(file_path, 'wb') as f:
-            image.save(f, "JPEG", quality=85)
-        print(f"SUCCESS - saved {url} - as {file_path}")
-    except Exception as e:
-        print(f"ERROR - Could not save {url} - {e}")
-
 def scrape_init_value(field_type):
     field_value = ""
     if field_type == 'nested':
@@ -380,12 +455,25 @@ def scrape_init_value(field_type):
 def scrape_links(page, field_parser):
     global wd
 
-    webdriver_get(page)
-    root_elm = wd.find_element_by_tag_name('html')
     links = []
-    elms = scrape_elements(root_elm, field_parser.get('sels', []))
-    for elm in elms:
-        links = scrape_values(elm, field_parser, links)
+    next_page = True
+    pagenr = 0
+    while next_page:
+        logger.info(f"Scrape links on '{page}'")
+        webdriver_get(page)
+        root_elm = wd.find_element_by_tag_name('html')
+        elms = scrape_elements(root_elm, field_parser.get('sels', []))
+        for elm in elms:
+            links = scrape_values(elm, field_parser, links)
+        elms = scrape_elements(root_elm, field_parser.get('next_page', []))
+        if elms:
+            page = elms[0].get_attribute('href')
+            pagenr = pagenr + 1
+            if pagenr > 2:
+                next_page = False
+        else:
+            next_page = False
+
     return links
 
 def scrape_elements(root_elm, sels, mode="cor"):
@@ -420,7 +508,11 @@ def scrape_elements(root_elm, sels, mode="cor"):
 
 def scrape_values(elm, field_parser, field_value):
     field_type = field_parser.get('type', None)
-    elm_text = None
+    # 1. First get text
+    elm_text = elm.text
+    if elm.text == "": # lazy read or not visible
+        elm_text = elm.get_attribute('textContent').strip()
+    # 2. Check on construtur to obtain text or format text, contstrucor has elm and elm_text as input
     if 'con' in field_parser:
         con = field_parser['con']
         if con[0] == '=':
@@ -430,14 +522,20 @@ def scrape_values(elm, field_parser, field_value):
                 elm_text = eval(con[1:])
         else:
             elm_text = con
+    # 3. default again to text
     if elm_text is None:
         elm_text = elm.text
         if elm.text == "": # lazy read or not visible
             elm_text = elm.get_attribute('textContent').strip()
     if field_type == 'nested':
-        field_value.append(elm_text)
+        if len(elm_text) > 0:
+            field_value.append(elm_text)
     elif field_type == 'text-array':
-        field_value.append(elm_text)
+        if len(elm_text) > 0:
+            if type(elm_text) == list:
+                field_value.extend(elm_text)
+            else:
+                field_value.append(elm_text)
     elif field_type == 'integer':
         try:
             field_value = int(elm_text)
@@ -469,8 +567,11 @@ def scrape_recipe(root_elm, parser_recipe, path = ""):
         if field_type == 'nested':
             for elm in elms:
                 elm_value, nested_errors = scrape_recipe(elm, field_parser['properties'], field_name_full)
-                if len(elm_value) > 0:
-                    field_value.append(elm_value)
+                for k, v in elm_value.items():
+                    # check there is a value, or 0 in case of an integer
+                    if v or v == 0:
+                        field_value.append(elm_value)
+                        break
                 if len(nested_errors):
                     errors.extend(nested_errors)
         else:
@@ -514,12 +615,12 @@ def recipe_scrape(request):
         webdriver_get(recipe_page)
         root_elm = wd.find_element_by_tag_name('html')
         recipe_new, errors = scrape_recipe(root_elm, parser_site[domain]['recipe_page'])
-        recipe_scrape_results.append((recipe_page, errors))
+        id = slugify(page)
         if len(errors) == 0:
-            id = slugify(page)
             recipe_new['id'] = page
             recipe_obj = recipe.Recipe(id, recipe=recipe_new)
             recipe_obj.put()
+        recipe_scrape_results.append((id, recipe_new['title'], recipe_page, errors))
     # leave the driver running
     # webdriver_stop()
     context = {

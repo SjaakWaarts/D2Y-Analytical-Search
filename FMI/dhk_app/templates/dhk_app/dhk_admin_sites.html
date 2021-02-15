@@ -61,6 +61,7 @@
                                         <table id="recipe_datatable" class="table table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th>Titel</th>
                                                     <th>Pagina</th>
                                                     <th>Errors</th>
                                                 </tr>
@@ -68,10 +69,13 @@
                                             <tbody>
                                                 <tr v-for="recipe_scrape_result in recipe_scrape_results">
                                                     <td>
-                                                        <a v-bind:href="recipe_scrape_result[0]" target="_blank">[[ recipe_scrape_result[0] ]]</a>
+                                                        <a v-bind:href="recipe_url('recipe', recipe_scrape_result[0])"> [[ recipe_scrape_result[1] ]]</a>
                                                     </td>
                                                     <td>
-                                                        [[ recipe_scrape_result[1] ]]
+                                                        <a v-bind:href="recipe_scrape_result[2]" target="_blank">[[ recipe_scrape_result[2] ]]</a>
+                                                    </td>
+                                                    <td>
+                                                        [[ recipe_scrape_result[3] ]]
                                                     </td>
                                                 </tr>
                                             </tbody>
