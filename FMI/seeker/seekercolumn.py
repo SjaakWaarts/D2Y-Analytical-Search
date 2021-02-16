@@ -76,7 +76,9 @@ class Column (object):
         return kwargs
 
     def render(self, result, facets, **kwargs):
-        value = result['_source'].get(self.field, None)
+        id = result['_id']
+        source = result.get('_source', {})
+        value = source.get(self.field, None)
         if self.value_format:
             value = self.value_format(value)
         try:
@@ -92,11 +94,20 @@ class Column (object):
         # for each found hit, the url attribute is filled with the link pointing to the corresponding article
         # it is possible to overwrite this url on field level (urlfields)
         url = ""
+        dropdown_urls = []
         if self.field in self.view.sumheader:
             url = result.get('url', "")
         if self.field in self.view.urlfields:
             if value:
-                url = self.view.urlfields[self.field].format(value.replace(' ', '-').lower())
+                urlrender = self.view.urlfields[self.field]
+                if type(urlrender) == str: # url based on value
+                    url = self.view.urlfields[self.field].format(value.replace(' ', '-').lower())
+                if type(urlrender) == dict: # dropdown url
+                    dropdown_url = []
+                    for a, href in urlrender.items():
+                        anchor = source[a] if a in source else a.format(id)
+                        link = source[href] if href in source else href.format(id)
+                        dropdown_urls.append((anchor, link))
             if url == "":
                 url = result['_source']['url']
 
@@ -132,6 +143,7 @@ class Column (object):
             'value': value,
             'highlight': highlight,
             'url': url,
+            'dropdown_urls' : dropdown_urls,
             'view': self.view,
             #'user': self.view.request.user,
             'query': self.view.get_keywords_q(),

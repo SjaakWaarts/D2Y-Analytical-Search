@@ -1,18 +1,33 @@
 {% load seeker %}
 <td class="column_{{ field }}">
-    {% if url == "" %}
+    {% if url == "" and dropdown_urls|length == 0  %}
         {% if highlight %}
             {{ highlight.0|safe }}
         {% else %}
             {{ value|seeker_format }}
         {% endif %}
     {% else %}
-        <a class="seeker" href={{ url }}>
-            {% if highlight %}
-                {{ highlight.0|safe }}
-            {% else %}
-                {{ value|seeker_format }}
-            {% endif %}
-        </a>
+        {% if dropdown_urls|length == 0 %}
+            <a class="seeker" href={{ url }}>
+                {% if highlight %}
+                    {{ highlight.0|safe }}
+                {% else %}
+                    {{ value|seeker_format }}
+                {% endif %}
+            </a>
+        {% else %}
+            <div class="seeker-dropdown-link">
+                <ul>
+                    <li>
+                        <span>{{ value|seeker_format }}</span>
+                        <ul>
+                            {% for link in dropdown_urls %}
+                                <li><a href="{{link.1}}">{{link.0}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
     {% endif %}
 </td>

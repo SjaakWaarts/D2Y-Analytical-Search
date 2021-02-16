@@ -32,16 +32,22 @@
                                 </ul>
                             </div>
                             <div class="dhk-admin-sites-select">
-                                <div class="form-group" style="width:45%">
+                                <div class="form-group mr-1" style="width:20%">
                                   <label for="select_site">Select site</label>
-                                  <select class="form-control" id="select_site" v-model="m_site">
-                                    <option v-for="(parser, site) in parser_site" v-bind:value="site">[[site]]</option>
+                                  <select class="form-control" id="select_site" v-model="m_domain">
+                                    <option v-for="(parser_site, domain) in parser_sites" v-bind:value="domain">[[domain]]</option>
                                   </select>
                                 </div>
-                                <div class="form-group" style="width:45%">
+                                <div class="form-group mr-1" style="width:20%" v-if="m_domain">
                                   <label for="select_page_type">Select page type</label>
                                   <select class="form-control" id="select_page_type" v-model="m_page_type">
-                                    <option v-for="(parser, page_type) in parser_site[m_site]" v-bind:value="page_type">[[page_type]]</option>
+                                    <option v-for="(parser, page_type) in parser_sites[m_domain]" v-bind:value="page_type">[[page_type]]</option>
+                                  </select>
+                                </div>
+                                <div class="form-group" style="width:45%" v-if="m_domain && m_page_type">
+                                  <label for="select_site_page">Select site page</label>
+                                  <select class="form-control" id="select_site_page" v-model="m_site_page" v-on:change="select_site_page_change()">
+                                    <option v-for="site_page in parser_sites[m_domain][m_page_type]['pages']" v-bind:value="site_page">[[site_page]]</option>
                                   </select>
                                 </div>
                             </div>
@@ -107,7 +113,7 @@
 {% block scripts %}
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
-        var parser_site = {{ parser_site|safe }}
+        var parser_sites = {{ parser_sites|safe }}
     </script>
     {% load static %}
         <script src="{% static 'app/scripts/utils.js' %}"></script>

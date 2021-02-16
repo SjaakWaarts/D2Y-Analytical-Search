@@ -75,7 +75,7 @@ def dhk_admin_kookclubs_view(request):
 def dhk_admin_sites_view(request):
     """Renders dhk page."""
     context = {
-        'parser_site' : json.dumps(recipe_scrape.parser_site),
+        'parser_sites' : json.dumps(recipe_scrape.parser_sites),
         'site' : FMI.settings.site,
         'year':datetime.now().year
         }

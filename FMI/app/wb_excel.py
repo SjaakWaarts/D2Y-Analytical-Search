@@ -1288,6 +1288,14 @@ tmlo = {
 ###
 
 dhk_dashboard = {
+    "author_pie" : {
+        'chart_type': "PieChart",
+        'chart_title' : "Sites",
+        'data_type'  : "facet",
+        'X_facet'     : {
+            'field'   : "author.keyword",
+            'label'   : "Sites" },
+        },
     "categories_pie" : {
         'chart_type': "PieChart",
         'chart_title' : "Categories",
@@ -1615,8 +1623,8 @@ es_indicis = {
         'sort'          : ["published_date"],
         'summary'       : [],
         'sumheader'     : [],
-        'SUMMARY_URL'   : "../dhk/recipe?id={}",
-        'urlfields'     : {"title" : ""},
+        'SUMMARY_URL'   : "",
+        'urlfields'     : {"title" : {'author' : 'id', 'deheerlijkekeuken.nl' : "/dhk/recipe?id={}"}},
         'tabs'          : {'display_tab' : 'hide', 'dashboard_tab' : 'hide',
                            'results_tab': 'active', 'summary_tab': 'hide', 'storyboard_tab': '', 'insights_tab': 'hide'},
         }
@@ -1747,7 +1755,7 @@ workbooks = {
             'initial' : [
                     {'name'     : 'initial',
                      'layout'   : OrderedDict([
-                        ('table1', [["categories_pie"]]),
+                        ('table1', [["author_pie", "categories_pie"]]),
                         ('table2', [["tags_col"]])])},
                 ]
             },

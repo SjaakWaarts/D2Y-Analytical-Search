@@ -32,14 +32,23 @@ wd = None
 #id selector            #unique { }
 #Attribute selector     a[title] {  }, a{href="abc"] { }
 #Attribute selector     p[class~="special"] (contains value), div[lang|="zh"] (begins with)
-#Pseudo-class sels      p:first-child { },
+#Pseudo-class sels      p:first-child { }, FIRST CHILD OF PARENT !!!
 #                       p:nth-child(An+B) (An is group, B is offset in group 2n+1 for odd)
 #                       p:nth-child(-n+3) the first three elements
-#Pseudo-element sels   p::first-line { }
+#                       p:nth-of-typeAn+B), works only for tags (not classes)
+#Pseudo-element sels    p::first-line { }
 #Descendant combinator  article p
 #Child combinator       article > p
 #Adjacent sibling       combinator	h1 + p
 #General sibling        combinator	h1 ~ p
+#
+#Combinators of CSS selectors
+#Grouping               ,
+#Descendant             <space>
+#Child                  >
+#Siblings               ~
+#Adjacent sibling       +
+#Column                 ||
 #
 #XPATH SELECTOR
 #Expression	Description
@@ -51,6 +60,25 @@ wd = None
 #path @	Selects attributes
 #
 # added evaluater, starts with =
+
+def check_categorie_culy(elm):
+    valid = True
+
+    span = elm.find_element_by_css_selector("span.list__meta-category")
+    elm_text = span.text
+    if span.text == "": # lazy read or not visible
+        elm_text = span.get_attribute('textContent').strip()
+    if elm_text.lower() != 'recepten':
+        valid = False
+    return valid
+
+def check_next_page_leukerecepten(elm):
+    elm_text = elm.text
+    if elm_text == "": # lazy read or not visible
+        elm_text = elm.get_attribute('textContent').strip()
+    if elm_text.lower() != 'volgende':
+        valid = False
+    return valid
 
 def con_categories_culy(elm, elm_text):
     try:
@@ -70,12 +98,14 @@ def con_instruction_lekkerensimpel(elm, elm_text):
 
 def con_title(elm, elm_text):
     try:
+        if elm_text.startswith("Culy Homemade: "):
+            elm_text = elm_text[len("Culy Homemade: "):]
         elm_text = elm_text[0].upper() + elm_text[1:].lower()
     except:
         elm_text = ""
     return elm_text
 
-parser_site_recipe = {
+parser_sites_recipe = {
 "culy.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
     'title'         : {'type': 'text', 'sels' : ["h1.article__title"], 'con' : "=con_title(elm, elm_text)"},
@@ -88,7 +118,7 @@ parser_site_recipe = {
     'tags'          : {'type': 'text-array', 'sels' : ["meta[name='cXenseParse:mhu-article_tag']"], 'con' : "=.get_attribute('content')"},
     'images'        : {
         'type'       : 'nested',
-        'sels'       : ["meta[property='og:image']"],
+        'sels'       : ["meta[property='og:image']", "article:first-child picture.featured-image__picture"],
         'properties' : {
             'image'     : {'type': 'text', 'con' : "image"},
             'location'  : {'type': 'text', 'sels' : ["path=."], 'con' : "=.get_attribute('content')"},
@@ -110,17 +140,17 @@ parser_site_recipe = {
     'cooking_times' : None,
     'courses'       : {
         'type'       : 'nested',
-        'sels'       : ["path=/html"],
+        'sels'       : ["main article:first-child"],
         'properties' : {
             'title'        : {'type': 'text', 'sels' : ["h1.article__title"], 'con' : "=con_title(elm, elm_text)"},
             'ingredients_parts'   : {
                 'type'          : 'nested',
-                'sels'       : ["div.ingredients ul"],
+                'sels'       : ["div.ingredients ul", "div.wprm-recipe-ingredients"],
                 'properties'    : {
                     'part'          : {'type': 'integer', 'sels' : ["path=."], 'con' : "=0"},
                     'ingredients'   : {
                         'type'      : 'nested',
-                        'sels' : ["li[itemprop='ingredients']"],
+                        'sels' : ["li[itemprop='ingredients']", "li.wprm-recipe-ingredient", "li"],
                         'properties' : {
                             'ingredient' : {'type': 'text', 'sels' : ["path=."]},
                             'value': {'type' : 'text', 'sels' : ["span.value"], 'cardinality' : '0-1'},
@@ -330,26 +360,61 @@ parser_site_recipe = {
     }
 }
 
-parser_site = {
+parser_sites = {
     "24kitchen.nl" : {
-            'recipe_page' : parser_site_recipe["24kitchen.nl"],
+        'recipe_page' : {
+            'parser' : parser_sites_recipe["24kitchen.nl"],
+            'pages'  : []
+            },
         },
     "culy.nl" : {
-            'categorie_page' : {'type': 'text-array', 'sels' : ["a.list__link"], 'con' : "=.get_attribute('href')",
-                                'next_page' : ["a.next.page-numbers"]},
-            'recipe_page' : parser_site_recipe["culy.nl"],
+        'categorie_page' : {
+           'links' : {'type': 'text-array', 'sels' : ["main a.list__link"], 'con' : "=.get_attribute('href')", 'check_elm' : "check_categorie_culy(elm)"},
+           'next_page' : {'type': 'text', 'sels' : ["a.next.page-numbers"]},
+           'pages'  : ["https://www.culy.nl/recepten/menugang/dessert/"]
+           },
+        'recipe_page' : {
+           'parser' : parser_sites_recipe["culy.nl"],
+           'pages'  : [
+               "https://www.culy.nl/recepten/crepes-met-salted-caramel/",
+               "https://www.culy.nl/recepten/bomboloni-pistache-witte-chocolade/",
+               "https://www.culy.nl/recepten/ijssandwich-met-speculaas/",
+               "https://www.culy.nl/recepten/bhurta-met-vissticks-nigella/",
+               "https://www.culy.nl/inspiratie/makkelijke-toetjes/",
+               ]
+           }
         },
     "lekkerensimpel.com" : {
-            'index_page' : {'type': 'text-array', 'sels' : ["div.category-item a"], 'con' : "=.get_attribute('href')"},
-            'categorie_page' : {'type': 'text-array', 'sels' : ["a.post-item__anchor"], 'con' : "=.get_attribute('href')"},
-            'recipe_page' : parser_site_recipe["lekkerensimpel.com"],
+        'index_page' : {
+            'links'    : {'type': 'text-array', 'sels' : ["div.category-item a"], 'con' : "=.get_attribute('href')"},
+            'pages'     : ["https://www.lekkerensimpel.com/recepten/"]
+            },
+        'categorie_page' : {
+           'links' : {'type': 'text-array', 'sels' : ["a.post-item__anchor"], 'con' : "=.get_attribute('href')"},
+           'next_page' : {'type': 'text', 'sels' : ["a.next.page-numbers"]},
+           'pages'  : ["https://www.lekkerensimpel.com/lunchrecepten/"]
+           },
+        'recipe_page' : {
+            'parser'    : parser_sites_recipe["lekkerensimpel.com"],
+            'pages' : ["https://www.lekkerensimpel.com/mexicaans-broodje-kip/"]
+            }
         },
     "leukerecepten.nl" : {
-            'index_page' : {'type': 'text-array', 'sels' : ["div.stream-card a"], 'con' : "=.get_attribute('href')"},
-            'categorie_page' : {'type': 'text-array', 'sels' : ["div.rhythm-s a.full-link"], 'con' : "=.get_attribute('href')"},
-            'recipe_page' : parser_site_recipe["leukerecepten.nl"],
+        'index_page' : {
+           'links' : {'type': 'text-array', 'sels' : ["div.stream-card a"], 'con' : "=.get_attribute('href')"},
+           'pages'  : ["https://www.leukerecepten.nl/recepten-index/"]
+           },
+        'categorie_page' : {
+           'links' : {'type': 'text-array', 'sels' : ["div.rhythm-s a.full-link"], 'con' : "=.get_attribute('href')"},
+           'next_page' : {'type': 'text', 'sels' : ["ul.pagination li:last-child a"], 'check_elm' : "check_next_page_leukerecepten(elm)"},
+           'pages'  : ["https://www.leukerecepten.nl/ovenschotels/"]
+           },
+        'recipe_page' : {
+            'parser'    : parser_sites_recipe["leukerecepten.nl"],
+            'pages' : ["https://www.leukerecepten.nl/recepten/lasagne-paprika/"]
+            }
+        }
     }
-}
 
 def webdriver_start():
     global wd
@@ -452,7 +517,7 @@ def scrape_init_value(field_type):
         field_value = ""
     return field_value
 
-def scrape_links(page, field_parser):
+def scrape_links(page, parser_site):
     global wd
 
     links = []
@@ -462,10 +527,12 @@ def scrape_links(page, field_parser):
         logger.info(f"Scrape links on '{page}'")
         webdriver_get(page)
         root_elm = wd.find_element_by_tag_name('html')
-        elms = scrape_elements(root_elm, field_parser.get('sels', []))
+        field_parser = parser_site['links']
+        elms = scrape_elements(root_elm, field_parser)
         for elm in elms:
             links = scrape_values(elm, field_parser, links)
-        elms = scrape_elements(root_elm, field_parser.get('next_page', []))
+        field_parser = parser_site.get('next_page', {})
+        elms = scrape_elements(root_elm, field_parser)
         if elms:
             page = elms[0].get_attribute('href')
             pagenr = pagenr + 1
@@ -476,7 +543,8 @@ def scrape_links(page, field_parser):
 
     return links
 
-def scrape_elements(root_elm, sels, mode="cor"):
+def scrape_elements(root_elm, field_parser, mode="cor"):
+    sels = field_parser.get('sels', [])
     child_elms = []
     if len(sels) == 0:
         return []
@@ -486,7 +554,13 @@ def scrape_elements(root_elm, sels, mode="cor"):
                 elms = root_elm.find_elements_by_xpath(sel[5:])
             else:
                 elms = root_elm.find_elements_by_css_selector(sel)
-            child_elms.extend(elms)
+            for elm in elms:
+                if 'check_elm' in field_parser:
+                    valid = eval(field_parser['check_elm'])
+                else:
+                    valid = True
+                if valid:
+                    child_elms.append(elm)
             if len(elms) > 0:
                 break
     else:
@@ -563,7 +637,7 @@ def scrape_recipe(root_elm, parser_recipe, path = ""):
         field_type = field_parser.get('type', None)
         field_value = scrape_init_value(field_type)
         sels = field_parser.get('sels', [])
-        elms = scrape_elements(root_elm, sels)
+        elms = scrape_elements(root_elm, field_parser)
         if field_type == 'nested':
             for elm in elms:
                 elm_value, nested_errors = scrape_recipe(elm, field_parser['properties'], field_name_full)
@@ -595,18 +669,19 @@ def recipe_scrape(request):
 
     site = urllib.parse.urlparse(page).netloc.split(':')[0]
     domain = '.'.join(site.split('.')[-2:])
-    if domain not in parser_site:
+    if domain not in parser_sites:
         return None
+    parser_site = parser_sites[domain]
     webdriver_start()
     if page_type == 'index_page':
-        categorie_pages = scrape_links(page, parser_site[domain]['index_page'])
+        categorie_pages = scrape_links(page, parser_site['index_page'])
     else:
         categorie_pages = [page]
     if page_type == 'categorie_page':
         recipe_pages = []
         for categorie_page in categorie_pages:
             logger.info(f"Scrape categorie page '{categorie_page}'")
-            recipe_pages.extend(scrape_links(categorie_page, parser_site[domain]['categorie_page']))
+            recipe_pages.extend(scrape_links(categorie_page, parser_site['categorie_page']))
     else:
         recipe_pages = [page]
 
@@ -614,10 +689,10 @@ def recipe_scrape(request):
         logger.info(f"Scrape recipe page '{recipe_page}'")
         webdriver_get(recipe_page)
         root_elm = wd.find_element_by_tag_name('html')
-        recipe_new, errors = scrape_recipe(root_elm, parser_site[domain]['recipe_page'])
-        id = slugify(page)
+        recipe_new, errors = scrape_recipe(root_elm, parser_site['recipe_page']['parser'])
+        id = slugify(recipe_page)
         if len(errors) == 0:
-            recipe_new['id'] = page
+            recipe_new['id'] = recipe_page
             recipe_obj = recipe.Recipe(id, recipe=recipe_new)
             recipe_obj.put()
         recipe_scrape_results.append((id, recipe_new['title'], recipe_page, errors))

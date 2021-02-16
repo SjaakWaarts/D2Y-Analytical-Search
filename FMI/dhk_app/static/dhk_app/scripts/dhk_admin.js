@@ -27,9 +27,10 @@ var app = new Vue({
         aggs: [],
         current_recipe: '',
         current_recipeIX: null,
+        m_domain: null,
         m_page: '',
         m_page_type: null,
-        m_site: null,
+        m_site_page: '',
         recipe: null,
         recipe_scrape_results: [],
         rows: [
@@ -196,9 +197,10 @@ var app = new Vue({
                 });
         },
         recipe_scrape_click: function () {
-            this.pages_scraped = []
-            this.errors = []
-            if (this.m_site == null) {
+            this.pages_scraped = [];
+            this.errors = [];
+            this.recipe_scrape_results = [];
+            if (this.m_domain == null) {
                 this.errors.push('Selecteer een site')
             }
             if (this.m_page_type == null) {
@@ -221,6 +223,9 @@ var app = new Vue({
             }
             this.get_uploaded_files();
         },
+        select_site_page_change(event) {
+            this.m_page = this.m_site_page;
+        }
     },
     computed: {
     },
