@@ -54,7 +54,12 @@
                             De web (sub) site die ingelezen wordt
                             <div class="input-group mt-3 mb-3">
                                 <div class="input-group-btn">
-                                    <button class="btn btn-primary mr-1" v-on:click="recipe_scrape_click()">
+                                    <button class="btn btn-primary mr-1" data-toggle="tooltip" title="Taxanomy" v-on:click="recipe_scrape_click('taxanomy')">
+                                        <span class="fas fa-tag"></span>
+                                    </button>
+                                </div>
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary mr-1" data-toggle="tooltip" title="Scrape" v-on:click="recipe_scrape_click('scrape')">
                                         <span class="fas fa-globe"></span>
                                     </button>
                                 </div>

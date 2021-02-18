@@ -124,6 +124,39 @@ def con_instruction_lekkerensimpel(elm, elm_text):
         elm_text = ""
     return elm_text
 
+def con_links_lekkerensimpel(elm, elm_text):
+    try:
+        a = elm.find_elements_by_css_selector('a.category-item__anchor')
+        href = a[0].get_attribute('href')
+        span = elm.find_elements_by_css_selector('h4.category-item__title')
+        anchor = span[0].get_attribute('textContent').strip()
+        link = {'anchor' : anchor, 'href' : href}
+    except:
+        link = {}
+    return link
+
+def con_links_leukerecepten(elm, elm_text):
+    try:
+        a = elm.find_elements_by_css_selector('a.full-link')
+        href = a[0].get_attribute('href')
+        span = elm.find_elements_by_css_selector('span.stream-card__title')
+        anchor = span[0].get_attribute('textContent').strip()
+        link = {'anchor' : anchor, 'href' : href}
+    except:
+        link = {}
+    return link
+
+def con_links_24kitchen(elm, elm_text):
+    global wd
+
+    try:
+        anchor = elm.get_attribute('textContent').strip()
+        href = wd.current_url + '/' + elm.get_attribute('value').strip()
+        link = {'anchor' : anchor, 'href' : href}
+    except:
+        link = {}
+    return link
+
 parser_sites_recipe = {
 "culy.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
@@ -445,6 +478,10 @@ parser_sites_recipe = {
 
 parser_sites = {
     "culy.nl" : {
+        'index_page' : {
+           'links' : {'type': 'links', 'sels' : ["a.button--secondary.list__button"]},
+           'pages'  : ["https://www.culy.nl/recepten/"]
+           },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.brand-block__title"]},
            'links' : {'type': 'text-array', 'sels' : ["main a.list__link"], 'check_elm' : "check_categorie_culy(elm)"},
@@ -463,6 +500,10 @@ parser_sites = {
            }
         },
     "eefkooktzo.nl" : {
+        'index_page' : {
+           'links' : {'type': 'links', 'sels' : ["div.site-content a.elementor-button-link"]},
+           'pages'  : ["https://www.culy.nl/recepten/"]
+           },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.elementor-heading-title"]},
            'links' : {'type': 'text-array', 'sels' : ["a.uael-post__read-more"]},
@@ -480,7 +521,7 @@ parser_sites = {
         },
     "lekkerensimpel.com" : {
         'index_page' : {
-            'links'    : {'type': 'text-array', 'sels' : ["div.category-item a"]},
+            'links'    : {'type': 'text-array', 'sels' : ["div.category-item"], 'con' : "=con_links_lekkerensimpel(elm, elm_text)"},
             'pages'     : ["https://www.lekkerensimpel.com/recepten/"]
             },
         'categorie_page' : {
@@ -499,12 +540,12 @@ parser_sites = {
         },
     "leukerecepten.nl" : {
         'index_page' : {
-           'links' : {'type': 'text-array', 'sels' : ["div.stream-card a"]},
+           'links' : {'type': 'links', 'sels' : ["div.stream-card"], 'con' : "=con_links_leukerecepten(elm, elm_text)"},
            'pages'  : ["https://www.leukerecepten.nl/recepten-index/"]
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.page__title"]},
-           'links' : {'type': 'text-array', 'sels' : ["div.rhythm-s a.full-link"]},
+           'links' : {'type': 'links', 'sels' : ["div.rhythm-s a.full-link"]},
            'next_page' : {'type': 'text', 'sels' : ["ul.pagination li:last-child a"], 'check_elm' : "check_next_page_leukerecepten(elm)"},
            'pages'  : ["https://www.leukerecepten.nl/ovenschotels/"]
            },
@@ -514,6 +555,12 @@ parser_sites = {
             }
         },
     "24kitchen.nl" : {
+        'index_page' : {
+           'links' : {'type': 'links',
+                      'sels' : ["select[name='soort_gerecht'] option, select[name='menugang'] option, select[name='keuken'] option"],
+                      'con' : "=con_links_24kitchen(elm, elm_text)"},
+           'pages'  : ["https://www.24kitchen.nl/recepten"]
+           },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["div.search-filter-select.active"]},
            'links' : {'type': 'text-array', 'sels' : ["div.search-content a.full-click-link"]},
@@ -652,6 +699,8 @@ def scrape_init_value(field_type):
         field_value = []
     elif field_type == 'text-array':
         field_value = []
+    elif field_type == 'links':
+        field_value = []
     elif field_type == 'integer':
         field_value = 0
     elif field_type == 'date':
@@ -677,7 +726,7 @@ def scrape_links(page, parser_site):
             webdriver_get(page)
         root_elm = wd.find_element_by_tag_name('html')
         if first_page:
-            field_parser = parser_site.get('taxonomy', None)
+            field_parser = parser_site.get('taxonomy', {})
             elms = scrape_elements(root_elm, field_parser)
             if elms:
                 taxonomy = scrape_values(elms[0], field_parser, taxonomy)
@@ -774,6 +823,13 @@ def scrape_values(elm, field_parser, field_value):
             else:
                 if elm_text not in field_value:
                     field_value.append(elm_text)
+    elif field_type == 'links':
+        if len(elm_text) > 0:
+            if 'con' in field_parser:
+                link = elm_text
+            else:
+                link = {'anchor': elm.get_attribute('textContent').strip(), 'href' : elm.get_attribute('href')}
+            field_value.append(link)
     elif field_type == 'integer':
         try:
             field_value = int(elm_text)
@@ -827,6 +883,7 @@ def recipe_scrape(request):
 
     page_type = request.GET['page_type']
     page = request.GET['page']
+    mode = request.GET['mode']
 
     logger.info(f"Scrape request for '{page_type}', '{page}'")
     recipe_scrape_results = []
@@ -837,39 +894,55 @@ def recipe_scrape(request):
         return None
     parser_site = parser_sites[domain]
     webdriver_start()
-    if page_type == 'index_page':
-        categorie_pages = scrape_links(page, parser_site['index_page'])[1]
-    else:
-        categorie_pages = [page]
-    if page_type == 'categorie_page':
-        taxonomy_pages = []
-        for categorie_page in categorie_pages:
-            logger.info(f"Scrape categorie page '{categorie_page}'")
-            taxonomy_pages.append(scrape_links(categorie_page, parser_site['categorie_page']))
-    else:
-        taxonomy_pages = [(None, [page])]
 
-    for taxonomy_page in taxonomy_pages:
-        taxonomy = taxonomy_page[0]
-        recipe_pages = taxonomy_page[1]
-        for recipe_page in recipe_pages:
-            logger.info(f"Scrape recipe page '{recipe_page}'")
-            webdriver_get(recipe_page)
-            root_elm = wd.find_element_by_tag_name('html')
-            recipe_new, errors = scrape_recipe(root_elm, parser_site['recipe_page']['parser'])
-            if len(errors) == 0:
-                id = slugify(recipe_page)
-                recipe_new['id'] = recipe_page
-                if taxonomy and taxonomy not in recipe_new['categories']:
-                    recipe_new['categories'].append(taxonomy)
-                recipe_obj = recipe.Recipe(id, recipe=recipe_new)
-                recipe_obj.screen()
-                resp = recipe_obj.put()
-                if not resp.ok:
-                    errors.append({'ES put failed' : resp.text})
-            else:
-                id = '#'
-            recipe_scrape_results.append((id, recipe_new['title'], recipe_page, errors))
+    if page_type == 'index_page':
+        categorie_links = scrape_links(page, parser_site['index_page'])[1]
+        page_type = 'categorie_page'
+    else:
+        categorie_links = [{'anchor' : '', 'href' : page}]
+
+    if mode == 'taxanomy':
+        for categorie_link in categorie_links:
+            recipe_scrape_results.append(('#', categorie_link['anchor'], categorie_link['href'], []))
+        dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'scrape')
+        filename_full = os.path.join(dirname, domain + '.json')
+        with open(filename_full, 'w') as fp:
+            json.dump(recipe_scrape_results, fp, indent=4, separators= (',', ': '))
+
+    if mode == 'scrape':
+        if page_type == 'categorie_page':
+            taxonomy_links = []
+            for categorie_link in categorie_links:
+                categorie_page = categorie_link['href']
+                logger.info(f"Scrape categorie page '{categorie_page}'")
+                taxonomy_links.append(scrape_links(categorie_page, parser_site['categorie_page']))
+            page_type = 'recipe_page'
+        else:
+            taxonomy_links = [(None, [{'anchor' : '', 'href' : page}])]
+
+        for taxonomy_link in taxonomy_links:
+            taxonomy = taxonomy_link[0]
+            recipe_links = taxonomy_link[1]
+            for recipe_link in recipe_links:
+                recipe_page = recipe_link['href']
+                logger.info(f"Scrape recipe page '{recipe_page}'")
+                webdriver_get(recipe_page)
+                root_elm = wd.find_element_by_tag_name('html')
+                recipe_new, errors = scrape_recipe(root_elm, parser_site['recipe_page']['parser'])
+                if len(errors) == 0:
+                    id = slugify(recipe_page)
+                    recipe_new['id'] = recipe_page
+                    if taxonomy and taxonomy not in recipe_new['categories']:
+                        recipe_new['categories'].append(taxonomy)
+                    recipe_obj = recipe.Recipe(id, recipe=recipe_new)
+                    recipe_obj.screen()
+                    resp = recipe_obj.put()
+                    if not resp.ok:
+                        errors.append({'ES put failed' : resp.text})
+                else:
+                    id = '#'
+                recipe_scrape_results.append((id, recipe_new['title'], recipe_page, errors))
+
     # leave the driver running
     # webdriver_stop()
     context = {

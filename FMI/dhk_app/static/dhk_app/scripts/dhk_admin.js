@@ -196,7 +196,7 @@ var app = new Vue({
                     }
                 });
         },
-        recipe_scrape_click: function () {
+        recipe_scrape_click: function (mode) {
             this.pages_scraped = [];
             this.errors = [];
             this.recipe_scrape_results = [];
@@ -207,7 +207,7 @@ var app = new Vue({
                 this.errors.push('Selecteer een pagina type')
             }
             if (this.errors.length > 0) { return }
-            this.$http.get(recipe_scrape_url, { params: { page_type : this.m_page_type, page: this.m_page } }).then(response => {
+            this.$http.get(recipe_scrape_url, { params: { page_type : this.m_page_type, page: this.m_page, mode: mode } }).then(response => {
                 var recipe = response.body.recipe;
                 this.recipe_scrape_results = response.body.recipe_scrape_results;
             });
