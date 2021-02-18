@@ -181,52 +181,56 @@ div.seeker-dropdown-link {
     position: relative;
 }
 
-div.seeker-dropdown-link span {
-    color: #007bff;
-}
+    div.seeker-dropdown-link span {
+        color: #007bff;
+    }
 
-div.seeker-dropdown-link ul {
-    display: inline;
-    margin: 0;
-    padding: 0;
-}
+    div.seeker-dropdown-link ul {
+        display: inline;
+        margin: 0;
+        padding: 0;
+    }
 
-div.seeker-dropdown-link ul li {
-    display: inline-block;
-}
+    div.seeker-dropdown-link ul li {
+        display: inline-block;
+    }
 
-div.seeker-dropdown-link ul li:hover {
-}
+    div.seeker-dropdown-link ul li:hover {
+    }
 
-div.seeker-dropdown-link ul li:hover ul {
-    display: block;
-}
+    div.seeker-dropdown-link ul li:hover ul {
+        display: block;
+    }
 
-div.seeker-dropdown-link ul li ul {
-    position: absolute;
-    top: 20px;
-    left: 10px;
-    list-style-type: square;
-    width: 200px;
-    display: none;
-}
+        div.seeker-dropdown-link ul li ul {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            list-style-type: square;
+            width: 200px;
+            display: none;
+            border-width: 1px;
+            border-style: solid;
+            border-color: cornflowerblue;
+            border-radius: 10px;
+        }
 
-div.seeker-dropdown-link ul li ul li {
-    background-color: white;
-    padding-left: 5px;
-    opacity: 0.9;
-    display: block;
-}
+        div.seeker-dropdown-link ul li ul li {
+            background-color: white;
+            padding-left: 5px;
+            opacity: 0.9;
+            display: block;
+        }
 
-div.seeker-dropdown-link ul li ul li a {
-    display: block !important;
-    color: red;
-    margin-bottom: 2px;
-}
+            div.seeker-dropdown-link ul li ul li a {
+                display: block !important;
+                color: royalblue;
+                margin-bottom: 2px;
+            }
 
-div.seeker-dropdown-link ul li ul li:hover {
-    background-color: cornflowerblue
-}
+        div.seeker-dropdown-link ul li ul li:hover {
+            background-color: cornflowerblue;
+        }
 
 /* Style the carousel */
 .carousel-selected {

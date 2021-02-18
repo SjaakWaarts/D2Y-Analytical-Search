@@ -213,7 +213,11 @@ var app = new Vue({
             });
         },
         recipe_url(url, id) {
-            return url + '?id=' + id;
+            if (id == '#') {
+                return id
+            } else {
+                return url + '?id=' + id;
+            }
         },
         reset_search: function () {
             for (var fix = 0; fix < this.workbook.filters.length; fix++) {

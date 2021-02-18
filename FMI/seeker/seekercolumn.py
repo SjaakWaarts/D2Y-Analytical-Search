@@ -107,7 +107,12 @@ class Column (object):
                     for a, href in urlrender.items():
                         anchor = source[a] if a in source else a.format(id)
                         link = source[href] if href in source else href.format(id)
-                        dropdown_urls.append((anchor, link))
+                        found = False
+                        for dropdown_url in dropdown_urls:
+                            if dropdown_url[1] == link:
+                                found = True
+                        if not found:
+                            dropdown_urls.append((anchor, link))
             if url == "":
                 url = result['_source']['url']
 

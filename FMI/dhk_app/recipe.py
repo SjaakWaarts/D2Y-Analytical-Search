@@ -145,7 +145,7 @@ class Recipe():
         es_host = ES_HOSTS[0]
         results = esm.get_doc(es_host, 'recipes', id)
         results = json.loads(results.text)
-        recipe = results.get('_source', {})
+        recipe = results.get('_source', None)
         return recipe
 
     def es_put(self):
@@ -170,6 +170,40 @@ class Recipe():
         hit = hits.get('hits', [{}])[0]
         recipe = hit.get('_source', {})
         return recipe
+
+    def screen_title(self):
+        recipe_title = self.recipe['title']
+        try:
+            recipe_title = recipe_title[0].upper() + recipe_title[1:].lower()
+        except:
+            recipe_title = ""
+        self.recipe['title'] = recipe_title
+        for course in self.recipe['courses']:
+            course_title = course['title']
+            try:
+                course_title = course_title[0].upper() + course_title[1:].lower()
+            except:
+                course_title = recipe_title
+            course['title'] = course_title
+
+    def screen_categories(self):
+        categories = self.recipe['categories']
+        categories_new = []
+        for categorie in categories:
+            try:
+                categorie = categorie[0].upper() + categorie[1:].lower()
+            except:
+                categorie = ""
+            if categorie:
+                categories_new.append(categorie)
+        self.recipe['categories'] = categories_new
+
+    def screen(self):
+        # Screening rules
+        # Title: Start with capital, rest lowercase
+        # Categories: Start with capital, rest lowercase
+        self.screen_title()
+        self.screen_categories()
 
 
 def recipe_view(request):
