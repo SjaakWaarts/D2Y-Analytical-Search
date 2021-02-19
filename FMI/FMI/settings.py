@@ -205,15 +205,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'corsheaders',
-    'djangosaml2',
 )
 
 AUTH_USER_MODEL = 'users_app.User'
 #LOGIN_REDIRECT_URL = 'profile'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-SAML_FOLDER = os.path.join(BASE_DIR, 'users_app/saml')
-
 
 # Specify the default test runner.
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'

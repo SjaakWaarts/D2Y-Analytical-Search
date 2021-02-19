@@ -157,6 +157,15 @@ def con_links_24kitchen(elm, elm_text):
         link = {}
     return link
 
+def field_parser_type(field_parser):
+    field_type_split = field_parser['type'].split(':')
+    field_type = field_type_split[0]
+    if len(field_type_split) == 2:
+        field_modifier = field_type_split[1]
+    else:
+        field_modifier = None
+    return field_type, field_modifier
+
 parser_sites_recipe = {
 "culy.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
@@ -214,6 +223,69 @@ parser_sites_recipe = {
             'instructions'  : {
                 'type'       : 'nested',
                 'sels'       : ["main .article__content:first-child > h2 ~ p"],
+                'properties' : {
+                    'instruction' : {'type': 'text', 'sels' : ["."]}
+                    }
+                }
+            }
+        }
+    },
+"eatertainment.nl" : {
+    'id'            : {'type': 'text', 'con' : ""},
+    'title'         : {'type': 'text', 'sels' : ["title"]},
+    'published_date': {'type': 'date', 'sels' : ["meta[property='article:published_time']"]},
+    'author'        : {'type': 'text', 'con' : "eatertainment.nl"},
+    'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']", "meta[property='og:description']"]},
+    'description'   : {'type': 'text', 'sels' : []},
+    'categories'    : {'type': 'text-array', 'sels' : ["main span.meta-info-el.meta-info-cat"]},
+    'cuisiness'     : {'type': 'text-array', 'sels' : []},
+    'tags'          : {'type': 'text-array', 'sels' : ["main span.meta-info-el.meta-info-tag a"]},
+    'images'        : {
+        'type'       : 'nested',
+        'sels'       : ["meta[property='og:image']"],
+        'properties' : {
+            'image'     : {'type': 'text', 'con' : "image"},
+            'location'  : {'type': 'text', 'sels' : ["."]},
+            },
+        },
+    'cooking_clubs' : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'reviews'       : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'nutrition'     : None,
+    'cooking_times' : None,
+    'courses'       : {
+        'type'       : 'nested',
+        'sels'       : ["/html"],
+        'properties' : {
+            'title'        : {'type': 'text', 'sels' : ["h1.entry-title"]},
+            'ingredients_parts'   : {
+                'type'          : 'nested',
+                'sels'       : ["main article:first-child div.entry-content > div.cooked-recipe-ingredients"],
+                'properties'    : {
+                    'part'          : {'type': 'integer', 'sels' : ["."], 'con' : "=0"},
+                    'ingredients'   : {
+                        'type'      : 'nested',
+                        'sels' : ["div.cooked-ingredient"],
+                        'properties' : {
+                            'ingredient' : {'type': 'text', 'sels' : ["."]},
+                            'value': {'type' : 'text', 'sels' : ["span.cooked-ing-amount"], 'cardinality' : '0-1'},
+                            'measure': {'type' : 'text', 'sels' : ["span.cooked-ing-measurement"], 'cardinality' : '0-1'}
+                            }
+                        }
+                    }
+                },
+            'instructions'  : {
+                'type'       : 'nested',
+                'sels'       : ["main article:first-child div.entry-content > div.cooked-recipe-directions div.cooked-dir-content"],
                 'properties' : {
                     'instruction' : {'type': 'text', 'sels' : ["."]}
                     }
@@ -418,7 +490,7 @@ parser_sites_recipe = {
     'author'        : {'type': 'text', 'con' : "24kitchen.nl"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[property='og:description']"]},
     'description'   : {'type': 'text', 'sels' : []},
-    'categories'    : {'type': 'text-array', 'sels' : ["meta[name='keywords'"], 'con' : "=con_categories_24kitchen(elm, elm_text)"},
+    'categories'    : {'type': 'text-array', 'sels' : ["meta[name='keywords'], div.tags li"], 'con' : "=con_categories_24kitchen(elm, elm_text)"},
     'cuisiness'     : {'type': 'text-array', 'sels' : []},
     'tags'          : {'type': 'text-array', 'sels' : []},
     'images'        : {
@@ -484,8 +556,8 @@ parser_sites = {
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.brand-block__title"]},
-           'links' : {'type': 'text-array', 'sels' : ["main a.list__link"], 'check_elm' : "check_categorie_culy(elm)"},
-           'next_page' : {'type': 'text', 'sels' : ["a.next.page-numbers"]},
+           'links' : {'type': 'text-array:href', 'sels' : ["main a.list__link"], 'check_elm' : "check_categorie_culy(elm)"},
+           'next_page' : {'type': 'text:href', 'sels' : ["a.next.page-numbers"]},
            'pages'  : ["https://www.culy.nl/recepten/menugang/dessert/"]
            },
         'recipe_page' : {
@@ -499,6 +571,25 @@ parser_sites = {
                ]
            }
         },
+    "eatertainment.nl" : {
+        'index_page' : {
+           'links' : {'type': 'links', 'sels' : ["ul.sub-menu.mega-tree li.menu-item-object-category a"]},
+           'pages'  : ["https://eatertainment.nl/recepten/"]
+           },
+        'categorie_page' : {
+           'taxonomy' : {'type': 'text', 'sels' : ["h1.category-title"]},
+           'links' : {'type': 'text-array:href', 'sels' : ["h3.entry-title a"]},
+           'next_page' : {'type': 'text:href', 'sels' : ["a.next.page-numbers"]},
+           'pages'  : ["https://eatertainment.nl/category/recepten/hoofdgerechten/"]
+           },
+        'recipe_page' : {
+           'parser' : parser_sites_recipe["eatertainment.nl"],
+           'pages'  : [
+               "https://eatertainment.nl/garnalen-loempias-uit-de-oven/",
+               "https://eatertainment.nl/romige-kerriesoep-met-kalkoen-en-appel/"
+               ]
+           }
+        },
     "eefkooktzo.nl" : {
         'index_page' : {
            'links' : {'type': 'links', 'sels' : ["div.site-content a.elementor-button-link"]},
@@ -506,8 +597,8 @@ parser_sites = {
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.elementor-heading-title"]},
-           'links' : {'type': 'text-array', 'sels' : ["a.uael-post__read-more"]},
-           'next_page' : {'type': 'text', 'sels' : ["a.next.page-numbers"]},
+           'links' : {'type': 'text-array:href', 'sels' : ["a.uael-post__read-more"]},
+           'next_page' : {'type:href': 'text', 'sels' : ["a.next.page-numbers"]},
            'pages'  : ["https://www.eefkooktzo.nl/category/ovenschotels-stamppotjes/"]
            },
         'recipe_page' : {
@@ -521,13 +612,13 @@ parser_sites = {
         },
     "lekkerensimpel.com" : {
         'index_page' : {
-            'links'    : {'type': 'text-array', 'sels' : ["div.category-item"], 'con' : "=con_links_lekkerensimpel(elm, elm_text)"},
+            'links'    : {'type': 'links', 'sels' : ["div.category-item"], 'con' : "=con_links_lekkerensimpel(elm, elm_text)"},
             'pages'     : ["https://www.lekkerensimpel.com/recepten/"]
             },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.hero__title"]},
-           'links' : {'type': 'text-array', 'sels' : ["a.post-item__anchor"]},
-           'next_page' : {'type': 'text', 'sels' : ["a.next.page-numbers"]},
+           'links' : {'type': 'text-array:href', 'sels' : ["a.post-item__anchor"]},
+           'next_page' : {'type': 'text:href', 'sels' : ["a.next.page-numbers"]},
            'pages'  : ["https://www.lekkerensimpel.com/lunchrecepten/"]
            },
         'recipe_page' : {
@@ -545,8 +636,8 @@ parser_sites = {
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.page__title"]},
-           'links' : {'type': 'links', 'sels' : ["div.rhythm-s a.full-link"]},
-           'next_page' : {'type': 'text', 'sels' : ["ul.pagination li:last-child a"], 'check_elm' : "check_next_page_leukerecepten(elm)"},
+           'links' : {'type': 'text-array:href', 'sels' : ["div.rhythm-s a.full-link"]},
+           'next_page' : {'type': 'text:href', 'sels' : ["ul.pagination li:last-child a"], 'check_elm' : "check_next_page_leukerecepten(elm)"},
            'pages'  : ["https://www.leukerecepten.nl/ovenschotels/"]
            },
         'recipe_page' : {
@@ -563,7 +654,7 @@ parser_sites = {
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["div.search-filter-select.active"]},
-           'links' : {'type': 'text-array', 'sels' : ["div.search-content a.full-click-link"]},
+           'links' : {'type': 'text-array:href', 'sels' : ["div.search-content a.full-click-link"]},
            'next_page' : {'scroll' : True},
            'pages'  : [
                "https://www.24kitchen.nl/recepten/zoeken/soort_gerecht/ovenschotel-101",
@@ -574,6 +665,7 @@ parser_sites = {
             'pages'  : [
                 "https://www.24kitchen.nl/recepten/kastanjesoep-met-salieroom-en-crouton-sterren",
                 "https://www.24kitchen.nl/recepten/wortelovenschotel",
+                "https://www.24kitchen.nl/recepten/gevulde-pasta-met-pesto-en-spinazie",
                 ]
             },
         },
@@ -693,7 +785,7 @@ def carousel_scrape(query: str, max_links_to_fetch: int, sleep_between_interacti
     webdriver_stop()
     return thumbnails
 
-def scrape_init_value(field_type):
+def scrape_init_value(field_type, field_modified=None):
     field_value = ""
     if field_type == 'nested':
         field_value = []
@@ -704,7 +796,7 @@ def scrape_init_value(field_type):
     elif field_type == 'integer':
         field_value = 0
     elif field_type == 'date':
-        field_value = datetime.now().strftime('%Y-%m-%d')
+        field_value = '2019-01-01' # datetime.now().strftime('%Y-%m-%d')
     else:
         field_value = ""
     return field_value
@@ -788,16 +880,20 @@ def scrape_elements(root_elm, field_parser, mode="cor"):
     return child_elms
 
 def scrape_values(elm, field_parser, field_value):
-    field_type = field_parser.get('type', None)
+    field_type, field_modifier = field_parser_type(field_parser)
     # 1. First get text
+    elm_text = elm.text
+    if elm.text == "": # lazy read or not visible
+        elm_text = elm.get_attribute('textContent').strip()
     if elm.tag_name == 'meta':
         elm_text = elm.get_attribute('content')
     elif elm.tag_name == 'a':
-        elm_text = elm.get_attribute('href')
-    else:
-        elm_text = elm.text
-        if elm.text == "": # lazy read or not visible
-            elm_text = elm.get_attribute('textContent').strip()
+        href = elm.get_attribute('href')
+        if field_type == 'links':
+            elm_text = {'achor' : elm_text, 'href' : href}
+        else:
+            if field_modifier == 'href':
+                elm_text = href
     # 2. Check on construtur to obtain text or format text, contstrucor has elm and elm_text as input
     if 'con' in field_parser:
         con = field_parser['con']
@@ -854,7 +950,7 @@ def scrape_recipe(root_elm, parser_recipe, path = ""):
             recipe[field_name] = field_parser['con']
             continue
         field_name_full = field_name if not path else path + '.' + field_name
-        field_type = field_parser.get('type', None)
+        field_type, field_modifier = field_parser_type(field_parser)
         field_value = scrape_init_value(field_type)
         sels = field_parser.get('sels', [])
         elms = scrape_elements(root_elm, field_parser)
@@ -918,13 +1014,12 @@ def recipe_scrape(request):
                 taxonomy_links.append(scrape_links(categorie_page, parser_site['categorie_page']))
             page_type = 'recipe_page'
         else:
-            taxonomy_links = [(None, [{'anchor' : '', 'href' : page}])]
+            taxonomy_links = [(None, [page])]
 
         for taxonomy_link in taxonomy_links:
             taxonomy = taxonomy_link[0]
             recipe_links = taxonomy_link[1]
-            for recipe_link in recipe_links:
-                recipe_page = recipe_link['href']
+            for recipe_page in recipe_links:
                 logger.info(f"Scrape recipe page '{recipe_page}'")
                 webdriver_get(recipe_page)
                 root_elm = wd.find_element_by_tag_name('html')

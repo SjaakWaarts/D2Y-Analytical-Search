@@ -194,7 +194,7 @@ class Recipe():
                 categorie = categorie[0].upper() + categorie[1:].lower()
             except:
                 categorie = ""
-            if categorie:
+            if categorie and categorie not in categories_new:
                 categories_new.append(categorie)
         self.recipe['categories'] = categories_new
 

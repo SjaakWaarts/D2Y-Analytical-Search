@@ -8,7 +8,6 @@ var login_url = $("input[name=login_url]").val();
 var logout_url = $("input[name=logout_url]").val();
 var register_url = $("input[name=register_url]").val();
 var profile_url = $("input[name=profile_url]").val();
-var saml_index_url = $("input[name=saml_index_url]").val();
 
 function getCookie(name) {
     var cookieValue = null;
@@ -69,29 +68,6 @@ var app = new Vue({
             var csrftoken_cookie = getCookie('csrftoken');
             var headers = { 'X-CSRFToken': csrftoken_cookie };
             this.$http.post(login_url, {
-                'csrfmiddlewaretoken': csrftoken,
-                'username': this.username,
-                'password': this.password,
-            },
-                { 'headers': headers }).then(response => {
-                    this.is_authenticated = response.body.is_authenticated;
-                    var next = response.body.next;
-                    if (this.is_authenticated) {
-                        login_modal_div.classList.remove("show");
-                        window.location.reload(true);
-                    } else {
-                        var login_message_div = document.getElementById('login_message_div');
-                        login_message_div.innerHTML = "Login mislukt";
-                    }
-                });
-        },
-        post_saml_index: function () {
-            var login_modal_div = document.getElementById('login-modal');
-            this.username = document.getElementById('username_input').value;
-            this.password = document.getElementById('password_input').value;
-            var csrftoken_cookie = getCookie('csrftoken');
-            var headers = { 'X-CSRFToken': csrftoken_cookie };
-            this.$http.post(saml_index_url, {
                 'csrfmiddlewaretoken': csrftoken,
                 'username': this.username,
                 'password': this.password,
