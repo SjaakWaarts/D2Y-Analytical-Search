@@ -12,6 +12,14 @@
     margin: 1rem;
 }
 
+.dhk-admin-sites-scrape {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin: 1rem;
+}
+
 .dhk-errors {
     color: lightgray;
     border-style:solid;

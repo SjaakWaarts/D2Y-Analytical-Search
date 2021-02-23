@@ -10,6 +10,8 @@ var recipe_scrape_url = $("input[name=recipe_scrape_url]").val();
 
 //Vue part
 //Vue.http.headers.common['X-CSRF-TOKEN'] = csrftoken;
+Vue.component('treeselect', VueTreeselect.Treeselect)
+
 var app = new Vue({
     el: '#root',
     delimiters: ['[[', ']]'],
@@ -31,85 +33,10 @@ var app = new Vue({
         m_page: '',
         m_page_type: null,
         m_site_page: '',
+        m_treeselect_value: null,
         recipe: null,
         recipe_scrape_results: [],
-        rows: [
-            {
-                "id": 1,
-                "author": "Vladimir",
-                "published_date": "2018-10-11",
-                "title": "franecki.anastasia@gmail.com",
-            },
-            {
-                "id": 2,
-                "author": "Vladimir",
-                "published_date": "2018-10-11",
-                "title": "franecki.anastasia@gmail.com",
-            },
-            {
-                "id": 3,
-                "author": "Vladimir",
-                "published_date": "2018-10-11",
-                "title": "franecki.anastasia@gmail.com",
-            }
-        ],
-        columns: [
-            {
-                label: "id",
-                name: "id",
-                filter: {
-                    type: "simple",
-                    placeholder: "id"
-                },
-                sort: true,
-            },
-            {
-                label: "Van",
-                name: "author",
-                filter: {
-                    type: "simple",
-                    placeholder: "Van"
-                },
-                sort: true,
-            },
-            {
-                label: "Datum",
-                name: "published_date",
-                sort: true,
-            },
-            {
-                label: "Titel",
-                name: "title",
-                filter: {
-                    type: "simple",
-                    placeholder: "Titel"
-                },
-            }
-        ],
-        actions: [
-            {
-                btn_text: "Bekijk Recept",
-                event_name: "on-edit",
-                class: "btn btn-primary",
-                event_payload: {
-                    msg: "edit"
-                }
-            },
-            {
-                btn_text: "Verwijder Recept",
-                event_name: "on-delete",
-                class: "btn btn-primary",
-                event_payload: {
-                    msg: "delete"
-                }
-            }
-        ],
-        config: {
-            checkbox_rows: false,
-            rows_selectable: true,
-            selected_rows_info: true,
-            card_title: "Mijn Recepten"
-        }
+        treeselect_options: [],
     },
     methods: {
         select_recipe(event) {
@@ -196,7 +123,7 @@ var app = new Vue({
                     }
                 });
         },
-        recipe_scrape_click: function (mode) {
+        recipe_scrape_click: function () {
             this.pages_scraped = [];
             this.errors = [];
             this.recipe_scrape_results = [];
@@ -207,7 +134,12 @@ var app = new Vue({
                 this.errors.push('Selecteer een pagina type')
             }
             if (this.errors.length > 0) { return }
-            this.$http.get(recipe_scrape_url, { params: { page_type : this.m_page_type, page: this.m_page, mode: mode } }).then(response => {
+            var sub = this.m_treeselect_value;
+            var page = this.m_page;
+            if (page == "All Categories") {
+                page = ""
+            }
+            this.$http.get(recipe_scrape_url, { params: { page_type: this.m_page_type, sub: sub, page: page } }).then(response => {
                 var recipe = response.body.recipe;
                 this.recipe_scrape_results = response.body.recipe_scrape_results;
             });
@@ -228,12 +160,28 @@ var app = new Vue({
             this.get_uploaded_files();
         },
         select_site_page_change(event) {
-            this.m_page = this.m_site_page;
+            if (this.m_page_type == 'index_page') {
+                this.m_page = this.m_site_page;
+            } else {
+                this.m_page = this.m_site_page[1];
+                this.m_treeselect_value = this.m_site_page[0];
+            }
         }
     },
     computed: {
     },
     mounted: function () {
+        for (const cat in taxonomy) {
+            var cat_node = { id: cat, label: cat };
+            var children = [];
+            for (var ix = 0; ix < taxonomy[cat].length; ix++) {
+                var sub = taxonomy[cat][ix];
+                var sub_node = { id: sub, label: sub }
+                children.push(sub_node);
+            }
+            cat_node['children'] = children;
+            this.treeselect_options.push(cat_node);
+        }
     },
 
 });

@@ -51,19 +51,21 @@
                                   </select>
                                 </div>
                             </div>
-                            De web (sub) site die ingelezen wordt
-                            <div class="input-group mt-3 mb-3">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-primary mr-1" data-toggle="tooltip" title="Taxanomy" v-on:click="recipe_scrape_click('taxanomy')">
-                                        <span class="fas fa-tag"></span>
-                                    </button>
+                            <p>
+                                De web (sub) site die ingelezen wordt met de bijbehorende Taxonomy
+                            </p>
+                            <div class="dhk-admin-sites-scrape mb-3">
+                                <div style="width:40%">
+                                    <treeselect class="mr-1" v-model="m_treeselect_value" :multiple="false" :options="treeselect_options" placeholder="Selecteer taxonomy..." />
                                 </div>
-                                <div class="input-group-btn">
-                                    <button class="btn btn-primary mr-1" data-toggle="tooltip" title="Scrape" v-on:click="recipe_scrape_click('scrape')">
-                                        <span class="fas fa-globe"></span>
-                                    </button>
+                                <div class="input-group" style="width:45%">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary mr-1" data-toggle="tooltip" title="Scrape" v-on:click="recipe_scrape_click()">
+                                            <span class="fas fa-globe"></span>
+                                        </button>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Web recipe page" id="scrape_text" v-model="m_page"/>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Web recipe page" id="scrape_text" v-model="m_page"/>
                             </div>
                             <div class="row">
                                 <div class="col-12">
@@ -118,6 +120,7 @@
 {% block scripts %}
     <script type="text/javascript">
         var static_assets_url = "{% static 'assets' %}";
+        var taxonomy = {{ taxonomy|safe }}
         var parser_sites = {{ parser_sites|safe }}
     </script>
     {% load static %}

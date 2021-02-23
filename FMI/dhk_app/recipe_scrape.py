@@ -166,6 +166,113 @@ def field_parser_type(field_parser):
         field_modifier = None
     return field_type, field_modifier
 
+
+taxonomy = {
+    "Avond" : [
+        "Bijgerecht",
+	    "Borrelhapje",
+	    "Dessert",
+	    "Diner",
+	    "Dressings",
+	    "Hoofdgerecht",
+	    "Menu",
+	    "Salades",
+	    "Sauzen",
+	    "Smoothies",
+	    "Snacks",
+	    "Soep",
+	    "Soepen",
+	    "Tussendoor",
+	    "Voorgerecht",
+	    "Zoet"],
+    "Bakken" : [
+        "Cake",
+	    "Cheesecake",
+	    "Koekjes",
+	    "Muffin",
+	    "Taart",
+	    "Wafel"],
+    "Bereiding" : [
+        "Bakken",
+	    "BBQ",
+	    "Gourmet"],
+    "Dieet" : [
+        "Gezond",
+	    "Glutenvrij",
+	    "Koolhydraatarm",
+	    "Vegan",
+	    "Vegetarisch"],
+    "Hoofdgerecht" : [
+        "Aardappel",
+	    "Aardappelen",
+	    "Bladerdeeg",
+	    "Bruschettas",
+	    "Dips ",
+	    "Eieren",
+	    "Gehakt",
+	    "Groente",
+	    "Hartigetaart",
+	    "Kip",
+	    "Lasagna",
+	    "Ovenschotel",
+	    "Pasta",
+	    "Pizza",
+	    "Quiche",
+	    "Rijst",
+	    "Stampot",
+	    "Stamppot",
+	    "Vis",
+	    "Vlees"],
+    "Land" : [
+        "Amerikaans",
+	    "Arabisch",
+	    "Australisch",
+	    "Aziatisch",
+	    "Belgisch",
+	    "Engels",
+	    "Frans",
+	    "Grieks",
+	    "Hollands",
+	    "Indisch",
+	    "Italiaans",
+	    "Marokkaans",
+	    "Mediterraans",
+	    "Mexicaans",
+	    "Nederlands",
+	    "Oost-Europees",
+	    "Scandinavisch",
+	    "Spaans",
+	    "Turks",
+	    "Zuid-Afrikaans",
+	    "Zuid-Amerikaans"],
+    "Overdag" :  [
+        "Brood",
+	    "Lunch",
+	    "Ontbijt",
+	    "Tussendoor",
+	    "Wraps"],
+    "Seizoen" :  [
+        "Herfst",
+	    "Lente",
+	    "Winter",
+	    "Zomer"],
+    "Speciaal" : [
+        "Camping",
+	    "Familie",
+	    "Gezond",
+	    "High-tea",
+	    "Kerst",
+	    "Kinderen",
+	    "Oranje",
+	    "Oud-en-nieuw",
+	    "Pasen",
+	    "Sinterklaas",
+	    "Snel",
+	    "Tapas",
+	    "Thema",
+	    "Valentijn"],
+}
+
 parser_sites_recipe = {
 "culy.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
@@ -551,98 +658,280 @@ parser_sites_recipe = {
 parser_sites = {
     "culy.nl" : {
         'index_page' : {
-           'links' : {'type': 'links', 'sels' : ["a.button--secondary.list__button"]},
-           'pages'  : ["https://www.culy.nl/recepten/"]
+           'links' : {'type': 'links', 'sels' : ["a.button--primary, a.button--secondary"]},
+           'pages'  : [
+               "All Categories",
+              "https://www.culy.nl/recepten/"
+              ]
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.brand-block__title"]},
            'links' : {'type': 'text-array:href', 'sels' : ["main a.list__link"], 'check_elm' : "check_categorie_culy(elm)"},
            'next_page' : {'type': 'text:href', 'sels' : ["a.next.page-numbers"]},
-           'pages'  : ["https://www.culy.nl/recepten/menugang/dessert/"]
+           'pages'  : [
+                ("Menu", "https://www.culy.nl/recepten/menugang/"),
+                ("Pasen", "https://www.culy.nl/tag/paasbrunch"),
+                ("Ontbijt", "https://www.culy.nl/recepten/menugang/ontbijt/"),
+                ("Lunch", "https://www.culy.nl/recepten/menugang/lunch/"),
+                ("Diner", "https://www.culy.nl/recepten/menugang/diner/"),
+                ("Dessert", "https://www.culy.nl/recepten/menugang/dessert/"),
+                ("Snacks", "https://www.culy.nl/recepten/menugang/snack/"),
+                ("Snel", "https://www.culy.nl/tag/snelle-recepten/"),
+                ("Snel", "https://www.culy.nl/tag/makkelijke-recepten/"),
+                ("Vegetarisch", "https://www.culy.nl/vegetarisch/"),
+                ("Kinderen", "https://www.culy.nl/tag/culy-kids/"),
+                ("Gezond", "https://www.culy.nl/tag/gezonde-recepten/"),
+                ("Italiaans", "https://www.culy.nl/tag/italiaans"),
+                ("Mexicaans", "https://www.culy.nl/tag/mexicaans/"),
+                ("Marokkaans", "https://www.culy.nl/tag/marokkaans/"),
+                ("Turks", "https://www.culy.nl/tag/turks/"),
+                ("Grieks", "https://www.culy.nl/tag/grieks/"),
+                ("Ovenschotel", "https://www.culy.nl/tag/ovengerechten/"),
+               ]
            },
         'recipe_page' : {
            'parser' : parser_sites_recipe["culy.nl"],
            'pages'  : [
-               "https://www.culy.nl/recepten/crepes-met-salted-caramel/",
-               "https://www.culy.nl/recepten/bomboloni-pistache-witte-chocolade/",
-               "https://www.culy.nl/recepten/ijssandwich-met-speculaas/",
-               "https://www.culy.nl/recepten/bhurta-met-vissticks-nigella/",
-               "https://www.culy.nl/inspiratie/makkelijke-toetjes/",
+               ("Dessert", "https://www.culy.nl/recepten/crepes-met-salted-caramel/"),
+               ("Dessert", "https://www.culy.nl/recepten/bomboloni-pistache-witte-chocolade/"),
+               ("Dessert", "https://www.culy.nl/recepten/ijssandwich-met-speculaas/"),
+               ("Vis", "https://www.culy.nl/recepten/bhurta-met-vissticks-nigella/"),
+               ("Dessert", "https://www.culy.nl/inspiratie/makkelijke-toetjes/"),
                ]
            }
         },
     "eatertainment.nl" : {
         'index_page' : {
-           'links' : {'type': 'links', 'sels' : ["ul.sub-menu.mega-tree li.menu-item-object-category a"]},
-           'pages'  : ["https://eatertainment.nl/recepten/"]
+           'links' : {'type': 'links', 'sels' : ["div.navbar-outer ul.main-menu li:first-child div.mega-holder ul.sub-menu.mega-tree li.menu-item a"]},
+           'pages'  : [
+               "All Categories",
+               "https://eatertainment.nl/recepten/"
+               ]
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.category-title"]},
            'links' : {'type': 'text-array:href', 'sels' : ["h3.entry-title a"]},
            'next_page' : {'type': 'text:href', 'sels' : ["a.next.page-numbers"]},
-           'pages'  : ["https://eatertainment.nl/category/recepten/hoofdgerechten/"]
+           'pages'  : [
+                ("Ontbijt", "https://eatertainment.nl/category/recepten/ontbijt/"),
+                ("Lunch", "https://eatertainment.nl/category/recepten/lunch-brunch/"),
+                ("Voorgerecht", "https://eatertainment.nl/category/recepten/voorgerecht/"),
+                ("Hoofdgerecht", "https://eatertainment.nl/category/recepten/hoofdgerechten/"),
+                ("Dessert", "https://eatertainment.nl/category/recepten/desserts/"),
+                ("Tussendoor", "https://eatertainment.nl/category/recepten/tussendoortjes/"),
+                ("Borrelhapje", "https://eatertainment.nl/category/recepten/borrel/"),
+                ("Thema", "https://eatertainment.nl/category/thema/"),
+               ]
            },
         'recipe_page' : {
            'parser' : parser_sites_recipe["eatertainment.nl"],
            'pages'  : [
-               "https://eatertainment.nl/garnalen-loempias-uit-de-oven/",
-               "https://eatertainment.nl/romige-kerriesoep-met-kalkoen-en-appel/"
+               ("Hoofdgerecht", "https://eatertainment.nl/garnalen-loempias-uit-de-oven/"),
+               ("Hoofdgerecht", "https://eatertainment.nl/romige-kerriesoep-met-kalkoen-en-appel/")
                ]
            }
         },
     "eefkooktzo.nl" : {
         'index_page' : {
            'links' : {'type': 'links', 'sels' : ["div.site-content a.elementor-button-link"]},
-           'pages'  : ["https://www.culy.nl/recepten/"]
+           'pages'  : [
+               "All Categories",
+               "https://www.eefkooktzo.nl/recepten-index/"
+               ]
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.elementor-heading-title"]},
            'links' : {'type': 'text-array:href', 'sels' : ["a.uael-post__read-more"]},
            'next_page' : {'type:href': 'text', 'sels' : ["a.next.page-numbers"]},
-           'pages'  : ["https://www.eefkooktzo.nl/category/ovenschotels-stamppotjes/"]
+           'pages'  : [
+                ("Snel", "https://www.eefkooktzo.nl/tag/30-minuten-of-minder/"),
+                ("BBQ", "https://www.eefkooktzo.nl/tag/bbq/"),
+                ("Bijgerecht", "https://www.eefkooktzo.nl/tag/bijgerechten/"),
+                ("Borrelhapje", "https://www.eefkooktzo.nl/tag/voor-bij-de-borrel/"),
+                ("Pasta", "https://www.eefkooktzo.nl/category/deegwaren-brood-pizza/"),
+                ("Snel", "https://www.eefkooktzo.nl/tag/easy-peasy-friday/"),
+                ("Hartigetaart", "https://www.eefkooktzo.nl/category/hoofdgerechten/hartige-taarten-quiches/"),
+                ("Dessert", "https://www.eefkooktzo.nl/category/toetjes/ijs/"),
+                ("Kip", "https://www.eefkooktzo.nl/category/hoofdgerechten/kip-gevogelte/"),
+                ("", "https://www.eefkooktzo.nl/category/kruidenmixen/"),
+                ("Lunch", "https://www.eefkooktzo.nl/tag/lunch/"),
+                ("Ovenschotel", "https://www.eefkooktzo.nl/category/ovenschotels-stamppotjes/"),
+                ("Ontbijt", "https://www.eefkooktzo.nl/category/ontbijt/"),
+                ("Italiaans", "https://www.eefkooktzo.nl/category/pasta-italiaanse-gerechten/"),
+                ("Salades", "https://www.eefkooktzo.nl/category/salade/"),
+                ("Sauzen", "https://www.eefkooktzo.nl/category/saus-smeerseltjes-dips-dressing/"),
+                #("", "https://www.eefkooktzo.nl/tag/slowcooker/"),
+                ("Soep", "https://www.eefkooktzo.nl/category/soep/"),
+                ("Dessert", "https://www.eefkooktzo.nl/category/toetjes/"),
+                ("Tussendoor", "https://www.eefkooktzo.nl/tag/tussendoortjes/"),
+                ("Vegan", "https://www.eefkooktzo.nl/category/hoofdgerechten/vega/"),
+                ("Vis", "https://www.eefkooktzo.nl/category/hoofdgerechten/vis-schaal-schelpdieren/"),
+                ("Vlees", "https://www.eefkooktzo.nl/category/hoofdgerechten/vlees/"),
+                ("Voorgerecht", "https://www.eefkooktzo.nl/category/voorgerechten/"),
+                ("Taart", "https://www.eefkooktzo.nl/category/zoete-baksels/"),
+                ("Kerst", "https://www.eefkooktzo.nl/tag/kerst/"),
+                ("Sinterklaas", "https://www.eefkooktzo.nl/tag/sinterklaas/"),
+                ("Pasen", "https://www.eefkooktzo.nl/tag/pasen/"),
+               ]
            },
         'recipe_page' : {
            'parser' : parser_sites_recipe["eefkooktzo.nl"],
            'pages'  : [
-               "https://www.eefkooktzo.nl/visovenschotel/",
-               "https://www.eefkooktzo.nl/makkelijke-moussaka/",
-               "https://www.eefkooktzo.nl/zuurkool-ovenschotel-met-spekjes-en-appel/"
+               ("Vis", "https://www.eefkooktzo.nl/visovenschotel/"),
+               ("Ovenschotel", "https://www.eefkooktzo.nl/makkelijke-moussaka/"),
+               ("Ovenschotel", "https://www.eefkooktzo.nl/zuurkool-ovenschotel-met-spekjes-en-appel/"),
                ]
            }
         },
     "lekkerensimpel.com" : {
         'index_page' : {
             'links'    : {'type': 'links', 'sels' : ["div.category-item"], 'con' : "=con_links_lekkerensimpel(elm, elm_text)"},
-            'pages'     : ["https://www.lekkerensimpel.com/recepten/"]
+            'pages'     : [
+               "All Categories",
+                "https://www.lekkerensimpel.com/recepten/"
+                ]
             },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.hero__title"]},
            'links' : {'type': 'text-array:href', 'sels' : ["a.post-item__anchor"]},
            'next_page' : {'type': 'text:href', 'sels' : ["a.next.page-numbers"]},
-           'pages'  : ["https://www.lekkerensimpel.com/lunchrecepten/"]
+           'pages'  : [
+                ("Ontbijt", "https://www.lekkerensimpel.com/ontbijtrecepten/"),
+                ("Lunch", "https://www.lekkerensimpel.com/lunchrecepten/"),
+                ("Tussendoor", "https://www.lekkerensimpel.com/tussendoortjes/"),
+                ("Hoofdgerecht", "https://www.lekkerensimpel.com/hoofdgerechten/"),
+                ("Bijgerecht", "https://www.lekkerensimpel.com/bijgerechten/"),
+                ("Dessert", "https://www.lekkerensimpel.com/nagerechten/"),
+                ("Salades", "https://www.lekkerensimpel.com/salades/"),
+                ("Soep", "https://www.lekkerensimpel.com/hoofdgerechten/soep/"),
+                ("Bakken", "https://www.lekkerensimpel.com/bakken/"),
+                ("Dressings", "https://www.lekkerensimpel.com/salades/dressings/"),
+                ("Sauzen", "https://www.lekkerensimpel.com/sauzen/"),
+                ("Snel", "https://www.lekkerensimpel.com/snelle-recepten/"),
+                ("Tapas", "https://www.lekkerensimpel.com/tapas-recepten/"),
+                ("BBQ", "https://www.lekkerensimpel.com/barbecue-recepten/"),
+                ("High-tea", "https://www.lekkerensimpel.com/high-tea-recepten/"),
+                ("Kinderen", "https://www.lekkerensimpel.com/kinderrecepten/"),
+                ("Familie", "https://www.lekkerensimpel.com/familie-recepten/"),
+                ("Camping", "https://www.lekkerensimpel.com/campingrecepten/"),
+                ("Stampot", "https://www.lekkerensimpel.com/tag/stamppot/"),
+                ("Ovenschotel", "https://www.lekkerensimpel.com/hoofdgerechten/ovenschotels/"),
+                ("Hartigetaart", "https://www.lekkerensimpel.com/tag/hartige-taart/"),
+                ("Zoet", "https://www.lekkerensimpel.com/tag/zoet/"),
+                ("Herfst", "https://www.lekkerensimpel.com/herfst-recepten/"),
+                ("Winter", "https://www.lekkerensimpel.com/winter-recepten/"),
+                ("Lente", "https://www.lekkerensimpel.com/lente-recepten/"),
+                ("Zomer", "https://www.lekkerensimpel.com/zomer-recepten/"),
+                ("Italiaans", "https://www.lekkerensimpel.com/italiaanse-recepten/"),
+                ("Grieks", "https://www.lekkerensimpel.com/griekse-recepten/"),
+                ("Mexicaans", "https://www.lekkerensimpel.com/mexicaanse-recepten/"),
+                ("Amerikaans", "https://www.lekkerensimpel.com/amerikaanse-recepten/"),
+                ("Aziatisch", "https://www.lekkerensimpel.com/oosterse-recepten/"),
+                ("Hollands", "https://www.lekkerensimpel.com/hollandse-recepten/"),
+                ("Sinterklaas", "https://www.lekkerensimpel.com/sinterklaas-recepten/"),
+                ("Kerst", "https://www.lekkerensimpel.com/kerstrecepten/"),
+                ("Oud-en-nieuw", "https://www.lekkerensimpel.com/oud-en-nieuw/"),
+                ("Pasen", "https://www.lekkerensimpel.com/paasrecepten/"),
+                ("Oranje", "https://www.lekkerensimpel.com/oranje-recepten/"),
+                ("Kip", "https://www.lekkerensimpel.com/tag/kip/"),
+                ("Gehakt", "https://www.lekkerensimpel.com/tag/gehakt/"),
+                ("Vlees", "https://www.lekkerensimpel.com/hoofdgerechten/vlees/"),
+                ("Vis", "https://www.lekkerensimpel.com/hoofdgerechten/vis/"),
+                ("Aardappel", "https://www.lekkerensimpel.com/tag/aardappel/"),
+                ("Wraps", "https://www.lekkerensimpel.com/tag/wraps/"),
+                ("Brood", "https://www.lekkerensimpel.com/tag/brood/"),
+                ("Pasta", "https://www.lekkerensimpel.com/hoofdgerechten/pasta/"),
+                ("Rijst", "https://www.lekkerensimpel.com/hoofdgerechten/rijst/"),
+                ("Vegetarisch", "https://www.lekkerensimpel.com/hoofdgerechten/vegetarisch-recepten/"),
+                ("Vegan", "https://www.lekkerensimpel.com/vegan-recepten/"),
+                ("Koolhydraatarm", "https://www.lekkerensimpel.com/koolhydraatarme-recepten/"),
+               ]
            },
         'recipe_page' : {
             'parser'    : parser_sites_recipe["lekkerensimpel.com"],
             'pages' : [
-                "https://www.lekkerensimpel.com/mexicaans-broodje-kip/",
-                "https://www.lekkerensimpel.com/pasta-pesto-met-spinazie-en-zalm/",
+                ("Lunch", "https://www.lekkerensimpel.com/mexicaans-broodje-kip/"),
+                ("Hoofdgerecht", "https://www.lekkerensimpel.com/pasta-pesto-met-spinazie-en-zalm/"),
                 ]
             }
         },
     "leukerecepten.nl" : {
         'index_page' : {
            'links' : {'type': 'links', 'sels' : ["div.stream-card"], 'con' : "=con_links_leukerecepten(elm, elm_text)"},
-           'pages'  : ["https://www.leukerecepten.nl/recepten-index/"]
+           'pages'  : [
+               "All Categories",
+               "https://www.leukerecepten.nl/recepten-index/"
+               ]
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["h1.page__title"]},
            'links' : {'type': 'text-array:href', 'sels' : ["div.rhythm-s a.full-link"]},
            'next_page' : {'type': 'text:href', 'sels' : ["ul.pagination li:last-child a"], 'check_elm' : "check_next_page_leukerecepten(elm)"},
-           'pages'  : ["https://www.leukerecepten.nl/ovenschotels/"]
+           'pages'  : [
+                ("Smoothies", "https://www.leukerecepten.nl/smoothie-recepten/"),
+                ("Bruschettas", "https://www.leukerecepten.nl/bruschettas/"),
+                ("Stamppot", "https://www.leukerecepten.nl/stamppot-recepten/"),
+                ("Quiche", "https://www.leukerecepten.nl/quiche-recepten/"),
+                ("Pizza", "https://www.leukerecepten.nl/pizza-recepten/"),
+                ("Lasagna", "https://www.leukerecepten.nl/lasagne-recepten/"),
+                ("Dips ", "https://www.leukerecepten.nl/spreads-en-dips/"),
+                ("Sauzen", "https://www.leukerecepten.nl/sauzen/"),
+                ("Snel", "https://www.leukerecepten.nl/020-min/"),
+                ("BBQ", "https://www.leukerecepten.nl/barbecue-recepten/"),
+                ("Kinderen", "https://www.leukerecepten.nl/kinderrecepten/"),
+                ("Snacks", "https://www.leukerecepten.nl/gerechten/hapjes/"),
+                ("Ovenschotel", "https://www.leukerecepten.nl/ovenschotels/"),
+                ("Bakken", "https://www.leukerecepten.nl/gerechten/bakrecepten/"),
+                ("Salades", "https://www.leukerecepten.nl/salades/"),
+                ("Soep", "https://www.leukerecepten.nl/soep-recepten/"),
+                ("Tapas", "https://www.leukerecepten.nl/tapas-recepten/"),
+                ("Gezond", "https://www.leukerecepten.nl/gezonde-recepten/"),
+                ("Ontbijt", "https://www.leukerecepten.nl/gerechten/ontbijt/"),
+                ("Tussendoor", "https://www.leukerecepten.nl/gerechten/tussendoortjes/"),
+                ("Voorgerecht", "https://www.leukerecepten.nl/gerechten/voorgerechten/"),
+                ("Hoofdgerecht", "https://www.leukerecepten.nl/gerechten/hoofdgerechten/"),
+                ("Bijgerecht", "https://www.leukerecepten.nl/gerechten/bijgerechten/"),
+                ("Dessert", "https://www.leukerecepten.nl/gerechten/nagerechten/"),
+                ("Lunch", "https://www.leukerecepten.nl/gerechten/lunch/"),
+                ("Oud-en-nieuw", "https://www.leukerecepten.nl/oud-en-nieuw-recepten/"),
+                ("Valentijn", "https://www.leukerecepten.nl/valentijnsrecepten/"),
+                ("Sinterklaas", "https://www.leukerecepten.nl/sinterklaas-recepten/"),
+                ("Gourmet", "https://www.leukerecepten.nl/gourmet-recepten/"),
+                ("Oranje", "https://www.leukerecepten.nl/oranje-recepten/"),
+                ("High-tea", "https://www.leukerecepten.nl/high-tea-recepten/"),
+                ("Kerst", "https://www.leukerecepten.nl/kerstrecepten/"),
+                ("Pasen", "https://www.leukerecepten.nl/paasrecepten/"),
+                ("Koolhydraatarm", "https://www.leukerecepten.nl/dieet/koolhydraatarme-recepten/"),
+                ("Glutenvrij", "https://www.leukerecepten.nl/dieet/glutenvrije-recepten/"),
+                ("Vegetarisch", "https://www.leukerecepten.nl/vegetarische-recepten/"),
+                ("Vegan", "https://www.leukerecepten.nl/vegan-recepten/"),
+                ("Lente", "https://www.leukerecepten.nl/lente-recepten/"),
+                ("Zomer", "https://www.leukerecepten.nl/zomer-recepten/"),
+                ("Herfst", "https://www.leukerecepten.nl/herfstrecepten/"),
+                ("Winter", "https://www.leukerecepten.nl/winter-recepten/"),
+                ("Taart", "https://www.leukerecepten.nl/taart-recepten/"),
+                ("Cake", "https://www.leukerecepten.nl/cake-recepten/"),
+                ("Muffin", "https://www.leukerecepten.nl/muffin-recepten/"),
+                ("Koekjes", "https://www.leukerecepten.nl/koekjes-recepten/"),
+                ("Cheesecake", "https://www.leukerecepten.nl/cheesecake-recepten/"),
+                ("Wafel", "https://www.leukerecepten.nl/wafel-recepten/"),
+                ("Vlees", "https://www.leukerecepten.nl/vlees-vis/gehakt/"),
+                ("Groente", "https://www.leukerecepten.nl/groenten-fruit/paprika/"),
+                ("Aardappelen", "https://www.leukerecepten.nl/diverse/aardappelen/"),
+                ("Vis", "https://www.leukerecepten.nl/vlees-vis/zalm/"),
+                ("Rijst", "https://www.leukerecepten.nl/diverse/rijst/"),
+                ("Bladerdeeg", "https://www.leukerecepten.nl/diverse/bladerdeeg/"),
+                ("Aardappelen", "https://www.leukerecepten.nl/zoete-aardappel-recepten/"),
+                ("Wraps", "https://www.leukerecepten.nl/diverse/wraps/"),
+                ("Kip", "https://www.leukerecepten.nl/kip-recepten/"),
+                ("Pasta", "https://www.leukerecepten.nl/pasta-recepten/"),
+               ]
            },
         'recipe_page' : {
             'parser'    : parser_sites_recipe["leukerecepten.nl"],
-            'pages' : ["https://www.leukerecepten.nl/recepten/lasagne-paprika/"]
+            'pages' : [
+                ("Hoofdgerecht", "https://www.leukerecepten.nl/recepten/lasagne-paprika/"),
+                ]
             }
         },
     "24kitchen.nl" : {
@@ -650,22 +939,69 @@ parser_sites = {
            'links' : {'type': 'links',
                       'sels' : ["select[name='soort_gerecht'] option, select[name='menugang'] option, select[name='keuken'] option"],
                       'con' : "=con_links_24kitchen(elm, elm_text)"},
-           'pages'  : ["https://www.24kitchen.nl/recepten"]
+           'pages'  : [
+               "All Categories",
+               "https://www.24kitchen.nl/recepten"
+               ]
            },
         'categorie_page' : {
            'taxonomy' : {'type': 'text', 'sels' : ["div.search-filter-select.active"]},
            'links' : {'type': 'text-array:href', 'sels' : ["div.search-content a.full-click-link"]},
            'next_page' : {'scroll' : True},
            'pages'  : [
-               "https://www.24kitchen.nl/recepten/zoeken/soort_gerecht/ovenschotel-101",
+                ("Pasta", "https://www.24kitchen.nl/recepten/pasta-100"),
+                ("Ovenschotel", "https://www.24kitchen.nl/recepten/ovenschotel-101"),
+                ("Rijst", "https://www.24kitchen.nl/recepten/rijst-102"),
+                ("Aardappelen", "https://www.24kitchen.nl/recepten/aardappel-103"),
+                ("Groente", "https://www.24kitchen.nl/recepten/groenten-104"),
+                ("Eieren", "https://www.24kitchen.nl/recepten/eigerechten-105"),
+                ("Koekjes", "https://www.24kitchen.nl/recepten/koekjes-28"),
+                ("Salades", "https://www.24kitchen.nl/recepten/salades-27"),
+                ("Sauzen", "https://www.24kitchen.nl/recepten/sauzen-32"),
+                ("Soepen", "https://www.24kitchen.nl/recepten/soep-26"),
+                ("Taart", "https://www.24kitchen.nl/recepten/taarten-cakes-29"),
+                ("Brood", "https://www.24kitchen.nl/recepten/brood-36"),
+                ("Snacks", "https://www.24kitchen.nl/recepten/zoete-snacks-35"),
+                ("Snacks", "https://www.24kitchen.nl/recepten/hartige-snacks-30"),
+                ("Bijgerecht", "https://www.24kitchen.nl/recepten/bijgerecht-93"),
+                ("Hoofdgerecht", "https://www.24kitchen.nl/recepten/hoofdgerecht-21"),
+                ("Voorgerecht", "https://www.24kitchen.nl/recepten/voorgerecht-20"),
+                ("Dessert", "https://www.24kitchen.nl/recepten/nagerecht-24"),
+                ("Lunch", "https://www.24kitchen.nl/recepten/lunchgerecht-23"),
+                ("Ontbijt", "https://www.24kitchen.nl/recepten/ontbijtgerecht-25"),
+                ("Snacks", "https://www.24kitchen.nl/recepten/snack-99"),
+                ("Arabisch", "https://www.24kitchen.nl/recepten/arabisch-5"),
+                ("Australisch", "https://www.24kitchen.nl/recepten/australisch-19"),
+                ("Aziatisch", "https://www.24kitchen.nl/recepten/aziatisch-4"),
+                ("Belgisch", "https://www.24kitchen.nl/recepten/belgisch-19347"),
+                ("Frans", "https://www.24kitchen.nl/recepten/frans-12"),
+                ("Indisch", "https://www.24kitchen.nl/recepten/indisch-17"),
+                ("Italiaans", "https://www.24kitchen.nl/recepten/italiaans-8"),
+                ("Nederlands", "https://www.24kitchen.nl/recepten/nederlands-7"),
+                ("Amerikaans", "https://www.24kitchen.nl/recepten/noord-amerikaans-10"),
+                ("Oost-Europees", "https://www.24kitchen.nl/recepten/oost-europees-11"),
+                ("Scandinavisch", "https://www.24kitchen.nl/recepten/scandinavisch-18"),
+                ("Spaans", "https://www.24kitchen.nl/recepten/spaans-13"),
+                ("Engels", "https://www.24kitchen.nl/recepten/verenigd-koninkrijk-15"),
+                ("Zuid-Afrikaans", "https://www.24kitchen.nl/recepten/zuid-afrikaans-16"),
+                ("Zuid-Amerikaans", "https://www.24kitchen.nl/recepten/zuid-amerikaans-14"),
+                ("Mediterraans", "https://www.24kitchen.nl/recepten/mediterraans-106"),
+                ("Ontbijt", "https://eatertainment.nl/category/recepten/ontbijt/"),
+                ("Lunch", "https://eatertainment.nl/category/recepten/lunch-brunch/"),
+                ("Voorgerecht", "https://eatertainment.nl/category/recepten/voorgerecht/"),
+                ("Hoofdgerecht", "https://eatertainment.nl/category/recepten/hoofdgerechten/"),
+                ("Dessert", "https://eatertainment.nl/category/recepten/desserts/"),
+                ("Tussendoor", "https://eatertainment.nl/category/recepten/tussendoortjes/"),
+                ("Borrelhapje", "https://eatertainment.nl/category/recepten/borrel/"),
+                ("Thema", "https://eatertainment.nl/category/thema/"),
                ]
            },
         'recipe_page' : {
             'parser' : parser_sites_recipe["24kitchen.nl"],
             'pages'  : [
-                "https://www.24kitchen.nl/recepten/kastanjesoep-met-salieroom-en-crouton-sterren",
-                "https://www.24kitchen.nl/recepten/wortelovenschotel",
-                "https://www.24kitchen.nl/recepten/gevulde-pasta-met-pesto-en-spinazie",
+                ("Soep", "https://www.24kitchen.nl/recepten/kastanjesoep-met-salieroom-en-crouton-sterren"),
+                ("Ovenschotel", "https://www.24kitchen.nl/recepten/wortelovenschotel"),
+                ("Hoofdgerecht", "https://www.24kitchen.nl/recepten/gevulde-pasta-met-pesto-en-spinazie"),
                 ]
             },
         },
@@ -978,10 +1314,12 @@ def recipe_scrape(request):
     global wd
 
     page_type = request.GET['page_type']
+    sub = request.GET['sub']
     page = request.GET['page']
-    mode = request.GET['mode']
 
-    logger.info(f"Scrape request for '{page_type}', '{page}'")
+    logger.info(f"Scrape request for '{page_type}', '{sub}', '{page}'")
+    cat_pages = []
+    sub_pages = []
     recipe_scrape_results = []
 
     site = urllib.parse.urlparse(page).netloc.split(':')[0]
@@ -992,51 +1330,57 @@ def recipe_scrape(request):
     webdriver_start()
 
     if page_type == 'index_page':
-        categorie_links = scrape_links(page, parser_site['index_page'])[1]
-        page_type = 'categorie_page'
-    else:
-        categorie_links = [{'anchor' : '', 'href' : page}]
-
-    if mode == 'taxanomy':
-        for categorie_link in categorie_links:
-            recipe_scrape_results.append(('#', categorie_link['anchor'], categorie_link['href'], []))
-        dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'scrape')
-        filename_full = os.path.join(dirname, domain + '.json')
-        with open(filename_full, 'w') as fp:
-            json.dump(recipe_scrape_results, fp, indent=4, separators= (',', ': '))
-
-    if mode == 'scrape':
-        if page_type == 'categorie_page':
-            taxonomy_links = []
-            for categorie_link in categorie_links:
-                categorie_page = categorie_link['href']
-                logger.info(f"Scrape categorie page '{categorie_page}'")
-                taxonomy_links.append(scrape_links(categorie_page, parser_site['categorie_page']))
-            page_type = 'recipe_page'
+        if page:
+            cat_links = scrape_links(page, parser_site['index_page'])[1]
+            for cat_link in cat_links:
+                recipe_scrape_results.append(('#', cat_link['anchor'], cat_link['href'], []))
+            dirname = os.path.join(BASE_DIR, 'data', 'dhk', 'scrape')
+            filename_full = os.path.join(dirname, domain + '.csv')
+            with open(filename_full, 'w') as fp:
+                #json.dump(recipe_scrape_results, fp, indent=4, separators= (',', ': '))
+                fp.write("Site\tCategorie\tLink\n")
+                for recipe_scrape_result in recipe_scrape_results:
+                    fp.write("{0}\t{1}\t{2}\n".format(domain, recipe_scrape_result[1], recipe_scrape_result[2]))
         else:
-            taxonomy_links = [(None, [page])]
+            page_type = 'categorie_page'
+            cat_pages = parser_site['categorie_page']['pages']
+    else:
+        if page_type == 'categorie_page':
+            cat_pages = [(sub, page)]
 
-        for taxonomy_link in taxonomy_links:
-            taxonomy = taxonomy_link[0]
-            recipe_links = taxonomy_link[1]
-            for recipe_page in recipe_links:
-                logger.info(f"Scrape recipe page '{recipe_page}'")
-                webdriver_get(recipe_page)
-                root_elm = wd.find_element_by_tag_name('html')
-                recipe_new, errors = scrape_recipe(root_elm, parser_site['recipe_page']['parser'])
-                if len(errors) == 0:
-                    id = slugify(recipe_page)
-                    recipe_new['id'] = recipe_page
-                    if taxonomy and taxonomy not in recipe_new['categories']:
-                        recipe_new['categories'].append(taxonomy)
-                    recipe_obj = recipe.Recipe(id, recipe=recipe_new)
-                    recipe_obj.screen()
-                    resp = recipe_obj.put()
-                    if not resp.ok:
-                        errors.append({'ES put failed' : resp.text})
-                else:
-                    id = '#'
-                recipe_scrape_results.append((id, recipe_new['title'], recipe_page, errors))
+    if page_type == 'categorie_page':
+        sub_pages = []
+        for cat_page in cat_pages:
+            categorie_page = cat_page[1]
+            logger.info(f"Scrape categorie page '{categorie_page}'")
+            sub_links = scrape_links(categorie_page, parser_site['categorie_page'])[1]
+            for sub_link in sub_links:
+                sub_pages.append((sub, sub_link))
+        page_type = 'recipe_page'
+    else:
+        if page_type == 'recipe_page':
+            sub_pages = [(sub, page)]
+
+    for sub_page in sub_pages:
+        sub = sub_page[0]
+        recipe_page = sub_page[1]
+        logger.info(f"Scrape recipe page '{recipe_page}'")
+        webdriver_get(recipe_page)
+        root_elm = wd.find_element_by_tag_name('html')
+        recipe_new, errors = scrape_recipe(root_elm, parser_site['recipe_page']['parser'])
+        if len(errors) == 0:
+            id = slugify(recipe_page)
+            recipe_new['id'] = recipe_page
+            if sub and sub not in recipe_new['categories']:
+                recipe_new['categories'].append(sub)
+            recipe_obj = recipe.Recipe(id, recipe=recipe_new)
+            recipe_obj.screen()
+            resp = recipe_obj.put()
+            if not resp.ok:
+                errors.append({'ES put failed' : resp.text})
+        else:
+            id = '#'
+        recipe_scrape_results.append((id, recipe_new['title'], recipe_page, errors))
 
     # leave the driver running
     # webdriver_stop()
