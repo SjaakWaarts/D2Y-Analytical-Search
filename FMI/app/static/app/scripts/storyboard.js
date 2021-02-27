@@ -143,7 +143,7 @@ function fill_tiles(facets_data, tiles_select, tiles_d) {
     selectList.appendChild(option);
     for (var facet_field in facets_data) {
         var facet_data = facets_data[facet_field];
-        if (!facet_data.facet_data) {
+        if (!facet_data.tile_facet) {
             continue;
         }
         var optgroup = document.createElement("optgroup");
@@ -172,12 +172,12 @@ function fill_tiles(facets_data, tiles_select, tiles_d) {
     selectList.appendChild(option);
     for (var facet_field in facets_data) {
         var facet_data = facets_data[facet_field];
-        if (!facet_data.facet_data) {
+        if (!facet_data.tile_facet) {
             continue;
         }
         var option = document.createElement("option");
         option.setAttribute('value', facet_field);
-        if (facet_data['selected'] == true) {
+        if (facet_data['tile_facet_selected'] == true) {
             option.setAttribute('selected', true);
         }
         option.text = facet_data['label'];

@@ -198,10 +198,10 @@ def bind_aggr_result(seekerview, chart, base_dt, benchmark=None):
             for cat, row in base_dt.iterrows():
                 sorted_row = row[1:].sort_values(ascending=False)
                 ser = base_dt.columns[0]
-                dt.ix[cat, ser] = cat
+                dt.loc[cat, ser] = cat
                 for top_ix in range(result_param):
                     ser = 'Top {0}'.format(top_ix+1)
-                    dt.ix[cat, ser] = sorted_row.index[top_ix]
+                    dt.loc[cat, ser] = sorted_row.index[top_ix]
 
         if result_task == 'q-mean':
             if result_param in base_dt.columns:
@@ -637,7 +637,7 @@ def bind_aggr(seekerview, chart, agg_name, aggregations, benchmark=None):
     else:
         if 'a-mean' in Y_total_calc:
             for cat in dt_index:
-                a_mean = dt.ix[cat][series].mean();
+                a_mean = dt.loc[cat][series].mean();
                 dt.loc[cat, 'Mean'] = a_mean
             if Y_total_calc['a-mean'][0] == '*':
                 dt.drop(series, axis=1, inplace=True)
@@ -647,7 +647,7 @@ def bind_aggr(seekerview, chart, agg_name, aggregations, benchmark=None):
                 dt['q-Mean'] = pd.Series([q_mean for c in dt.index], index=dt.index)
         if 'a-wmean' in Y_total_calc:
             #for cat in dt_index:
-            #    a_mean = dt.ix[cat][series].mean();
+            #    a_mean = dt.loc[cat][series].mean();
             #    dt.loc[cat, 'Mean'] = a_mean
             if Y_total_calc['a-wmean'][0] == '*':
                 dt.drop(series, axis=1, inplace=True)
@@ -761,8 +761,8 @@ def bind_topline_aggr(seekerview, chart, aggr_name, aggregations, benchmark=None
 
     if len(benchmark) == 0:
         for hed in dt.index:
-            sum = dt.ix[hed][1:].sum()
-            avg = sum / (len(dt.ix[hed]) - 2)
+            sum = dt.loc[hed][1:].sum()
+            avg = sum / (len(dt.loc[hed]) - 2)
             dt.loc[hed, 'Average'] = avg
     if ('q-mean' in X_facet):
         if hit_count == 0:
@@ -788,7 +788,7 @@ def bind_topline_aggr(seekerview, chart, aggr_name, aggregations, benchmark=None
         if 'setProperty' in chart['formatter']:
             winlose = []
             for rownr in range(0, len(dt)):
-                line = dt.ix[rownr]
+                line = dt.iloc[rownr]
                 avg = line[1]
                 var = 0
                 for colnr in range(2, len(line)):
@@ -1070,9 +1070,9 @@ def bind_topline(seekerview, chart, hits, benchmark=None):
         Y_total = Y_total + Y_nested
         hit_count = hit_count + 1
 
-    for ix in topline_df.index:
-        series = [ix]
-        series.extend(topline_df.ix[ix].tolist())
+    for loc in topline_df.index:
+        series = [loc]
+        series.extend(topline_df.loc[loc].tolist())
         chart_data.append(series)
 
     if len(chart_data) > 0:

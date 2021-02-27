@@ -135,6 +135,7 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip(); 
 });
 
+Vue.component('treeselect', VueTreeselect.Treeselect)
 
 var app = new Vue({
     el: '#root',
@@ -149,6 +150,24 @@ var app = new Vue({
         hits: [],
         aggs: [],
         storyboard_redraw: true,
+        m_treeselect_value: null,
+        treeselect_options: [{
+            id: 'a',
+            label: 'a',
+            children: [{
+                id: 'aa',
+                label: 'aa',
+            }, {
+                id: 'ab',
+                label: 'ab',
+            }],
+        }, {
+            id: 'b',
+            label: 'b',
+        }, {
+            id: 'c',
+            label: 'c',
+        }],
     },
     methods: {
         accordion_collapse: function (hide) {
@@ -181,6 +200,21 @@ var app = new Vue({
                 accordion_arrow_elm.classList.add('accordion_arrow--open');
                 accordion_item_content_elm.style.display = "block";
             }
+        },
+        facet_terms_input_change(value, instanceId) {
+            // [Vue tip]: Prop "instanceid" is passed to component <Anonymous>, but the declared prop name is "instanceId".
+            // Note that HTML attributes are case-insensitive and camelCased props need to use their kebab-case equivalents when using in-DOM templates.
+            // You should probably use "instance-id" instead of "instanceId".
+            var id = instanceId.substring(0, instanceId.length - 5);
+            id = id + '_select';
+            var select_elm = document.getElementById(id);
+            Array.from(select_elm.options).forEach(function (option_elm) {
+                if (value.includes(option_elm.value)) {
+                    option_elm.selected = true;
+                } else {
+                    option_elm.selected = false;
+                }
+            })
         },
         search_filter() {
             // load the hidden input "tab" with the current active tabpage
@@ -231,7 +265,7 @@ var app = new Vue({
                 }
                 this.storyboard_redraw = false;
             }
-        }
+        },
     },
     computed: {
         isopen : function () {
@@ -240,11 +274,19 @@ var app = new Vue({
             return opn;
         }
     },
-    mounted: function () {
+    beforeMount: function () {
         for (var field in g_facets_data) {
             var facet_data = g_facets_data[field];
             this.workbook.facets[field] = facet_data;
+            this.workbook.facets[field].options = [];
+            for (var ix = 0; ix < facet_data.values.length; ix++) {
+                var option = facet_data.values[ix];
+                var node = { id: option, label: option };
+                this.workbook.facets[field].options.push(node);
+            }
         }
+    },
+    mounted: function () {
     },
 
 });

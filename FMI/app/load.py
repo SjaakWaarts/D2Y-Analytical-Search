@@ -257,7 +257,7 @@ def load_excel(excel_filename, excelmap_filename, excel_choices, index_doc_name)
     data_df = pd.read_excel(excel_file, sheet_name="data", header=header_row, index_col=None, converters=converters)
     # bug in pandas, first column is stored as index. Copy it back into the dataframe
     if header_defined:
-        column_header = (mapping_df.ix[0]['header'], mapping_df.ix[0]['column'])
+        column_header = (mapping_df.iloc[0]['header'], mapping_df.iloc[0]['column'])
         if column_header not in data_df.columns:
             data_df[column_header] = data_df.index
     data_df.fillna("", inplace=True)

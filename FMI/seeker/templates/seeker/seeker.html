@@ -3,6 +3,7 @@
 {% block css %}
     {% load static %}
 	    <link rel="stylesheet" type="text/css" href="{% static 'assets/font-awesome/css/font-awesome.min.css'%}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.min.css">
 {% endblock %}
 
 
@@ -30,9 +31,10 @@
 {% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.umd.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
     var g_facets_data = {{ facets_data|safe }}

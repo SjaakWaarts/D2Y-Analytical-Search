@@ -1,7 +1,18 @@
 {% load seeker %}
 
-<select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select">
-    {% for b in data.buckets %}
-        <option value="{{ b.key }}" data-data='{"key": "{{ b.key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if b.key in selected %} selected="selected"{% endif %}>{{ b.key }} ({{ b.doc_count }})</option>
-    {% endfor %}
-</select>
+<div>
+    <select name="{{ facet.field }}" class="form-control facet-select" multiple="multiple" id="{{ facet.name }}_select" hidden>
+        {% for b in data.buckets %}
+            <option value="{{ b.key }}" data-data='{"key": "{{ b.key|escapejs }}", "doc_count": {{ b.doc_count }}}'{% if b.key in selected %} selected="selected"{% endif %}>{{ b.key }} ({{ b.doc_count }})</option>
+        {% endfor %}
+    </select>
+</div>
+<div>
+    <treeselect instance-id="{{facet.name}}_tree" class="mr-1" :multiple="true"
+                v-bind:options="workbook.facets['{{facet.field}}'].options"
+                v-bind:value="workbook.facets['{{facet.field}}'].selected"
+                v-on:input="facet_terms_input_change"
+                placeholder="Selecteer {{ facet.label|capfirst }}..." />
+</div>
+
+

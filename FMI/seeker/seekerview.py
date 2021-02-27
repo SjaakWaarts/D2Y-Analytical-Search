@@ -480,22 +480,23 @@ class SeekerView (View):
                 f.rangemin = float(range_slider)
         return facets
 
-    def get_facets_data(self, results, tiles_select, benchmark):
+    def get_facets_data(self, facets, results, tiles_select, benchmark):
         aggregations = results.get('aggregations', {})
         facets_data = OrderedDict()
-        for f in self.get_facets():
-            selected = False
-            facet_data = False
+        for f, selected in facets.items():
+            tile_facet_selected = False
+            tile_facet = False
             keys = []
             if f.label in tiles_select:
-                selected = True
+                tile_facet_selected = True
             if type(f) == seeker.facets.TermsFacet and f.visible_pos > 0 and f.field in aggregations and f.field in self.tiles:
-                facet_data = True
+                tile_facet = True
             if f.field in aggregations:
                 keys = [key for key in f.buckets(aggregations[f.field])]
-            facets_data[f.field] = {'label': f.label, 'facet_data' : facet_data,
+            facets_data[f.field] = {'label': f.label, 'tile_facet' : tile_facet,
                                     'visible_pos' : f.visible_pos, 'accordion_open' : f.accordion_open,
-                                    'selected': selected, 'benchmark': benchmark, 'values': keys}
+                                    'tile_facet_selected': tile_facet_selected, 'benchmark': benchmark,
+                                    'values': keys, 'selected' : selected}
         return facets_data
 
     def get_facet_tile(self):
@@ -1053,7 +1054,6 @@ class SeekerView (View):
         tiles_d = {chart_name : {} for chart_name in self.dashboard.keys()}
         seeker.dashboard.bind_tile(self, tiles_select, tiles_d, None, results, benchmark)
         seeker.dashboard.bind_minicharts(self, tiles_d, results, benchmark)
-        seeker.models.stats_df = pd.DataFrame()
 
         facets_tile = self.get_facet_tile()
         if len(facets_tile) > 0:
@@ -1087,11 +1087,10 @@ class SeekerView (View):
 
         context_querystring = self.normalized_querystring()
         sort = sorts[0] if sorts else ''
-        facets_data = self.get_facets_data(results, tiles_select, benchmark)
+        facets_data = self.get_facets_data(facets, results, tiles_select, benchmark)
 
         context = {
             'site' : self.site,
-            'document': self.document,
             'keywords_q': keywords_q,
             'columns': columns,
             'optional_columns': [c for c in columns if c.field not in self.required_display_fields],
@@ -1099,13 +1098,10 @@ class SeekerView (View):
             'summary_list': self.summary_list,
             'facets': facets,
             'facets_keyword': facets_keyword,
-            'selected_facets': self.request.GET.getlist('f') or self.initial_facets.keys(),
-            'form_action': self.request.path,
             'results': results,
             'facets_data': json.dumps(facets_data),
             'tiles_select': json.dumps(tiles_select),
             'tiles_d': json.dumps(tiles_d),
-            #'stats_df' : seeker.models.stats_df.to_json(orient='records'),
             'storyboard' : json.dumps(self.storyboard),
             'dashboard_name' : dashboard['name'],
             'dashboard': json.dumps(self.dashboard),
@@ -1142,7 +1138,6 @@ class SeekerView (View):
                 'minicharts' : json.dumps(self.minicharts),
                 'tiles_select': json.dumps(tiles_select),
                 'tiles_d': json.dumps(tiles_d),
-                #'stats_df' : seeker.models.stats_df.to_json(orient='records'),
             })
         else:
             return render(self.request, self.template_name, context)

@@ -305,7 +305,6 @@
     <Content Include="seeker\templates\seeker\header.html" />
     <Content Include="seeker\templates\seeker\pager.html" />
     <Content Include="seeker\templates\seeker\results.html" />
-    <Content Include="seeker\templates\seeker\save.html" />
     <Content Include="seeker\templates\seeker\score.html" />
     <Content Include="seeker\templates\seeker\seeker.html" />
     <Content Include="seeker\__pycache__\apps.cpython-35.pyc" />
