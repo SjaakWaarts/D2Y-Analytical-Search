@@ -55,7 +55,7 @@
                             <li name="{{facet.field}}-accordion-item" class="accordion-item">
                                 <div class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
                                     <div class="accordion_arrow accordion_arrow--open" ></div>
-                                    <div data-toggle="tooltip" title="(Multi-)Select or Deselect, next hit Search">
+                                    <div data-toggle="tooltip" title="Hit Search voor selectie">
                                         {{ facet.label|capfirst }}
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                             <li name="{{facet_keyword.field}}-accordion-item" class="accordion-item">
                                 <div class="accordion-item-header" v-on:click="accordion_arrow_toggle(event)">
                                     <div class="accordion_arrow accordion_arrow--open" ></div>
-                                    <div data-toggle="tooltip" title="Zoekterm(en), next hit Search">
+                                    <div data-toggle="tooltip" title="Voer uw eigen filters in, next hit Search">
                                         {{ facet_keyword.label|capfirst }}
                                     </div>
                                 </div>

@@ -96,6 +96,11 @@ def check_next_page_leukerecepten(elm):
         valid = False
     return valid
 
+def con_title_culy(elm, elm_text):
+    if elm_text.startswith("Culy Homemade: "):
+        elm_text = elm_text[len("Culy Homemade: "):]
+    return elm_text
+
 def con_categories_culy(elm, elm_text):
     try:
         elm_text = elm.get_attribute('content')
@@ -276,7 +281,7 @@ taxonomy = {
 parser_sites_recipe = {
 "culy.nl" : {
     'id'            : {'type': 'text', 'con' : ""},
-    'title'         : {'type': 'text', 'sels' : ["h1.article__title"]},
+    'title'         : {'type': 'text', 'sels' : ["h1.article__title"], 'con' : "=con_title_culy(elm, elm_text)"},
     'published_date': {'type': 'date', 'sels' : ["meta[property='article:published_time']"]},
     'author'        : {'type': 'text', 'con' : "culy.nl"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[property='og:description']", "h1.article__title"]},
@@ -310,7 +315,7 @@ parser_sites_recipe = {
         'type'       : 'nested',
         'sels'       : ["main article:first-child"],
         'properties' : {
-            'title'        : {'type': 'text', 'sels' : ["h1.article__title"]},
+            'title'        : {'type': 'text', 'sels' : ["h1.article__title"], 'con' : "=con_title_culy(elm, elm_text)"},
             'ingredients_parts'   : {
                 'type'          : 'nested',
                 'sels'       : ["div.ingredients ul", "div.wprm-recipe-ingredients"],
@@ -344,9 +349,9 @@ parser_sites_recipe = {
     'author'        : {'type': 'text', 'con' : "eatertainment.nl"},
     'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']", "meta[property='og:description']"]},
     'description'   : {'type': 'text', 'sels' : []},
-    'categories'    : {'type': 'text-array', 'sels' : ["main span.meta-info-el.meta-info-cat"]},
+    'categories'    : {'type': 'text-array', 'sels' : ["main span.meta-info-el.meta-info-cat"], 'cardinality' : '0-1'},
     'cuisiness'     : {'type': 'text-array', 'sels' : []},
-    'tags'          : {'type': 'text-array', 'sels' : ["main span.meta-info-el.meta-info-tag a"]},
+    'tags'          : {'type': 'text-array', 'sels' : ["main span.meta-info-el.meta-info-tag a", "div.tags a"]},
     'images'        : {
         'type'       : 'nested',
         'sels'       : ["meta[property='og:image']"],
@@ -374,6 +379,69 @@ parser_sites_recipe = {
         'sels'       : ["/html"],
         'properties' : {
             'title'        : {'type': 'text', 'sels' : ["h1.entry-title"]},
+            'ingredients_parts'   : {
+                'type'          : 'nested',
+                'sels'       : ["main article:first-child div.entry-content > div.cooked-recipe-ingredients"],
+                'properties'    : {
+                    'part'          : {'type': 'integer', 'sels' : ["."], 'con' : "=0"},
+                    'ingredients'   : {
+                        'type'      : 'nested',
+                        'sels' : ["div.cooked-ingredient"],
+                        'properties' : {
+                            'ingredient' : {'type': 'text', 'sels' : ["."]},
+                            'value': {'type' : 'text', 'sels' : ["span.cooked-ing-amount"], 'cardinality' : '0-1'},
+                            'measure': {'type' : 'text', 'sels' : ["span.cooked-ing-measurement"], 'cardinality' : '0-1'}
+                            }
+                        }
+                    }
+                },
+            'instructions'  : {
+                'type'       : 'nested',
+                'sels'       : ["main article:first-child div.entry-content > div.cooked-recipe-directions div.cooked-dir-content"],
+                'properties' : {
+                    'instruction' : {'type': 'text', 'sels' : ["."]}
+                    }
+                }
+            }
+        }
+    },
+"fit.nl" : {
+    'id'            : {'type': 'text', 'con' : ""},
+    'title'         : {'type': 'text', 'sels' : ["div.post-details h1.entry-title"]},
+    'published_date': {'type': 'date', 'sels' : ["meta[itemprop='datePublished']"]},
+    'author'        : {'type': 'text', 'con' : "fit.nl"},
+    'excerpt'       : {'type': 'text', 'sels' : ["meta[name='description']"]},
+    'description'   : {'type': 'text', 'sels' : []},
+    'categories'    : {'type': 'text-array', 'sels' : ["div.recipe-details ul.portie div.textrecipe"]},
+    'cuisiness'     : {'type': 'text-array', 'sels' : []},
+    'tags'          : {'type': 'text-array', 'sels' : []},
+    'images'        : {
+        'type'       : 'nested',
+        'sels'       : ["div.featured_img img']"],
+        'properties' : {
+            'image'     : {'type': 'text', 'con' : "image"},
+            'location'  : {'type': 'text', 'sels' : ["."]},
+            },
+        },
+    'cooking_clubs' : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'reviews'       : {
+        'type'       : 'nested',
+        'properties' : {
+            'review'    : None,
+            }
+        },
+    'nutrition'     : None,
+    'cooking_times' : None,
+    'courses'       : {
+        'type'       : 'nested',
+        'sels'       : ["/html"],
+        'properties' : {
+            'title'        : {'type': 'text', 'sels' : ["div.post-details h1.entry-title"]},
             'ingredients_parts'   : {
                 'type'          : 'nested',
                 'sels'       : ["main article:first-child div.entry-content > div.cooked-recipe-ingredients"],
@@ -566,12 +634,12 @@ parser_sites_recipe = {
             'title'        : {'type': 'text', 'sels' : [".page-content__title"]},
             'ingredients_parts'   : {
                 'type'          : 'nested',
-                'sels'       : ["ul.page-content__ingredients-list"],
+                'sels'       : ["ul.page-content__ingredients-list", "//div[.='Ingredienten']/following-sibling::div[following::div[.='Bereiding']]"],
                 'properties'    : {
                     'part'          : {'type': 'integer', 'sels' : ["."], 'con' : "=0"},
                     'ingredients'   : {
                         'type'      : 'nested',
-                        'sels' : ["label"],
+                        'sels' : ["label", "."],
                         'properties' : {
                             'ingredient' : {'type': 'text', 'sels' : ["."]},
                             'value': None,
@@ -582,7 +650,7 @@ parser_sites_recipe = {
                 },
             'instructions'  : {
                 'type'       : 'nested',
-                'sels'       : ["div.page-content__recipe div.step", "div.page-content__recipe p:nth-child(n+2)"],
+                'sels'       : ["div.page-content__recipe div.step", "div.page-content__recipe p:nth-child(n+2)", "//div[.='Bereiding']/following-sibling::div"],
                 'properties' : {
                     'instruction' : {'type': 'text', 'sels' : ["."], 'cardinality' : '0-1'}
                     }
@@ -727,7 +795,8 @@ parser_sites = {
            'parser' : parser_sites_recipe["eatertainment.nl"],
            'pages'  : [
                ("Hoofdgerecht", "https://eatertainment.nl/garnalen-loempias-uit-de-oven/"),
-               ("Hoofdgerecht", "https://eatertainment.nl/romige-kerriesoep-met-kalkoen-en-appel/")
+               ("Hoofdgerecht", "https://eatertainment.nl/romige-kerriesoep-met-kalkoen-en-appel/"),
+               ("Ontbijt", "https://eatertainment.nl/ontbijtbowl-met-vers-fruit/")
                ]
            }
         },
@@ -931,6 +1000,8 @@ parser_sites = {
             'parser'    : parser_sites_recipe["leukerecepten.nl"],
             'pages' : [
                 ("Hoofdgerecht", "https://www.leukerecepten.nl/recepten/lasagne-paprika/"),
+                ("Voorgerecht", "https://www.leukerecepten.nl/recepten/bruschetta-met-geroosterde-tomaat/"),
+                ("Voorgerecht", "https://www.leukerecepten.nl/recepten/dakos/")
                 ]
             }
         },
@@ -986,14 +1057,6 @@ parser_sites = {
                 ("Zuid-Afrikaans", "https://www.24kitchen.nl/recepten/zuid-afrikaans-16"),
                 ("Zuid-Amerikaans", "https://www.24kitchen.nl/recepten/zuid-amerikaans-14"),
                 ("Mediterraans", "https://www.24kitchen.nl/recepten/mediterraans-106"),
-                ("Ontbijt", "https://eatertainment.nl/category/recepten/ontbijt/"),
-                ("Lunch", "https://eatertainment.nl/category/recepten/lunch-brunch/"),
-                ("Voorgerecht", "https://eatertainment.nl/category/recepten/voorgerecht/"),
-                ("Hoofdgerecht", "https://eatertainment.nl/category/recepten/hoofdgerechten/"),
-                ("Dessert", "https://eatertainment.nl/category/recepten/desserts/"),
-                ("Tussendoor", "https://eatertainment.nl/category/recepten/tussendoortjes/"),
-                ("Borrelhapje", "https://eatertainment.nl/category/recepten/borrel/"),
-                ("Thema", "https://eatertainment.nl/category/thema/"),
                ]
            },
         'recipe_page' : {
@@ -1223,7 +1286,7 @@ def scrape_values(elm, field_parser, field_value):
         elm_text = elm.get_attribute('textContent').strip()
     if elm.tag_name == 'meta':
         elm_text = elm.get_attribute('content')
-    elif elm.tag_name == 'a':
+    elif elm.tag_name in ['a', 'img']:
         href = elm.get_attribute('href')
         if field_type == 'links':
             elm_text = {'achor' : elm_text, 'href' : href}
@@ -1313,6 +1376,7 @@ def scrape_recipe(root_elm, parser_recipe, path = ""):
 def recipe_scrape(request):
     global wd
 
+    domain = request.GET['domain']
     page_type = request.GET['page_type']
     sub = request.GET['sub']
     page = request.GET['page']
@@ -1323,7 +1387,6 @@ def recipe_scrape(request):
     recipe_scrape_results = []
 
     site = urllib.parse.urlparse(page).netloc.split(':')[0]
-    domain = '.'.join(site.split('.')[-2:])
     if domain not in parser_sites:
         return None
     parser_site = parser_sites[domain]

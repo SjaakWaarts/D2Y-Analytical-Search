@@ -139,7 +139,7 @@ var app = new Vue({
             if (page == "All Categories") {
                 page = ""
             }
-            this.$http.get(recipe_scrape_url, { params: { page_type: this.m_page_type, sub: sub, page: page } }).then(response => {
+            this.$http.get(recipe_scrape_url, { params: { domain: this.m_domain, page_type: this.m_page_type, sub: sub, page: page } }).then(response => {
                 var recipe = response.body.recipe;
                 this.recipe_scrape_results = response.body.recipe_scrape_results;
             });

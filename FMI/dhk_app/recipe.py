@@ -195,7 +195,10 @@ class Recipe():
             except:
                 categorie = ""
             if categorie and categorie not in categories_new:
-                categories_new.append(categorie)
+                for cat, subs in recipe_scrape.taxonomy.items():
+                    if categorie == cat or categorie in subs:
+                        categories_new.append(categorie)
+                        break
         self.recipe['categories'] = categories_new
 
     def screen(self):
