@@ -571,7 +571,7 @@ parser_sites_recipe = {
             'title'        : {'type': 'text', 'sels' : ["h1.hero__title"]},
             'ingredients_parts'   : {
                 'type'          : 'nested',
-                'sels'       : ["div.recipe__necessities", "div.entry__content ul"],
+                'sels'       : ["div.recipe__necessities", "div.entry__content > ul"],
                 'properties'    : {
                     'part'          : {'type': 'integer', 'sels' : ["."], 'con' : "=0"},
                     'ingredients'   : {
@@ -921,6 +921,7 @@ parser_sites = {
             'pages' : [
                 ("Lunch", "https://www.lekkerensimpel.com/mexicaans-broodje-kip/"),
                 ("Hoofdgerecht", "https://www.lekkerensimpel.com/pasta-pesto-met-spinazie-en-zalm/"),
+                ("Hoofdgerecht", "https://www.lekkerensimpel.com/geroosterde-bloemkool-uit-de-oven/"),
                 ]
             }
         },
