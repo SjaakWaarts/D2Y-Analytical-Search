@@ -38,8 +38,8 @@ urlpatterns = [
     path('d2y_admin', app.views.d2y_admin_view, name='d2y_admin'),
 
 
-    path('scent_emotion', app.views.scent_emotion_view, name='scent_emotion'),
-    path('search_scentemotion', models.ScentemotionSeekerView.as_view(), name='search_scentemotion'),
+    #path('scent_emotion', app.views.scent_emotion_view, name='scent_emotion'),
+    #path('search_scentemotion', models.ScentemotionSeekerView.as_view(), name='search_scentemotion'),
 
     path('product_insight', app.views.product_insight_view, name='product_insight'),
     path('search_pi/', models.PerfumeSeekerView.as_view(), name='search_pi'),
@@ -50,7 +50,7 @@ urlpatterns = [
     path('api/storyboard_def', app.api.storyboard_def, name='api/storyboard_def'),
     path('api/site_menu', app.api.site_menu, name='api/site_menu'),
     path('api/conf_edit', app.api.conf_edit, name='api/conf_edit'),
-    path('api/search_survey', app.api.search_survey, name='api/search_survey'),
+    #path('api/search_survey', app.api.search_survey, name='api/search_survey'),
     path('api/platformsearch', app.api.platformsearch, name='api/platformsearch'),
     path('api/scrape_pollresults', app.fragrantica.scrape_pollresults_api, name='api/scrape_pollresults'),
     path('api/scrape_accords', app.api.scrape_accords_api, name='scrape_accords_api'),
