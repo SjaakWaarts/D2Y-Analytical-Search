@@ -277,8 +277,8 @@ def consumer_insight_view(request):
             return redirect('search_si_sites')
         elif 'search_pi' in request.POST:
             return redirect('search_pi')
-        elif 'search_scentemotion' in request.POST:
-            return redirect('search_scentemotion')
+        #elif 'search_scentemotion' in request.POST:
+        #    return redirect('search_scentemotion')
         elif 'search_survey' in request.POST:
             #return redirect('search_survey?tab=#storyboard_tab')
             #return redirect('search_survey', tab='#storyboard_tab')
