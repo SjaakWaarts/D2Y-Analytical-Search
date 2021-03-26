@@ -124,15 +124,15 @@ def create_index_mail():
         index=index_name
     )
 
-def create_index_scentemotion():
+def create_index_bestmatch():
     indices_client = IndicesClient(models.client)
-    index_name = models.ScentemotionMap._meta.es_index_name
+    index_name = models.bestmatchMap._meta.es_index_name
     if indices_client.exists(index_name):
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
-    #put_settings(models.ScentemotionMap)
+    #put_settings(models.bestmatchMap)
     indices_client.put_mapping(
-        body=models.ScentemotionMap._meta.es_mapping,
+        body=models.bestmatchMap._meta.es_mapping,
         index=index_name
     )
 
@@ -142,7 +142,7 @@ def create_index_survey():
     if indices_client.exists(index_name):
         indices_client.delete(index=index_name)
     indices_client.create(index=index_name)
-    #put_settings(models.ScentemotionMap)
+    #put_settings(models.bestmatchMap)
     # add qstfld fields
     es_mapping = models.SurveyMap._meta.es_mapping
     for qst, mapping in survey.qst2fld.items():
@@ -197,8 +197,8 @@ def create_index_elastic(index_choices, excel_filename):
             create_index_mi_feedly()
         elif index_choice == 'mail':
             create_index_mail()
-        elif index_choice == 'scentemotion':
-            create_index_scentemotion()
+        elif index_choice == 'bestmatch':
+            create_index_bestmatch()
         elif index_choice == 'survey':
             create_index_survey()
         elif index_choice == 'dhk':

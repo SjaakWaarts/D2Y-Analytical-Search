@@ -219,7 +219,7 @@ class PageWorkbook:
             }
         }
 
-class ScentemotionWorkbook:
+class bestmatchWorkbook:
 
     dashboard = {
         'region_olfactive_table' : {
@@ -3445,10 +3445,10 @@ class MailSeekerView (seeker.SeekerView):
 
 
 ###
-### Scent Emotion (CFT - Ingredients)
+### Best Match
 ###
 
-class ScentemotionMap(models.Model):
+class bestmatchMap(models.Model):
     cft_id = models.IntegerField()
     dataset = models.TextField()
     ingr_name = models.TextField()
@@ -3469,8 +3469,8 @@ class ScentemotionMap(models.Model):
     hedonics = []
 
     class Meta:
-        es_index_name = 'scentemotion'
-        es_type_name = 'scentemotion'
+        es_index_name = 'bestmatch'
+        es_type_name = 'bestmatch'
         es_mapping = {
             "properties" : {
                 "dataset"           : {"type" : "text", "fields" : {"keyword" : {"type" : "keyword", "ignore_above" : 256}}},
@@ -3609,11 +3609,11 @@ class ScentemotionMap(models.Model):
         return field_es_value
 
 
-class ScentemotionSeekerView (seeker.SeekerView, ScentemotionWorkbook):
+class bestmatchSeekerView (seeker.SeekerView, bestmatchWorkbook):
     site = FMI.settings.site
     document = None
     using = client
-    index = "scentemotion"
+    index = "bestmatch"
     page_size = 20
     facets = [
         seeker.TermsFacet("dataset.keyword", label = "Dataset / Survey"),

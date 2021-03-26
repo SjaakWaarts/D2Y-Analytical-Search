@@ -479,7 +479,7 @@ def load_mail(email_choices, email_address, email_password):
     return True
 
 
-def load_scentemotion(cft_filename):
+def load_bestmatch(cft_filename):
     ml_file = 'data/' + cft_filename
     cft_df = pd.read_csv(ml_file, sep=';', encoding='ISO-8859-1', low_memory=False)
     cft_df.fillna(0, inplace=True)
@@ -488,7 +488,7 @@ def load_scentemotion(cft_filename):
     count = 0
     total_count = 0
     for cft_id, cft_s in cft_df.iterrows():
-        se = models.ScentemotionMap()
+        se = models.bestmatchMap()
         se.cft_id = cft_id
         se.dataset = "ingredients"
         se.ingr_name = cft_s.ingr_name
@@ -527,7 +527,7 @@ def load_scentemotion(cft_filename):
         if count > 100:
             bulk(models.client, actions=bulk_data, stats_only=True)
             total_count = total_count + count
-            print("load_scentemotion: written another batch, total written {0:d}".format(total_count))
+            print("load_bestmatch: written another batch, total written {0:d}".format(total_count))
             bulk_data = []
             count = 1
 

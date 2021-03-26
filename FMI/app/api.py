@@ -32,7 +32,7 @@ platformseekers = {
     'Market Intelligence'   : (models.PostSeekerView, "search_mi"),
     'Cosmetica'             : (models.PageSeekerView, "search_si_sites"),
     'Feedly'                : (models.FeedlySeekerView, "search_feedly"),
-    #'Scent Emotion (Ingr)'  : (models.ScentemotionSeekerView, "search_scentemotion"),
+    #'Best Match (Ingr)'  : (models.bestmatchSeekerView, "search_bestmatch"),
     #'CI Surveys'            : (models.SurveySeekerView, "search_survey"),
     }
 

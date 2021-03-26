@@ -106,7 +106,7 @@ class load_form(forms.Form):
 
 class d2y_admin_form(forms.Form):
     index_choices = (('conf', 'Configuration'), ('excel', 'Excel Files'), ('pi', 'Product Intelligence'), ('mi', 'MI - Market Intelligence'), ('si_sites', 'SI - Sites'),
-                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('scentemotion', 'Scent Emotion'), ('survey', 'CI Survey'),
+                     ('feedly', 'Feedly'), ('mail', 'Mail'), ('bestmatch', 'Best Match'), ('survey', 'CI Survey'),
                      ('dhk', 'de Heerlijke Keuken'))
     index_choices_field = forms.MultipleChoiceField(label='ES Index', choices=index_choices, widget=forms.CheckboxSelectMultiple, required=False)
     excel_filename_field = forms.CharField(label='Excel file (xlsx)', max_length=80, required = False, initial = 'ecosystem.xlsx')
@@ -114,7 +114,7 @@ class d2y_admin_form(forms.Form):
     auth_group_choices = (('d2y', 'DOUBLE2YY'), ('divault', 'DiVault'), ('dhk', 'de Heerlijke Keuken'))
     auth_group_choices_field = forms.MultipleChoiceField(label='Groups', choices=auth_group_choices, widget=forms.CheckboxSelectMultiple, required=False)
     auth_permission_choices = (('mi', 'Market Intelligence'), ('pi', 'Product Intelligence'), ('ci', 'Consumer Intelligence'),
-                               ('se', 'Scent Emotion'), ('edepot', 'E-Depot'))
+                               ('se', 'Best Match'), ('edepot', 'E-Depot'))
     auth_permission_choices_field = forms.MultipleChoiceField(label='Groups', choices=auth_permission_choices, widget=forms.CheckboxSelectMultiple, required=False)
     keyword_filename_field = forms.CharField(label='Keyword file', max_length=40, required = False, initial = '')
     def add_form_error(self, message):

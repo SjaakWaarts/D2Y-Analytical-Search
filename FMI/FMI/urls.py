@@ -38,8 +38,8 @@ urlpatterns = [
     path('d2y_admin', app.views.d2y_admin_view, name='d2y_admin'),
 
 
-    #path('scent_emotion', app.views.scent_emotion_view, name='scent_emotion'),
-    #path('search_scentemotion', models.ScentemotionSeekerView.as_view(), name='search_scentemotion'),
+    #path('best_match', app.views.best_match_view, name='best_match'),
+    #path('search_bestmatch', models.bestmatchSeekerView.as_view(), name='search_bestmatch'),
 
     path('product_insight', app.views.product_insight_view, name='product_insight'),
     path('search_pi/', models.PerfumeSeekerView.as_view(), name='search_pi'),

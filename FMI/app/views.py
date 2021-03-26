@@ -126,16 +126,16 @@ def search_workbook(request):
     #return redirect('search_excel')
     return HttpResponseRedirect(url + "?%s" % params)
 
-def scent_emotion_view(request):
+def best_match_view(request):
     if request.method == 'POST':
-        if 'search_scentemotion' in request.POST:
-            return redirect('search_scentemotion')
+        if 'search_bestmatch' in request.POST:
+            return redirect('search_bestmatch')
         elif 'search_studies' in request.POST:
             return redirect('search_studies')
 
     return render(
         request,
-        'app/scent_emotion.html',
+        'app/best_match.html',
         {'site' : FMI.settings.site, 'year':datetime.now().year}
     )
 
@@ -277,8 +277,8 @@ def consumer_insight_view(request):
             return redirect('search_si_sites')
         elif 'search_pi' in request.POST:
             return redirect('search_pi')
-        #elif 'search_scentemotion' in request.POST:
-        #    return redirect('search_scentemotion')
+        #elif 'search_bestmatch' in request.POST:
+        #    return redirect('search_bestmatch')
         elif 'search_survey' in request.POST:
             #return redirect('search_survey?tab=#storyboard_tab')
             #return redirect('search_survey', tab='#storyboard_tab')
@@ -431,8 +431,8 @@ def load_view(request):
             index_doc_name = form.cleaned_data['index_doc_name_field']
             ci_filename = form.cleaned_data['ci_filename_field']
             cimap_filename = form.cleaned_data['cimap_filename_field']
-            if 'load_scentemotion' in form.data:
-                load.load_scentemotion(cft_filename)
+            if 'load_bestmatch' in form.data:
+                load.load_bestmatch(cft_filename)
             if 'load_recipes' in form.data:
                 load.load_recipes(recipes_foldername)
             if 'load_excel' in form.data:

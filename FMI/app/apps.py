@@ -39,11 +39,11 @@ class AppConfig (django.apps.AppConfig):
         models.MailSeekerView.document = models.MailDoc
         models.MailSeekerView.es_mapping = models.MailMap._meta.es_mapping
 
-        #models.ScentemotionDoc = seeker.mapping.document_from_model(models.Scentemotion, index="scentemotion", using=models.client)
-        es_index = {'document' : 'scentemotion', 'index' : 'scentemotion', 'doc_type' : 'doc', 'properties' : models.ScentemotionMap._meta.es_mapping}
-        models.ScentemotionDoc = seeker.mapping.document_from_index(es_index, using=models.client)
-        models.ScentemotionSeekerView.document = models.ScentemotionDoc
-        models.ScentemotionSeekerView.es_mapping = models.ScentemotionMap._meta.es_mapping
+        #models.bestmatchDoc = seeker.mapping.document_from_model(models.bestmatch, index="bestmatch", using=models.client)
+        es_index = {'document' : 'bestmatch', 'index' : 'bestmatch', 'doc_type' : 'doc', 'properties' : models.bestmatchMap._meta.es_mapping}
+        models.bestmatchDoc = seeker.mapping.document_from_index(es_index, using=models.client)
+        models.bestmatchSeekerView.document = models.bestmatchDoc
+        models.bestmatchSeekerView.es_mapping = models.bestmatchMap._meta.es_mapping
 
         #models.SurveyDoc = seeker.mapping.document_from_model(models.Survey, index="survey", using=models.client)
         es_index = {'document' : 'survey', 'index' : 'survey', 'doc_type' : 'doc', 'properties' : models.SurveyMap._meta.es_mapping}
