@@ -1,9 +1,8 @@
 from functools import wraps
 
 from django.http import HttpResponseForbidden
-from django.utils.decorators import available_attrs
 
-from api.v1.models import Token
+from users_app.api.models import Token
 from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication as BaseTokenAuthentication, SessionAuthentication
 
@@ -36,7 +35,7 @@ class TokenAuthentication(BaseTokenAuthentication):
 
 
 def token_or_cookie_required(view_func):
-    @wraps(view_func, assigned=available_attrs(view_func))
+    @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         try:
             if TokenAuthentication().authenticate(request):

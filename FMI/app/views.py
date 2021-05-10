@@ -109,6 +109,7 @@ def search_workbook(request):
     storyboard_name = request.GET.get('storyboard_name', 'initial').strip()
     dashboard_name = request.GET.get('dashboard_name', 'initial').strip()
 
+
     if workbook_name == 'tmlo':
         access =  user.has_perm('auth.edepot')
 
@@ -116,13 +117,18 @@ def search_workbook(request):
     url = reverse(url)
 
     kwargs={}
+    for arg, arg_value in request.GET.items():
+        arg_value = request.GET.getlist(arg)
+        if len(arg_value) > 1:
+            kwargs[arg] = arg_value
+        else:
+            kwargs[arg] = arg_value[0]
     kwargs['workbook_name'] = workbook_name
     kwargs['storyboard_name'] = storyboard_name
     kwargs['dashboard_name'] = dashboard_name
-    for arg, arg_value in request.GET.items():
-        kwargs[arg] = arg_value
 
-    params = urllib.parse.urlencode(kwargs)
+    #Force repeat of parameters
+    params = urllib.parse.urlencode(kwargs, True)
     #return redirect('search_excel')
     return HttpResponseRedirect(url + "?%s" % params)
 

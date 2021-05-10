@@ -493,7 +493,8 @@ class SeekerView (View):
                 tile_facet = True
             if f.field in aggregations:
                 keys = [key for key in f.buckets(aggregations[f.field])]
-            facets_data[f.field] = {'label': f.label, 'tile_facet' : tile_facet,
+            facet_name = f.name.split('.')[0]
+            facets_data[facet_name] = {'field': f.field, 'label': f.label, 'tile_facet' : tile_facet,
                                     'visible_pos' : f.visible_pos, 'accordion_open' : f.accordion_open,
                                     'tile_facet_selected': tile_facet_selected, 'benchmark': benchmark,
                                     'values': keys, 'selected' : selected}

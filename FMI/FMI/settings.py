@@ -33,6 +33,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        'ATOMIC_REQUESTS': True,
         'OPTIONS': {
             'read_default_file': os.path.join(BASE_DIR, 'FMI', 'database.cnf'),
             },
@@ -200,6 +201,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

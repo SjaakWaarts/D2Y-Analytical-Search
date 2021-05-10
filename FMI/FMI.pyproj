@@ -23,7 +23,7 @@
     <WorkingDirectory>.</WorkingDirectory>
     <LaunchProvider>Web launcher</LaunchProvider>
     <OutputPath>.</OutputPath>
-    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <WebBrowserUrl>http://localhost:8010</WebBrowserUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -115,6 +115,10 @@
     <Compile Include="FMI\urls.py" />
     <Compile Include="FMI\wsgi.py" />
     <Compile Include="users_app\admin.py" />
+    <Compile Include="users_app\api\authentication.py" />
+    <Compile Include="users_app\api\models.py" />
+    <Compile Include="users_app\api\urls.py" />
+    <Compile Include="users_app\api\views.py" />
     <Compile Include="users_app\apps.py" />
     <Compile Include="users_app\forms.py" />
     <Compile Include="users_app\migrations\__init__.py" />
@@ -163,6 +167,7 @@
     <Folder Include="app\templates\app\" />
     <Folder Include="FMI\" />
     <Folder Include="users_app\" />
+    <Folder Include="users_app\api\" />
     <Folder Include="users_app\migrations\" />
     <Folder Include="users_app\static\" />
     <Folder Include="users_app\static\users_app\" />

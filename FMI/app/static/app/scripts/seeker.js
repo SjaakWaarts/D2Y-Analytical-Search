@@ -275,14 +275,14 @@ var app = new Vue({
         }
     },
     beforeMount: function () {
-        for (var field in g_facets_data) {
-            var facet_data = g_facets_data[field];
-            this.workbook.facets[field] = facet_data;
-            this.workbook.facets[field].options = [];
+        for (var facet_name in g_facets_data) {
+            var facet_data = g_facets_data[facet_name];
+            this.workbook.facets[facet_data.field] = facet_data;
+            this.workbook.facets[facet_data.field].options = [];
             for (var ix = 0; ix < facet_data.values.length; ix++) {
                 var option = facet_data.values[ix];
                 var node = { id: option, label: option };
-                this.workbook.facets[field].options.push(node);
+                this.workbook.facets[facet_data.field].options.push(node);
             }
         }
     },
