@@ -219,7 +219,7 @@ LOGOUT_REDIRECT_URL = 'home'
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 site = 'D2Y'
 LOG_LEVEL = 'INFO'
