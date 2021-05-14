@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic.base import RedirectView
 import app.models as models
 from dhk_app import views
 from dhk_app import dhk_admin
@@ -11,6 +12,7 @@ from dhk_app import workshops
 app_name='dhk'
 urlpatterns = [
     path('', views.dhk_view, name='home'),
+    path('dhk', RedirectView.as_view(url='/static/dhk', permanent=False), name='dhk'),
     path('dhk_admin', dhk_admin.dhk_admin_view, name='dhk_admin'),
     path('dhk_admin_kookclubs', dhk_admin.dhk_admin_kookclubs_view, name='dhk_admin_kookclubs'),
     path('dhk_admin_sites', dhk_admin.dhk_admin_sites_view, name='dhk_admin_sites'),

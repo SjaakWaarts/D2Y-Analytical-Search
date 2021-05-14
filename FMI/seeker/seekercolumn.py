@@ -21,6 +21,7 @@ class Column (object):
     sumheader = False
 
     def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None):
+        self.name = field.split('.')[0]
         self.field = field
         self.label = label if label is not None else field.replace('_', ' ').replace('.raw', '').capitalize()
         self.sort = sort
@@ -74,6 +75,11 @@ class Column (object):
 
     def context(self, result, **kwargs):
         return kwargs
+
+    def data_table_item(self, result):
+        source = result.get('_source', {})
+        value = source.get(self.field, None)
+        return value
 
     def render(self, result, facets, **kwargs):
         id = result['_id']
@@ -165,7 +171,6 @@ class Column (object):
         else:
             sortdsl = self.sort
         return(sortdsl)
-
 
     def export_value(self, hit):
         export_field = self.field if self.export is True else self.export
@@ -265,6 +270,10 @@ class LinksColumn (Column):
     def __init__(self, field, label=None, sort=None, value_format=None, template=None, header=None, export=True, highlight=None):
         #sort = {field+".name" : {"order" : "asc"}}
         super(LinksColumn, self).__init__(field, label, sort, value_format, template, header, export, highlight)
+
+    def data_table_item(self, result):
+        value = esm.get_field_nesting(self.field, result, None)
+        return value
 
     def render(self, result, facets, **kwargs):
         #value = result['_source'].get(self.field, None)

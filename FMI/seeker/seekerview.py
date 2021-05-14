@@ -29,6 +29,7 @@ import urllib
 import requests
 import json
 import re
+import math
 import datetime
 
 import pandas as pd
@@ -328,10 +329,11 @@ class SeekerView (View):
             if isinstance(dsl_field, (dsl.Object, dsl.Nested)):
                 return None
 #            if not isinstance(dsl_field, dsl.String):
-            if not isinstance(dsl_field, dsl.Text):
+            if dsl_field['type'] == 'text':
+                if 'keyword' in dsl_field.get('fields', {}):
+                    return field_name + '.keyword'
+            elif dsl_field['type'] == 'date':
                 return field_name
-            if 'raw' in dsl_field.fields:
-                return '%s.raw' % field_name
             elif getattr(dsl_field, 'index', None) == 'false':
                 return field_name
         return None
@@ -415,6 +417,7 @@ class SeekerView (View):
             column = self.make_column(c)
             column.field = attr['field']
             column.nestedfacet = attr.get('nestedfacet', None)
+            column.visible = attr.get('visible', True)
             columns.append(column)
 
         # Make sure the columns are bound and ordered based on the display fields (selected or default).
@@ -426,6 +429,36 @@ class SeekerView (View):
         columns.sort(key=lambda c: str(display.index(c.field)) if c.visible else c.label)
         return columns
 
+    def get_data_table(self, columns, results, page, results_count):
+        headers = []
+        items = []
+        for column in columns:
+            if column.visible:
+                
+                headers.append({
+                    'value': column.name,
+                    'text': column.label,
+                    'sortable': False if column.sort is None else True
+                    })
+        hits = results['hits']['hits']
+        for hit in hits:
+            item = {}
+            for column in columns:
+                if column.visible:
+                    item[column.name] = column.data_table_item(hit)
+            items.append(item)
+        page_count = math.ceil(results_count / self.page_size)
+        footer = {
+            'pagination': {
+                  'page': page,
+                  'results_count': results_count,
+                  'itemsPerPage': self.page_size,
+                  'pageStart': 1,
+                  'pageStop': page_count,
+                  'pageCount': page_count,
+                }
+            }
+        return {'headers': headers, 'items': items, 'footer': footer}
 
     def get_keywords_q(self):
         return self.request.GET.get('q', '').strip()
@@ -1089,6 +1122,7 @@ class SeekerView (View):
         context_querystring = self.normalized_querystring()
         sort = sorts[0] if sorts else ''
         facets_data = self.get_facets_data(facets, results, tiles_select, benchmark)
+        data_table = self.get_data_table(columns, results, page, results_count)
 
         context = {
             'site' : self.site,
@@ -1133,6 +1167,7 @@ class SeekerView (View):
                 'page': page,
                 'sort': sort,
                 'facets_data': json.dumps(facets_data),
+                'data_table': json.dumps(data_table),
                 'storyboard' : json.dumps(self.storyboard),
                 'dashboard_name' : dashboard['name'],
                 'dashboard': json.dumps(self.dashboard),
